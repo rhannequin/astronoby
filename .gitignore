@@ -9,3 +9,6 @@
 
 # rspec failure tracking
 .rspec_status
+
+# Code editor and IDE files
+/.idea/
