@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "astronoby/version"
+require "astronoby/version"
 require "astronoby/angle"
+require "astronoby/angles/degree"
+require "astronoby/angles/radian"
 
 module Astronoby
   class Error < StandardError; end

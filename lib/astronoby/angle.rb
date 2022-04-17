@@ -2,15 +2,23 @@
 
 module Astronoby
   class Angle
-    DEGREES = :degrees
-    RADIANS = :radians
+    UNITS = [
+      DEGREES = :degrees,
+      RADIANS = :radians
+    ].freeze
 
-    def self.as_degrees(angle)
-      new(angle, unit: DEGREES)
+    UNITS.each do |unit|
+      define_method("to_#{unit}") do
+        raise NotImplementedError
+      end
     end
 
-    def self.as_radians
-      new(angle, unit: RADIANS)
+    def self.as_degrees(angle)
+      ::Astronoby::Degree.new(angle)
+    end
+
+    def self.as_radians(angle)
+      ::Astronoby::Radian.new(angle)
     end
 
     def initialize(angle, unit:)
@@ -18,26 +26,8 @@ module Astronoby
       @unit = unit
     end
 
-    def to_degrees
-      return @angle if degrees?
-
-      @angle.to_r * 180r / Math::PI.to_r
-    end
-
-    def to_radians
-      return @angle if radians?
-
-      @angle.to_r / 180r * Math::PI.to_r
-    end
-
-    private
-
-    def degrees?
-      @unit == DEGREES
-    end
-
-    def radians?
-      @unit == RADIANS
+    def value
+      @angle
     end
   end
 end
