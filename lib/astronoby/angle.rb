@@ -13,7 +13,7 @@ module Astronoby
 
     UNITS.each do |unit|
       define_method("to_#{unit}") do
-        raise NotImplementedError
+        raise NotImplementedError, "#{self.class} must implement #to_#{unit} method."
       end
     end
 
