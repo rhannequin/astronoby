@@ -14,7 +14,7 @@ RSpec.describe Astronoby::Angle do
   end
 
   describe "::as_radians" do
-    subject { described_class.as_radians(Math::PI) }
+    subject { described_class.as_radians(described_class::PI) }
 
     it "returns an Angle object" do
       expect(subject).to be_a(described_class)

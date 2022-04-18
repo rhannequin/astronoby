@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
+require "bigdecimal/math"
+
 module Astronoby
   class Angle
     UNITS = [
       DEGREES = :degrees,
       RADIANS = :radians
     ].freeze
+
+    PI = ::BigMath.PI(10)
 
     UNITS.each do |unit|
       define_method("to_#{unit}") do

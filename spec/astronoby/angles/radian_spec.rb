@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Radian do
-  let(:instance) { described_class.new(Math::PI) }
+  let(:instance) { described_class.new(described_class::PI) }
 
   describe "#value" do
     subject { instance.value }
 
     it "returns the angle's numeric value in the current unit" do
-      expect(subject).to eq(Math::PI)
+      expect(subject).to eq(described_class::PI)
     end
   end
 

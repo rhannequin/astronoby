@@ -11,7 +11,7 @@ module Astronoby
     end
 
     def to_radians
-      self.class.as_radians(@angle.to_r / 180r * Math::PI.to_r)
+      self.class.as_radians(@angle / 180 * PI)
     end
   end
 end
