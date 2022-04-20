@@ -14,7 +14,7 @@ module Astronoby
       RADIANS => "Astronoby::Radian"
     }
 
-    PI = ::BigMath.PI(10)
+    PI = BigMath.PI(10)
 
     class << self
       UNIT_CLASS_NAMES.each do |unit, class_name|
@@ -31,7 +31,7 @@ module Astronoby
     end
 
     def initialize(angle, unit:)
-      @angle = angle
+      @angle = BigDecimal(angle)
       @unit = unit
     end
 
