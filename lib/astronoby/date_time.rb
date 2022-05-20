@@ -15,11 +15,11 @@ module Astronoby
       @sec = sec
 
       if year.nil? || month.nil? || day.nil?
-        raise ArgumentError, "A full date with year, month and day must be provided."
+        raise IncompatibleArgumentsError, "A full date with year, month and day must be provided."
       end
 
       if date_time? && (@min.nil? || @sec.nil?)
-        raise ArgumentError, "When a time is specified, min and sec arguments must be provided."
+        raise IncompatibleArgumentsError, "When a time is specified, min and sec arguments must be provided."
       end
     end
 

@@ -21,20 +21,20 @@ RSpec.describe Astronoby::DateTime do
     end
 
     context "when an errored date is provided" do
-      it "raises an ArgumentError" do
-        expect { described_class.new(2000, nil, 1) }.to raise_error(ArgumentError)
+      it "raises an Astronoby::IncompatibleArgumentsError" do
+        expect { described_class.new(2000, nil, 1) }.to raise_error(Astronoby::IncompatibleArgumentsError)
       end
     end
 
     context "when a partial date time is provided" do
-      it "raises an ArgumentError" do
-        expect { described_class.new(2000, 1, 1, 12) }.to raise_error(ArgumentError)
+      it "raises an Astronoby::IncompatibleArgumentsError" do
+        expect { described_class.new(2000, 1, 1, 12) }.to raise_error(Astronoby::IncompatibleArgumentsError)
       end
     end
 
     context "when an errored date is provided" do
-      it "raises an ArgumentError" do
-        expect { described_class.new(2000, 1, 1, 12, nil, 42) }.to raise_error(ArgumentError)
+      it "raises an Astronoby::IncompatibleArgumentsError" do
+        expect { described_class.new(2000, 1, 1, 12, nil, 42) }.to raise_error(Astronoby::IncompatibleArgumentsError)
       end
     end
   end
