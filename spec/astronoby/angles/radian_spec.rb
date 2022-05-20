@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Radian do
-  let(:instance) { described_class.new(described_class::PI) }
+  let(:instance) { described_class.new(value) }
+  let(:value) { described_class::PI }
 
   describe "#value" do
     subject { instance.value }
@@ -28,6 +29,24 @@ RSpec.describe Astronoby::Radian do
 
     it "returns itself" do
       expect(subject).to eq(instance)
+    end
+  end
+
+  describe "#to_dms" do
+    subject { instance.to_dms }
+
+    it "returns an new Dms instance" do
+      expect(subject).to be_a(Astronoby::Dms)
+    end
+
+    context "when ange is positive" do
+      let(:value) { described_class::PI / 7r }
+
+      it "converts properly" do
+        expect(subject.degrees).to eq(25)
+        expect(subject.minutes).to eq(42)
+        expect(subject.seconds).to eq(51.42)
+      end
     end
   end
 end

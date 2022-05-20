@@ -13,5 +13,9 @@ module Astronoby
     def to_radians
       self
     end
+
+    def to_dms
+      to_degrees.to_dms
+    end
   end
 end

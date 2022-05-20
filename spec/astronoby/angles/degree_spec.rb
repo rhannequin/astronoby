@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require "bigdecimal/util"
+
 RSpec.describe Astronoby::Degree do
-  let(:instance) { described_class.new(180) }
+  let(:instance) { described_class.new(value) }
+  let(:value) { 180 }
 
   describe "#value" do
     subject { instance.value }
@@ -28,6 +31,24 @@ RSpec.describe Astronoby::Degree do
 
     it "converted the degrees value into radians" do
       expect(subject.value).to eq(described_class::PI)
+    end
+  end
+
+  describe "#to_dms" do
+    subject { instance.to_dms }
+
+    it "returns an new Dms instance" do
+      expect(subject).to be_a(Astronoby::Dms)
+    end
+
+    context "when ange is positive" do
+      let(:value) { BigDecimal("10.2958") }
+
+      it "converts properly" do
+        expect(subject.degrees).to eq(10)
+        expect(subject.minutes).to eq(17)
+        expect(subject.seconds).to eq(44.88)
+      end
     end
   end
 end
