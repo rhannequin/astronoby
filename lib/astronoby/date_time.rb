@@ -1,25 +1,47 @@
 # frozen_string_literal: true
 
 require "date"
+require "bigdecimal"
 
 module Astronoby
   class DateTime
     attr_reader :year, :month, :day, :hour, :min, :sec
 
-    def initialize(year, month, day, hour = nil, min = nil, sec = nil)
+    def initialize(year, month, day, hour = 0, min = 0, sec = 0)
       @year = year
       @month = month
       @day = day
       @hour = hour
       @min = min
       @sec = sec
+    end
 
-      if year.nil? || month.nil? || day.nil?
-        raise IncompatibleArgumentsError, "A full date with year, month and day must be provided."
-      end
+    class << self
+      def from_julian_day(julian_day)
+        jd = julian_day + 0.5
+        i = jd.to_i
+        f = (jd - i).round(4)
 
-      if date_time? && (@min.nil? || @sec.nil?)
-        raise IncompatibleArgumentsError, "When a time is specified, min and sec arguments must be provided."
+        if i > 2_299_160
+          a = ((i - 1_867_216.25) / 36_524.25).to_i
+          b = i + 1 + a - (a / 4).to_i
+        else
+          b = i
+        end
+
+        c = b + 1524
+        d = ((c - 122.1) / 365.25).to_i
+        e = (365.25 * d).to_i
+        g = ((c - e) / 30.6001).to_i
+
+        hour = BigDecimal(f, 4) * 24
+        min = (hour - hour.to_i) * 60
+        sec = (min - min.to_i) * 60
+        day = c - e + f - (30.6001 * g).to_i
+        month = g < 13.5 ? g - 1 : g - 13
+        year = month > 2.5 ? d - 4716 : d - 4715
+
+        new(year, month, day.to_i, hour.to_i, min.to_i, sec.to_i)
       end
     end
 
