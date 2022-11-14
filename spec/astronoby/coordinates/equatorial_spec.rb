@@ -6,12 +6,12 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       time = Time.new
       latitude = BigDecimal("50")
       longitude = BigDecimal("0")
-      right_ascension_hour = 23
-      right_ascension_minute = 59
-      right_ascension_second = 58
-      declination_degree = -359
-      declination_minute = 59
-      declination_second = 58
+      right_ascension_hour = BigDecimal("23")
+      right_ascension_minute = BigDecimal("59")
+      right_ascension_second = BigDecimal("58")
+      declination_degree = BigDecimal("-359")
+      declination_minute = BigDecimal("59")
+      declination_second = BigDecimal("58")
 
       expect(
         described_class.new(
@@ -25,22 +25,28 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       ).to be_an_instance_of(Astronoby::Coordinates::Horizontal)
     end
 
-    context "with real life arguments (Etretat, France)" do
+    context "with real life arguments (Virginia, USA)" do
       it "computes properly" do
-        time = Time.new(2022, 6, 26, 3, 10, 5, "+02:00")
-        latitude = BigDecimal("49.70911954641343")
-        longitude = BigDecimal("0.20271537957527094")
-        right_ascension_hour = 21
-        right_ascension_minute = 49
-        right_ascension_second = 8.6
-        declination_degree = -14
-        declination_minute = 26
-        declination_second = 57.4
+        time = Time.new(2016, 1, 21, 21, 30, 0, "-05:00")
+        latitude = BigDecimal("38")
+        longitude = BigDecimal("-78")
+        right_ascension_hour = BigDecimal("17")
+        right_ascension_minute = BigDecimal("43")
+        right_ascension_second = BigDecimal("54")
+        declination_degree = BigDecimal("-22")
+        declination_minute = BigDecimal("10")
+        declination_second = BigDecimal("0")
 
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
-            azimuth: BigDecimal("143.30560194994206306769645376972241902"),
-            horizon: BigDecimal("19.490674347775627009146296733268613935")
+            azimuth_degree: 341,
+            azimuth_minute: 33,
+            azimuth_second: kind_of(Numeric),
+            altitude_degree: -73,
+            altitude_minute: 27,
+            altitude_second: kind_of(Numeric),
+            latitude: latitude,
+            longitude: longitude
           )
         )
 
