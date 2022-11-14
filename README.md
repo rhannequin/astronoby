@@ -1,4 +1,6 @@
-# Astronoby ![specs](https://github.com/rhannequin/astronoby/workflows/Ruby/badge.svg)
+# Astronoby
+
+[![Tests](https://github.com/rhannequin/astronoby/workflows/Ruby/badge.svg)](https://github.com/rhannequin/astronoby/actions?query=workflow%3ARuby)
 
 Ruby library to provide a useful API to compute astronomical calculations, based on _Astronomical Algorithms_ by Jean Meeus.
 
