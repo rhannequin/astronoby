@@ -57,6 +57,11 @@ module Astronoby
       julian_day_number + time_of_day
     end
 
+    def to_s
+      "#{"%04d" % day}-#{"%02d" % month}-#{"%02d" % day}" \
+        " #{"%02d" % hour}:#{"%02d" % min}:#{"%02d" % sec}"
+    end
+
     private
 
     def julian_day_number
