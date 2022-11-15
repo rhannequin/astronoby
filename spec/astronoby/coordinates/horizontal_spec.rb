@@ -27,7 +27,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       ).to be_a(Astronoby::Coordinates::Equatorial)
     end
 
-    context "with real life arguments (Virginia, USA)" do
+    context "with real life arguments (Betelgeuse, from Virginia, USA)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 45, 0, "-05:00")
         latitude = BigDecimal("38")
@@ -46,6 +46,78 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
             right_ascension_second: kind_of(Numeric),
             declination_degree: 7,
             declination_minute: 29,
+            declination_second: kind_of(Numeric)
+          )
+        )
+
+        described_class.new(
+          azimuth_degree: azimuth_degree,
+          azimuth_minute: azimuth_minute,
+          azimuth_second: azimuth_second,
+          altitude_degree: altitude_degree,
+          altitude_minute: altitude_minute,
+          altitude_second: altitude_second,
+          latitude: latitude,
+          longitude: longitude
+        ).to_equatorial(time: time)
+      end
+    end
+
+    context "with real life arguments (Venus, from Virginia, USA)" do
+      it "computes properly" do
+        time = Time.new(2016, 1, 21, 21, 30, 0, "-05:00")
+        latitude = BigDecimal("38")
+        longitude = BigDecimal("-78")
+        azimuth_degree = BigDecimal("341")
+        azimuth_minute = BigDecimal("33")
+        azimuth_second = BigDecimal("42.1499")
+        altitude_degree = BigDecimal("-73")
+        altitude_minute = BigDecimal("27")
+        altitude_second = BigDecimal("57.1321")
+
+        expect(Astronoby::Coordinates::Equatorial).to(
+          receive(:new).with(
+            right_ascension_hour: 17,
+            right_ascension_minute: 43,
+            right_ascension_second: kind_of(Numeric),
+            declination_degree: -22,
+            declination_minute: 10,
+            declination_second: kind_of(Numeric)
+          )
+        )
+
+        described_class.new(
+          azimuth_degree: azimuth_degree,
+          azimuth_minute: azimuth_minute,
+          azimuth_second: azimuth_second,
+          altitude_degree: altitude_degree,
+          altitude_minute: altitude_minute,
+          altitude_second: altitude_second,
+          latitude: latitude,
+          longitude: longitude
+        ).to_equatorial(time: time)
+      end
+    end
+
+    context "with real life arguments (Mars, from Valencia, Spain)" do
+      it "computes properly" do
+        time = Time.new(2022, 12, 8, 6, 22, 33, "+01:00")
+        latitude = BigDecimal("39.46975")
+        longitude = BigDecimal("-0.377389")
+        azimuth_degree = BigDecimal("285")
+        azimuth_minute = BigDecimal("38")
+        azimuth_second = BigDecimal("37.32")
+        altitude_degree = BigDecimal("21")
+        altitude_minute = BigDecimal("2")
+        altitude_second = BigDecimal("21.480")
+
+        expect(Astronoby::Coordinates::Equatorial).to(
+          receive(:new).with(
+            right_ascension_hour: 4,
+            right_ascension_minute: 58,
+            right_ascension_second: kind_of(Numeric),
+            declination_degree: 24,
+            declination_minute: 59,
             declination_second: kind_of(Numeric)
           )
         )

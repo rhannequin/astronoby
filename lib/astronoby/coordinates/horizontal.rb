@@ -48,9 +48,12 @@ module Astronoby
         adjustment = @longitude / 15
         lst = (gst + adjustment)
 
-        altitude_decimal_degrees = @altitude_degree +
-          @altitude_minute / 60r +
-          @altitude_second / 3600r
+        altitude_sign = @altitude_degree.negative? ? -1 : 1
+        altitude_decimal_degrees = (
+          @altitude_degree.abs +
+            @altitude_minute / 60r +
+            @altitude_second / 3600r
+        ) * altitude_sign
         azimuth_decimal_degrees = @azimuth_degree +
           @azimuth_minute / 60r +
           @azimuth_second / 3600r
