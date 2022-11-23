@@ -24,4 +24,38 @@ RSpec.describe Astronoby::Angle do
       expect(subject).to be_a(Astronoby::Radian)
     end
   end
+
+  describe "#==" do
+    context "when the two angles have the same value and same unit" do
+      it "returns true" do
+        expect(described_class.as_degrees(1)).to(
+          eq(described_class.as_degrees(1))
+        )
+      end
+    end
+
+    context "when the two angles have the same value and different units" do
+      it "returns false" do
+        expect(described_class.as_degrees(1)).not_to(
+          eq(described_class.as_radians(1))
+        )
+      end
+    end
+
+    context "when the two angles have different values and the same unit" do
+      it "returns false" do
+        expect(described_class.as_degrees(1)).not_to(
+          eq(described_class.as_degrees(2))
+        )
+      end
+    end
+
+    context "when the two angles have different values and different units" do
+      it "returns false" do
+        expect(described_class.as_degrees(1)).not_to(
+          eq(described_class.as_radians(2))
+        )
+      end
+    end
+  end
 end

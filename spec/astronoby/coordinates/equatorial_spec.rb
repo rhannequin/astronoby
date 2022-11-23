@@ -37,20 +37,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         declination_minute = BigDecimal("10")
         declination_second = BigDecimal("0")
 
-        expect(Astronoby::Coordinates::Horizontal).to(
-          receive(:new).with(
-            azimuth_degree: 341,
-            azimuth_minute: 33,
-            azimuth_second: kind_of(Numeric),
-            altitude_degree: -73,
-            altitude_minute: 27,
-            altitude_second: kind_of(Numeric),
-            latitude: latitude,
-            longitude: longitude
-          )
-        )
-
-        described_class.new(
+        horizontal_coordinates = described_class.new(
           right_ascension_hour: right_ascension_hour,
           right_ascension_minute: right_ascension_minute,
           right_ascension_second: right_ascension_second,
@@ -58,6 +45,16 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
           declination_minute: declination_minute,
           declination_second: declination_second
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+
+        expect(horizontal_coordinates.azimuth.value).to(
+          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
+            .of(BigDecimal("341.554819847564601665794558955621412349101184798"))
+        )
+
+        expect(horizontal_coordinates.altitude.value).to(
+          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
+            .of(BigDecimal("-73.455227377975060334066252338567316435875213177"))
+        )
       end
     end
 
@@ -73,20 +70,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         declination_minute = BigDecimal("29")
         declination_second = BigDecimal("53.6679")
 
-        expect(Astronoby::Coordinates::Horizontal).to(
-          receive(:new).with(
-            azimuth_degree: 171,
-            azimuth_minute: 5,
-            azimuth_second: kind_of(Numeric),
-            altitude_degree: 59,
-            altitude_minute: 13,
-            altitude_second: kind_of(Numeric),
-            latitude: latitude,
-            longitude: longitude
-          )
-        )
-
-        described_class.new(
+        horizontal_coordinates = described_class.new(
           right_ascension_hour: right_ascension_hour,
           right_ascension_minute: right_ascension_minute,
           right_ascension_second: right_ascension_second,
@@ -94,6 +78,15 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
           declination_minute: declination_minute,
           declination_second: declination_second
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+
+        expect(horizontal_coordinates.azimuth.value).to(
+          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
+            .of(BigDecimal("171.083334007099903409713779835440853541719640751"))
+        )
+        expect(horizontal_coordinates.altitude.value).to(
+          be_within(BigDecimal("0.0000000000001"))
+            .of(BigDecimal("59.216666707291223847837191742401098246733369818"))
+        )
       end
     end
 
@@ -109,20 +102,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         declination_minute = BigDecimal("59")
         declination_second = BigDecimal("32.283")
 
-        expect(Astronoby::Coordinates::Horizontal).to(
-          receive(:new).with(
-            azimuth_degree: 285,
-            azimuth_minute: 38,
-            azimuth_second: kind_of(Numeric),
-            altitude_degree: 21,
-            altitude_minute: 2,
-            altitude_second: kind_of(Numeric),
-            latitude: latitude,
-            longitude: longitude
-          )
-        )
-
-        described_class.new(
+        horizontal_coordinates = described_class.new(
           right_ascension_hour: right_ascension_hour,
           right_ascension_minute: right_ascension_minute,
           right_ascension_second: right_ascension_second,
@@ -130,6 +110,15 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
           declination_minute: declination_minute,
           declination_second: declination_second
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+
+        expect(horizontal_coordinates.azimuth.value).to(
+          be_within(BigDecimal("0.0000000000001"))
+            .of(BigDecimal("285.645129859506263511633920560611977661843041078"))
+        )
+        expect(horizontal_coordinates.altitude.value).to(
+          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
+            .of(BigDecimal("21.037416522636957535635803781804788001504634275"))
+        )
       end
     end
   end

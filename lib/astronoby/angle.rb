@@ -31,12 +31,16 @@ module Astronoby
     end
 
     def initialize(angle, unit:)
-      @angle = BigDecimal(angle)
+      @angle = angle
       @unit = unit
     end
 
     def value
       @angle
+    end
+
+    def ==(other)
+      value == other.value && self.class == other.class
     end
   end
 end
