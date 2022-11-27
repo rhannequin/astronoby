@@ -102,5 +102,30 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
       end
     end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        time = Time.new(2015, 12, 1, 9, 0, 0, "-08:00")
+        latitude = 45
+        longitude = -100
+
+        horizontal_coordinates = described_class.new(
+          right_ascension: Astronoby::Angle.as_degrees(6),
+          declination: Astronoby::Angle.as_degrees(-60)
+        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+
+        expect(horizontal_coordinates.altitude.to_dms.format).to(
+          eq("-59° 41′ 57.6518″")
+        )
+        expect(horizontal_coordinates.azimuth.to_dms.format).to(
+          eq("224° 15′ 27.0033″")
+        )
+      end
+    end
   end
 end
