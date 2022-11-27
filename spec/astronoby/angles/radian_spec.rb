@@ -45,7 +45,7 @@ RSpec.describe Astronoby::Radian do
       it "converts properly" do
         expect(subject.degrees).to eq(25)
         expect(subject.minutes).to eq(42)
-        expect(subject.seconds).to eq(51.42)
+        expect(subject.seconds).to eq(51.4285)
       end
     end
   end

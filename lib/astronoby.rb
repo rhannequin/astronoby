@@ -3,6 +3,7 @@
 require "astronoby/angle"
 require "astronoby/angles/degree"
 require "astronoby/angles/dms"
+require "astronoby/angles/hms"
 require "astronoby/angles/radian"
 require "astronoby/coordinates/equatorial"
 require "astronoby/coordinates/horizontal"
