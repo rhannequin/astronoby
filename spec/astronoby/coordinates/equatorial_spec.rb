@@ -21,7 +21,20 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         latitude = BigDecimal("38")
         longitude = BigDecimal("-78")
 
-        horizontal_coordinates = described_class.new(
+        expect(Astronoby::Coordinates::Horizontal).to(
+          receive(:new).with(
+            azimuth: Astronoby::Angle.as_degrees(
+              BigDecimal("341.554819847564726443269943001564655153971449036")
+            ),
+            altitude: Astronoby::Angle.as_degrees(
+              BigDecimal("-73.45522737797505396786852866275388568052468949")
+            ),
+            latitude: latitude,
+            longitude: longitude
+          )
+        )
+
+        described_class.new(
           right_ascension: Astronoby::Angle.as_degrees(
             BigDecimal("17.731666666666667")
           ),
@@ -29,16 +42,6 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
             BigDecimal("-22.166666666666667")
           )
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
-
-        expect(horizontal_coordinates.azimuth.value).to(
-          be_within(BigDecimal("0.00000000000001"))
-            .of(BigDecimal("341.554819847564726443269943001564655153971449036"))
-        )
-
-        expect(horizontal_coordinates.altitude.value).to(
-          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
-            .of(BigDecimal("-73.45522737797505396786852866275388568052468949"))
-        )
       end
     end
 
@@ -47,11 +50,21 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         time = Time.new(2016, 1, 21, 21, 45, 0, "-05:00")
         latitude = BigDecimal("38")
         longitude = BigDecimal("-78")
-        right_ascension_hour = BigDecimal("5")
-        right_ascension_minute = BigDecimal("54")
-        right_ascension_second = BigDecimal("57.9274")
 
-        horizontal_coordinates = described_class.new(
+        expect(Astronoby::Coordinates::Horizontal).to(
+          receive(:new).with(
+            azimuth: Astronoby::Angle.as_degrees(
+              BigDecimal("171.083334007099890677318332483813992031018593381")
+            ),
+            altitude: Astronoby::Angle.as_degrees(
+              BigDecimal("59.216666707291217481639468066587667491382846133")
+            ),
+            latitude: latitude,
+            longitude: longitude
+          )
+        )
+
+        described_class.new(
           right_ascension: Astronoby::Angle.as_degrees(
             BigDecimal("5.916090944444444")
           ),
@@ -59,15 +72,6 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
             BigDecimal("7.498241083333333")
           )
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
-
-        expect(horizontal_coordinates.azimuth.value).to(
-          be_within(BigDecimal("0.0000000000001"))
-            .of(BigDecimal("171.083334007099890677318332483813992031018593381"))
-        )
-        expect(horizontal_coordinates.altitude.value).to(
-          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
-            .of(BigDecimal("59.216666707291217481639468066587667491382846133"))
-        )
       end
     end
 
@@ -77,21 +81,25 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         latitude = BigDecimal("39.46975")
         longitude = BigDecimal("-0.377389")
 
-        horizontal_coordinates = described_class.new(
+        expect(Astronoby::Coordinates::Horizontal).to(
+          receive(:new).with(
+            azimuth: Astronoby::Angle.as_degrees(
+              BigDecimal("285.64512985950623168064530218154482388509042265")
+            ),
+            altitude: Astronoby::Angle.as_degrees(
+              BigDecimal("21.03741652263695116943808010599135724615411059")
+            ),
+            latitude: latitude,
+            longitude: longitude
+          )
+        )
+
+        described_class.new(
           right_ascension: Astronoby::Angle.as_degrees(BigDecimal("4.97602775")),
           declination: Astronoby::Angle.as_degrees(
             BigDecimal("24.992300833333333")
           )
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
-
-        expect(horizontal_coordinates.azimuth.value).to(
-          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
-            .of(BigDecimal("285.64512985950623168064530218154482388509042265"))
-        )
-        expect(horizontal_coordinates.altitude.value).to(
-          be_within(BigDecimal("0.000000000000000000000000000000000000000000001"))
-            .of(BigDecimal("21.03741652263695116943808010599135724615411059"))
-        )
       end
     end
   end
