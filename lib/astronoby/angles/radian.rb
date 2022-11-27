@@ -7,7 +7,7 @@ module Astronoby
     end
 
     def to_degrees
-      self.class.as_degrees(@angle * 180 / PI)
+      self.class.as_degrees(@angle * BigDecimal("180") / PI)
     end
 
     def to_radians

@@ -23,16 +23,14 @@ module Astronoby
         t0 = Math.sin(@altitude.to_radians.value) * Math.sin(latitude_radians) +
           Math.cos(@altitude.to_radians.value) * Math.cos(latitude_radians) * Math.cos(@azimuth.to_radians.value)
 
-        declination_radians = Math.asin(t0)
-        declination_decimal_degrees = Astronoby::Util::Trigonometry
-          .to_degrees(declination_radians)
+        declination = Astronoby::Angle.as_radians(Math.asin(t0))
 
         t1 = Math.sin(@altitude.to_radians.value) -
-          Math.sin(latitude_radians) * Math.sin(declination_radians)
+          Math.sin(latitude_radians) * Math.sin(declination.to_radians.value)
 
         hour_angle_degrees = Astronoby::Util::Trigonometry.to_degrees(
           Math.acos(
-            t1 / (Math.cos(latitude_radians) * Math.cos(declination_radians))
+            t1 / (Math.cos(latitude_radians) * Math.cos(declination.to_radians.value))
           )
         )
 
@@ -46,27 +44,11 @@ module Astronoby
           longitude: @longitude
         ) - hour_angle_hours
         right_ascension_decimal += 24 if right_ascension_decimal.negative?
-
-        right_ascension_absolute = right_ascension_decimal.abs
-        right_ascension_hour = right_ascension_absolute.floor
-        right_ascension_decimal_minute = 60 * (right_ascension_absolute - right_ascension_hour)
-        right_ascension_minute = right_ascension_decimal_minute.floor
-        right_ascension_second = 60 * (right_ascension_decimal_minute - right_ascension_decimal_minute.floor)
-
-        declination_sign = declination_decimal_degrees.negative? ? -1 : 1
-        declination_absolute = declination_decimal_degrees.abs
-        declination_degree = declination_absolute.floor
-        declination_decimal_minute = 60 * (declination_absolute - declination_degree)
-        declination_minute = declination_decimal_minute.floor
-        declination_second = 60 * (declination_decimal_minute - declination_decimal_minute.floor)
+        right_ascension = Astronoby::Angle.as_degrees(right_ascension_decimal)
 
         Equatorial.new(
-          right_ascension_hour: right_ascension_hour,
-          right_ascension_minute: right_ascension_minute,
-          right_ascension_second: right_ascension_second,
-          declination_degree: declination_sign * declination_degree,
-          declination_minute: declination_minute,
-          declination_second: declination_second
+          right_ascension: right_ascension.to_degrees,
+          declination: declination.to_degrees
         )
       end
 

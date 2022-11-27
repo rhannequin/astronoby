@@ -3,55 +3,38 @@
 module Astronoby
   module Coordinates
     class Equatorial
+      attr_reader :right_ascension, :declination
+
       def initialize(
-        right_ascension_hour:,
-        right_ascension_minute:,
-        right_ascension_second:,
-        declination_degree:,
-        declination_minute:,
-        declination_second:
+        right_ascension:,
+        declination:
       )
-        @right_ascension_hour = right_ascension_hour
-        @right_ascension_minute = right_ascension_minute
-        @right_ascension_second = right_ascension_second
-        @declination_degree = declination_degree
-        @declination_minute = declination_minute
-        @declination_second = declination_second
+        @right_ascension = right_ascension
+        @declination = declination
       end
 
       def to_horizontal(time:, latitude:, longitude:)
-        hour_angle = local_sidereal_time(time: time, longitude: longitude) - (
-          @right_ascension_hour +
-          @right_ascension_minute / 60r +
-          @right_ascension_second / 3600r
-        )
+        hour_angle = local_sidereal_time(time: time, longitude: longitude) -
+          right_ascension.to_degrees.value
 
         hour_angle += 24 if hour_angle.negative?
         hour_angle -= 24 if hour_angle > 24
         hour_angle_degree = hour_angle * BigDecimal("15")
         hour_angle_radians = Astronoby::Util::Trigonometry.to_radians(hour_angle_degree)
 
-        declination_sign = @declination_degree.negative? ? -1 : 1
-        declination_decimal = (
-          @declination_degree.abs +
-          @declination_minute / BigDecimal("60") +
-          @declination_second / BigDecimal("3600")
-        ) * declination_sign
-        declination_radians = Astronoby::Util::Trigonometry.to_radians(declination_decimal)
-
         latitude_radians = Astronoby::Util::Trigonometry.to_radians(latitude)
 
-        t0 = Math.sin(declination_radians) * Math.sin(latitude_radians) +
-          Math.cos(declination_radians) * Math.cos(latitude_radians) * Math.cos(hour_angle_radians)
+        t0 = Math.sin(@declination.to_radians.value) * Math.sin(latitude_radians) +
+          Math.cos(@declination.to_radians.value) * Math.cos(latitude_radians) * Math.cos(hour_angle_radians)
         altitude = Astronoby::Angle.as_radians(Math.asin(t0))
 
-        t1 = Math.sin(declination_radians) -
+        t1 = Math.sin(@declination.to_radians.value) -
           Math.sin(latitude_radians) * Math.sin(altitude.to_radians.value)
         t2 = t1 / (Math.cos(latitude_radians) * Math.cos(altitude.to_radians.value))
         sin_hour_angle = Math.sin(hour_angle_radians)
         azimuth = Astronoby::Angle.as_radians(Math.acos(t2))
         if sin_hour_angle.positive?
-          azimuth = Astronoby::Angle.as_degrees(360 - azimuth.to_degrees.value)
+          azimuth = Astronoby::Angle.as_degrees(BigDecimal("360") - azimuth.to_degrees.value)
         end
 
         Horizontal.new(
