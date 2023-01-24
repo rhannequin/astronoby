@@ -79,6 +79,24 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       end
     end
 
+    context "with real life arguments (Mars, from Paris, France)" do
+      it "computes properly" do
+        equatorial_coordinates = described_class.new(
+          azimuth: Astronoby::Angle.as_degrees(BigDecimal("180.135207714")),
+          altitude: Astronoby::Angle.as_degrees(BigDecimal("66.14017303")),
+          latitude: BigDecimal("48.854419"),
+          longitude: BigDecimal("2.482681")
+        ).to_equatorial(time: Time.utc(2022, 12, 6, 23, 48, 0))
+
+        expect(equatorial_coordinates.right_ascension.to_hms.format).to(
+          eq("5h 0m 39.3099s")
+        )
+        expect(equatorial_coordinates.declination.to_dms.format).to(
+          eq("24° 59′ 40.6999″")
+        )
+      end
+    end
+
     # Source:
     #  Title: Celestial Calculations
     #  Author: J. L. Lawrence
