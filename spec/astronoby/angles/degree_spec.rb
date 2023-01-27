@@ -30,7 +30,7 @@ RSpec.describe Astronoby::Degree do
     end
 
     it "converted the degrees value into radians" do
-      expect(subject.value).to eq(described_class::PI)
+      expect(subject.value).to eq(described_class::PI.ceil(described_class::PRECISION))
     end
   end
 

@@ -24,10 +24,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
             azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("341.554819847564726443269943001564655153971449036")
+              BigDecimal("341.55481984753866")
             ),
             altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("-73.45522737797505396786852866275388568052468949")
+              BigDecimal("-73.45522737797241")
             ),
             latitude: latitude,
             longitude: longitude
@@ -54,10 +54,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
             azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("171.083334007099890677318332483813992031018593381")
+              BigDecimal("171.08333400714705")
             ),
             altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("59.216666707291217481639468066587667491382846133")
+              BigDecimal("59.2166667072946")
             ),
             latitude: latitude,
             longitude: longitude
@@ -84,10 +84,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
             azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("285.64512985950623168064530218154482388509042265")
+              BigDecimal("285.64512985950823")
             ),
             altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("21.03741652263695116943808010599135724615411059")
+              BigDecimal("21.0374165226369")
             ),
             latitude: latitude,
             longitude: longitude

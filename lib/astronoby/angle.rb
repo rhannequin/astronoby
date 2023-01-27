@@ -14,6 +14,7 @@ module Astronoby
       RADIANS => "Astronoby::Radian"
     }
 
+    PRECISION = 14
     PI = BigMath.PI(10)
 
     class << self
@@ -31,7 +32,7 @@ module Astronoby
     end
 
     def initialize(angle, unit:)
-      @angle = angle
+      @angle = BigDecimal(angle, PRECISION).ceil(PRECISION)
       @unit = unit
     end
 

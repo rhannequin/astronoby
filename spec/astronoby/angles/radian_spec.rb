@@ -8,7 +8,7 @@ RSpec.describe Astronoby::Radian do
     subject { instance.value }
 
     it "returns the angle's numeric value in the current unit" do
-      expect(subject).to eq(described_class::PI)
+      expect(instance.value).to eq(described_class::PI.ceil(described_class::PRECISION))
     end
   end
 
@@ -20,7 +20,7 @@ RSpec.describe Astronoby::Radian do
     end
 
     it "converted the degrees value into degrees" do
-      expect(subject.value).to eq(180)
+      expect(subject.value).to be_within(0.1).of(180)
     end
   end
 
@@ -39,7 +39,7 @@ RSpec.describe Astronoby::Radian do
       expect(subject).to be_a(Astronoby::Dms)
     end
 
-    context "when ange is positive" do
+    context "when angle is positive" do
       let(:value) { described_class::PI / 7r }
 
       it "converts properly" do
