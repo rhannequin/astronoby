@@ -15,7 +15,7 @@ module Astronoby
     end
 
     def to_dms
-      sign = @angle.negative? ? -1 : 1
+      sign = @angle.negative? ? "-" : "+"
       absolute_degrees = @angle.abs
       degrees = absolute_degrees.floor
       decimal_minutes = BigDecimal("60") * (absolute_degrees - degrees)
@@ -27,11 +27,10 @@ module Astronoby
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
-      Dms.new(sign * degrees, minutes, seconds.to_f.floor(4))
+      Dms.new(sign, degrees, minutes, seconds.to_f.floor(4))
     end
 
     def to_hms
-      sign = @angle.negative? ? -1 : 1
       absolute_hours = @angle.abs
       hours = absolute_hours.floor
       decimal_minutes = BigDecimal("60") * (absolute_hours - hours)
@@ -43,7 +42,7 @@ module Astronoby
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
-      Hms.new(sign * hours, minutes, seconds.to_f.floor(4))
+      Hms.new(hours, minutes, seconds.to_f.floor(4))
     end
   end
 end

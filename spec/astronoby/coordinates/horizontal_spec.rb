@@ -92,7 +92,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
           eq("5h 0m 39.3099s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
-          eq("24° 59′ 40.6999″")
+          eq("+24° 59′ 40.6999″")
         )
       end
     end
@@ -115,7 +115,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
           eq("16h 14m 41.7252s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
-          eq("25° 57′ 41.0393″")
+          eq("+25° 57′ 41.0393″")
         )
       end
     end

@@ -43,6 +43,7 @@ RSpec.describe Astronoby::Radian do
       let(:value) { described_class::PI / 7r }
 
       it "converts properly" do
+        expect(subject.sign).to eq("+")
         expect(subject.degrees).to eq(25)
         expect(subject.minutes).to eq(42)
         expect(subject.seconds).to eq(51.4285)

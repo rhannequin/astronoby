@@ -2,16 +2,17 @@
 
 module Astronoby
   class Dms
-    attr_reader :degrees, :minutes, :seconds
+    attr_reader :sign, :degrees, :minutes, :seconds
 
-    def initialize(degrees, minutes, seconds)
+    def initialize(sign, degrees, minutes, seconds)
+      @sign = sign
       @degrees = degrees
       @minutes = minutes
       @seconds = seconds
     end
 
     def format
-      "#{degrees}° #{minutes}′ #{seconds}″"
+      "#{sign}#{degrees}° #{minutes}′ #{seconds}″"
     end
   end
 end
