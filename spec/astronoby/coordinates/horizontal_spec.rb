@@ -18,7 +18,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         expect(Astronoby::Coordinates::Equatorial).to(
           receive(:new).with(
             right_ascension: Astronoby::Angle.as_degrees(
-              BigDecimal("5.91609097641384")
+              BigDecimal("5.91611614366334")
             ),
             declination: Astronoby::Angle.as_degrees(
               BigDecimal("7.49824143730992")
@@ -40,7 +40,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         expect(Astronoby::Coordinates::Equatorial).to(
           receive(:new).with(
             right_ascension: Astronoby::Angle.as_degrees(
-              BigDecimal("17.73132463394381")
+              BigDecimal("17.73134982385581")
             ),
             declination: Astronoby::Angle.as_degrees(
               BigDecimal("-22.17638923277082")
@@ -62,7 +62,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         expect(Astronoby::Coordinates::Equatorial).to(
           receive(:new).with(
             right_ascension: Astronoby::Angle.as_degrees(
-              BigDecimal("4.97619753391366")
+              BigDecimal("4.97623177977841")
             ),
             declination: Astronoby::Angle.as_degrees(
               BigDecimal("24.99228390281957")
@@ -89,7 +89,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         ).to_equatorial(time: Time.utc(2022, 12, 6, 23, 48, 0))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("5h 0m 39.3099s")
+          eq("5h 0m 39.427s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
           eq("+24° 59′ 40.6999″")
@@ -112,7 +112,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("16h 14m 41.7252s")
+          eq("16h 14m 41.8276s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
           eq("+25° 57′ 41.0393″")

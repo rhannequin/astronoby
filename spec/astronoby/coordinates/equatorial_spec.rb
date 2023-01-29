@@ -24,10 +24,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
             azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("341.55481984753866")
+              BigDecimal("341.55600329524782")
             ),
             altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("-73.45522737797241")
+              BigDecimal("-73.45532158193984")
             ),
             latitude: latitude,
             longitude: longitude
@@ -54,10 +54,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
             azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("171.08333400714705")
+              BigDecimal("171.08405974991367")
             ),
             altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("59.2166667072946")
+              BigDecimal("59.21671281430846")
             ),
             latitude: latitude,
             longitude: longitude
@@ -84,10 +84,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         expect(Astronoby::Coordinates::Horizontal).to(
           receive(:new).with(
             azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("285.64512985950823")
+              BigDecimal("285.64541526536471")
             ),
             altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("21.0374165226369")
+              BigDecimal("21.03703466806004")
             ),
             latitude: latitude,
             longitude: longitude
@@ -115,10 +115,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
 
         expect(horizontal_coordinates.altitude.to_dms.format).to(
-          eq("+66° 8′ 24.6229″")
+          eq("+66° 8′ 24.6201″")
         )
         expect(horizontal_coordinates.azimuth.to_dms.format).to(
-          eq("+180° 8′ 6.7477″")
+          eq("+180° 8′ 10.6833″")
         )
       end
     end
@@ -140,10 +140,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
 
         expect(horizontal_coordinates.altitude.to_dms.format).to(
-          eq("-59° 41′ 57.6518″")
+          eq("-59° 41′ 58.4873″")
         )
         expect(horizontal_coordinates.azimuth.to_dms.format).to(
-          eq("+224° 15′ 27.0033″")
+          eq("+224° 15′ 26.7332″")
         )
       end
     end
