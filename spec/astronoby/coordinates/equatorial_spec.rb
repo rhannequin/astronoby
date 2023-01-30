@@ -148,4 +148,31 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       end
     end
   end
+
+  describe "#to_ecliptic" do
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 4 - Orbits and Coordinate Systems
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        right_ascension = Astronoby::Angle.as_degrees(BigDecimal("11.17027"))
+        declination = Astronoby::Angle.as_degrees(BigDecimal("30.09444"))
+        epoch = 2000
+
+        ecliptic_coordinates = described_class.new(
+          right_ascension: right_ascension,
+          declination: declination
+        ).to_ecliptic(epoch: epoch)
+
+        expect(ecliptic_coordinates.latitude.to_dms.format).to(
+          eq("+22° 41′ 53.7254″")
+        )
+        expect(ecliptic_coordinates.longitude.to_dms.format).to(
+          eq("+156° 19′ 8.6097″")
+        )
+      end
+    end
+  end
 end

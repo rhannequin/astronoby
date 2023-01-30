@@ -45,6 +45,38 @@ module Astronoby
           longitude: longitude
         )
       end
+
+      # Source:
+      #  Title: Celestial Calculations
+      #  Author: J. L. Lawrence
+      #  Edition: MIT Press
+      #  Chapter: 4 - Orbits and Coordinate Systems
+      def to_ecliptic(epoch:)
+        obliquity = Astronoby::Obliquity.for_epoch(epoch)
+        obliquity_in_radians = obliquity.value.to_radians.value
+        right_ascension_in_hours = @right_ascension.to_radians.value * 15
+        declination_in_radians = @declination.to_radians.value
+
+        y = Astronoby::Angle.as_radians(
+          Math.sin(right_ascension_in_hours) * Math.cos(obliquity_in_radians) +
+          Math.tan(declination_in_radians) * Math.sin(obliquity_in_radians)
+        )
+        x = Astronoby::Angle.as_radians(Math.cos(right_ascension_in_hours))
+        r = Astronoby::Angle.as_radians(Math.atan(y.value / x.value))
+        longitude = Astronoby::Util::Trigonometry.adjustement_for_arctangent(y, x, r)
+
+        latitude = Astronoby::Angle.as_radians(
+          Math.asin(
+            Math.sin(declination_in_radians) * Math.cos(obliquity_in_radians) -
+            Math.cos(declination_in_radians) * Math.sin(obliquity_in_radians) * Math.sin(right_ascension_in_hours)
+          )
+        )
+
+        Ecliptic.new(
+          latitude: latitude.to_degrees,
+          longitude: longitude.to_degrees
+        )
+      end
     end
   end
 end
