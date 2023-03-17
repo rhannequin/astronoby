@@ -10,6 +10,10 @@ module Astronoby
       self
     end
 
+    def to_hours
+      self.class.as_hours(@angle / BigDecimal("15"))
+    end
+
     def to_radians
       self.class.as_radians(@angle / BigDecimal("180") * PI)
     end

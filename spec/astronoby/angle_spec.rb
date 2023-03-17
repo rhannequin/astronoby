@@ -13,6 +13,18 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "::as_hours" do
+    subject { described_class.as_hours(180) }
+
+    it "returns an Angle object" do
+      expect(subject).to be_a(described_class)
+    end
+
+    it "returns an Angle in Hour" do
+      expect(subject).to be_a(Astronoby::Hour)
+    end
+  end
+
   describe "::as_radians" do
     subject { described_class.as_radians(described_class::PI) }
 

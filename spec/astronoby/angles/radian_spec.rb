@@ -24,6 +24,22 @@ RSpec.describe Astronoby::Radian do
     end
   end
 
+  describe "#to_hours" do
+    it "returns a new Hour instance" do
+      angle = described_class.new(1)
+
+      expect(angle.to_hours).to be_a(Astronoby::Hour)
+    end
+
+    it "converted the degrees value into degrees" do
+      angle = described_class.new(
+        described_class::PI.ceil(described_class::PRECISION)
+      )
+
+      expect(angle.to_hours.value).to be_within(0.1).of(12)
+    end
+  end
+
   describe "#to_radians" do
     subject { instance.to_radians }
 

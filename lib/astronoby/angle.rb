@@ -6,11 +6,13 @@ module Astronoby
   class Angle
     UNITS = [
       DEGREES = :degrees,
+      HOURS = :hours,
       RADIANS = :radians
     ].freeze
 
     UNIT_CLASS_NAMES = {
       DEGREES => "Astronoby::Degree",
+      HOURS => "Astronoby::Hour",
       RADIANS => "Astronoby::Radian"
     }
 
