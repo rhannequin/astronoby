@@ -38,8 +38,8 @@ module Astronoby
         min = (hour - hour.to_i) * 60
         sec = (min - min.to_i) * 60
         day = c - e + f - (30.6001 * g).to_i
-        month = g < 13.5 ? g - 1 : g - 13
-        year = month > 2.5 ? d - 4716 : d - 4715
+        month = (g < 13.5) ? g - 1 : g - 13
+        year = (month > 2.5) ? d - 4716 : d - 4715
 
         new(year, month, day.to_i, hour.to_i, min.to_i, sec.to_i)
       end
