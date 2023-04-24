@@ -108,4 +108,69 @@ RSpec.describe Astronoby::Util::Time do
       end
     end
   end
+
+  describe "::lst_to_ut" do
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 3 - Time Conversions
+    context "from a real-life example (book example)" do
+      it "computes the right time" do
+        date = Date.new(2010, 2, 7)
+        longitude = Astronoby::Angle.as_degrees(BigDecimal("0"))
+        lst = BigDecimal("8.698055")
+
+        ut = described_class.lst_to_ut(
+          date: date,
+          longitude: longitude,
+          lst: lst
+        )
+
+        expect(ut).to eq(Time.utc(2010, 2, 7, 23, 30, 0))
+      end
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 3 - Time Conversions
+    context "from a real-life example (book example)" do
+      it "computes the right time" do
+        date = Date.new(2014, 12, 13)
+        longitude = Astronoby::Angle.as_degrees(BigDecimal("-77"))
+        lst = BigDecimal("1.30944")
+
+        ut = described_class.lst_to_ut(
+          date: date,
+          longitude: longitude,
+          lst: lst
+        )
+
+        expect(ut).to eq(Time.utc(2014, 12, 13, 1, 0, 0))
+      end
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 3 - Time Conversions
+    context "from a real-life example (book example)" do
+      it "computes the right time" do
+        date = Date.new(2000, 7, 5)
+        longitude = Astronoby::Angle.as_degrees(BigDecimal("60"))
+        lst = BigDecimal("5.9056")
+
+        ut = described_class.lst_to_ut(
+          date: date,
+          longitude: longitude,
+          lst: lst
+        )
+
+        expect(ut).to eq(Time.utc(2000, 7, 5, 7, 0, 0))
+      end
+    end
+  end
 end

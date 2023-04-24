@@ -38,12 +38,69 @@ module Astronoby
           gmst / 3600.0
         end
 
+        def lst_to_ut(date:, longitude:, lst:)
+          gmst = lst_to_gmst(lst: lst, longitude: longitude)
+          julian_day = date.ajd
+          jd0 = ::DateTime.new(date.year, 1, 1, 0, 0, 0).ajd - 1
+          days_into_the_year = julian_day - jd0
+
+          t = (jd0 - BigDecimal("2415020")) / BigDecimal("36525")
+          r = BigDecimal("6.6460656") +
+            BigDecimal("2400.051262") * t +
+            BigDecimal("0.00002581") * t * t
+          b = 24 - r + 24 * (date.year - 1900)
+
+          # If t0 negative, add 24 hours to the date
+          # If t0 is greater than 24, subtract 24 hours from the date
+          t0 = BigDecimal("0.0657098") * days_into_the_year - b
+          t0 += 24 if t0.negative?
+
+          a = gmst - t0
+          a += 24 if a.negative?
+
+          ut = BigDecimal("0.99727") * a
+
+          absolute_hour = ut.abs
+          hour = absolute_hour.floor
+          decimal_minute = BigDecimal("60") * (absolute_hour - hour)
+          absolute_decimal_minute = (
+            BigDecimal("60") * (absolute_hour - hour)
+          ).abs
+          minute = decimal_minute.floor
+          second = (
+            BigDecimal("60") *
+            (absolute_decimal_minute - absolute_decimal_minute.floor)
+          ).round
+
+          ::Time.utc(
+            date.year,
+            date.month,
+            date.day,
+            hour,
+            minute,
+            second
+          )
+        end
+
         def local_sidereal_time(time:, longitude:)
           universal_time = time.utc
           greenwich_sidereal_time = ut_to_gmst(universal_time)
 
           adjustment = longitude / 15.0
           greenwich_sidereal_time + adjustment
+        end
+
+        def lst_to_gmst(lst:, longitude:)
+          adjustment = longitude.to_degrees.value / 15.0
+
+          # If gmst negative, add 24 hours to the date
+          # If gmst is greater than 24, subtract 24 hours from the date
+          gmst = lst - adjustment
+
+          gmst += 24 if gmst.negative?
+          gmst -= 24 if gmst > 24
+
+          gmst
         end
       end
     end
