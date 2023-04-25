@@ -17,7 +17,7 @@ module Astronoby
         hour_angle_value = Astronoby::Util::Time.local_sidereal_time(
           time: time,
           longitude: longitude
-        ) - right_ascension.to_degrees.value
+        ) - @right_ascension.to_hours.value
 
         hour_angle_value += 24 if hour_angle_value.negative?
         hour_angle_value -= 24 if hour_angle_value > 24

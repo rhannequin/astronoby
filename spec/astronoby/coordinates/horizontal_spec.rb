@@ -17,7 +17,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       it "computes properly" do
         expect(Astronoby::Coordinates::Equatorial).to(
           receive(:new).with(
-            right_ascension: Astronoby::Angle.as_degrees(
+            right_ascension: Astronoby::Angle.as_hours(
               BigDecimal("5.91611614366334")
             ),
             declination: Astronoby::Angle.as_degrees(
@@ -39,7 +39,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       it "computes properly" do
         expect(Astronoby::Coordinates::Equatorial).to(
           receive(:new).with(
-            right_ascension: Astronoby::Angle.as_degrees(
+            right_ascension: Astronoby::Angle.as_hours(
               BigDecimal("17.73134982385581")
             ),
             declination: Astronoby::Angle.as_degrees(
@@ -61,7 +61,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       it "computes properly" do
         expect(Astronoby::Coordinates::Equatorial).to(
           receive(:new).with(
-            right_ascension: Astronoby::Angle.as_degrees(
+            right_ascension: Astronoby::Angle.as_hours(
               BigDecimal("4.97623177977841")
             ),
             declination: Astronoby::Angle.as_degrees(

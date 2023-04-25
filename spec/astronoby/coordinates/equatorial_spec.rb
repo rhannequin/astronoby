@@ -9,7 +9,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
 
       expect(
         described_class.new(
-          right_ascension: Astronoby::Angle.as_degrees(BigDecimal("23.9994")),
+          right_ascension: Astronoby::Angle.as_hours(BigDecimal("23.9994")),
           declination: Astronoby::Angle.as_degrees(BigDecimal("-89.9997"))
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
       ).to be_an_instance_of(Astronoby::Coordinates::Horizontal)
@@ -35,7 +35,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         )
 
         described_class.new(
-          right_ascension: Astronoby::Angle.as_degrees(
+          right_ascension: Astronoby::Angle.as_hours(
             BigDecimal("17.731666666666667")
           ),
           declination: Astronoby::Angle.as_degrees(
@@ -65,7 +65,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         )
 
         described_class.new(
-          right_ascension: Astronoby::Angle.as_degrees(
+          right_ascension: Astronoby::Angle.as_hours(
             BigDecimal("5.916090944444444")
           ),
           declination: Astronoby::Angle.as_degrees(
@@ -95,7 +95,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         )
 
         described_class.new(
-          right_ascension: Astronoby::Angle.as_degrees(BigDecimal("4.97602775")),
+          right_ascension: Astronoby::Angle.as_hours(BigDecimal("4.97602775")),
           declination: Astronoby::Angle.as_degrees(
             BigDecimal("24.992300833333333")
           )
@@ -110,7 +110,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         longitude = BigDecimal("2.482681")
 
         horizontal_coordinates = described_class.new(
-          right_ascension: Astronoby::Angle.as_degrees(BigDecimal("5.0109194444")),
+          right_ascension: Astronoby::Angle.as_hours(BigDecimal("5.0109194444")),
           declination: Astronoby::Angle.as_degrees(BigDecimal("24.99463888"))
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
 
@@ -135,7 +135,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         longitude = -100
 
         horizontal_coordinates = described_class.new(
-          right_ascension: Astronoby::Angle.as_degrees(6),
+          right_ascension: Astronoby::Angle.as_hours(6),
           declination: Astronoby::Angle.as_degrees(-60)
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
 

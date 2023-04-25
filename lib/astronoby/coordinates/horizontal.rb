@@ -44,10 +44,10 @@ module Astronoby
           longitude: @longitude
         ) - hour_angle_hours
         right_ascension_decimal += 24 if right_ascension_decimal.negative?
-        right_ascension = Astronoby::Angle.as_degrees(right_ascension_decimal)
+        right_ascension = Astronoby::Angle.as_hours(right_ascension_decimal)
 
         Equatorial.new(
-          right_ascension: right_ascension.to_degrees,
+          right_ascension: right_ascension.to_hours,
           declination: declination.to_degrees
         )
       end
