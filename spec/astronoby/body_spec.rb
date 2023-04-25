@@ -25,4 +25,29 @@ RSpec.describe Astronoby::Body do
       expect(rising_time).to eq(Time.utc(2016, 1, 21, 20, 40, 46))
     end
   end
+
+  describe "#setting_time" do
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    it "returns the body's setting time" do
+      right_ascension = Astronoby::Angle.as_hours(BigDecimal("5.916667"))
+      declination = Astronoby::Angle.as_degrees(BigDecimal("7.5"))
+      coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: right_ascension,
+        declination: declination
+      )
+      body = described_class.new(coordinates)
+
+      setting_time = body.setting_time(
+        latitude: Astronoby::Angle.as_degrees(BigDecimal("38")),
+        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78")),
+        date: Date.new(2016, 1, 21)
+      )
+
+      expect(setting_time).to eq(Time.utc(2016, 1, 21, 9, 29, 50))
+    end
+  end
 end
