@@ -29,6 +29,18 @@ module Astronoby
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
+    def rising_azimuth(latitude:)
+      ar = azimuth_component(latitude: latitude)
+      return nil if ar >= 1
+
+      Astronoby::Angle.as_radians(Math.acos(ar))
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
     def setting_time(latitude:, longitude:, date:)
       setting_lst = @equatorial_coordinates.right_ascension.to_hours.value +
         h2(latitude: latitude).to_degrees.value
@@ -41,12 +53,28 @@ module Astronoby
       )
     end
 
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    def setting_azimuth(latitude:)
+      rising_az = rising_azimuth(latitude: latitude)
+      return nil if rising_az.nil?
+
+      Astronoby::Angle.as_degrees(360 - rising_az.to_degrees.value)
+    end
+
     private
 
-    def h2(latitude:)
-      ar = Math.sin(@equatorial_coordinates.declination.to_radians.value)./(
+    def azimuth_component(latitude:)
+      Math.sin(@equatorial_coordinates.declination.to_radians.value)./(
         Math.cos(latitude.to_radians.value)
       )
+    end
+
+    def h2(latitude:)
+      ar = azimuth_component(latitude: latitude)
       return nil if ar >= 1
 
       h1 = Math.tan(latitude.to_radians.value) *
