@@ -24,6 +24,52 @@ RSpec.describe Astronoby::Body do
 
       expect(rising_time).to eq(Time.utc(2016, 1, 21, 20, 40, 46))
     end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    it "returns nil as the body doesn't rise for the observer" do
+      right_ascension = Astronoby::Angle.as_hours(BigDecimal("90"))
+      declination = Astronoby::Angle.as_degrees(BigDecimal("-60"))
+      coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: right_ascension,
+        declination: declination
+      )
+      body = described_class.new(coordinates)
+
+      rising_time = body.rising_time(
+        latitude: Astronoby::Angle.as_degrees(BigDecimal("45")),
+        longitude: Astronoby::Angle.as_degrees(BigDecimal("-100")),
+        date: Date.new(2015, 12, 1)
+      )
+
+      expect(rising_time).to be_nil
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    it "returns the body's rising time" do
+      coordinates = Astronoby::Coordinates::Horizontal.new(
+        azimuth: Astronoby::Angle.as_degrees(90),
+        altitude: Astronoby::Angle.as_degrees(45),
+        latitude: 38.25,
+        longitude: -78.3
+      ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
+      body = described_class.new(coordinates)
+
+      rising_time = body.rising_time(
+        latitude: Astronoby::Angle.as_degrees(BigDecimal("38.25")),
+        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78.3")),
+        date: Date.new(2015, 6, 6)
+      )
+
+      expect(rising_time).to eq(Time.utc(2015, 6, 6, 20, 57, 48))
+    end
   end
 
   describe "#rising_azimuth" do
@@ -73,6 +119,52 @@ RSpec.describe Astronoby::Body do
       )
 
       expect(setting_time).to eq(Time.utc(2016, 1, 21, 9, 29, 50))
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    it "returns nil as the body doesn't set for the observer" do
+      right_ascension = Astronoby::Angle.as_hours(BigDecimal("90"))
+      declination = Astronoby::Angle.as_degrees(BigDecimal("-60"))
+      coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: right_ascension,
+        declination: declination
+      )
+      body = described_class.new(coordinates)
+
+      setting_time = body.setting_time(
+        latitude: Astronoby::Angle.as_degrees(BigDecimal("45")),
+        longitude: Astronoby::Angle.as_degrees(BigDecimal("-100")),
+        date: Date.new(2015, 12, 1)
+      )
+
+      expect(setting_time).to be_nil
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    it "returns the body's setting time" do
+      coordinates = Astronoby::Coordinates::Horizontal.new(
+        azimuth: Astronoby::Angle.as_degrees(90),
+        altitude: Astronoby::Angle.as_degrees(45),
+        latitude: 38.25,
+        longitude: -78.3
+      ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
+      body = described_class.new(coordinates)
+
+      setting_time = body.setting_time(
+        latitude: Astronoby::Angle.as_degrees(BigDecimal("38.25")),
+        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78.3")),
+        date: Date.new(2015, 6, 6)
+      )
+
+      expect(setting_time).to eq(Time.utc(2015, 6, 6, 11, 59, 51))
     end
   end
 

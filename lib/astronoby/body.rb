@@ -12,9 +12,12 @@ module Astronoby
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     def rising_time(latitude:, longitude:, date:)
+      h2_component = h2(latitude: latitude)
+      return nil if h2_component.nil?
+
       rising_lst = 24 +
         @equatorial_coordinates.right_ascension.to_hours.value -
-        h2(latitude: latitude).to_degrees.value
+        h2_component.to_degrees.value
       rising_lst -= 24 if rising_lst > 24
 
       Astronoby::Util::Time.lst_to_ut(
@@ -42,8 +45,11 @@ module Astronoby
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     def setting_time(latitude:, longitude:, date:)
+      h2_component = h2(latitude: latitude)
+      return nil if h2_component.nil?
+
       setting_lst = @equatorial_coordinates.right_ascension.to_hours.value +
-        h2(latitude: latitude).to_degrees.value
+        h2_component.to_degrees.value
       setting_lst -= 24 if setting_lst > 24
 
       Astronoby::Util::Time.lst_to_ut(
@@ -79,7 +85,7 @@ module Astronoby
 
       h1 = Math.tan(latitude.to_radians.value) *
         Math.tan(@equatorial_coordinates.declination.to_radians.value)
-      return nil if h1 > 1
+      return nil if h1.abs > 1
 
       Astronoby::Angle.as_radians(Math.acos(-h1) / 15.0)
     end
