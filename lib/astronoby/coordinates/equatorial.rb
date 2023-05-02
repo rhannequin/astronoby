@@ -79,6 +79,13 @@ module Astronoby
           longitude: longitude.to_degrees
         )
       end
+
+      def to_epoch(epoch)
+        Astronoby::Precession.for_equatorial_coordinates(
+          coordinates: self,
+          epoch: epoch
+        )
+      end
     end
   end
 end

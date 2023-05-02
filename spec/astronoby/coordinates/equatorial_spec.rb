@@ -175,4 +175,21 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       end
     end
   end
+
+  describe "#to_epoch" do
+    it "returns a new instance of Astronoby::Coordinates::Equatorial" do
+      coordinates = described_class.new(
+        right_ascension: Astronoby::Angle.as_hours(12),
+        declination: Astronoby::Angle.as_degrees(180),
+        epoch: Astronoby::Epoch::J2000
+      )
+
+      new_coordinates = coordinates.to_epoch(Astronoby::Epoch::J1950)
+
+      expect(new_coordinates).to(
+        be_an_instance_of(Astronoby::Coordinates::Equatorial)
+      )
+      expect(new_coordinates.epoch).to eq(Astronoby::Epoch::J1950)
+    end
+  end
 end
