@@ -63,7 +63,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
     end
 
     context "when term1 is negative and term2 is positive" do
-      it "adjusts by 360" do
+      it "adjusts by 360°" do
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.as_degrees(-1),
           Astronoby::Angle.as_degrees(1),
@@ -75,7 +75,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
     end
 
     context "when term1 is negative and term2 is negative" do
-      it "adjusts by 180" do
+      it "adjusts by 180°" do
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.as_degrees(-1),
           Astronoby::Angle.as_degrees(-1),
