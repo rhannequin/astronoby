@@ -11,7 +11,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
       it "computes properly" do
         latitude = Astronoby::Angle.as_degrees(0)
         longitude = Astronoby::Angle.as_degrees(BigDecimal("120.50833"))
-        epoch = 2000
+        epoch = Astronoby::Epoch::J2000
 
         equatorial_coordinates = described_class.new(
           latitude: latitude,

@@ -3,14 +3,16 @@
 module Astronoby
   module Coordinates
     class Equatorial
-      attr_reader :right_ascension, :declination
+      attr_reader :right_ascension, :declination, :epoch
 
       def initialize(
         right_ascension:,
-        declination:
+        declination:,
+        epoch: Astronoby::Epoch::DEFAULT_EPOCH
       )
         @right_ascension = right_ascension
         @declination = declination
+        @epoch = epoch
       end
 
       def to_horizontal(time:, latitude:, longitude:)

@@ -159,7 +159,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.as_degrees(BigDecimal("11.17027"))
         declination = Astronoby::Angle.as_degrees(BigDecimal("30.09444"))
-        epoch = 2000
+        epoch = Astronoby::Epoch::J2000
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,

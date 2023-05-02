@@ -8,7 +8,7 @@ module Astronoby
     #  IAU resolution in 2006 in favor of the P03 astronomical model
     #  The Astronomical Almanac for 2010
 
-    EPOCH_OF_REFERENCE = 2000
+    EPOCH_OF_REFERENCE = Astronoby::Epoch::DEFAULT_EPOCH
     OBLIQUITY_OF_REFERENCE = 23.4392794
 
     def initialize(obliquity)
@@ -20,9 +20,7 @@ module Astronoby
         return new(Astronoby::Angle.as_degrees(OBLIQUITY_OF_REFERENCE))
       end
 
-      epoch_julian_day_number = ::DateTime.new(epoch, 1, 1, 0, 0, 0).ajd - 1
-      julian_centuries_since_reference = (epoch_julian_day_number - 2451545) / 36525.0
-      t = julian_centuries_since_reference
+      t = (epoch - 2451545) / 36525.0
 
       new(
         Astronoby::Angle.as_degrees(
