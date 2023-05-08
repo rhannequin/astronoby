@@ -4,8 +4,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
   describe "#to_horizontal" do
     it "returns a new instance of Astronoby::Coordinates::Horizontal" do
       time = Time.new
-      latitude = BigDecimal("50")
-      longitude = BigDecimal("0")
+      latitude = 50
+      longitude = 0
 
       expect(
         described_class.new(
@@ -23,8 +23,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 30, 0, "-05:00")
-        latitude = BigDecimal("38")
-        longitude = BigDecimal("-78")
+        latitude = 38
+        longitude = -78
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(17, 43, 54),
@@ -48,8 +48,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 45, 0, "-05:00")
-        latitude = BigDecimal("38")
-        longitude = BigDecimal("-78")
+        latitude = 38
+        longitude = -78
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(5, 54, 58),

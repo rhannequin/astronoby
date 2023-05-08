@@ -56,7 +56,7 @@ RSpec.describe Astronoby::Degree do
     end
 
     context "when ange is positive" do
-      let(:value) { BigDecimal("10.2958") }
+      let(:value) { 10.2958 }
 
       it "converts properly" do
         expect(subject.degrees).to eq(10)

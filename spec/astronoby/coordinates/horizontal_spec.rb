@@ -7,8 +7,8 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         described_class.new(
           azimuth: Astronoby::Angle.as_dms(100, 0, 0),
           altitude: Astronoby::Angle.as_dms(80, 0, 0),
-          latitude: BigDecimal("50"),
-          longitude: BigDecimal("0")
+          latitude: 50,
+          longitude: 0
         ).to_equatorial(time: Time.new)
       ).to be_a(Astronoby::Coordinates::Equatorial)
     end

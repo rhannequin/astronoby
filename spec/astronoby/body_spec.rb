@@ -17,8 +17,8 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       rising_time = body.rising_time(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("38")),
-        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78")),
+        latitude: Astronoby::Angle.as_degrees(38),
+        longitude: Astronoby::Angle.as_degrees(-78),
         date: Date.new(2016, 1, 21)
       )
 
@@ -40,8 +40,8 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       rising_time = body.rising_time(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("45")),
-        longitude: Astronoby::Angle.as_degrees(BigDecimal("-100")),
+        latitude: Astronoby::Angle.as_degrees(45),
+        longitude: Astronoby::Angle.as_degrees(-100),
         date: Date.new(2015, 12, 1)
       )
 
@@ -63,8 +63,8 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       rising_time = body.rising_time(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("38.25")),
-        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78.3")),
+        latitude: Astronoby::Angle.as_degrees(38.25),
+        longitude: Astronoby::Angle.as_degrees(-78.3),
         date: Date.new(2015, 6, 6)
       )
 
@@ -88,7 +88,7 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       rising_azimuth = body.rising_azimuth(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("38"))
+        latitude: Astronoby::Angle.as_degrees(38)
       )
 
       expect(rising_azimuth.to_degrees.value).to(
@@ -113,8 +113,8 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       setting_time = body.setting_time(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("38")),
-        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78")),
+        latitude: Astronoby::Angle.as_degrees(38),
+        longitude: Astronoby::Angle.as_degrees(-78),
         date: Date.new(2016, 1, 21)
       )
 
@@ -136,8 +136,8 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       setting_time = body.setting_time(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("45")),
-        longitude: Astronoby::Angle.as_degrees(BigDecimal("-100")),
+        latitude: Astronoby::Angle.as_degrees(45),
+        longitude: Astronoby::Angle.as_degrees(-100),
         date: Date.new(2015, 12, 1)
       )
 
@@ -159,8 +159,8 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       setting_time = body.setting_time(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("38.25")),
-        longitude: Astronoby::Angle.as_degrees(BigDecimal("-78.3")),
+        latitude: Astronoby::Angle.as_degrees(38.25),
+        longitude: Astronoby::Angle.as_degrees(-78.3),
         date: Date.new(2015, 6, 6)
       )
 
@@ -184,7 +184,7 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       setting_azimuth = body.setting_azimuth(
-        latitude: Astronoby::Angle.as_degrees(BigDecimal("38"))
+        latitude: Astronoby::Angle.as_degrees(38)
       )
 
       expect(setting_azimuth.to_degrees.value).to(

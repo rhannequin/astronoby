@@ -78,7 +78,7 @@ RSpec.describe Astronoby::Util::Time do
       it "computes the right time (1h 18m 34s)" do
         local_sidereal_time = described_class.local_sidereal_time(
           time: Time.new(2014, 12, 12, 20, 0, 0, "-05:00"),
-          longitude: BigDecimal("-77")
+          longitude: -77
         )
 
         hour = local_sidereal_time.to_i
@@ -95,7 +95,7 @@ RSpec.describe Astronoby::Util::Time do
       it "computes the right time" do
         local_sidereal_time = described_class.local_sidereal_time(
           time: Time.new(2000, 7, 5, 12, 0, 0, "+05:00"),
-          longitude: BigDecimal("60")
+          longitude: 60
         )
 
         hour = local_sidereal_time.to_i
@@ -118,8 +118,8 @@ RSpec.describe Astronoby::Util::Time do
     context "from a real-life example (book example)" do
       it "computes the right time" do
         date = Date.new(2010, 2, 7)
-        longitude = Astronoby::Angle.as_degrees(BigDecimal("0"))
-        lst = BigDecimal("8.698055")
+        longitude = Astronoby::Angle.as_degrees(0)
+        lst = 8.698055
 
         ut = described_class.lst_to_ut(
           date: date,
@@ -139,8 +139,8 @@ RSpec.describe Astronoby::Util::Time do
     context "from a real-life example (book example)" do
       it "computes the right time" do
         date = Date.new(2014, 12, 13)
-        longitude = Astronoby::Angle.as_degrees(BigDecimal("-77"))
-        lst = BigDecimal("1.30944")
+        longitude = Astronoby::Angle.as_degrees(-77)
+        lst = 1.30944
 
         ut = described_class.lst_to_ut(
           date: date,
@@ -160,8 +160,8 @@ RSpec.describe Astronoby::Util::Time do
     context "from a real-life example (book example)" do
       it "computes the right time" do
         date = Date.new(2000, 7, 5)
-        longitude = Astronoby::Angle.as_degrees(BigDecimal("60"))
-        lst = BigDecimal("5.9056")
+        longitude = Astronoby::Angle.as_degrees(60)
+        lst = 5.9056
 
         ut = described_class.lst_to_ut(
           date: date,
