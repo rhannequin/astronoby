@@ -8,7 +8,7 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns the body's rising time" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("5.916667"))
+      right_ascension = Astronoby::Angle.as_hms(5, 55, 0)
       declination = Astronoby::Angle.as_degrees(BigDecimal("7.5"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -31,7 +31,7 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns nil as the body doesn't rise for the observer" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("90"))
+      right_ascension = Astronoby::Angle.as_hms(6, 0, 0)
       declination = Astronoby::Angle.as_degrees(BigDecimal("-60"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -79,7 +79,7 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns the body's rising azimuth" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("5.916667"))
+      right_ascension = Astronoby::Angle.as_hms(5, 55, 0)
       declination = Astronoby::Angle.as_degrees(BigDecimal("7.5"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -104,7 +104,7 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns the body's setting time" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("5.916667"))
+      right_ascension = Astronoby::Angle.as_hms(5, 55, 0)
       declination = Astronoby::Angle.as_degrees(BigDecimal("7.5"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -127,7 +127,7 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns nil as the body doesn't set for the observer" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("90"))
+      right_ascension = Astronoby::Angle.as_hms(6, 0, 0)
       declination = Astronoby::Angle.as_degrees(BigDecimal("-60"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -175,7 +175,7 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns the body's setting azimuth" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("5.916667"))
+      right_ascension = Astronoby::Angle.as_hms(5, 55, 0)
       declination = Astronoby::Angle.as_degrees(BigDecimal("7.5"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
