@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rake", "~> 13.0"
   spec.add_dependency "rspec", "~> 3.0"
 
-  spec.add_development_dependency "prettier", "~> 2.0"
+  spec.add_development_dependency "solargraph", "~> 0.49"
   spec.add_development_dependency "standard", "~> 1.3"
 
   # For more information and examples about making a new gem, check out our
