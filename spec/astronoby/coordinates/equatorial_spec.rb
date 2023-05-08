@@ -4,8 +4,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
   describe "#to_horizontal" do
     it "returns a new instance of Astronoby::Coordinates::Horizontal" do
       time = Time.new
-      latitude = 50
-      longitude = 0
+      latitude = Astronoby::Angle.as_degrees(50)
+      longitude = Astronoby::Angle.as_degrees(0)
 
       expect(
         described_class.new(
@@ -23,8 +23,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 30, 0, "-05:00")
-        latitude = 38
-        longitude = -78
+        latitude = Astronoby::Angle.as_degrees(38)
+        longitude = Astronoby::Angle.as_degrees(-78)
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(17, 43, 54),
@@ -48,8 +48,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 45, 0, "-05:00")
-        latitude = 38
-        longitude = -78
+        latitude = Astronoby::Angle.as_degrees(38)
+        longitude = Astronoby::Angle.as_degrees(-78)
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(5, 54, 58),
@@ -73,8 +73,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2015, 12, 1, 9, 0, 0, "-08:00")
-        latitude = 45
-        longitude = -100
+        latitude = Astronoby::Angle.as_degrees(45)
+        longitude = Astronoby::Angle.as_degrees(-100)
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(6, 0, 0),
