@@ -13,86 +13,48 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       ).to be_a(Astronoby::Coordinates::Equatorial)
     end
 
-    context "with real life arguments (Betelgeuse, from Virginia, USA)" do
-      it "computes properly" do
-        expect(Astronoby::Coordinates::Equatorial).to(
-          receive(:new).with(
-            right_ascension: Astronoby::Angle.as_hours(
-              BigDecimal("5.91611614366334")
-            ),
-            declination: Astronoby::Angle.as_degrees(
-              BigDecimal("7.49824143730992")
-            )
-          )
-        )
-
-        described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("171.083333")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("59.216667")),
-          latitude: BigDecimal("38"),
-          longitude: BigDecimal("-78")
-        ).to_equatorial(time: Time.new(2016, 1, 21, 21, 45, 0, "-05:00"))
-      end
-    end
-
-    context "with real life arguments (Venus, from Virginia, USA)" do
-      it "computes properly" do
-        expect(Astronoby::Coordinates::Equatorial).to(
-          receive(:new).with(
-            right_ascension: Astronoby::Angle.as_hours(
-              BigDecimal("17.73134982385581")
-            ),
-            declination: Astronoby::Angle.as_degrees(
-              BigDecimal("-22.17638923277082")
-            )
-          )
-        )
-
-        described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("341.5617")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("-73.46587")),
-          latitude: BigDecimal("38"),
-          longitude: BigDecimal("-78")
-        ).to_equatorial(time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"))
-      end
-    end
-
-    context "with real life arguments (Mars, from Valencia, Spain)" do
-      it "computes properly" do
-        expect(Astronoby::Coordinates::Equatorial).to(
-          receive(:new).with(
-            right_ascension: Astronoby::Angle.as_hours(
-              BigDecimal("4.97623177977841")
-            ),
-            declination: Astronoby::Angle.as_degrees(
-              BigDecimal("24.99228390281957")
-            )
-          )
-        )
-
-        described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("285.6437")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("21.0393")),
-          latitude: BigDecimal("39.46975"),
-          longitude: BigDecimal("-0.377389")
-        ).to_equatorial(time: Time.new(2022, 12, 8, 6, 22, 33, "+01:00"))
-      end
-    end
-
-    context "with real life arguments (Mars, from Paris, France)" do
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    context "with real life arguments (book example)" do
       it "computes properly" do
         equatorial_coordinates = described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("180.135207714")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("66.14017303")),
-          latitude: BigDecimal("48.854419"),
-          longitude: BigDecimal("2.482681")
-        ).to_equatorial(time: Time.utc(2022, 12, 6, 23, 48, 0))
+          azimuth: Astronoby::Angle.as_degrees(BigDecimal("171.0833")),
+          altitude: Astronoby::Angle.as_degrees(BigDecimal("59.2167")),
+          latitude: 38,
+          longitude: -78
+        ).to_equatorial(time: Time.new(2016, 1, 21, 21, 45, 0, "-05:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("5h 0m 39.427s")
+          eq("5h 54m 58.0211s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
-          eq("+24° 59′ 40.6999″")
+          eq("+7° 29′ 53.7945″")
+        )
+      end
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 5 - Stars in the Nighttime Sky
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        equatorial_coordinates = described_class.new(
+          azimuth: Astronoby::Angle.as_degrees(BigDecimal("341.55472")),
+          altitude: Astronoby::Angle.as_degrees(BigDecimal("-73.455278")),
+          latitude: 38,
+          longitude: -78
+        ).to_equatorial(time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"))
+
+        expect(equatorial_coordinates.right_ascension.to_hms.format).to(
+          eq("17h 43m 54.0942s")
+        )
+        expect(equatorial_coordinates.declination.to_dms.format).to(
+          eq("-22° 10′ 0.203″")
         )
       end
     end

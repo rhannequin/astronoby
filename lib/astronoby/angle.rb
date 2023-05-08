@@ -25,6 +25,11 @@ module Astronoby
           Kernel.const_get(class_name).new(angle)
         end
       end
+
+      def as_hms(hour, minute, second)
+        angle = hour + minute / 60.0 + second / 3600.0
+        Kernel.const_get(UNIT_CLASS_NAMES[HOURS]).new(angle)
+      end
     end
 
     UNITS.each do |unit|

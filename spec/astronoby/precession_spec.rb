@@ -2,8 +2,13 @@
 
 RSpec.describe Astronoby::Precession do
   describe "::for_equatorial_coordinates" do
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 34 - Precession
     it "returns equatorial coordinates with the right epoch" do
-      right_ascension = Astronoby::Angle.as_hours(BigDecimal("9.178611"))
+      right_ascension = Astronoby::Angle.as_hms(9, 10, 43)
       declination = Astronoby::Angle.as_degrees(BigDecimal("14.390278"))
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -27,7 +32,7 @@ RSpec.describe Astronoby::Precession do
     #  Edition: Cambridge University Press
     #  Chapter: 34 - Precession
     it "returns the right new equatorial coordinates" do
-      right_ascension = Astronoby::Angle.as_hours(9.178611)
+      right_ascension = Astronoby::Angle.as_hms(9, 10, 43)
       declination = Astronoby::Angle.as_degrees(14.390278)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -41,7 +46,7 @@ RSpec.describe Astronoby::Precession do
       )
 
       expect(precessed_coordinates.right_ascension.to_hours.to_hms.format).to(
-        eq("9h 12m 20.1573s")
+        eq("9h 12m 20.1577s")
       )
       expect(precessed_coordinates.declination.to_dms.format).to(
         eq("+14° 16′ 7.6514″")
@@ -54,7 +59,7 @@ RSpec.describe Astronoby::Precession do
     #  Edition: MIT Press
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "returns the right new equatorial coordinates" do
-      right_ascension = Astronoby::Angle.as_hours(12.535)
+      right_ascension = Astronoby::Angle.as_hms(12, 32, 6)
       declination = Astronoby::Angle.as_degrees(30.094444)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -81,7 +86,7 @@ RSpec.describe Astronoby::Precession do
     #  Edition: MIT Press
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "returns the right new equatorial coordinates" do
-      right_ascension = Astronoby::Angle.as_hours(12.576111)
+      right_ascension = Astronoby::Angle.as_hms(12, 34, 34)
       declination = Astronoby::Angle.as_degrees(29.818889)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
@@ -95,7 +100,7 @@ RSpec.describe Astronoby::Precession do
       )
 
       expect(precessed_coordinates.right_ascension.to_hours.to_hms.format).to(
-        eq("12h 35m 18.3826s")
+        eq("12h 35m 18.383s")
       )
       expect(precessed_coordinates.declination.to_dms.format).to(
         eq("+29° 44′ 10.8633″")

@@ -13,6 +13,23 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "::as_hms" do
+    it "returns an Angle object" do
+      angle = described_class.as_hms(12, 15, 10)
+      expect(angle).to be_a(described_class)
+    end
+
+    it "returns an Angle in Hour" do
+      angle = described_class.as_hms(12, 15, 10)
+      expect(angle).to be_a(Astronoby::Hour)
+    end
+
+    it "converts HMS format into decimal format" do
+      angle = described_class.as_hms(12, 15, 45)
+      expect(angle.value).to eq(12.2625)
+    end
+  end
+
   describe "::as_hours" do
     subject { described_class.as_hours(180) }
 
