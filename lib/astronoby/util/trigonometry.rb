@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "bigdecimal"
+require "bigdecimal/math"
 
 module Astronoby
   module Util
@@ -9,14 +9,6 @@ module Astronoby
       PI = BigMath.PI(PRECISION)
 
       class << self
-        def to_radians(degrees_angle)
-          degrees_angle * PI / BigDecimal("180")
-        end
-
-        def to_degrees(radians_angle)
-          radians_angle * BigDecimal("180") / PI
-        end
-
         # Source:
         #  Title: Celestial Calculations
         #  Author: J. L. Lawrence

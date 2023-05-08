@@ -70,7 +70,10 @@ RSpec.describe Astronoby::Util::Time do
   describe "::local_sidereal_time" do
     it "returns a BigDecimal" do
       expect(
-        described_class.local_sidereal_time(time: Time.new, longitude: 1)
+        described_class.local_sidereal_time(
+          time: Time.new,
+          longitude: Astronoby::Angle.as_degrees(1)
+        )
       ).to be_an_instance_of(BigDecimal)
     end
 
@@ -78,7 +81,7 @@ RSpec.describe Astronoby::Util::Time do
       it "computes the right time (1h 18m 34s)" do
         local_sidereal_time = described_class.local_sidereal_time(
           time: Time.new(2014, 12, 12, 20, 0, 0, "-05:00"),
-          longitude: -77
+          longitude: Astronoby::Angle.as_degrees(-77)
         )
 
         hour = local_sidereal_time.to_i
@@ -95,7 +98,7 @@ RSpec.describe Astronoby::Util::Time do
       it "computes the right time" do
         local_sidereal_time = described_class.local_sidereal_time(
           time: Time.new(2000, 7, 5, 12, 0, 0, "+05:00"),
-          longitude: 60
+          longitude: Astronoby::Angle.as_degrees(60)
         )
 
         hour = local_sidereal_time.to_i

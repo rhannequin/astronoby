@@ -23,15 +23,16 @@ module Astronoby
 
         hour_angle_value += 24 if hour_angle_value.negative?
         hour_angle_value -= 24 if hour_angle_value > 24
-        hour_angle = Astronoby::Angle.as_degrees(hour_angle_value * BigDecimal("15"))
+        hour_angle = Astronoby::Angle.as_hours(hour_angle_value)
 
-        latitude_radians = Astronoby::Util::Trigonometry.to_radians(latitude)
+        latitude_radians = latitude.to_radians.value
+        declination_radians = @declination.to_radians.value
 
-        t0 = Math.sin(@declination.to_radians.value) * Math.sin(latitude_radians) +
-          Math.cos(@declination.to_radians.value) * Math.cos(latitude_radians) * Math.cos(hour_angle.to_radians.value)
+        t0 = Math.sin(declination_radians) * Math.sin(latitude_radians) +
+          Math.cos(declination_radians) * Math.cos(latitude_radians) * Math.cos(hour_angle.to_radians.value)
         altitude = Astronoby::Angle.as_radians(Math.asin(t0))
 
-        t1 = Math.sin(@declination.to_radians.value) -
+        t1 = Math.sin(declination_radians) -
           Math.sin(latitude_radians) * Math.sin(altitude.to_radians.value)
         t2 = t1 / (Math.cos(latitude_radians) * Math.cos(altitude.to_radians.value))
         sin_hour_angle = Math.sin(hour_angle.to_radians.value)

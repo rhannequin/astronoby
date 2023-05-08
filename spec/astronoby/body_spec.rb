@@ -57,8 +57,8 @@ RSpec.describe Astronoby::Body do
       coordinates = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.as_degrees(90),
         altitude: Astronoby::Angle.as_degrees(45),
-        latitude: 38.25,
-        longitude: -78.3
+        latitude: Astronoby::Angle.as_degrees(38.25),
+        longitude: Astronoby::Angle.as_degrees(-78.3)
       ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
       body = described_class.new(coordinates)
 
@@ -153,8 +153,8 @@ RSpec.describe Astronoby::Body do
       coordinates = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.as_degrees(90),
         altitude: Astronoby::Angle.as_degrees(45),
-        latitude: 38.25,
-        longitude: -78.3
+        latitude: Astronoby::Angle.as_degrees(38.25),
+        longitude: Astronoby::Angle.as_degrees(-78.3)
       ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
       body = described_class.new(coordinates)
 
