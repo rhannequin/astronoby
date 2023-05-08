@@ -5,8 +5,8 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
     it "returns a new instance of Astronoby::Coordinates::Equatorial" do
       expect(
         described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("100.8403")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("80.67222")),
+          azimuth: Astronoby::Angle.as_dms(100, 0, 0),
+          altitude: Astronoby::Angle.as_dms(80, 0, 0),
           latitude: BigDecimal("50"),
           longitude: BigDecimal("0")
         ).to_equatorial(time: Time.new)
@@ -21,17 +21,17 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
     context "with real life arguments (book example)" do
       it "computes properly" do
         equatorial_coordinates = described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("171.0833")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("59.2167")),
+          azimuth: Astronoby::Angle.as_dms(171, 5, 0),
+          altitude: Astronoby::Angle.as_dms(59, 13, 0),
           latitude: 38,
           longitude: -78
         ).to_equatorial(time: Time.new(2016, 1, 21, 21, 45, 0, "-05:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("5h 54m 58.0211s")
+          eq("5h 54m 58.018s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
-          eq("+7° 29′ 53.7945″")
+          eq("+7° 29′ 53.6679″")
         )
       end
     end
@@ -44,17 +44,17 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
     context "with real life arguments (book example)" do
       it "computes properly" do
         equatorial_coordinates = described_class.new(
-          azimuth: Astronoby::Angle.as_degrees(BigDecimal("341.55472")),
-          altitude: Astronoby::Angle.as_degrees(BigDecimal("-73.455278")),
+          azimuth: Astronoby::Angle.as_dms(341, 33, 17),
+          altitude: Astronoby::Angle.as_dms(-73, 27, 19),
           latitude: 38,
           longitude: -78
         ).to_equatorial(time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("17h 43m 54.0942s")
+          eq("17h 43m 54.0941s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
-          eq("-22° 10′ 0.203″")
+          eq("-22° 10′ 0.2016″")
         )
       end
     end

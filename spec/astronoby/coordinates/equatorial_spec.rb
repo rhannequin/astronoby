@@ -9,8 +9,8 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
 
       expect(
         described_class.new(
-          right_ascension: Astronoby::Angle.as_hours(BigDecimal("23.9994")),
-          declination: Astronoby::Angle.as_degrees(BigDecimal("-89.9997"))
+          right_ascension: Astronoby::Angle.as_dms(23, 59, 59),
+          declination: Astronoby::Angle.as_dms(89, 59, 59)
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
       ).to be_an_instance_of(Astronoby::Coordinates::Horizontal)
     end
@@ -26,25 +26,17 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         latitude = BigDecimal("38")
         longitude = BigDecimal("-78")
 
-        expect(Astronoby::Coordinates::Horizontal).to(
-          receive(:new).with(
-            azimuth: Astronoby::Angle.as_degrees(
-              BigDecimal("341.55600329524782")
-            ),
-            altitude: Astronoby::Angle.as_degrees(
-              BigDecimal("-73.45532158193984")
-            ),
-            latitude: latitude,
-            longitude: longitude
-          )
-        )
-
-        described_class.new(
+        horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(17, 43, 54),
-          declination: Astronoby::Angle.as_degrees(
-            BigDecimal("-22.166666666666667")
-          )
+          declination: Astronoby::Angle.as_dms(-22, 10, 0)
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+
+        expect(horizontal_coordinates.altitude.to_dms.format).to(
+          eq("-73° 27′ 19.1576″")
+        )
+        expect(horizontal_coordinates.azimuth.to_dms.format).to(
+          eq("+341° 33′ 21.6118″")
+        )
       end
     end
 
@@ -61,14 +53,14 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.as_hms(5, 54, 58),
-          declination: Astronoby::Angle.as_degrees(BigDecimal("7.498241083333333"))
+          declination: Astronoby::Angle.as_dms(7, 29, 54)
         ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
 
         expect(horizontal_coordinates.altitude.to_dms.format).to(
-          eq("+59° 13′ 0.0331″")
+          eq("+59° 13′ 0.3626″")
         )
         expect(horizontal_coordinates.azimuth.to_dms.format).to(
-          eq("+171° 5′ 0.5215″")
+          eq("+171° 5′ 0.4416″")
         )
       end
     end
@@ -108,7 +100,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         right_ascension = Astronoby::Angle.as_hms(11, 10, 13)
-        declination = Astronoby::Angle.as_degrees(BigDecimal("30.09444"))
+        declination = Astronoby::Angle.as_dms(30, 5, 40)
         epoch = Astronoby::Epoch::J2000
 
         ecliptic_coordinates = described_class.new(
@@ -117,10 +109,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_ecliptic(epoch: epoch)
 
         expect(ecliptic_coordinates.latitude.to_dms.format).to(
-          eq("+22° 41′ 53.8784″")
+          eq("+22° 41′ 53.8929″")
         )
         expect(ecliptic_coordinates.longitude.to_dms.format).to(
-          eq("+156° 19′ 8.9669″")
+          eq("+156° 19′ 8.9596″")
         )
       end
     end

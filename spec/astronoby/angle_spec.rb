@@ -13,6 +13,28 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "::as_dms" do
+    it "returns an Angle object" do
+      angle = described_class.as_dms(180, 15, 10)
+      expect(angle).to be_a(described_class)
+    end
+
+    it "returns an Angle in Degree" do
+      angle = described_class.as_dms(180, 15, 10)
+      expect(angle).to be_a(Astronoby::Degree)
+    end
+
+    it "converts HMS format into decimal format" do
+      angle = described_class.as_dms(180, 15, 45)
+      expect(angle.value).to eq(180.2625)
+    end
+
+    it "converts HMS format into decimal format when negative" do
+      angle = described_class.as_dms(-180, 15, 45)
+      expect(angle.value).to eq(-180.2625)
+    end
+  end
+
   describe "::as_hms" do
     it "returns an Angle object" do
       angle = described_class.as_hms(12, 15, 10)

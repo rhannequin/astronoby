@@ -30,6 +30,12 @@ module Astronoby
         angle = hour + minute / 60.0 + second / 3600.0
         Kernel.const_get(UNIT_CLASS_NAMES[HOURS]).new(angle)
       end
+
+      def as_dms(degree, minute, second)
+        sign = degree.negative? ? -1 : 1
+        angle = degree.abs + minute / 60.0 + second / 3600.0
+        Kernel.const_get(UNIT_CLASS_NAMES[DEGREES]).new(sign * angle)
+      end
     end
 
     UNITS.each do |unit|

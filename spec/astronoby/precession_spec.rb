@@ -9,7 +9,7 @@ RSpec.describe Astronoby::Precession do
     #  Chapter: 34 - Precession
     it "returns equatorial coordinates with the right epoch" do
       right_ascension = Astronoby::Angle.as_hms(9, 10, 43)
-      declination = Astronoby::Angle.as_degrees(BigDecimal("14.390278"))
+      declination = Astronoby::Angle.as_dms(14, 23, 25)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
@@ -33,7 +33,7 @@ RSpec.describe Astronoby::Precession do
     #  Chapter: 34 - Precession
     it "returns the right new equatorial coordinates" do
       right_ascension = Astronoby::Angle.as_hms(9, 10, 43)
-      declination = Astronoby::Angle.as_degrees(14.390278)
+      declination = Astronoby::Angle.as_dms(14, 23, 25)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
@@ -49,7 +49,7 @@ RSpec.describe Astronoby::Precession do
         eq("9h 12m 20.1577s")
       )
       expect(precessed_coordinates.declination.to_dms.format).to(
-        eq("+14° 16′ 7.6514″")
+        eq("+14° 16′ 7.6506″")
       )
     end
 
@@ -60,7 +60,7 @@ RSpec.describe Astronoby::Precession do
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "returns the right new equatorial coordinates" do
       right_ascension = Astronoby::Angle.as_hms(12, 32, 6)
-      declination = Astronoby::Angle.as_degrees(30.094444)
+      declination = Astronoby::Angle.as_dms(30, 5, 40)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
@@ -76,7 +76,7 @@ RSpec.describe Astronoby::Precession do
         eq("12h 34m 34.1434s")
       )
       expect(precessed_coordinates.declination.to_dms.format).to(
-        eq("+29° 49′ 8.3243″")
+        eq("+29° 49′ 8.3259″")
       )
     end
 
@@ -87,7 +87,7 @@ RSpec.describe Astronoby::Precession do
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "returns the right new equatorial coordinates" do
       right_ascension = Astronoby::Angle.as_hms(12, 34, 34)
-      declination = Astronoby::Angle.as_degrees(29.818889)
+      declination = Astronoby::Angle.as_dms(29, 49, 8)
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
@@ -103,7 +103,7 @@ RSpec.describe Astronoby::Precession do
         eq("12h 35m 18.383s")
       )
       expect(precessed_coordinates.declination.to_dms.format).to(
-        eq("+29° 44′ 10.8633″")
+        eq("+29° 44′ 10.8629″")
       )
     end
   end
