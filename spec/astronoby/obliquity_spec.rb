@@ -9,15 +9,15 @@ RSpec.describe Astronoby::Obliquity do
     end
 
     it "returns the obliquity angle for standard epoch" do
-      expect(described_class.for_epoch(Astronoby::Epoch::J2000).value).to(
-        eq(Astronoby::Angle.as_degrees(23.4392794))
-      )
+      obliquity = described_class.for_epoch(Astronoby::Epoch::J2000).value
+
+      expect(obliquity.to_degrees.value).to eq(23.439279444444)
     end
 
     it "returns the obliquity angle for epoch 1950" do
-      expect(described_class.for_epoch(Astronoby::Epoch::J1950).value).to(
-        eq(Astronoby::Angle.as_degrees(23.445784589093))
-      )
+      obliquity = described_class.for_epoch(Astronoby::Epoch::J1950).value
+
+      expect(obliquity.to_degrees.value).to eq(23.44578463353696)
     end
   end
 end

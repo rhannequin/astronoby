@@ -17,14 +17,14 @@ module Astronoby
 
     def self.for_epoch(epoch)
       if epoch == EPOCH_OF_REFERENCE
-        return new(Astronoby::Angle.as_degrees(OBLIQUITY_OF_REFERENCE))
+        return new(obliquity_of_reference)
       end
 
       t = (epoch - 2451545) / 36525.0
 
       new(
         Astronoby::Angle.as_degrees(
-          OBLIQUITY_OF_REFERENCE - (
+          obliquity_of_reference.value - (
             46.836769 * t -
             0.0001831 * t * t +
             0.00200340 * t * t * t -
@@ -33,6 +33,10 @@ module Astronoby
           ) / 3600
         )
       )
+    end
+
+    def self.obliquity_of_reference
+      Astronoby::Angle.as_dms(23, 26, 21.406)
     end
 
     def value

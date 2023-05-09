@@ -22,7 +22,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
           eq("8h 10m 50.4182s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
-          eq("+20° 2′ 30.7578″")
+          eq("+20° 2′ 30.758″")
         )
       end
     end
