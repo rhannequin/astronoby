@@ -116,6 +116,56 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         )
       end
     end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 13 - Transformation of coordinates
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        right_ascension = Astronoby::Angle.as_hms(7, 45, 18.946)
+        declination = Astronoby::Angle.as_dms(28, 1, 34.26)
+        epoch = Astronoby::Epoch::J2000
+
+        ecliptic_coordinates = described_class.new(
+          right_ascension: right_ascension,
+          declination: declination
+        ).to_ecliptic(epoch: epoch)
+
+        expect(ecliptic_coordinates.latitude.to_dms.format).to(
+          eq("+6° 41′ 3.0508″")
+        )
+        expect(ecliptic_coordinates.longitude.to_dms.format).to(
+          eq("+113° 12′ 56.2671″")
+        )
+      end
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 28 - Equatorial to ecliptic coordinate conversion
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        right_ascension = Astronoby::Angle.as_hms(9, 34, 53.32)
+        declination = Astronoby::Angle.as_dms(19, 32, 6.01)
+        epoch = Astronoby::Epoch.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
+
+        ecliptic_coordinates = described_class.new(
+          right_ascension: right_ascension,
+          declination: declination
+        ).to_ecliptic(epoch: epoch)
+
+        expect(ecliptic_coordinates.latitude.to_dms.format).to(
+          eq("+4° 52′ 31.0228″")
+        )
+        expect(ecliptic_coordinates.longitude.to_dms.format).to(
+          eq("+139° 41′ 9.9842″")
+        )
+      end
+    end
   end
 
   describe "#to_epoch" do

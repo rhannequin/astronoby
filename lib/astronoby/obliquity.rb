@@ -20,7 +20,9 @@ module Astronoby
         return new(obliquity_of_reference)
       end
 
-      t = (epoch - 2451545) / 36525.0
+      t = (epoch - EPOCH_OF_REFERENCE)./(
+        Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
+      )
 
       new(
         Astronoby::Angle.as_degrees(

@@ -11,7 +11,9 @@ module Astronoby
         #  Chapter: 12 - Sidereal Time at Greenwich
         def ut_to_gmst(universal_time)
           julian_day = universal_time.to_date.ajd
-          t = (julian_day - BigDecimal("2451545")) / 36525
+          t = (julian_day - Astronoby::Epoch::J2000)./(
+            Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
+          )
           t0_in_degrees = (
             BigDecimal("100.46061837") +
             BigDecimal("36000.770053608") * t +
@@ -44,7 +46,9 @@ module Astronoby
           jd0 = ::DateTime.new(date.year, 1, 1, 0, 0, 0).ajd - 1
           days_into_the_year = julian_day - jd0
 
-          t = (jd0 - BigDecimal("2415020")) / BigDecimal("36525")
+          t = (jd0 - Astronoby::Epoch::J1900)./(
+            Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
+          )
           r = BigDecimal("6.6460656") +
             BigDecimal("2400.051262") * t +
             BigDecimal("0.00002581") * t * t
@@ -62,14 +66,11 @@ module Astronoby
 
           absolute_hour = ut.abs
           hour = absolute_hour.floor
-          decimal_minute = BigDecimal("60") * (absolute_hour - hour)
-          absolute_decimal_minute = (
-            BigDecimal("60") * (absolute_hour - hour)
-          ).abs
+          decimal_minute = 60 * (absolute_hour - hour)
+          absolute_decimal_minute = (60 * (absolute_hour - hour)).abs
           minute = decimal_minute.floor
           second = (
-            BigDecimal("60") *
-            (absolute_decimal_minute - absolute_decimal_minute.floor)
+            60 * (absolute_decimal_minute - absolute_decimal_minute.floor)
           ).round
 
           ::Time.utc(

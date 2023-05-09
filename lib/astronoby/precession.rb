@@ -4,8 +4,6 @@ require "matrix"
 
 module Astronoby
   class Precession
-    DAYS_PER_JULIAN_CENTURY = 36525.0
-
     def self.for_equatorial_coordinates(coordinates:, epoch:)
       new(coordinates, epoch).precess
     end
@@ -49,7 +47,9 @@ module Astronoby
     private
 
     def matrix_for_epoch(epoch)
-      t = (epoch - Astronoby::Epoch::DEFAULT_EPOCH) / DAYS_PER_JULIAN_CENTURY
+      t = (epoch - Astronoby::Epoch::DEFAULT_EPOCH)./(
+        Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
+      )
 
       ζ = Astronoby::Angle.as_degrees(
         0.6406161 * t + 0.0000839 * t * t + 0.000005 * t * t * t

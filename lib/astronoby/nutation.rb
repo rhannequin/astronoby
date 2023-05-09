@@ -8,8 +8,6 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 35 - Nutation
 
-    DAYS_PER_JULIAN_CENTURY = 36525.0
-
     def self.for_ecliptic_longitude(longitude, epoch:)
       Astronoby::Angle.as_degrees(
         longitude.to_degrees.value +
@@ -53,7 +51,9 @@ module Astronoby
     private
 
     def julian_centuries
-      (@epoch - Astronoby::Epoch::J1900) / DAYS_PER_JULIAN_CENTURY
+      (@epoch - Astronoby::Epoch::J1900)./(
+        Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
+      )
     end
 
     def sun_mean_longitude

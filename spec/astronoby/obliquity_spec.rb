@@ -19,5 +19,21 @@ RSpec.describe Astronoby::Obliquity do
 
       expect(obliquity.to_degrees.value).to eq(23.44578463353696)
     end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 27 - Ecliptic to equatorial coordinate conversion
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        epoch = Astronoby::Epoch.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
+        obliquity = described_class.for_epoch(epoch).value
+
+        expect(obliquity.to_degrees.to_dms.format).to(
+          eq("+23° 26′ 16.9518″")
+        )
+      end
+    end
   end
 end

@@ -65,6 +65,23 @@ RSpec.describe Astronoby::Util::Time do
         expect(second.ceil(4)).to eq(46.1283)
       end
     end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 12 - Conversion of UT to Greenwich sidereal time (GST)
+    context "from a real-life example (book example)" do
+      it "computes the right time" do
+        gst = described_class.ut_to_gmst(Time.utc(1980, 4, 22, 14, 36, 51.67))
+        minute = (gst - gst.to_i) * 60
+        second = (minute - minute.to_i) * 60
+
+        expect(gst.to_i).to eq(4)
+        expect(minute.to_i).to eq(40)
+        expect(second.ceil(4)).to eq(4.5572)
+      end
+    end
   end
 
   describe "::local_sidereal_time" do
@@ -173,6 +190,27 @@ RSpec.describe Astronoby::Util::Time do
         )
 
         expect(ut).to eq(Time.utc(2000, 7, 5, 7, 0, 0))
+      end
+    end
+  end
+
+  describe "::lst_to_gmst" do
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 15 - Converting LST to GST
+    context "from a real-life example (book example)" do
+      it "computes the right time" do
+        lst = 0.401453
+        longitude = Astronoby::Angle.as_degrees(-64)
+        gmst = described_class.lst_to_gmst(lst: lst, longitude: longitude)
+        minute = (gmst - gmst.to_i) * 60
+        second = (minute - minute.to_i) * 60
+
+        expect(gmst.to_i).to eq(4)
+        expect(minute.to_i).to eq(40)
+        expect(second.ceil(4)).to eq(5.2308)
       end
     end
   end

@@ -22,7 +22,7 @@ module Astronoby
         latitude_in_radians = @latitude.to_radians.value
 
         y = Astronoby::Angle.as_radians(
-          Math.sin(longitude_in_radians) * Math.cos(obliquity_in_radians) +
+          Math.sin(longitude_in_radians) * Math.cos(obliquity_in_radians) -
           Math.tan(latitude_in_radians) * Math.sin(obliquity_in_radians)
         )
         x = Astronoby::Angle.as_radians(Math.cos(longitude_in_radians))

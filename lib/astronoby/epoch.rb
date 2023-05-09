@@ -9,6 +9,7 @@ module Astronoby
     J2000 = 2451545.0
 
     DEFAULT_EPOCH = J2000
+    DAYS_PER_JULIAN_CENTURY = 36525.0
 
     def self.from_time(time)
       time.to_datetime.ajd
