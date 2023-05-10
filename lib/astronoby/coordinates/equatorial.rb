@@ -55,8 +55,8 @@ module Astronoby
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
       def to_ecliptic(epoch:)
-        obliquity = Astronoby::Obliquity.for_epoch(epoch)
-        obliquity_in_radians = obliquity.value.to_radians.value
+        mean_obliquity = Astronoby::MeanObliquity.for_epoch(epoch)
+        obliquity_in_radians = mean_obliquity.value.to_radians.value
         right_ascension_in_radians = @right_ascension.to_radians.value
         declination_in_radians = @declination.to_radians.value
 

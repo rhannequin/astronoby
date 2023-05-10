@@ -8,22 +8,16 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 35 - Nutation
 
-    def self.for_ecliptic_longitude(longitude, epoch:)
-      Astronoby::Angle.as_degrees(
-        longitude.to_degrees.value +
-        new(epoch).for_ecliptic_longitude.to_degrees.value
-      )
-    end
-
-    def self.for_obliquity_of_the_ecliptic(obliquity, epoch:)
-      Astronoby::Angle.as_degrees(
-        obliquity.to_degrees.value +
-        new(epoch).for_obliquity_of_the_ecliptic.to_degrees.value
-      )
-    end
-
     def initialize(epoch)
       @epoch = epoch
+    end
+
+    def self.for_ecliptic_longitude(epoch:)
+      new(epoch).for_ecliptic_longitude
+    end
+
+    def self.for_obliquity_of_the_ecliptic(epoch:)
+      new(epoch).for_obliquity_of_the_ecliptic
     end
 
     def for_ecliptic_longitude

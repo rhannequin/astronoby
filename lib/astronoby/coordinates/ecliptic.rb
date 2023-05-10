@@ -16,8 +16,8 @@ module Astronoby
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
       def to_equatorial(epoch:)
-        obliquity = Astronoby::Obliquity.for_epoch(epoch)
-        obliquity_in_radians = obliquity.value.to_radians.value
+        mean_obliquity = Astronoby::MeanObliquity.for_epoch(epoch)
+        obliquity_in_radians = mean_obliquity.value.to_radians.value
         longitude_in_radians = @longitude.to_radians.value
         latitude_in_radians = @latitude.to_radians.value
 

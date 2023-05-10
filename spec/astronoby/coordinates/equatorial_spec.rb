@@ -109,10 +109,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_ecliptic(epoch: epoch)
 
         expect(ecliptic_coordinates.latitude.to_dms.format).to(
-          eq("+22° 41′ 53.8929″")
+          eq("+22° 41′ 53.8752″")
         )
         expect(ecliptic_coordinates.longitude.to_dms.format).to(
-          eq("+156° 19′ 8.9596″")
+          eq("+156° 19′ 8.9427″")
         )
       end
     end
@@ -134,10 +134,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_ecliptic(epoch: epoch)
 
         expect(ecliptic_coordinates.latitude.to_dms.format).to(
-          eq("+6° 41′ 3.0508″")
+          eq("+6° 41′ 3.0103″")
         )
         expect(ecliptic_coordinates.longitude.to_dms.format).to(
-          eq("+113° 12′ 56.2671″")
+          eq("+113° 12′ 56.2651″")
         )
       end
     end
@@ -159,10 +159,10 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         ).to_ecliptic(epoch: epoch)
 
         expect(ecliptic_coordinates.latitude.to_dms.format).to(
-          eq("+4° 52′ 31.0228″")
+          eq("+4° 52′ 30.993″")
         )
         expect(ecliptic_coordinates.longitude.to_dms.format).to(
-          eq("+139° 41′ 9.9842″")
+          eq("+139° 41′ 9.9812″")
         )
       end
     end

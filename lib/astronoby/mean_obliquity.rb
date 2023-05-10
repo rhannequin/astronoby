@@ -3,7 +3,7 @@
 require "date"
 
 module Astronoby
-  class Obliquity
+  class MeanObliquity
     # Source:
     #  IAU resolution in 2006 in favor of the P03 astronomical model
     #  The Astronomical Almanac for 2010
@@ -27,18 +27,16 @@ module Astronoby
       new(
         Astronoby::Angle.as_degrees(
           obliquity_of_reference.value - (
-            46.836769 * t -
-            0.0001831 * t * t +
-            0.00200340 * t * t * t -
-            5.76e-7 * t * t * t * t -
-            4.34e-8 * t * t * t * t * t
+            46.815 * t -
+            0.0006 * t * t +
+            0.00181 * t * t * t
           ) / 3600
         )
       )
     end
 
     def self.obliquity_of_reference
-      Astronoby::Angle.as_dms(23, 26, 21.406)
+      Astronoby::Angle.as_dms(23, 26, 21.45)
     end
 
     def value

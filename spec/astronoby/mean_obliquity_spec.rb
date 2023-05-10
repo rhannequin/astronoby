@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Obliquity do
+RSpec.describe Astronoby::MeanObliquity do
   describe "::for_epoch" do
     it "returns an angle" do
       obliquity = described_class.for_epoch(Astronoby::Epoch::J2000).value
@@ -11,13 +11,13 @@ RSpec.describe Astronoby::Obliquity do
     it "returns the obliquity angle for standard epoch" do
       obliquity = described_class.for_epoch(Astronoby::Epoch::J2000).value
 
-      expect(obliquity.to_degrees.value).to eq(23.439279444444)
+      expect(obliquity.to_degrees.value).to eq(23.439291666667)
     end
 
     it "returns the obliquity angle for epoch 1950" do
       obliquity = described_class.for_epoch(Astronoby::Epoch::J1950).value
 
-      expect(obliquity.to_degrees.value).to eq(23.44578463353696)
+      expect(obliquity.to_degrees.value).to eq(23.44579385451423)
     end
 
     # Source:
@@ -31,7 +31,23 @@ RSpec.describe Astronoby::Obliquity do
         obliquity = described_class.for_epoch(epoch).value
 
         expect(obliquity.to_degrees.to_dms.format).to(
-          eq("+23° 26′ 16.9518″")
+          eq("+23° 26′ 16.9979″")
+        )
+      end
+    end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 22 - Nutation and the Obliquity of the Ecliptic
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        epoch = Astronoby::Epoch.from_time(Time.utc(1987, 4, 10, 0, 0, 0))
+        obliquity = described_class.for_epoch(epoch).value
+
+        expect(obliquity.to_degrees.to_dms.format).to(
+          eq("+23° 26′ 27.4093″")
         )
       end
     end
