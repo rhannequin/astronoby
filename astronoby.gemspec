@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["hello@rhannequ.in"]
 
   spec.summary = "Astronomical calculations"
-  spec.description = "Ruby version of the calculations from Astronomical Algorithms by Jean Meeus"
+  spec.description = "Ruby version of the calculations from various books like Celestial Calculations by J. L. Lawrence, Practical Astronomy with your Calculator or Spreadsheet by Peter Duffett-Smith and Jonathan Zwart, or Astronomical Algorithms by Jean Meeus"
   spec.homepage = "https://github.com/rhannequin/astronoby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.6"
