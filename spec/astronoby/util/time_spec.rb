@@ -16,7 +16,7 @@ RSpec.describe Astronoby::Util::Time do
 
         expect(gst.to_i).to eq(8)
         expect(minute.to_i).to eq(41)
-        expect(second.ceil(4)).to eq(53.2064)
+        expect(second.ceil(4)).to eq(53.2061)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Astronoby::Util::Time do
 
         expect(gst.to_i).to eq(13)
         expect(minute.to_i).to eq(10)
-        expect(second.ceil(4)).to eq(46.3669)
+        expect(second.ceil(4)).to eq(46.3673)
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Astronoby::Util::Time do
 
         expect(gst.to_i).to eq(8)
         expect(minute.to_i).to eq(36)
-        expect(second.ceil(4)).to eq(46.1283)
+        expect(second.ceil(4)).to eq(46.1279)
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe Astronoby::Util::Time do
 
         expect(gst.to_i).to eq(4)
         expect(minute.to_i).to eq(40)
-        expect(second.ceil(4)).to eq(4.5572)
+        expect(second.ceil(4)).to eq(5.2296)
       end
     end
   end

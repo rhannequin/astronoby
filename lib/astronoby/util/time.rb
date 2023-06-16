@@ -5,39 +5,34 @@ module Astronoby
     module Time
       class << self
         # Source:
-        #  Title: Astronomical Algorithms
-        #  Author: Jean Meeus
-        #  Edition: 2nd edition
-        #  Chapter: 12 - Sidereal Time at Greenwich
+        #  Title: Practical Astronomy with your Calculator or Spreadsheet
+        #  Authors: Peter Duffett-Smith and Jonathan Zwart
+        #  Edition: Cambridge University Press
+        #  Chapter: 12 - Conversion of UT to Greenwich sidereal time (GST)
         def ut_to_gmst(universal_time)
           julian_day = universal_time.to_date.ajd
           t = (julian_day - Astronoby::Epoch::J2000)./(
             Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
           )
-          t0_in_degrees = (
-            BigDecimal("100.46061837") +
-            BigDecimal("36000.770053608") * t +
-            BigDecimal("0.000387933") * t * t -
-            (t * t * t) / 38710000
-          ) % 360
 
-          t0_in_seconds = t0_in_degrees * 240
-          ut_in_seconds =
-            universal_time.hour * 3600 +
-            universal_time.min * 60 +
-            universal_time.sec
+          t0 = (
+            (BigDecimal("6.697374558") +
+            (BigDecimal("2400.051336") * t) +
+            (BigDecimal("0.000025862") * t * t)) % 24
+          ).abs
 
-          gmst =
-            t0_in_seconds +
-            BigDecimal("1.00273790935") * ut_in_seconds
+          ut_in_hours = universal_time.hour +
+            universal_time.min / 60.0 +
+            (universal_time.sec + universal_time.subsec) / 3600.0
+
+          gmst = BigDecimal("1.002737909") * ut_in_hours + t0
 
           # If gmst negative, add 24 hours to the date
           # If gmst is greater than 24, subtract 24 hours from the date
-          seconds_in_a_day = 24 * 60 * 60
-          gmst += seconds_in_a_day if gmst.negative?
-          gmst -= seconds_in_a_day if gmst > seconds_in_a_day
+          gmst += 24 if gmst.negative?
+          gmst -= 24 if gmst > 24
 
-          gmst / 3600.0
+          gmst
         end
 
         def lst_to_ut(date:, longitude:, lst:)

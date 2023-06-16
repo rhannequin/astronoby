@@ -28,7 +28,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         ).to_equatorial(time: Time.new(2016, 1, 21, 21, 45, 0, "-05:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("5h 54m 58.018s")
+          eq("5h 54m 58.0175s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
           eq("+7° 29′ 53.6679″")
@@ -51,7 +51,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         ).to_equatorial(time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("17h 43m 54.0941s")
+          eq("17h 43m 54.0935s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
           eq("-22° 10′ 0.2016″")
@@ -74,7 +74,7 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
         ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
 
         expect(equatorial_coordinates.right_ascension.to_hms.format).to(
-          eq("16h 14m 41.8276s")
+          eq("16h 14m 41.827s")
         )
         expect(equatorial_coordinates.declination.to_dms.format).to(
           eq("+25° 57′ 41.0393″")
