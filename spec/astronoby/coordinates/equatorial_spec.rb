@@ -1,6 +1,34 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Coordinates::Equatorial do
+  describe "#compute_hour_angle" do
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 24 - Converting between right ascension and hour angle
+    it "converts right ascension to hour angle" do
+      longitude = Astronoby::Angle.as_degrees(-64)
+      time = Time.new(1980, 4, 22, 14, 36, 51.67, "-04:00")
+      right_ascension = Astronoby::Angle.as_hms(18, 32, 21)
+      declination = Astronoby::Angle.as_degrees(0)
+
+      coordinates = described_class.new(
+        right_ascension: right_ascension,
+        declination: declination,
+        epoch: Astronoby::Epoch.from_time(time)
+      )
+      hour_angle = coordinates.compute_hour_angle(
+        time: time,
+        longitude: longitude
+      )
+
+      expect(hour_angle.to_hours.to_hms.format).to(
+        eq("9h 52m 23.6554s")
+      )
+    end
+  end
+
   describe "#to_horizontal" do
     it "returns a new instance of Astronoby::Coordinates::Horizontal" do
       time = Time.new
@@ -86,6 +114,31 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
         )
         expect(horizontal_coordinates.azimuth.to_dms.format).to(
           eq("+224° 15′ 26.7345″")
+        )
+      end
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 25 - Equatorial to horizon coordinate conversion
+    context "with real life arguments (book example)" do
+      it "computes properly" do
+        time = Time.new(2015, 12, 1, 9, 0, 0, "-08:00")
+        latitude = Astronoby::Angle.as_degrees(52)
+        longitude = Astronoby::Angle.as_degrees(0)
+
+        horizontal_coordinates = described_class.new(
+          declination: Astronoby::Angle.as_dms(23, 13, 10),
+          hour_angle: Astronoby::Angle.as_hms(5, 51, 44)
+        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+
+        expect(horizontal_coordinates.altitude.to_dms.format).to(
+          eq("+19° 20′ 3.6428″")
+        )
+        expect(horizontal_coordinates.azimuth.to_dms.format).to(
+          eq("+283° 16′ 15.6981″")
         )
       end
     end
