@@ -38,7 +38,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
           Astronoby::Angle.as_degrees(0)
         )
 
-        expect(adjustement).to eq(Astronoby::Angle.as_degrees(180))
+        expect(adjustement).to eq(Astronoby::Angle.as_radians(Math::PI))
       end
     end
 
@@ -50,7 +50,9 @@ RSpec.describe Astronoby::Util::Trigonometry do
           Astronoby::Angle.as_degrees(0)
         )
 
-        expect(adjustement).to eq(Astronoby::Angle.as_degrees(360))
+        expect(adjustement.value).to(
+          be_within(10**-14).of(Astronoby::Angle.as_radians(Math::PI * 2).value)
+        )
       end
     end
 
@@ -62,7 +64,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
           Astronoby::Angle.as_degrees(0)
         )
 
-        expect(adjustement).to eq(Astronoby::Angle.as_degrees(180))
+        expect(adjustement).to eq(Astronoby::Angle.as_radians(Math::PI))
       end
     end
   end
