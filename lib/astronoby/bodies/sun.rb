@@ -12,13 +12,21 @@ module Astronoby
       @epoch = epoch
     end
 
-    def coordinates
+    def ecliptic_coordinates
       Coordinates::Ecliptic.new(
         latitude: Angle.as_degrees(0),
         longitude: Angle.as_degrees(
           (true_anomaly.value + longitude_at_perigee.to_degrees.value) % 360
         )
       )
+    end
+
+    def horizontal_coordinates(latitude:, longitude:)
+      time = Astronoby::Epoch.to_utc(@epoch)
+
+      ecliptic_coordinates
+        .to_equatorial(epoch: @epoch)
+        .to_horizontal(time: time, latitude: latitude, longitude: longitude)
     end
 
     private

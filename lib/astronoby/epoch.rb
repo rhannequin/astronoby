@@ -11,8 +11,14 @@ module Astronoby
     DEFAULT_EPOCH = J2000
     DAYS_PER_JULIAN_CENTURY = 36525.0
 
+    JULIAN_DAY_NUMBER_OFFSET = 0.5
+
     def self.from_time(time)
       time.to_datetime.ajd
+    end
+
+    def self.to_utc(epoch)
+      DateTime.jd(epoch + JULIAN_DAY_NUMBER_OFFSET).to_time.utc
     end
   end
 end

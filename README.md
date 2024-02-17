@@ -36,17 +36,13 @@ longitude = Astronoby::Angle.as_degrees(2.3522)
 
 sun = Astronoby::Sun.new(epoch: epoch)
 
-horizontal_coordinates = sun
-  .coordinates
-  .to_equatorial(epoch: epoch)
-  .to_horizontal(
-    time: time,
-    latitude: latitude,
-    longitude: longitude
-  )
+horizontal_coordinates = sun.horizontal_coordinates(
+  latitude: latitude,
+  longitude: longitude
+)
 
 horizontal_coordinates.altitude.value.to_f
-# => 27.50236511886638
+# => 27.50236513017543
 
 horizontal_coordinates.altitude.to_dms.format
 # => "+27° 30′ 8.5144″"
