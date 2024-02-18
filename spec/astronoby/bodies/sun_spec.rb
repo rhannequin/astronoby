@@ -142,7 +142,7 @@ RSpec.describe Astronoby::Sun do
     #  Edition: MIT Press
     #  Chapter: 6 - The Sun
     it "computes the coordinates for a given epoch" do
-      time = Time.new(2000, 8, 9, 12, 0, 0, "-04:00")
+      time = Time.new(2000, 8, 9, 12, 0, 0, "-05:00")
       epoch = Astronoby::Epoch.from_time(time)
       sun = described_class.new(epoch: epoch)
 
@@ -151,12 +151,11 @@ RSpec.describe Astronoby::Sun do
         longitude: Astronoby::Angle.as_degrees(-95)
       )
 
-      # TODO: very far from the expected value
       expect(horizontal_coordinates.altitude.str(:dms)).to(
-        eq("+53° 44′ 26.5426″")
+        eq("+65° 41′ 50.1342″")
       )
       expect(horizontal_coordinates.azimuth.str(:dms)).to(
-        eq("+105° 8′ 12.9486″")
+        eq("+121° 32′ 44.7251″")
       )
     end
 
