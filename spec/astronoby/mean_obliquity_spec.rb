@@ -11,13 +11,13 @@ RSpec.describe Astronoby::MeanObliquity do
     it "returns the obliquity angle for standard epoch" do
       obliquity = described_class.for_epoch(Astronoby::Epoch::J2000).value
 
-      expect(obliquity.to_degrees.value).to eq(23.439291666667)
+      expect(obliquity.degrees).to eq(23.43929166666666)
     end
 
     it "returns the obliquity angle for epoch 1950" do
       obliquity = described_class.for_epoch(Astronoby::Epoch::J1950).value
 
-      expect(obliquity.to_degrees.value).to eq(23.44579385451423)
+      expect(obliquity.degrees.to_f).to eq 23.445793854513884
     end
 
     # Source:
@@ -30,9 +30,7 @@ RSpec.describe Astronoby::MeanObliquity do
         epoch = Astronoby::Epoch.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
         obliquity = described_class.for_epoch(epoch).value
 
-        expect(obliquity.to_degrees.to_dms.format).to(
-          eq("+23° 26′ 16.9979″")
-        )
+        expect(obliquity.str(:dms)).to eq "+23° 26′ 16.9979″"
       end
     end
 
@@ -46,9 +44,7 @@ RSpec.describe Astronoby::MeanObliquity do
         epoch = Astronoby::Epoch.from_time(Time.utc(1987, 4, 10, 0, 0, 0))
         obliquity = described_class.for_epoch(epoch).value
 
-        expect(obliquity.to_degrees.to_dms.format).to(
-          eq("+23° 26′ 27.4093″")
-        )
+        expect(obliquity.str(:dms)).to eq "+23° 26′ 27.4093″"
       end
     end
   end

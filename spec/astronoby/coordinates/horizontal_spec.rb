@@ -27,10 +27,10 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
           longitude: Astronoby::Angle.as_degrees(-78)
         ).to_equatorial(time: Time.new(2016, 1, 21, 21, 45, 0, "-05:00"))
 
-        expect(equatorial_coordinates.right_ascension.to_hms.format).to(
+        expect(equatorial_coordinates.right_ascension.str(:hms)).to(
           eq("5h 54m 58.0175s")
         )
-        expect(equatorial_coordinates.declination.to_dms.format).to(
+        expect(equatorial_coordinates.declination.str(:dms)).to(
           eq("+7° 29′ 53.6679″")
         )
       end
@@ -50,10 +50,10 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
           longitude: Astronoby::Angle.as_degrees(-78)
         ).to_equatorial(time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"))
 
-        expect(equatorial_coordinates.right_ascension.to_hms.format).to(
+        expect(equatorial_coordinates.right_ascension.str(:hms)).to(
           eq("17h 43m 54.0935s")
         )
-        expect(equatorial_coordinates.declination.to_dms.format).to(
+        expect(equatorial_coordinates.declination.str(:dms)).to(
           eq("-22° 10′ 0.2016″")
         )
       end
@@ -73,10 +73,10 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
           longitude: Astronoby::Angle.as_degrees(-78.3)
         ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
 
-        expect(equatorial_coordinates.right_ascension.to_hms.format).to(
+        expect(equatorial_coordinates.right_ascension.str(:hms)).to(
           eq("16h 14m 41.827s")
         )
-        expect(equatorial_coordinates.declination.to_dms.format).to(
+        expect(equatorial_coordinates.declination.str(:dms)).to(
           eq("+25° 57′ 41.0393″")
         )
       end

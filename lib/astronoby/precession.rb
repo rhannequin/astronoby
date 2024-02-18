@@ -19,8 +19,8 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 34 - Precession
     def precess
-      right_ascension = @coordinates.right_ascension.to_radians.value
-      declination = @coordinates.declination.to_radians.value
+      right_ascension = @coordinates.right_ascension.radians
+      declination = @coordinates.declination.radians
       matrix_a = matrix_for_epoch(@coordinates.epoch)
       matrix_b = matrix_for_epoch(@epoch).transpose
 
@@ -39,7 +39,7 @@ module Astronoby
           Astronoby::Angle.as_radians(w[0]),
           Astronoby::Angle.as_radians(Math.atan(w[1] / w[0]))
         ),
-        declination: Astronoby::Angle.as_radians(Math.asin(w[2])).to_degrees,
+        declination: Astronoby::Angle.as_radians(Math.asin(w[2])),
         epoch: @epoch
       )
     end
@@ -53,13 +53,13 @@ module Astronoby
 
       ζ = Astronoby::Angle.as_degrees(
         0.6406161 * t + 0.0000839 * t * t + 0.000005 * t * t * t
-      ).to_radians.value
+      ).radians
       z = Astronoby::Angle.as_degrees(
         0.6406161 * t + 0.0003041 * t * t + 0.0000051 * t * t * t
-      ).to_radians.value
+      ).radians
       θ = Astronoby::Angle.as_degrees(
         0.5567530 * t - 0.0001185 * t * t - 0.0000116 * t * t * t
-      ).to_radians.value
+      ).radians
 
       cx = Math.cos(ζ)
       sx = Math.sin(ζ)

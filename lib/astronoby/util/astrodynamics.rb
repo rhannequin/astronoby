@@ -17,11 +17,11 @@ module Astronoby
           current_iteration = 0,
           solution_on_previous_interation = nil
         )
-          previous_solution = solution_on_previous_interation&.to_radians&.value
+          previous_solution = solution_on_previous_interation&.radians
 
           solution = if current_iteration == 0
             if orbital_eccentricity <= 0.75
-              mean_anomaly.to_radians.value
+              mean_anomaly.radians
             else
               Math::PI
             end
@@ -30,7 +30,7 @@ module Astronoby
               (
                 previous_solution -
                 orbital_eccentricity * Math.sin(previous_solution) -
-                mean_anomaly.to_radians.value
+                mean_anomaly.radians
               ) / (
                 1 - orbital_eccentricity * Math.cos(previous_solution)
               )

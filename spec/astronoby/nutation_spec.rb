@@ -2,12 +2,12 @@
 
 RSpec.describe Astronoby::Nutation do
   describe "::for_ecliptic_longitude" do
-    it "returns an angle in degrees" do
+    it "returns an Angle object" do
       nutation = described_class.for_ecliptic_longitude(
         epoch: Astronoby::Epoch::J2000
       )
 
-      expect(nutation).to be_a(Astronoby::Degree)
+      expect(nutation).to be_a(Astronoby::Angle)
     end
 
     # Source:
@@ -20,19 +20,17 @@ RSpec.describe Astronoby::Nutation do
         epoch: Astronoby::Epoch.from_time(Time.utc(1988, 9, 1, 0, 0, 0))
       )
 
-      expect(nutation.to_degrees.to_dms.format).to(
-        eq("+0° 0′ 5.4929″")
-      )
+      expect(nutation.str(:dms)).to eq "+0° 0′ 5.4929″"
     end
   end
 
   describe "::for_obliquity_of_the_ecliptic" do
-    it "returns an angle in degrees" do
+    it "returns an Angle object" do
       nutation = described_class.for_obliquity_of_the_ecliptic(
         epoch: Astronoby::Epoch::J2000
       )
 
-      expect(nutation).to be_a(Astronoby::Degree)
+      expect(nutation).to be_a(Astronoby::Angle)
     end
 
     # Source:
@@ -45,9 +43,7 @@ RSpec.describe Astronoby::Nutation do
         epoch: Astronoby::Epoch.from_time(Time.utc(1988, 9, 1, 0, 0, 0))
       )
 
-      expect(nutation.to_degrees.to_dms.format).to(
-        eq("+0° 0′ 9.2415″")
-      )
+      expect(nutation.str(:dms)).to eq "+0° 0′ 9.2415″"
     end
   end
 end

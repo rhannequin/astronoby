@@ -37,7 +37,7 @@ RSpec.describe Astronoby::Refraction do
       )
 
       expect(apparent_coordinates.azimuth).to eq(true_coordinates.azimuth)
-      expect(apparent_coordinates.altitude.to_dms.format).to(
+      expect(apparent_coordinates.altitude.str(:dms)).to(
         eq("+19° 22′ 47.0924″")
       )
       expect(apparent_coordinates.latitude).to eq(true_coordinates.latitude)

@@ -36,7 +36,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
         iterations
       )
 
-      expect(solution.value).to eq(0.78539851485077)
+      expect(solution.radians).to be_within(precision).of(0.78539851485077)
     end
 
     # Source:
@@ -57,7 +57,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
         iterations
       )
 
-      expect(solution.to_degrees.value).to be_within(precision).of(5.5)
+      expect(solution.degrees).to be_within(precision).of(5.5)
     end
 
     # Source:
@@ -78,7 +78,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
         iterations
       )
 
-      expect(solution.to_degrees.value).to be_within(precision).of(16.744355)
+      expect(solution.degrees).to be_within(precision).of(16.744355)
     end
 
     # Source:
@@ -99,7 +99,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
         iterations
       )
 
-      expect(solution.to_degrees.value).to be_within(precision).of(29.422286)
+      expect(solution.degrees).to be_within(precision).of(29.422286)
     end
   end
 end

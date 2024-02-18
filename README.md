@@ -41,10 +41,10 @@ horizontal_coordinates = sun.horizontal_coordinates(
   longitude: longitude
 )
 
-horizontal_coordinates.altitude.value.to_f
-# => 27.50236513017543
+horizontal_coordinates.altitude.degrees.to_f
+# => 27.502365130176567
 
-horizontal_coordinates.altitude.to_dms.format
+horizontal_coordinates.altitude.str(:dms)
 # => "+27° 30′ 8.5144″"
 ```
 

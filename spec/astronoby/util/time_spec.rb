@@ -210,7 +210,7 @@ RSpec.describe Astronoby::Util::Time do
 
         expect(gmst.to_i).to eq(4)
         expect(minute.to_i).to eq(40)
-        expect(second.ceil(4)).to eq(5.2308)
+        expect(second.ceil(4)).to eq(5.2309)
       end
     end
   end

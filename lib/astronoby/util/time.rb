@@ -79,11 +79,11 @@ module Astronoby
         end
 
         def local_sidereal_time(time:, longitude:)
-          ut_to_gmst(time.utc) + longitude.to_hours.value
+          ut_to_gmst(time.utc) + longitude.hours
         end
 
         def lst_to_gmst(lst:, longitude:)
-          gmst = lst - longitude.to_hours.value
+          gmst = lst - longitude.hours
 
           # If gmst negative, add 24 hours to the date
           # If gmst is greater than 24, subtract 24 hours from the date

@@ -21,8 +21,8 @@ RSpec.describe Astronoby::Sun do
 
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
 
-      expect(ecliptic_coordinates.longitude.to_degrees.value.to_f).to(
-        eq(316.5726713406947)
+      expect(ecliptic_coordinates.longitude.degrees.to_f).to(
+        eq(316.57267134069514)
       )
     end
 
@@ -37,8 +37,8 @@ RSpec.describe Astronoby::Sun do
 
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
 
-      expect(ecliptic_coordinates.longitude.to_degrees.value.to_f).to(
-        eq(137.36484079770828)
+      expect(ecliptic_coordinates.longitude.degrees.to_f).to(
+        eq(137.36484079771108)
       )
     end
 
@@ -53,8 +53,8 @@ RSpec.describe Astronoby::Sun do
 
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
 
-      expect(ecliptic_coordinates.longitude.to_degrees.value).to(
-        eq(45.92185191446102)
+      expect(ecliptic_coordinates.longitude.degrees.to_f).to(
+        eq(45.92185191445215)
       )
     end
 
@@ -70,10 +70,10 @@ RSpec.describe Astronoby::Sun do
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
       equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: epoch)
 
-      expect(equatorial_coordinates.right_ascension.to_hours.to_hms.format).to(
+      expect(equatorial_coordinates.right_ascension.str(:hms)).to(
         eq("8h 26m 3.6131s")
       )
-      expect(equatorial_coordinates.declination.to_degrees.to_dms.format).to(
+      expect(equatorial_coordinates.declination.str(:dms)).to(
         eq("+19° 12′ 43.1836″")
       )
     end
@@ -90,10 +90,10 @@ RSpec.describe Astronoby::Sun do
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
       equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: epoch)
 
-      expect(equatorial_coordinates.right_ascension.to_hours.to_hms.format).to(
+      expect(equatorial_coordinates.right_ascension.str(:hms)).to(
         eq("13h 13m 31.4636s")
       )
-      expect(equatorial_coordinates.declination.to_degrees.to_dms.format).to(
+      expect(equatorial_coordinates.declination.str(:dms)).to(
         eq("-7° 47′ 6.9653″")
       )
     end
@@ -128,10 +128,10 @@ RSpec.describe Astronoby::Sun do
         longitude: Astronoby::Angle.as_degrees(-78)
       )
 
-      expect(horizontal_coordinates.altitude.to_dms.format).to(
+      expect(horizontal_coordinates.altitude.str(:dms)).to(
         eq("+35° 47′ 12.6437″")
       )
-      expect(horizontal_coordinates.azimuth.to_dms.format).to(
+      expect(horizontal_coordinates.azimuth.str(:dms)).to(
         eq("+172° 17′ 2.7301″")
       )
     end
@@ -152,10 +152,10 @@ RSpec.describe Astronoby::Sun do
       )
 
       # TODO: very far from the expected value
-      expect(horizontal_coordinates.altitude.to_dms.format).to(
+      expect(horizontal_coordinates.altitude.str(:dms)).to(
         eq("+53° 44′ 26.5426″")
       )
-      expect(horizontal_coordinates.azimuth.to_dms.format).to(
+      expect(horizontal_coordinates.azimuth.str(:dms)).to(
         eq("+105° 8′ 12.9486″")
       )
     end
@@ -175,10 +175,10 @@ RSpec.describe Astronoby::Sun do
         longitude: Astronoby::Angle.as_degrees(-30)
       )
 
-      expect(horizontal_coordinates.altitude.to_dms.format).to(
+      expect(horizontal_coordinates.altitude.str(:dms)).to(
         eq("+13° 34′ 17.4237″")
       )
-      expect(horizontal_coordinates.azimuth.to_dms.format).to(
+      expect(horizontal_coordinates.azimuth.str(:dms)).to(
         eq("+293° 37′ 12.5231″")
       )
     end

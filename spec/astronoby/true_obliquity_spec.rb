@@ -18,9 +18,7 @@ RSpec.describe Astronoby::TrueObliquity do
         epoch = Astronoby::Epoch.from_time(Time.utc(1987, 4, 10, 0, 0, 0))
         obliquity = described_class.for_epoch(epoch).value
 
-        expect(obliquity.to_degrees.to_dms.format).to(
-          eq("+23° 26′ 36.8401″")
-        )
+        expect(obliquity.str(:dms)).to eq "+23° 26′ 36.8401″"
       end
     end
   end
