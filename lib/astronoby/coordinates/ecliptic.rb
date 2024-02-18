@@ -26,17 +26,10 @@ module Astronoby
           Math.tan(latitude_in_radians) * Math.sin(obliquity_in_radians)
         )
         x = Astronoby::Angle.as_radians(Math.cos(longitude_in_radians))
-
-        # TODO: investigate, there should be a better and it might not ever
-        # work all the time
-        right_ascension = if y.radians.negative? && x.radians.negative?
-          r = Astronoby::Angle.as_radians(Math.atan(y.radians / x.radians))
-          Astronoby::Angle.as_radians(
-            Astronoby::Util::Trigonometry.adjustement_for_arctangent(y, x, r).radians
-          )
-        else
-          Astronoby::Angle.as_radians(Math.atan2(y.radians, x.radians))
-        end
+        r = Astronoby::Angle.as_radians(Math.atan(y.radians / x.radians))
+        right_ascension = Astronoby::Angle.as_radians(
+          Astronoby::Util::Trigonometry.adjustement_for_arctangent(y, x, r).radians
+        )
 
         declination = Astronoby::Angle.as_radians(
           Math.asin(
