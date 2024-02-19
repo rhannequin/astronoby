@@ -9,6 +9,10 @@ module Astronoby
     FORMATS = %i[dms hms].freeze
 
     class << self
+      def zero
+        new(0)
+      end
+
       def as_radians(radians)
         new(radians)
       end

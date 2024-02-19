@@ -11,7 +11,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       longitude = Astronoby::Angle.as_degrees(-64)
       time = Time.new(1980, 4, 22, 14, 36, 51.67, "-04:00")
       right_ascension = Astronoby::Angle.as_hms(18, 32, 21)
-      declination = Astronoby::Angle.as_degrees(0)
+      declination = Astronoby::Angle.zero
 
       coordinates = described_class.new(
         right_ascension: right_ascension,
@@ -31,7 +31,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     it "returns a new instance of Astronoby::Coordinates::Horizontal" do
       time = Time.new
       latitude = Astronoby::Angle.as_degrees(50)
-      longitude = Astronoby::Angle.as_degrees(0)
+      longitude = Astronoby::Angle.zero
 
       expect(
         described_class.new(
@@ -125,7 +125,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         time = Time.new(2015, 12, 1, 9, 0, 0, "-08:00")
         latitude = Astronoby::Angle.as_degrees(52)
-        longitude = Astronoby::Angle.as_degrees(0)
+        longitude = Astronoby::Angle.zero
 
         horizontal_coordinates = described_class.new(
           declination: Astronoby::Angle.as_dms(23, 13, 10),

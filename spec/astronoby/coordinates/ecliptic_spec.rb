@@ -34,7 +34,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
     #  Chapter: 4 - Orbits and Coordinate Systems
     context "with real life arguments (book example)" do
       it "computes properly" do
-        latitude = Astronoby::Angle.as_degrees(0)
+        latitude = Astronoby::Angle.zero
         longitude = Astronoby::Angle.as_dms(120, 30, 30)
         epoch = Astronoby::Epoch::J2000
 

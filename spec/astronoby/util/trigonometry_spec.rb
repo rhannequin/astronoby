@@ -9,9 +9,9 @@ RSpec.describe Astronoby::Util::Trigonometry do
   describe "::adjustement_for_arctangent" do
     it "returns an Angle" do
       adjustement = described_class.adjustement_for_arctangent(
-        Astronoby::Angle.as_degrees(0),
-        Astronoby::Angle.as_degrees(0),
-        Astronoby::Angle.as_degrees(0)
+        Astronoby::Angle.zero,
+        Astronoby::Angle.zero,
+        Astronoby::Angle.zero
       )
 
       expect(adjustement).to be_kind_of(Astronoby::Angle)
@@ -19,7 +19,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
 
     context "when term1 is positive and term2 is positive" do
       it "doesn't adjust" do
-        initial_angle = Astronoby::Angle.as_degrees(0)
+        initial_angle = Astronoby::Angle.zero
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.as_degrees(1),
           Astronoby::Angle.as_degrees(1),
@@ -35,7 +35,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.as_degrees(1),
           Astronoby::Angle.as_degrees(-1),
-          Astronoby::Angle.as_degrees(0)
+          Astronoby::Angle.zero
         )
 
         expect(adjustement.radians)
@@ -48,7 +48,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.as_degrees(-1),
           Astronoby::Angle.as_degrees(1),
-          Astronoby::Angle.as_degrees(0)
+          Astronoby::Angle.zero
         )
 
         expect(adjustement.radians)
@@ -61,7 +61,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.as_degrees(-1),
           Astronoby::Angle.as_degrees(-1),
-          Astronoby::Angle.as_degrees(0)
+          Astronoby::Angle.zero
         )
 
         expect(adjustement.radians)
