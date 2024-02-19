@@ -5,9 +5,6 @@ require "bigdecimal/math"
 module Astronoby
   module Util
     module Trigonometry
-      PRECISION = 10
-      PI = BigMath.PI(PRECISION)
-
       class << self
         # Source:
         #  Title: Celestial Calculations
@@ -15,13 +12,13 @@ module Astronoby
         #  Edition: MIT Press
         #  Chapter: 4 - Orbits and Coordinate Systems
         def adjustement_for_arctangent(y, x, angle)
-          return angle if y.value.positive? && x.value.positive?
+          return angle if y.radians.positive? && x.radians.positive?
 
-          if y.value.negative? && x.value.positive?
-            return Astronoby::Angle.as_degrees(angle.to_degrees.value + 360).to_radians
+          if y.radians.negative? && x.radians.positive?
+            return Astronoby::Angle.as_degrees(angle.degrees + 360)
           end
 
-          Astronoby::Angle.as_degrees(angle.to_degrees.value + 180).to_radians
+          Astronoby::Angle.as_degrees(angle.degrees + 180)
         end
       end
     end

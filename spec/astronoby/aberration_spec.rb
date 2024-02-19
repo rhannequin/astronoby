@@ -40,10 +40,10 @@ RSpec.describe Astronoby::Aberration do
         sun_longitude: sun_longitude
       )
 
-      expect(apparent_coordinates.latitude.to_dms.format).to(
+      expect(apparent_coordinates.latitude.str(:dms)).to(
         eq("-1° 32′ 56.3319″")
       )
-      expect(apparent_coordinates.longitude.to_dms.format).to(
+      expect(apparent_coordinates.longitude.str(:dms)).to(
         eq("+352° 37′ 30.4521″")
       )
     end

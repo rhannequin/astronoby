@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Util::Time do
     context "from a real-life example (book example)" do
       it "computes the right time" do
         date = Date.new(2010, 2, 7)
-        longitude = Astronoby::Angle.as_degrees(0)
+        longitude = Astronoby::Angle.zero
         lst = 8.698055
 
         ut = described_class.lst_to_ut(
@@ -210,7 +210,7 @@ RSpec.describe Astronoby::Util::Time do
 
         expect(gmst.to_i).to eq(4)
         expect(minute.to_i).to eq(40)
-        expect(second.ceil(4)).to eq(5.2308)
+        expect(second.ceil(4)).to eq(5.2309)
       end
     end
   end

@@ -45,10 +45,10 @@ RSpec.describe Astronoby::Precession do
         epoch: Astronoby::Epoch.from_time(Time.utc(1979, 6, 1, 0, 0, 0))
       )
 
-      expect(precessed_coordinates.right_ascension.to_hours.to_hms.format).to(
+      expect(precessed_coordinates.right_ascension.str(:hms)).to(
         eq("9h 12m 20.1577s")
       )
-      expect(precessed_coordinates.declination.to_dms.format).to(
+      expect(precessed_coordinates.declination.str(:dms)).to(
         eq("+14° 16′ 7.6506″")
       )
     end
@@ -72,10 +72,10 @@ RSpec.describe Astronoby::Precession do
         epoch: Astronoby::Epoch::J2000
       )
 
-      expect(precessed_coordinates.right_ascension.to_hours.to_hms.format).to(
+      expect(precessed_coordinates.right_ascension.str(:hms)).to(
         eq("12h 34m 34.1434s")
       )
-      expect(precessed_coordinates.declination.to_dms.format).to(
+      expect(precessed_coordinates.declination.str(:dms)).to(
         eq("+29° 49′ 8.3259″")
       )
     end
@@ -99,10 +99,10 @@ RSpec.describe Astronoby::Precession do
         epoch: Astronoby::Epoch.from_time(Time.utc(2015, 1, 1, 0, 0, 0))
       )
 
-      expect(precessed_coordinates.right_ascension.to_hours.to_hms.format).to(
+      expect(precessed_coordinates.right_ascension.str(:hms)).to(
         eq("12h 35m 18.383s")
       )
-      expect(precessed_coordinates.declination.to_dms.format).to(
+      expect(precessed_coordinates.declination.str(:dms)).to(
         eq("+29° 44′ 10.8629″")
       )
     end

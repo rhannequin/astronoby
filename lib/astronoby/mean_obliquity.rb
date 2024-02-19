@@ -26,7 +26,7 @@ module Astronoby
 
       new(
         Astronoby::Angle.as_degrees(
-          obliquity_of_reference.value - (
+          obliquity_of_reference.degrees - (
             46.815 * t -
             0.0006 * t * t +
             0.00181 * t * t * t

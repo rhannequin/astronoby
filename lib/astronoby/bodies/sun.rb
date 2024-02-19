@@ -14,9 +14,9 @@ module Astronoby
 
     def ecliptic_coordinates
       Coordinates::Ecliptic.new(
-        latitude: Angle.as_degrees(0),
+        latitude: Angle.zero,
         longitude: Angle.as_degrees(
-          (true_anomaly.value + longitude_at_perigee.to_degrees.value) % 360
+          (true_anomaly.degrees + longitude_at_perigee.degrees) % 360
         )
       )
     end
@@ -33,29 +33,24 @@ module Astronoby
 
     def mean_anomaly
       Angle.as_degrees(
-        (
-          longitude_at_base_epoch.to_degrees.value -
-          longitude_at_perigee.to_degrees.value
-        ) % 360
+        (longitude_at_base_epoch.degrees - longitude_at_perigee.degrees) % 360
       )
     end
 
     def true_anomaly
       eccentric_anomaly = Astronoby::Util::Astrodynamics.eccentric_anomaly_newton_raphson(
         mean_anomaly,
-        orbital_eccentricity.to_degrees.value,
+        orbital_eccentricity.degrees,
         2e-06,
         10
       )
 
       tan = Math.sqrt(
-        (1 + orbital_eccentricity.to_degrees.value)./(
-          1 - orbital_eccentricity.to_degrees.value
-        )
-      ) * Math.tan(eccentric_anomaly.to_radians.value / 2)
+        (1 + orbital_eccentricity.degrees) / (1 - orbital_eccentricity.degrees)
+      ) * Math.tan(eccentric_anomaly.radians / 2)
 
       Astronoby::Angle.as_degrees(
-        (Astronoby::Angle.as_radians(Math.atan(tan)).to_degrees.value * 2) % 360
+        (Astronoby::Angle.as_radians(Math.atan(tan)).degrees * 2) % 360
       )
     end
 

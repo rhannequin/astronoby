@@ -16,8 +16,7 @@ module Astronoby
       return nil if h2_component.nil?
 
       rising_lst = 24 +
-        @equatorial_coordinates.right_ascension.to_hours.value -
-        h2_component.to_degrees.value
+        @equatorial_coordinates.right_ascension.hours - h2_component.degrees
       rising_lst -= 24 if rising_lst > 24
 
       Astronoby::Util::Time.lst_to_ut(
@@ -48,8 +47,7 @@ module Astronoby
       h2_component = h2(latitude: latitude)
       return nil if h2_component.nil?
 
-      setting_lst = @equatorial_coordinates.right_ascension.to_hours.value +
-        h2_component.to_degrees.value
+      setting_lst = @equatorial_coordinates.right_ascension.hours + h2_component.degrees
       setting_lst -= 24 if setting_lst > 24
 
       Astronoby::Util::Time.lst_to_ut(
@@ -68,14 +66,14 @@ module Astronoby
       rising_az = rising_azimuth(latitude: latitude)
       return nil if rising_az.nil?
 
-      Astronoby::Angle.as_degrees(360 - rising_az.to_degrees.value)
+      Astronoby::Angle.as_degrees(360 - rising_az.degrees)
     end
 
     private
 
     def azimuth_component(latitude:)
-      Math.sin(@equatorial_coordinates.declination.to_radians.value)./(
-        Math.cos(latitude.to_radians.value)
+      Math.sin(@equatorial_coordinates.declination.radians)./(
+        Math.cos(latitude.radians)
       )
     end
 
@@ -83,8 +81,8 @@ module Astronoby
       ar = azimuth_component(latitude: latitude)
       return nil if ar >= 1
 
-      h1 = Math.tan(latitude.to_radians.value) *
-        Math.tan(@equatorial_coordinates.declination.to_radians.value)
+      h1 = Math.tan(latitude.radians) *
+        Math.tan(@equatorial_coordinates.declination.radians)
       return nil if h1.abs > 1
 
       Astronoby::Angle.as_radians(Math.acos(-h1) / 15.0)

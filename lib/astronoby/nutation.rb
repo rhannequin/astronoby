@@ -25,8 +25,8 @@ module Astronoby
         0,
         0,
         (
-          -17.2 * Math.sin(moon_ascending_node_longitude.to_radians.value) -
-          1.3 * Math.sin(2 * sun_mean_longitude.to_radians.value)
+          -17.2 * Math.sin(moon_ascending_node_longitude.radians) -
+          1.3 * Math.sin(2 * sun_mean_longitude.radians)
         )
       )
     end
@@ -36,8 +36,8 @@ module Astronoby
         0,
         0,
         (
-          9.2 * Math.cos(moon_ascending_node_longitude.to_radians.value) +
-          0.5 * Math.cos(2 * sun_mean_longitude.to_radians.value)
+          9.2 * Math.cos(moon_ascending_node_longitude.radians) +
+          0.5 * Math.cos(2 * sun_mean_longitude.radians)
         )
       )
     end

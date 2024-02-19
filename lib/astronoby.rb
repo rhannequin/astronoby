@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 require "astronoby/angle"
-require "astronoby/angles/degree"
 require "astronoby/angles/dms"
 require "astronoby/angles/hms"
-require "astronoby/angles/hour"
-require "astronoby/angles/radian"
 require "astronoby/epoch"
 require "astronoby/body"
 require "astronoby/bodies/sun"

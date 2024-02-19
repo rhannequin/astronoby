@@ -12,7 +12,7 @@ module Astronoby
 
       new(
         Astronoby::Angle.as_degrees(
-          mean_obliquity.value.to_degrees.value + nutation.to_degrees.value
+          mean_obliquity.value.degrees + nutation.degrees
         )
       )
     end

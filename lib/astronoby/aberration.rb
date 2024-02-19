@@ -22,27 +22,22 @@ module Astronoby
       delta_longitude = Astronoby::Angle.as_degrees(
         -20.5 *
         Math.cos(
-          @sun_longitude.to_radians.value - @coordinates.longitude.to_radians.value
-        ) / Math.cos(@coordinates.latitude.to_radians.value) / 3600
+          @sun_longitude.radians - @coordinates.longitude.radians
+        ) / Math.cos(@coordinates.latitude.radians) / 3600
       )
 
       delta_latitude = Astronoby::Angle.as_degrees(
         -20.5 *
-        Math.sin(
-          @sun_longitude.to_radians.value -
-          @coordinates.longitude.to_radians.value
-        ) *
-        Math.sin(@coordinates.latitude.to_radians.value) / 3600
+        Math.sin(@sun_longitude.radians - @coordinates.longitude.radians) *
+        Math.sin(@coordinates.latitude.radians) / 3600
       )
 
       Astronoby::Coordinates::Ecliptic.new(
         latitude: Astronoby::Angle.as_degrees(
-          @coordinates.latitude.to_degrees.value +
-          delta_latitude.value
+          @coordinates.latitude.degrees + delta_latitude.degrees
         ),
         longitude: Astronoby::Angle.as_degrees(
-          @coordinates.longitude.to_degrees.value +
-          delta_longitude.value
+          @coordinates.longitude.degrees + delta_longitude.degrees
         )
       )
     end

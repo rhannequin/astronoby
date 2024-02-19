@@ -91,9 +91,7 @@ RSpec.describe Astronoby::Body do
         latitude: Astronoby::Angle.as_degrees(38)
       )
 
-      expect(rising_azimuth.to_degrees.value).to(
-        be_within(10**-9).of(80.465577913)
-      )
+      expect(rising_azimuth&.degrees).to be_within(10**-9).of(80.465577913)
     end
   end
 
@@ -187,9 +185,7 @@ RSpec.describe Astronoby::Body do
         latitude: Astronoby::Angle.as_degrees(38)
       )
 
-      expect(setting_azimuth.to_degrees.value).to(
-        be_within(10**-7).of(279.534422)
-      )
+      expect(setting_azimuth&.degrees).to be_within(10**-7).of(279.534422)
     end
   end
 end
