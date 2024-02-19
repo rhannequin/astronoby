@@ -6,6 +6,14 @@ module Astronoby
   class Angle
     PRECISION = 14
     PI = BigMath.PI(PRECISION)
+    PI_IN_DEGREES = BigDecimal("180")
+
+    RADIAN_PER_HOUR = PI / BigDecimal("12")
+    MINUTES_PER_DEGREE = BigDecimal("60")
+    MINUTES_PER_HOUR = BigDecimal("60")
+    SECONDS_PER_MINUTE = BigDecimal("60")
+    SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE
+
     FORMATS = %i[dms hms].freeze
 
     class << self
@@ -18,23 +26,23 @@ module Astronoby
       end
 
       def as_degrees(degrees)
-        radians = degrees / BigDecimal("180") * PI
+        radians = degrees / PI_IN_DEGREES * PI
         new(radians)
       end
 
       def as_hours(hours)
-        radians = hours * (PI / BigDecimal("12"))
+        radians = hours * RADIAN_PER_HOUR
         new(radians)
       end
 
       def as_hms(hour, minute, second)
-        hours = hour + minute / 60.0 + second / 3600.0
+        hours = hour + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
         as_hours(hours)
       end
 
       def as_dms(degree, minute, second)
         sign = degree.negative? ? -1 : 1
-        degrees = degree.abs + minute / 60.0 + second / 3600.0
+        degrees = degree.abs + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
         as_degrees(sign * degrees)
       end
     end
@@ -44,11 +52,11 @@ module Astronoby
     end
 
     def degrees
-      @angle * BigDecimal("180") / PI
+      @angle * PI_IN_DEGREES / PI
     end
 
     def hours
-      @angle / (PI / BigDecimal("12"))
+      @angle / RADIAN_PER_HOUR
     end
 
     def initialize(angle)
@@ -74,12 +82,12 @@ module Astronoby
       sign = deg.negative? ? "-" : "+"
       absolute_degrees = deg.abs
       degrees = absolute_degrees.floor
-      decimal_minutes = BigDecimal("60") * (absolute_degrees - degrees)
+      decimal_minutes = MINUTES_PER_DEGREE * (absolute_degrees - degrees)
       absolute_decimal_minutes = (
-        BigDecimal("60") * (absolute_degrees - degrees)
+        MINUTES_PER_DEGREE * (absolute_degrees - degrees)
       ).abs
       minutes = decimal_minutes.floor
-      seconds = BigDecimal("60") * (
+      seconds = SECONDS_PER_MINUTE * (
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
@@ -89,12 +97,12 @@ module Astronoby
     def to_hms(hrs)
       absolute_hours = hrs.abs
       hours = absolute_hours.floor
-      decimal_minutes = BigDecimal("60") * (absolute_hours - hours)
+      decimal_minutes = MINUTES_PER_HOUR * (absolute_hours - hours)
       absolute_decimal_minutes = (
-        BigDecimal("60") * (absolute_hours - hours)
+        MINUTES_PER_HOUR * (absolute_hours - hours)
       ).abs
       minutes = decimal_minutes.floor
-      seconds = BigDecimal("60") * (
+      seconds = SECONDS_PER_MINUTE * (
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
