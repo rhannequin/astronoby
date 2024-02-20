@@ -54,9 +54,7 @@ module Astronoby
 
       Astronoby::Coordinates::Horizontal.new(
         azimuth: @coordinates.azimuth,
-        altitude: Astronoby::Angle.as_degrees(
-          @coordinates.altitude.degrees + refraction_angle.degrees
-        ),
+        altitude: @coordinates.altitude + refraction_angle,
         latitude: @coordinates.latitude,
         longitude: @coordinates.longitude
       )

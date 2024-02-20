@@ -16,7 +16,7 @@ module Astronoby
       Coordinates::Ecliptic.new(
         latitude: Angle.zero,
         longitude: Angle.as_degrees(
-          (true_anomaly.degrees + longitude_at_perigee.degrees) % 360
+          (true_anomaly + longitude_at_perigee).degrees % 360
         )
       )
     end

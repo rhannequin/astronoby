@@ -33,12 +33,8 @@ module Astronoby
       )
 
       Astronoby::Coordinates::Ecliptic.new(
-        latitude: Astronoby::Angle.as_degrees(
-          @coordinates.latitude.degrees + delta_latitude.degrees
-        ),
-        longitude: Astronoby::Angle.as_degrees(
-          @coordinates.longitude.degrees + delta_longitude.degrees
-        )
+        latitude: @coordinates.latitude + delta_latitude,
+        longitude: @coordinates.longitude + delta_longitude
       )
     end
   end

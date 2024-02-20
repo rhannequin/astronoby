@@ -10,11 +10,7 @@ module Astronoby
       mean_obliquity = Astronoby::MeanObliquity.for_epoch(epoch)
       nutation = Astronoby::Nutation.for_obliquity_of_the_ecliptic(epoch: epoch)
 
-      new(
-        Astronoby::Angle.as_degrees(
-          mean_obliquity.value.degrees + nutation.degrees
-        )
-      )
+      new(mean_obliquity.value + nutation)
     end
 
     def value
