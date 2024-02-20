@@ -32,7 +32,7 @@ module Astronoby
           zenith_angle = Astronoby::Angle.as_degrees(
             90 - @coordinates.altitude.degrees
           )
-          0.00452 * @pressure * Math.tan(zenith_angle.radians) / (273 + @temperature)
+          0.00452 * @pressure * zenith_angle.tan / (273 + @temperature)
         else
           (
             @pressure *

@@ -73,6 +73,18 @@ module Astronoby
       self.class.as_radians(@radians - other.radians)
     end
 
+    def sin
+      Math.sin(radians)
+    end
+
+    def cos
+      Math.cos(radians)
+    end
+
+    def tan
+      Math.tan(radians)
+    end
+
     def str(format)
       case format
       when :dms then to_dms(degrees).format

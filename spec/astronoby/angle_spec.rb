@@ -115,6 +115,39 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "#sin" do
+    it "returns the sine value of the angle" do
+      radians = described_class::PI / 6
+      angle = described_class.as_radians(radians)
+
+      sine = angle.sin.ceil(described_class::PRECISION)
+
+      expect(sine).to eq 0.5
+    end
+  end
+
+  describe "#cos" do
+    it "returns the cosine value of the angle" do
+      radians = described_class::PI / 3
+      angle = described_class.as_radians(radians)
+
+      cosine = angle.cos.ceil(described_class::PRECISION)
+
+      expect(cosine).to eq 0.5
+    end
+  end
+
+  describe "#tan" do
+    it "returns the tangent value of the angle" do
+      radians = described_class::PI / 4
+      angle = described_class.as_radians(radians)
+
+      tangent = angle.tan.ceil(described_class::PRECISION)
+
+      expect(tangent).to eq 1
+    end
+  end
+
   describe "#str" do
     it "returns a String" do
       angle = described_class.as_degrees(180)

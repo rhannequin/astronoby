@@ -18,23 +18,19 @@ module Astronoby
       end
 
       def to_equatorial(time:)
-        latitude_radians = @latitude.radians
-
-        t0 = Math.sin(@altitude.radians) * Math.sin(latitude_radians) +
-          Math.cos(@altitude.radians) * Math.cos(latitude_radians) * Math.cos(@azimuth.radians)
+        t0 = @altitude.sin * @latitude.sin +
+          @altitude.cos * @latitude.cos * @azimuth.cos
 
         declination = Astronoby::Angle.as_radians(Math.asin(t0))
 
-        t1 = Math.sin(@altitude.radians) -
-          Math.sin(latitude_radians) * Math.sin(declination.radians)
+        t1 = @altitude.sin -
+          @latitude.sin * declination.sin
 
         hour_angle_degrees = Astronoby::Angle.as_radians(
-          Math.acos(
-            t1 / (Math.cos(latitude_radians) * Math.cos(declination.radians))
-          )
+          Math.acos(t1 / (@latitude.cos * declination.cos))
         ).degrees
 
-        if Math.sin(@azimuth.radians).positive?
+        if @azimuth.sin.positive?
           hour_angle_degrees = Astronoby::Angle.as_degrees(
             BigDecimal("360") - hour_angle_degrees
           ).degrees
