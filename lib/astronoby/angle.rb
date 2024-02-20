@@ -70,7 +70,7 @@ module Astronoby
     end
 
     def +(other)
-      self.class.new(@value + other.value)
+      self.class.as_radians(radians + other.radians)
     end
 
     def str(format)
