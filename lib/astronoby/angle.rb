@@ -47,26 +47,22 @@ module Astronoby
       end
     end
 
-    attr_reader :value
+    attr_reader :radians
 
-    def initialize(value)
-      @value = if value.is_a?(Integer) || value.is_a?(BigDecimal)
-        BigDecimal(value)
+    def initialize(radians)
+      @radians = if radians.is_a?(Integer) || radians.is_a?(BigDecimal)
+        BigDecimal(radians)
       else
-        BigDecimal(value, PRECISION)
+        BigDecimal(radians, PRECISION)
       end
     end
 
-    def radians
-      @value
-    end
-
     def degrees
-      @value * PI_IN_DEGREES / PI
+      @radians * PI_IN_DEGREES / PI
     end
 
     def hours
-      @value / RADIAN_PER_HOUR
+      @radians / RADIAN_PER_HOUR
     end
 
     def +(other)
