@@ -104,6 +104,17 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "#-" do
+    it "returns a new angle with a value of the two angles substracted" do
+      angle_1 = described_class.as_radians(described_class::PI)
+      angle_2 = described_class.as_degrees(45)
+
+      new_angle = angle_1 - angle_2
+
+      expect(new_angle.degrees).to eq 135
+    end
+  end
+
   describe "#str" do
     it "returns a String" do
       angle = described_class.as_degrees(180)

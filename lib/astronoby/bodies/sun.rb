@@ -33,7 +33,7 @@ module Astronoby
 
     def mean_anomaly
       Angle.as_degrees(
-        (longitude_at_base_epoch.degrees - longitude_at_perigee.degrees) % 360
+        (longitude_at_base_epoch - longitude_at_perigee).degrees % 360
       )
     end
 

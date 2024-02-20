@@ -22,13 +22,13 @@ module Astronoby
       delta_longitude = Astronoby::Angle.as_degrees(
         -20.5 *
         Math.cos(
-          @sun_longitude.radians - @coordinates.longitude.radians
+          (@sun_longitude - @coordinates.longitude).radians
         ) / Math.cos(@coordinates.latitude.radians) / 3600
       )
 
       delta_latitude = Astronoby::Angle.as_degrees(
         -20.5 *
-        Math.sin(@sun_longitude.radians - @coordinates.longitude.radians) *
+        Math.sin((@sun_longitude - @coordinates.longitude).radians) *
         Math.sin(@coordinates.latitude.radians) / 3600
       )
 
