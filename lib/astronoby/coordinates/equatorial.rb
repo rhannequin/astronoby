@@ -7,7 +7,7 @@ module Astronoby
 
       def initialize(
         declination:,
-        right_ascension: nil,
+        right_ascension:,
         hour_angle: nil,
         epoch: Astronoby::Epoch::DEFAULT_EPOCH
       )
