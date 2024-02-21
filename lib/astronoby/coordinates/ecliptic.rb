@@ -16,18 +16,17 @@ module Astronoby
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
       def to_equatorial(epoch:)
-        mean_obliquity = Astronoby::MeanObliquity.for_epoch(epoch)
+        mean_obliquity = MeanObliquity.for_epoch(epoch)
         obliquity = mean_obliquity.value
 
-        y = Astronoby::Angle.as_radians(
+        y = Angle.as_radians(
           @longitude.sin * obliquity.cos - @latitude.tan * obliquity.sin
         )
-        x = Astronoby::Angle.as_radians(@longitude.cos)
-        r = Astronoby::Angle.atan(y.radians / x.radians)
-        right_ascension = Astronoby::Util::Trigonometry
-          .adjustement_for_arctangent(y, x, r)
+        x = Angle.as_radians(@longitude.cos)
+        r = Angle.atan(y.radians / x.radians)
+        right_ascension = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 
-        declination = Astronoby::Angle.asin(
+        declination = Angle.asin(
           @latitude.sin * obliquity.cos +
           @latitude.cos * obliquity.sin * @longitude.sin
         )

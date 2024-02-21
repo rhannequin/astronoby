@@ -22,7 +22,7 @@ module Astronoby
     end
 
     def horizontal_coordinates(latitude:, longitude:)
-      time = Astronoby::Epoch.to_utc(@epoch)
+      time = Epoch.to_utc(@epoch)
 
       ecliptic_coordinates
         .to_equatorial(epoch: @epoch)
@@ -38,7 +38,7 @@ module Astronoby
     end
 
     def true_anomaly
-      eccentric_anomaly = Astronoby::Util::Astrodynamics.eccentric_anomaly_newton_raphson(
+      eccentric_anomaly = Util::Astrodynamics.eccentric_anomaly_newton_raphson(
         mean_anomaly,
         orbital_eccentricity.degrees,
         2e-06,
@@ -49,9 +49,7 @@ module Astronoby
         (1 + orbital_eccentricity.degrees) / (1 - orbital_eccentricity.degrees)
       ) * Math.tan(eccentric_anomaly.radians / 2)
 
-      Astronoby::Angle.as_degrees(
-        (Astronoby::Angle.atan(tan).degrees * 2) % 360
-      )
+      Angle.as_degrees((Angle.atan(tan).degrees * 2) % 360)
     end
 
     def days_since_epoch
@@ -59,24 +57,23 @@ module Astronoby
     end
 
     def t
-      @t ||=
-        (@epoch - Astronoby::Epoch::J1900) / Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
+      @t ||= (@epoch - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
     end
 
     def longitude_at_base_epoch
-      Astronoby::Angle.as_degrees(
+      Angle.as_degrees(
         (279.6966778 + 36000.76892 * t + 0.0003025 * t * t) % 360
       )
     end
 
     def longitude_at_perigee
-      Astronoby::Angle.as_degrees(
+      Angle.as_degrees(
         (281.2208444 + 1.719175 * t + 0.000452778 * t * t) % 360
       )
     end
 
     def orbital_eccentricity
-      Astronoby::Angle.as_degrees(
+      Angle.as_degrees(
         (0.01675104 - 0.0000418 * t - 0.000000126 * t * t) % 360
       )
     end
