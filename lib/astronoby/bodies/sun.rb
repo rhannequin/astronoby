@@ -56,25 +56,25 @@ module Astronoby
       Epoch::DEFAULT_EPOCH - @epoch
     end
 
-    def t
-      @t ||= (@epoch - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
+    def centuries
+      @centuries ||= (@epoch - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
     end
 
     def longitude_at_base_epoch
       Angle.as_degrees(
-        (279.6966778 + 36000.76892 * t + 0.0003025 * t * t) % 360
+        (279.6966778 + 36000.76892 * centuries + 0.0003025 * centuries**2) % 360
       )
     end
 
     def longitude_at_perigee
       Angle.as_degrees(
-        (281.2208444 + 1.719175 * t + 0.000452778 * t * t) % 360
+        (281.2208444 + 1.719175 * centuries + 0.000452778 * centuries**2) % 360
       )
     end
 
     def orbital_eccentricity
       Angle.as_degrees(
-        (0.01675104 - 0.0000418 * t - 0.000000126 * t * t) % 360
+        (0.01675104 - 0.0000418 * centuries - 0.000000126 * centuries**2) % 360
       )
     end
   end

@@ -49,18 +49,22 @@ module Astronoby
     end
 
     def sun_mean_longitude
-      Angle.as_degrees((279.6967 + 360.0 * (a - a.to_i)) % 360)
+      Angle.as_degrees(
+        (279.6967 + 360.0 * (centuries_a - centuries_a.to_i)) % 360
+      )
     end
 
     def moon_ascending_node_longitude
-      Angle.as_degrees((259.1833 - 360.0 * (b - b.to_i)) % 360)
+      Angle.as_degrees(
+        (259.1833 - 360.0 * (centuries_b - centuries_b.to_i)) % 360
+      )
     end
 
-    def a
+    def centuries_a
       100.002136 * julian_centuries
     end
 
-    def b
+    def centuries_b
       5.372617 * julian_centuries
     end
   end

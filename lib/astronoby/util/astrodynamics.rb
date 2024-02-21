@@ -19,7 +19,7 @@ module Astronoby
         )
           previous_solution = solution_on_previous_interation&.radians
 
-          solution = if current_iteration == 0
+          solution = if previous_solution.nil?
             if orbital_eccentricity <= 0.75
               mean_anomaly.radians
             else
@@ -39,7 +39,7 @@ module Astronoby
 
           if current_iteration >= maximum_iteration_count ||
               (
-                solution_on_previous_interation &&
+                previous_solution &&
                 (solution - previous_solution).abs <= precision
               )
             return Angle.as_radians(solution)
