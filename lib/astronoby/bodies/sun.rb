@@ -50,7 +50,7 @@ module Astronoby
       ) * Math.tan(eccentric_anomaly.radians / 2)
 
       Astronoby::Angle.as_degrees(
-        (Astronoby::Angle.as_radians(Math.atan(tan)).degrees * 2) % 360
+        (Astronoby::Angle.atan(tan).degrees * 2) % 360
       )
     end
 

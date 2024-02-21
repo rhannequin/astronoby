@@ -35,7 +35,7 @@ module Astronoby
       ar = azimuth_component(latitude: latitude)
       return nil if ar >= 1
 
-      Astronoby::Angle.as_radians(Math.acos(ar))
+      Astronoby::Angle.acos(ar)
     end
 
     # Source:

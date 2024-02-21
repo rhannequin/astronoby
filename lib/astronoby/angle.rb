@@ -45,6 +45,21 @@ module Astronoby
         degrees = degree.abs + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
         as_degrees(sign * degrees)
       end
+
+      def asin(ratio)
+        radians = Math.asin(ratio)
+        as_radians(radians)
+      end
+
+      def acos(ratio)
+        radians = Math.acos(ratio)
+        as_radians(radians)
+      end
+
+      def atan(ratio)
+        radians = Math.atan(ratio)
+        as_radians(radians)
+      end
     end
 
     attr_reader :radians

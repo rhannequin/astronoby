@@ -21,13 +21,13 @@ module Astronoby
         t0 = @altitude.sin * @latitude.sin +
           @altitude.cos * @latitude.cos * @azimuth.cos
 
-        declination = Astronoby::Angle.as_radians(Math.asin(t0))
+        declination = Astronoby::Angle.asin(t0)
 
         t1 = @altitude.sin -
           @latitude.sin * declination.sin
 
-        hour_angle_degrees = Astronoby::Angle.as_radians(
-          Math.acos(t1 / (@latitude.cos * declination.cos))
+        hour_angle_degrees = Astronoby::Angle.acos(
+          t1 / (@latitude.cos * declination.cos)
         ).degrees
 
         if @azimuth.sin.positive?

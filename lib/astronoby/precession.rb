@@ -35,9 +35,9 @@ module Astronoby
         right_ascension: Astronoby::Util::Trigonometry.adjustement_for_arctangent(
           Astronoby::Angle.as_radians(w[1]),
           Astronoby::Angle.as_radians(w[0]),
-          Astronoby::Angle.as_radians(Math.atan(w[1] / w[0]))
+          Astronoby::Angle.atan(w[1] / w[0])
         ),
-        declination: Astronoby::Angle.as_radians(Math.asin(w[2])),
+        declination: Astronoby::Angle.asin(w[2]),
         epoch: @epoch
       )
     end

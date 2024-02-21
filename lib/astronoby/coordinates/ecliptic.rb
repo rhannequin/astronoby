@@ -23,15 +23,13 @@ module Astronoby
           @longitude.sin * obliquity.cos - @latitude.tan * obliquity.sin
         )
         x = Astronoby::Angle.as_radians(@longitude.cos)
-        r = Astronoby::Angle.as_radians(Math.atan(y.radians / x.radians))
+        r = Astronoby::Angle.atan(y.radians / x.radians)
         right_ascension = Astronoby::Util::Trigonometry
           .adjustement_for_arctangent(y, x, r)
 
-        declination = Astronoby::Angle.as_radians(
-          Math.asin(
-            @latitude.sin * obliquity.cos +
-            @latitude.cos * obliquity.sin * @longitude.sin
-          )
+        declination = Astronoby::Angle.asin(
+          @latitude.sin * obliquity.cos +
+          @latitude.cos * obliquity.sin * @longitude.sin
         )
 
         Equatorial.new(

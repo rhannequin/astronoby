@@ -20,6 +20,51 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "::asin" do
+    it "returns an Angle object" do
+      expect(described_class.asin(1)).to be_a(described_class)
+    end
+
+    it "initializes an angle with the inverse sine of a ratio" do
+      ratio = 0.5
+      angle = described_class.asin(ratio)
+      precision = 10**-described_class::PRECISION
+      radians = described_class::PI / 6
+
+      expect(angle.radians).to be_within(precision).of(radians)
+    end
+  end
+
+  describe "::acos" do
+    it "returns an Angle object" do
+      expect(described_class.acos(0.5)).to be_a(described_class)
+    end
+
+    it "initializes an angle with the inverse sine of a ratio" do
+      ratio = 0.5
+      angle = described_class.acos(ratio)
+      precision = 10**-described_class::PRECISION
+      radians = described_class::PI / 3
+
+      expect(angle.radians).to be_within(precision).of(radians)
+    end
+  end
+
+  describe "::atan" do
+    it "returns an Angle object" do
+      expect(described_class.atan(1)).to be_a(described_class)
+    end
+
+    it "initializes an angle with the inverse sine of a ratio" do
+      ratio = 1
+      angle = described_class.atan(ratio)
+      precision = 10**-described_class::PRECISION
+      radians = described_class::PI / 4
+
+      expect(angle.radians).to be_within(precision).of(radians)
+    end
+  end
+
   describe "#radians" do
     it "returns the angle value in radian unit" do
       radians = described_class.new(described_class::PI).radians
