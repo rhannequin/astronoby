@@ -70,6 +70,7 @@ module Astronoby
       else
         BigDecimal(radians, PRECISION)
       end
+      freeze
     end
 
     def degrees

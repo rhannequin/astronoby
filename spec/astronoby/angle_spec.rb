@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Angle do
+  describe "object immutability" do
+    context "when a mutable method is added" do
+      it "raises a FrozenError when immutability is broken" do
+        described_class.class_eval do
+          def clear
+            @radians = 0
+          end
+        end
+
+        expect { described_class.as_degrees(180).clear }.to raise_error(FrozenError)
+      end
+    end
+  end
+
   describe "::as_radians" do
     it "returns an Angle object" do
       expect(described_class.as_radians(described_class::PI))
