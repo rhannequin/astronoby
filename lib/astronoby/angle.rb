@@ -100,6 +100,18 @@ module Astronoby
       Math.tan(radians)
     end
 
+    def positive?
+      radians > 0
+    end
+
+    def negative?
+      radians < 0
+    end
+
+    def zero?
+      radians.zero?
+    end
+
     def str(format)
       case format
       when :dms then to_dms(degrees).format

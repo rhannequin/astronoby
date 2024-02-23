@@ -12,9 +12,9 @@ module Astronoby
         #  Edition: MIT Press
         #  Chapter: 4 - Orbits and Coordinate Systems
         def adjustement_for_arctangent(y, x, angle)
-          return angle if y.degrees.positive? && x.degrees.positive?
+          return angle if y.positive? && x.positive?
 
-          if y.degrees.negative? && x.degrees.positive?
+          if y.negative? && x.positive?
             return Angle.as_degrees(angle.degrees + 360)
           end
 

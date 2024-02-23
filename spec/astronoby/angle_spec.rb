@@ -193,6 +193,48 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "#positive?" do
+    it "returns true when the angle is positive" do
+      expect(described_class.as_degrees(90).positive?).to be true
+    end
+
+    it "returns false when the angle is negative" do
+      expect(described_class.as_degrees(-90).positive?).to be false
+    end
+
+    it "returns famse when the angle has a zero value" do
+      expect(described_class.as_degrees(0).positive?).to be false
+    end
+  end
+
+  describe "#negative?" do
+    it "returns false when the angle is positive" do
+      expect(described_class.as_degrees(90).negative?).to be false
+    end
+
+    it "returns true when the angle is negative" do
+      expect(described_class.as_degrees(-90).negative?).to be true
+    end
+
+    it "returns false when the angle has a zero value" do
+      expect(described_class.as_degrees(0).negative?).to be false
+    end
+  end
+
+  describe "#zero?" do
+    it "returns false when the angle is positive" do
+      expect(described_class.as_degrees(90).zero?).to be false
+    end
+
+    it "returns false when the angle is negative" do
+      expect(described_class.as_degrees(-90).zero?).to be false
+    end
+
+    it "returns true when the angle has a zero value" do
+      expect(described_class.as_degrees(0).zero?).to be true
+    end
+  end
+
   describe "#str" do
     it "returns a String" do
       angle = described_class.as_degrees(180)
