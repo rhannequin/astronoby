@@ -265,6 +265,24 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "hash equality" do
+    it "makes an angle foundable as a Hash key" do
+      angle1 = Astronoby::Angle.as_degrees(180)
+      angle1_bis = Astronoby::Angle.as_degrees(180)
+      map = {angle1 => :angle}
+
+      expect(map[angle1_bis]).to eq :angle
+    end
+
+    it "makes an angle foundable in a Set" do
+      angle1 = Astronoby::Angle.as_degrees(180)
+      angle1_bis = Astronoby::Angle.as_degrees(180)
+      set = Set.new([angle1])
+
+      expect(set.include?(angle1_bis)).to be true
+    end
+  end
+
   describe "#str" do
     it "returns a String" do
       angle = described_class.as_degrees(180)
