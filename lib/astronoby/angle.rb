@@ -122,6 +122,12 @@ module Astronoby
       [radians, self.class].hash
     end
 
+    def <=>(other)
+      return nil unless other.is_a?(self.class)
+
+      radians <=> other.radians
+    end
+
     def str(format)
       case format
       when :dms then to_dms(degrees).format

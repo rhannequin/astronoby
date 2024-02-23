@@ -283,6 +283,26 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "#<=>" do
+    it "compares the two object values" do
+      angle1 = Astronoby::Angle.as_degrees(10)
+      angle2 = Astronoby::Angle.as_degrees(5)
+      angle3 = Astronoby::Angle.as_degrees(20)
+
+      expect(angle1 <=> Astronoby::Angle.as_degrees(10)).to eq 0
+      expect(angle1 <=> angle2).to be > 0
+      expect(angle1 <=> angle3).to be < 0
+    end
+
+    context "when the two objects are different type" do
+      it "returns nil" do
+        angle = Astronoby::Angle.as_degrees(10)
+
+        expect(angle <=> 10).to be_nil
+      end
+    end
+  end
+
   describe "#str" do
     it "returns a String" do
       angle = described_class.as_degrees(180)
