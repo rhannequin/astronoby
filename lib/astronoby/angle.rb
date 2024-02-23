@@ -45,26 +45,59 @@ module Astronoby
         degrees = degree.abs + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
         as_degrees(sign * degrees)
       end
+
+      def asin(ratio)
+        radians = Math.asin(ratio)
+        as_radians(radians)
+      end
+
+      def acos(ratio)
+        radians = Math.acos(ratio)
+        as_radians(radians)
+      end
+
+      def atan(ratio)
+        radians = Math.atan(ratio)
+        as_radians(radians)
+      end
     end
 
-    def radians
-      @angle
+    attr_reader :radians
+
+    def initialize(radians)
+      @radians = if radians.is_a?(Integer) || radians.is_a?(BigDecimal)
+        BigDecimal(radians)
+      else
+        BigDecimal(radians, PRECISION)
+      end
     end
 
     def degrees
-      @angle * PI_IN_DEGREES / PI
+      @radians * PI_IN_DEGREES / PI
     end
 
     def hours
-      @angle / RADIAN_PER_HOUR
+      @radians / RADIAN_PER_HOUR
     end
 
-    def initialize(angle)
-      @angle = if angle.is_a?(Integer) || angle.is_a?(BigDecimal)
-        BigDecimal(angle)
-      else
-        BigDecimal(angle, PRECISION)
-      end
+    def +(other)
+      self.class.as_radians(radians + other.radians)
+    end
+
+    def -(other)
+      self.class.as_radians(@radians - other.radians)
+    end
+
+    def sin
+      Math.sin(radians)
+    end
+
+    def cos
+      Math.cos(radians)
+    end
+
+    def tan
+      Math.tan(radians)
     end
 
     def str(format)

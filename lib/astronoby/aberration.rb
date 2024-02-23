@@ -20,25 +20,20 @@ module Astronoby
     #  Chapter: 36 - Aberration
     def apply
       delta_longitude = Astronoby::Angle.as_degrees(
-        -20.5 *
-        Math.cos(
-          @sun_longitude.radians - @coordinates.longitude.radians
-        ) / Math.cos(@coordinates.latitude.radians) / 3600
+        -20.5 * (
+          @sun_longitude - @coordinates.longitude
+        ).cos / @coordinates.latitude.cos / 3600
       )
 
       delta_latitude = Astronoby::Angle.as_degrees(
         -20.5 *
-        Math.sin(@sun_longitude.radians - @coordinates.longitude.radians) *
-        Math.sin(@coordinates.latitude.radians) / 3600
+        (@sun_longitude - @coordinates.longitude).sin *
+        @coordinates.latitude.sin / 3600
       )
 
       Astronoby::Coordinates::Ecliptic.new(
-        latitude: Astronoby::Angle.as_degrees(
-          @coordinates.latitude.degrees + delta_latitude.degrees
-        ),
-        longitude: Astronoby::Angle.as_degrees(
-          @coordinates.longitude.degrees + delta_longitude.degrees
-        )
+        latitude: @coordinates.latitude + delta_latitude,
+        longitude: @coordinates.longitude + delta_longitude
       )
     end
   end

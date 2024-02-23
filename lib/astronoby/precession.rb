@@ -19,15 +19,13 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 34 - Precession
     def precess
-      right_ascension = @coordinates.right_ascension.radians
-      declination = @coordinates.declination.radians
       matrix_a = matrix_for_epoch(@coordinates.epoch)
       matrix_b = matrix_for_epoch(@epoch).transpose
 
       vector = Vector[
-        Math.cos(right_ascension) * Math.cos(declination),
-        Math.sin(right_ascension) * Math.cos(declination),
-        Math.sin(declination)
+        @coordinates.right_ascension.cos * @coordinates.declination.cos,
+        @coordinates.right_ascension.sin * @coordinates.declination.cos,
+        @coordinates.declination.sin
       ]
 
       s = matrix_a * vector
@@ -37,9 +35,9 @@ module Astronoby
         right_ascension: Astronoby::Util::Trigonometry.adjustement_for_arctangent(
           Astronoby::Angle.as_radians(w[1]),
           Astronoby::Angle.as_radians(w[0]),
-          Astronoby::Angle.as_radians(Math.atan(w[1] / w[0]))
+          Astronoby::Angle.atan(w[1] / w[0])
         ),
-        declination: Astronoby::Angle.as_radians(Math.asin(w[2])),
+        declination: Astronoby::Angle.asin(w[2]),
         epoch: @epoch
       )
     end
@@ -51,22 +49,22 @@ module Astronoby
         Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
       )
 
-      ζ = Astronoby::Angle.as_degrees(
+      zeta = Astronoby::Angle.as_degrees(
         0.6406161 * t + 0.0000839 * t * t + 0.000005 * t * t * t
-      ).radians
+      )
       z = Astronoby::Angle.as_degrees(
         0.6406161 * t + 0.0003041 * t * t + 0.0000051 * t * t * t
-      ).radians
-      θ = Astronoby::Angle.as_degrees(
+      )
+      theta = Astronoby::Angle.as_degrees(
         0.5567530 * t - 0.0001185 * t * t - 0.0000116 * t * t * t
-      ).radians
+      )
 
-      cx = Math.cos(ζ)
-      sx = Math.sin(ζ)
-      cz = Math.cos(z)
-      sz = Math.sin(z)
-      ct = Math.cos(θ)
-      st = Math.sin(θ)
+      cx = zeta.cos
+      sx = zeta.sin
+      cz = z.cos
+      sz = z.sin
+      ct = theta.cos
+      st = theta.sin
 
       Matrix[
         [

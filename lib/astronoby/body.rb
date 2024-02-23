@@ -35,7 +35,7 @@ module Astronoby
       ar = azimuth_component(latitude: latitude)
       return nil if ar >= 1
 
-      Astronoby::Angle.as_radians(Math.acos(ar))
+      Astronoby::Angle.acos(ar)
     end
 
     # Source:
@@ -72,17 +72,14 @@ module Astronoby
     private
 
     def azimuth_component(latitude:)
-      Math.sin(@equatorial_coordinates.declination.radians)./(
-        Math.cos(latitude.radians)
-      )
+      @equatorial_coordinates.declination.sin / latitude.cos
     end
 
     def h2(latitude:)
       ar = azimuth_component(latitude: latitude)
       return nil if ar >= 1
 
-      h1 = Math.tan(latitude.radians) *
-        Math.tan(@equatorial_coordinates.declination.radians)
+      h1 = latitude.tan * @equatorial_coordinates.declination.tan
       return nil if h1.abs > 1
 
       Astronoby::Angle.as_radians(Math.acos(-h1) / 15.0)

@@ -16,7 +16,7 @@ module Astronoby
       Coordinates::Ecliptic.new(
         latitude: Angle.zero,
         longitude: Angle.as_degrees(
-          (true_anomaly.degrees + longitude_at_perigee.degrees) % 360
+          (true_anomaly + longitude_at_perigee).degrees % 360
         )
       )
     end
@@ -33,7 +33,7 @@ module Astronoby
 
     def mean_anomaly
       Angle.as_degrees(
-        (longitude_at_base_epoch.degrees - longitude_at_perigee.degrees) % 360
+        (longitude_at_base_epoch - longitude_at_perigee).degrees % 360
       )
     end
 
@@ -50,7 +50,7 @@ module Astronoby
       ) * Math.tan(eccentric_anomaly.radians / 2)
 
       Astronoby::Angle.as_degrees(
-        (Astronoby::Angle.as_radians(Math.atan(tan)).degrees * 2) % 360
+        (Astronoby::Angle.atan(tan).degrees * 2) % 360
       )
     end
 

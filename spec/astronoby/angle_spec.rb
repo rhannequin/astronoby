@@ -20,6 +20,51 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "::asin" do
+    it "returns an Angle object" do
+      expect(described_class.asin(1)).to be_a(described_class)
+    end
+
+    it "initializes an angle with the inverse sine of a ratio" do
+      ratio = 0.5
+      angle = described_class.asin(ratio)
+      precision = 10**-described_class::PRECISION
+      radians = described_class::PI / 6
+
+      expect(angle.radians).to be_within(precision).of(radians)
+    end
+  end
+
+  describe "::acos" do
+    it "returns an Angle object" do
+      expect(described_class.acos(0.5)).to be_a(described_class)
+    end
+
+    it "initializes an angle with the inverse sine of a ratio" do
+      ratio = 0.5
+      angle = described_class.acos(ratio)
+      precision = 10**-described_class::PRECISION
+      radians = described_class::PI / 3
+
+      expect(angle.radians).to be_within(precision).of(radians)
+    end
+  end
+
+  describe "::atan" do
+    it "returns an Angle object" do
+      expect(described_class.atan(1)).to be_a(described_class)
+    end
+
+    it "initializes an angle with the inverse sine of a ratio" do
+      ratio = 1
+      angle = described_class.atan(ratio)
+      precision = 10**-described_class::PRECISION
+      radians = described_class::PI / 4
+
+      expect(angle.radians).to be_within(precision).of(radians)
+    end
+  end
+
   describe "#radians" do
     it "returns the angle value in radian unit" do
       radians = described_class.new(described_class::PI).radians
@@ -90,6 +135,61 @@ RSpec.describe Astronoby::Angle do
 
         expect(hours).to be_within(10**-described_class::PRECISION).of(12)
       end
+    end
+  end
+
+  describe "#+" do
+    it "returns a new angle with a value of the two angles added" do
+      angle_1 = described_class.as_radians(described_class::PI)
+      angle_2 = described_class.as_degrees(45)
+
+      new_angle = angle_1 + angle_2
+
+      expect(new_angle.degrees).to eq 225
+    end
+  end
+
+  describe "#-" do
+    it "returns a new angle with a value of the two angles substracted" do
+      angle_1 = described_class.as_radians(described_class::PI)
+      angle_2 = described_class.as_degrees(45)
+
+      new_angle = angle_1 - angle_2
+
+      expect(new_angle.degrees).to eq 135
+    end
+  end
+
+  describe "#sin" do
+    it "returns the sine value of the angle" do
+      radians = described_class::PI / 6
+      angle = described_class.as_radians(radians)
+
+      sine = angle.sin.ceil(described_class::PRECISION)
+
+      expect(sine).to eq 0.5
+    end
+  end
+
+  describe "#cos" do
+    it "returns the cosine value of the angle" do
+      radians = described_class::PI / 3
+      angle = described_class.as_radians(radians)
+
+      cosine = angle.cos.ceil(described_class::PRECISION)
+
+      expect(cosine).to eq 0.5
+    end
+  end
+
+  describe "#tan" do
+    it "returns the tangent value of the angle" do
+      radians = described_class::PI / 4
+      angle = described_class.as_radians(radians)
+
+      tangent = angle.tan.ceil(described_class::PRECISION)
+
+      expect(tangent).to eq 1
     end
   end
 

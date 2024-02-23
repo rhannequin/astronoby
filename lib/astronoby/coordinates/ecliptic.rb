@@ -17,25 +17,19 @@ module Astronoby
       #  Chapter: 4 - Orbits and Coordinate Systems
       def to_equatorial(epoch:)
         mean_obliquity = Astronoby::MeanObliquity.for_epoch(epoch)
-        obliquity_in_radians = mean_obliquity.value.radians
-        longitude_in_radians = @longitude.radians
-        latitude_in_radians = @latitude.radians
+        obliquity = mean_obliquity.value
 
         y = Astronoby::Angle.as_radians(
-          Math.sin(longitude_in_radians) * Math.cos(obliquity_in_radians) -
-          Math.tan(latitude_in_radians) * Math.sin(obliquity_in_radians)
+          @longitude.sin * obliquity.cos - @latitude.tan * obliquity.sin
         )
-        x = Astronoby::Angle.as_radians(Math.cos(longitude_in_radians))
-        r = Astronoby::Angle.as_radians(Math.atan(y.radians / x.radians))
-        right_ascension = Astronoby::Angle.as_radians(
-          Astronoby::Util::Trigonometry.adjustement_for_arctangent(y, x, r).radians
-        )
+        x = Astronoby::Angle.as_radians(@longitude.cos)
+        r = Astronoby::Angle.atan(y.radians / x.radians)
+        right_ascension = Astronoby::Util::Trigonometry
+          .adjustement_for_arctangent(y, x, r)
 
-        declination = Astronoby::Angle.as_radians(
-          Math.asin(
-            Math.sin(latitude_in_radians) * Math.cos(obliquity_in_radians) +
-            Math.cos(latitude_in_radians) * Math.sin(obliquity_in_radians) * Math.sin(longitude_in_radians)
-          )
+        declination = Astronoby::Angle.asin(
+          @latitude.sin * obliquity.cos +
+          @latitude.cos * obliquity.sin * @longitude.sin
         )
 
         Equatorial.new(
