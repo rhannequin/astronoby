@@ -113,6 +113,10 @@ module Astronoby
       radians.zero?
     end
 
+    def ==(other)
+      other.is_a?(self.class) && radians == other.radians
+    end
+
     def str(format)
       case format
       when :dms then to_dms(degrees).format

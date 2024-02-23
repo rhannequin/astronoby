@@ -249,6 +249,22 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "equivalence (#==)" do
+    it "returns true when the angle is equivalent" do
+      angle1 = Astronoby::Angle.as_degrees(180)
+      angle2 = Astronoby::Angle.as_degrees(180)
+
+      expect(angle1).to eq angle2
+    end
+
+    it "returns true when the angle is not equivalent" do
+      angle1 = Astronoby::Angle.as_degrees(180)
+      angle2 = Astronoby::Angle.as_degrees(90)
+
+      expect(angle1).not_to eq angle2
+    end
+  end
+
   describe "#str" do
     it "returns a String" do
       angle = described_class.as_degrees(180)
