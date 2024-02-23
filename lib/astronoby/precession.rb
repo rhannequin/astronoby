@@ -31,13 +31,13 @@ module Astronoby
       s = matrix_a * vector
       w = matrix_b * s
 
-      Astronoby::Coordinates::Equatorial.new(
-        right_ascension: Astronoby::Util::Trigonometry.adjustement_for_arctangent(
-          Astronoby::Angle.as_radians(w[1]),
-          Astronoby::Angle.as_radians(w[0]),
-          Astronoby::Angle.atan(w[1] / w[0])
+      Coordinates::Equatorial.new(
+        right_ascension: Util::Trigonometry.adjustement_for_arctangent(
+          Angle.as_radians(w[1]),
+          Angle.as_radians(w[0]),
+          Angle.atan(w[1] / w[0])
         ),
-        declination: Astronoby::Angle.asin(w[2]),
+        declination: Angle.asin(w[2]),
         epoch: @epoch
       )
     end
@@ -45,17 +45,15 @@ module Astronoby
     private
 
     def matrix_for_epoch(epoch)
-      t = (epoch - Astronoby::Epoch::DEFAULT_EPOCH)./(
-        Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
-      )
+      t = (epoch - Epoch::DEFAULT_EPOCH) / Epoch::DAYS_PER_JULIAN_CENTURY
 
-      zeta = Astronoby::Angle.as_degrees(
+      zeta = Angle.as_degrees(
         0.6406161 * t + 0.0000839 * t * t + 0.000005 * t * t * t
       )
-      z = Astronoby::Angle.as_degrees(
+      z = Angle.as_degrees(
         0.6406161 * t + 0.0003041 * t * t + 0.0000051 * t * t * t
       )
-      theta = Astronoby::Angle.as_degrees(
+      theta = Angle.as_degrees(
         0.5567530 * t - 0.0001185 * t * t - 0.0000116 * t * t * t
       )
 

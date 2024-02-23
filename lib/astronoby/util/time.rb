@@ -11,10 +11,7 @@ module Astronoby
         #  Chapter: 12 - Conversion of UT to Greenwich sidereal time (GST)
         def ut_to_gmst(universal_time)
           julian_day = universal_time.to_date.ajd
-          t = (julian_day - Astronoby::Epoch::J2000)./(
-            Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
-          )
-
+          t = (julian_day - Epoch::J2000) / Epoch::DAYS_PER_JULIAN_CENTURY
           t0 = (
             (BigDecimal("6.697374558") +
             (BigDecimal("2400.051336") * t) +
@@ -41,9 +38,7 @@ module Astronoby
           jd0 = ::DateTime.new(date.year, 1, 1, 0, 0, 0).ajd - 1
           days_into_the_year = julian_day - jd0
 
-          t = (jd0 - Astronoby::Epoch::J1900)./(
-            Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
-          )
+          t = (jd0 - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
           r = BigDecimal("6.6460656") +
             BigDecimal("2400.051262") * t +
             BigDecimal("0.00002581") * t * t

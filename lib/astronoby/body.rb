@@ -19,11 +19,7 @@ module Astronoby
         @equatorial_coordinates.right_ascension.hours - h2_component.degrees
       rising_lst -= 24 if rising_lst > 24
 
-      Astronoby::Util::Time.lst_to_ut(
-        date: date,
-        longitude: longitude,
-        lst: rising_lst
-      )
+      Util::Time.lst_to_ut(date: date, longitude: longitude, lst: rising_lst)
     end
 
     # Source:
@@ -35,7 +31,7 @@ module Astronoby
       ar = azimuth_component(latitude: latitude)
       return nil if ar >= 1
 
-      Astronoby::Angle.acos(ar)
+      Angle.acos(ar)
     end
 
     # Source:
@@ -50,11 +46,7 @@ module Astronoby
       setting_lst = @equatorial_coordinates.right_ascension.hours + h2_component.degrees
       setting_lst -= 24 if setting_lst > 24
 
-      Astronoby::Util::Time.lst_to_ut(
-        date: date,
-        longitude: longitude,
-        lst: setting_lst
-      )
+      Util::Time.lst_to_ut(date: date, longitude: longitude, lst: setting_lst)
     end
 
     # Source:
@@ -66,7 +58,7 @@ module Astronoby
       rising_az = rising_azimuth(latitude: latitude)
       return nil if rising_az.nil?
 
-      Astronoby::Angle.as_degrees(360 - rising_az.degrees)
+      Angle.as_degrees(360 - rising_az.degrees)
     end
 
     private
@@ -82,7 +74,7 @@ module Astronoby
       h1 = latitude.tan * @equatorial_coordinates.declination.tan
       return nil if h1.abs > 1
 
-      Astronoby::Angle.as_radians(Math.acos(-h1) / 15.0)
+      Angle.as_radians(Math.acos(-h1) / 15.0)
     end
   end
 end

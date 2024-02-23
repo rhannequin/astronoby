@@ -9,7 +9,7 @@ module Astronoby
         declination:,
         right_ascension:,
         hour_angle: nil,
-        epoch: Astronoby::Epoch::DEFAULT_EPOCH
+        epoch: Epoch::DEFAULT_EPOCH
       )
         @right_ascension = right_ascension
         @declination = declination
@@ -18,7 +18,7 @@ module Astronoby
       end
 
       def compute_hour_angle(time:, longitude:)
-        lst = Astronoby::Util::Time.local_sidereal_time(
+        lst = Util::Time.local_sidereal_time(
           time: time,
           longitude: longitude
         )
@@ -26,21 +26,21 @@ module Astronoby
         ha = (lst - @right_ascension.hours)
         ha += 24 if ha.negative?
 
-        Astronoby::Angle.as_hours(ha)
+        Angle.as_hours(ha)
       end
 
       def to_horizontal(time:, latitude:, longitude:)
         ha = @hour_angle || compute_hour_angle(time: time, longitude: longitude)
         t0 = @declination.sin * latitude.sin +
           @declination.cos * latitude.cos * ha.cos
-        altitude = Astronoby::Angle.asin(t0)
+        altitude = Angle.asin(t0)
 
         t1 = @declination.sin - latitude.sin * altitude.sin
         t2 = t1 / (latitude.cos * altitude.cos)
-        azimuth = Astronoby::Angle.acos(t2)
+        azimuth = Angle.acos(t2)
 
         if ha.sin.positive?
-          azimuth = Astronoby::Angle.as_degrees(BigDecimal("360") - azimuth.degrees)
+          azimuth = Angle.as_degrees(BigDecimal("360") - azimuth.degrees)
         end
 
         Horizontal.new(
@@ -57,18 +57,18 @@ module Astronoby
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
       def to_ecliptic(epoch:)
-        mean_obliquity = Astronoby::MeanObliquity.for_epoch(epoch)
+        mean_obliquity = MeanObliquity.for_epoch(epoch)
         obliquity = mean_obliquity.value
 
-        y = Astronoby::Angle.as_radians(
+        y = Angle.as_radians(
           @right_ascension.sin * obliquity.cos +
             @declination.tan * obliquity.sin
         )
-        x = Astronoby::Angle.as_radians(@right_ascension.cos)
-        r = Astronoby::Angle.atan(y.radians / x.radians)
-        longitude = Astronoby::Util::Trigonometry.adjustement_for_arctangent(y, x, r)
+        x = Angle.as_radians(@right_ascension.cos)
+        r = Angle.atan(y.radians / x.radians)
+        longitude = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 
-        latitude = Astronoby::Angle.asin(
+        latitude = Angle.asin(
           @declination.sin * obliquity.cos -
           @declination.cos * obliquity.sin * @right_ascension.sin
         )
@@ -80,7 +80,7 @@ module Astronoby
       end
 
       def to_epoch(epoch)
-        Astronoby::Precession.for_equatorial_coordinates(
+        Precession.for_equatorial_coordinates(
           coordinates: self,
           epoch: epoch
         )

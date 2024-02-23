@@ -19,19 +19,19 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 36 - Aberration
     def apply
-      delta_longitude = Astronoby::Angle.as_degrees(
+      delta_longitude = Angle.as_degrees(
         -20.5 * (
           @sun_longitude - @coordinates.longitude
         ).cos / @coordinates.latitude.cos / 3600
       )
 
-      delta_latitude = Astronoby::Angle.as_degrees(
+      delta_latitude = Angle.as_degrees(
         -20.5 *
         (@sun_longitude - @coordinates.longitude).sin *
         @coordinates.latitude.sin / 3600
       )
 
-      Astronoby::Coordinates::Ecliptic.new(
+      Coordinates::Ecliptic.new(
         latitude: @coordinates.latitude + delta_latitude,
         longitude: @coordinates.longitude + delta_longitude
       )

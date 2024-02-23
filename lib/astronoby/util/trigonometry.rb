@@ -15,10 +15,10 @@ module Astronoby
           return angle if y.degrees.positive? && x.degrees.positive?
 
           if y.degrees.negative? && x.degrees.positive?
-            return Astronoby::Angle.as_degrees(angle.degrees + 360)
+            return Angle.as_degrees(angle.degrees + 360)
           end
 
-          Astronoby::Angle.as_degrees(angle.degrees + 180)
+          Angle.as_degrees(angle.degrees + 180)
         end
       end
     end

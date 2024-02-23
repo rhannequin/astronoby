@@ -21,7 +21,7 @@ module Astronoby
     end
 
     def for_ecliptic_longitude
-      Astronoby::Angle.as_dms(
+      Angle.as_dms(
         0,
         0,
         (
@@ -32,7 +32,7 @@ module Astronoby
     end
 
     def for_obliquity_of_the_ecliptic
-      Astronoby::Angle.as_dms(
+      Angle.as_dms(
         0,
         0,
         (
@@ -45,24 +45,26 @@ module Astronoby
     private
 
     def julian_centuries
-      (@epoch - Astronoby::Epoch::J1900)./(
-        Astronoby::Epoch::DAYS_PER_JULIAN_CENTURY
-      )
+      (@epoch - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
     end
 
     def sun_mean_longitude
-      Astronoby::Angle.as_degrees((279.6967 + 360.0 * (a - a.to_i)) % 360)
+      Angle.as_degrees(
+        (279.6967 + 360.0 * (centuries_a - centuries_a.to_i)) % 360
+      )
     end
 
     def moon_ascending_node_longitude
-      Astronoby::Angle.as_degrees((259.1833 - 360.0 * (b - b.to_i)) % 360)
+      Angle.as_degrees(
+        (259.1833 - 360.0 * (centuries_b - centuries_b.to_i)) % 360
+      )
     end
 
-    def a
+    def centuries_a
       100.002136 * julian_centuries
     end
 
-    def b
+    def centuries_b
       5.372617 * julian_centuries
     end
   end

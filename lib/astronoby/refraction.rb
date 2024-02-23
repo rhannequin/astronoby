@@ -27,11 +27,9 @@ module Astronoby
     def refract
       altitude_in_degrees = @coordinates.altitude.degrees
 
-      refraction_angle = Astronoby::Angle.as_degrees(
+      refraction_angle = Angle.as_degrees(
         if altitude_in_degrees > 15
-          zenith_angle = Astronoby::Angle.as_degrees(
-            90 - @coordinates.altitude.degrees
-          )
+          zenith_angle = Angle.as_degrees(90 - @coordinates.altitude.degrees)
           0.00452 * @pressure * zenith_angle.tan / (273 + @temperature)
         else
           (
@@ -52,7 +50,7 @@ module Astronoby
         end
       )
 
-      Astronoby::Coordinates::Horizontal.new(
+      Coordinates::Horizontal.new(
         azimuth: @coordinates.azimuth,
         altitude: @coordinates.altitude + refraction_angle,
         latitude: @coordinates.latitude,
