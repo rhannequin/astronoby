@@ -7,11 +7,10 @@ RSpec.describe Astronoby::Aberration do
         latitude: Astronoby::Angle.as_dms(20, 30, 40),
         longitude: Astronoby::Angle.as_dms(30, 40, 50)
       )
-      sun_longitude = Astronoby::Angle.as_dms(40, 50, 60)
 
       apparent_coordinates = described_class.for_ecliptic_coordinates(
         coordinates: true_coordinates,
-        sun_longitude: sun_longitude
+        epoch: Astronoby::Epoch::DEFAULT_EPOCH
       )
 
       expect(apparent_coordinates).to be_a(Astronoby::Coordinates::Ecliptic)
@@ -33,18 +32,19 @@ RSpec.describe Astronoby::Aberration do
         latitude: Astronoby::Angle.as_dms(-1, 32, 56.4),
         longitude: Astronoby::Angle.as_dms(352, 37, 10.1)
       )
-      sun_longitude = Astronoby::Angle.as_dms(165, 33, 44.1)
+      time = Time.utc(1988, 9, 8)
+      epoch = Astronoby::Epoch.from_time(time)
 
       apparent_coordinates = described_class.for_ecliptic_coordinates(
         coordinates: true_coordinates,
-        sun_longitude: sun_longitude
+        epoch: epoch
       )
 
       expect(apparent_coordinates.latitude.str(:dms)).to(
         eq("-1° 32′ 56.3319″")
       )
       expect(apparent_coordinates.longitude.str(:dms)).to(
-        eq("+352° 37′ 30.4521″")
+        eq("+352° 37′ 30.4522″")
       )
     end
   end

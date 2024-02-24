@@ -2,15 +2,13 @@
 
 module Astronoby
   class Aberration
-    # TODO - Replace Sun longitude with epoch and compute Sun ecliptic
-    # coordinates from it
-    def self.for_ecliptic_coordinates(coordinates:, sun_longitude:)
-      new(coordinates, sun_longitude).apply
+    def self.for_ecliptic_coordinates(coordinates:, epoch:)
+      new(coordinates, epoch).apply
     end
 
-    def initialize(coordinates, sun_longitude)
+    def initialize(coordinates, epoch)
       @coordinates = coordinates
-      @sun_longitude = sun_longitude
+      @epoch = epoch
     end
 
     # Source:
@@ -21,13 +19,13 @@ module Astronoby
     def apply
       delta_longitude = Angle.as_degrees(
         -20.5 * (
-          @sun_longitude - @coordinates.longitude
+          sun_longitude - @coordinates.longitude
         ).cos / @coordinates.latitude.cos / 3600
       )
 
       delta_latitude = Angle.as_degrees(
         -20.5 *
-        (@sun_longitude - @coordinates.longitude).sin *
+        (sun_longitude - @coordinates.longitude).sin *
         @coordinates.latitude.sin / 3600
       )
 
@@ -35,6 +33,10 @@ module Astronoby
         latitude: @coordinates.latitude + delta_latitude,
         longitude: @coordinates.longitude + delta_longitude
       )
+    end
+
+    def sun_longitude
+      @_sun_longitude ||= Sun.new(epoch: @epoch).ecliptic_coordinates.longitude
     end
   end
 end
