@@ -58,19 +58,18 @@ module Astronoby
       #  Chapter: 4 - Orbits and Coordinate Systems
       def to_ecliptic(epoch:)
         mean_obliquity = MeanObliquity.for_epoch(epoch)
-        obliquity = mean_obliquity.value
 
         y = Angle.as_radians(
-          @right_ascension.sin * obliquity.cos +
-            @declination.tan * obliquity.sin
+          @right_ascension.sin * mean_obliquity.cos +
+          @declination.tan * mean_obliquity.sin
         )
         x = Angle.as_radians(@right_ascension.cos)
         r = Angle.atan(y.radians / x.radians)
         longitude = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 
         latitude = Angle.asin(
-          @declination.sin * obliquity.cos -
-          @declination.cos * obliquity.sin * @right_ascension.sin
+          @declination.sin * mean_obliquity.cos -
+          @declination.cos * mean_obliquity.sin * @right_ascension.sin
         )
 
         Ecliptic.new(
