@@ -74,10 +74,7 @@ git commits and the created tag, and push the `.gem` file to [rubygems.org].
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at
-https://github.com/rhannequin/astronoby. This project is intended to be a safe,
-welcoming space for collaboration, and contributors are expected to adhere to
-the [code of conduct].
+Please see [CONTRIBUTING.md](https://github.com/rhannequin/astronoby/blob/main/CONTRIBUTING.md).
 
 [code of conduct]: https://github.com/rhannequin/astronoby/blob/main/CODE_OF_CONDUCT.md
 
