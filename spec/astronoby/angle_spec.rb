@@ -20,17 +20,47 @@ RSpec.describe Astronoby::Angle do
       expect(described_class.as_radians(described_class::PI))
         .to be_a(described_class)
     end
+
+    it "normalizes the angle" do
+      expect(described_class.as_radians(2 * described_class::PI).radians)
+        .to eq 0
+
+      expect(described_class.as_radians(3 * described_class::PI).radians)
+        .to eq described_class::PI
+
+      expect(described_class.as_radians(-5 * described_class::PI).radians)
+        .to eq(-described_class::PI)
+
+      expect(described_class.as_radians(described_class::PI / 2).radians)
+        .to eq described_class::PI / 2
+    end
   end
 
   describe "::as_degrees" do
     it "returns an Angle object" do
       expect(described_class.as_degrees(180)).to be_a(described_class)
     end
+
+    it "normalizes the angle" do
+      expect(described_class.as_degrees(360).degrees.round).to eq 0
+      expect(described_class.as_degrees(365).degrees.round).to eq 5
+      expect(described_class.as_degrees(-365).degrees.round).to eq(-5)
+      expect(described_class.as_degrees(70).degrees.round).to eq 70
+      expect(described_class.as_degrees(-70).degrees.round).to eq(-70)
+    end
   end
 
   describe "::as_hours" do
     it "returns an Angle object" do
       expect(described_class.as_hours(23)).to be_a(described_class)
+    end
+
+    it "normalizes the angle" do
+      expect(described_class.as_hours(24).hours.round).to eq 0
+      expect(described_class.as_hours(26).hours.round).to eq 2
+      expect(described_class.as_hours(-26).hours.round).to eq(-2)
+      expect(described_class.as_hours(23).hours.round).to eq 23
+      expect(described_class.as_hours(-23).hours.round).to eq(-23)
     end
   end
 
