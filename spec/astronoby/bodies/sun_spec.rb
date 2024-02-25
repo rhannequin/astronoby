@@ -22,7 +22,7 @@ RSpec.describe Astronoby::Sun do
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
 
       expect(ecliptic_coordinates.longitude.degrees.to_f).to(
-        eq(316.57267134069514)
+        eq(316.5726713406949)
       )
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Astronoby::Sun do
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
 
       expect(ecliptic_coordinates.longitude.degrees.to_f).to(
-        eq(137.36484079771108)
+        eq(137.36484079770798)
       )
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Astronoby::Sun do
       ecliptic_coordinates = described_class.new(epoch: epoch).ecliptic_coordinates
 
       expect(ecliptic_coordinates.longitude.degrees.to_f).to(
-        eq(45.92185191445215)
+        eq(45.92185191445673)
       )
     end
 

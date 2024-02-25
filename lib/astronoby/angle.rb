@@ -8,6 +8,8 @@ module Astronoby
     PI = BigMath.PI(PRECISION)
     PI_IN_DEGREES = BigDecimal("180")
 
+    FULL_CIRCLE_IN_RADIANS = (2 * PI)
+
     RADIAN_PER_HOUR = PI / BigDecimal("12")
     MINUTES_PER_DEGREE = BigDecimal("60")
     MINUTES_PER_HOUR = BigDecimal("60")
@@ -22,17 +24,18 @@ module Astronoby
       end
 
       def as_radians(radians)
-        new(radians)
+        normalized_radians = radians.remainder(FULL_CIRCLE_IN_RADIANS)
+        new(normalized_radians)
       end
 
       def as_degrees(degrees)
         radians = degrees / PI_IN_DEGREES * PI
-        new(radians)
+        as_radians(radians)
       end
 
       def as_hours(hours)
         radians = hours * RADIAN_PER_HOUR
-        new(radians)
+        as_radians(radians)
       end
 
       def as_hms(hour, minute, second)
