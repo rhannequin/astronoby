@@ -65,38 +65,38 @@ class GeoDatum
 
   def initialize(datum_name)
     @name = datum_name.upcase
-    raise NameError unless $GeodesyEllipse.member? @name
-    @desc  = $GeodesyEllipse[@name][0]
-    @a     = $GeodesyEllipse[@name][1]
-    @f_inv = $GeodesyEllipse[@name][2]
+    raise NameError unless GeodesyEllipse.has_key? @name
+    @desc  = GeodesyEllipse[@name][0]
+    @a     = GeodesyEllipse[@name][1]
+    @f_inv = GeodesyEllipse[@name][2]
     @f     = 1.0 / @f_inv
-    @b     = $GeodesyEllipse[@name][3]
-    @e2    = $GeodesyEllipse[@name][4]
+    @b     = GeodesyEllipse[@name][3]
+    @e2    = GeodesyEllipse[@name][4]
     @e     = Math.sqrt(@e2)
   end
   
   def self.dump
-    puts $GeodesyEllipseHeading.inspect
-    puts $GeodesyEllipse.inspect
+    puts GeodesyEllipseHeading.inspect
+    puts GeodesyEllipse.inspect
     return nil
   end
   
   def self.list
-    $GeodesyEllipse.each {|k| puts k}
+    GeodesyEllipse.each {|k| puts k}
     return nil
   end
 
   def self.get(datum_name)
     name = datum_name.upcase
-    raise Datum_Not_Supported unless $GeodesyEllipse.member? name
-    return {  "name"=> name,
-              "desc"=> $GeodesyEllipse[name][0],
-              "a"=> $GeodesyEllipse[name][1],
-              "f_inv"=> $GeodesyEllipse[name][2],
-              "f"=> 1.0 / $GeodesyEllipse[name][2],
-              "b"=> $GeodesyEllipse[name][3],
-              "e2"=> $GeodesyEllipse[name][4],
-              "e"=> Math.sqrt($GeodesyEllipse[name][4])
+    raise Datum_Not_Supported unless GeodesyEllipse.member? name
+    return {  "name"=>  name,
+              "desc"=>  GeodesyEllipse[name][0],
+              "a"=>     GeodesyEllipse[name][1],
+              "f_inv"=> GeodesyEllipse[name][2],
+              "f"=>     1.0 / GeodesyEllipse[name][2],
+              "b"=>     GeodesyEllipse[name][3],
+              "e2"=>    GeodesyEllipse[name][4],
+              "e"=>     Math.sqrt(GeodesyEllipse[name][4])
             }
   end
 
