@@ -4,6 +4,8 @@ require "bigdecimal/math"
 
 module Astronoby
   class Angle
+    include Comparable
+
     PRECISION = 14
     PI = BigMath.PI(PRECISION)
     PI_IN_DEGREES = BigDecimal("180")

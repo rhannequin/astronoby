@@ -313,23 +313,47 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
-  describe "#<=>" do
-    it "compares the two object values" do
-      angle1 = Astronoby::Angle.as_degrees(10)
-      angle2 = Astronoby::Angle.as_degrees(5)
-      angle3 = Astronoby::Angle.as_degrees(20)
+  describe "comparison" do
+    it "handles comparison of angles" do
+      angle = described_class.as_degrees(10)
+      same_angle = described_class.as_degrees(10)
+      greater_angle = described_class.as_radians(described_class::PI)
+      smaller_angle = described_class.as_degrees(5)
+      way_greater_angle = described_class.as_degrees(365)
+      negative_angle = described_class.as_radians(-described_class::PI)
 
-      expect(angle1 <=> Astronoby::Angle.as_degrees(10)).to eq 0
-      expect(angle1 <=> angle2).to be > 0
-      expect(angle1 <=> angle3).to be < 0
+      expect(angle == same_angle).to be true
+      expect(angle != same_angle).to be false
+      expect(angle > same_angle).to be false
+      expect(angle >= same_angle).to be true
+      expect(angle < same_angle).to be false
+      expect(angle <= same_angle).to be true
+
+      expect(angle < greater_angle).to be true
+      expect(angle == greater_angle).to be false
+      expect(angle != greater_angle).to be true
+      expect(angle > greater_angle).to be false
+
+      expect(angle < smaller_angle).to be false
+      expect(angle == smaller_angle).to be false
+      expect(angle != smaller_angle).to be true
+      expect(angle > smaller_angle).to be true
+
+      expect(angle < way_greater_angle).to be false
+      expect(angle == way_greater_angle).to be false
+      expect(angle != way_greater_angle).to be true
+      expect(angle > way_greater_angle).to be true
+
+      expect(angle < negative_angle).to be false
+      expect(angle == negative_angle).to be false
+      expect(angle != negative_angle).to be true
+      expect(angle > negative_angle).to be true
     end
 
-    context "when the two objects are different type" do
-      it "returns nil" do
-        angle = Astronoby::Angle.as_degrees(10)
+    it "doesn't support comparison of angles with other types" do
+      angle = Astronoby::Angle.as_degrees(10)
 
-        expect(angle <=> 10).to be_nil
-      end
+      expect(angle <=> 10).to be_nil
     end
   end
 
