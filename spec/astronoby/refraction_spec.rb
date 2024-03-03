@@ -9,9 +9,15 @@ RSpec.describe Astronoby::Refraction do
         latitude: Astronoby::Angle.as_degrees(50),
         longitude: Astronoby::Angle.zero
       )
+      observer = instance_double(
+        Astronoby::Observer,
+        pressure: 0,
+        temperature: 0
+      )
 
       apparent_coordinates = described_class.correct_horizontal_coordinates(
-        coordinates: true_coordinates
+        coordinates: true_coordinates,
+        observer: observer
       )
 
       expect(apparent_coordinates).to be_a(Astronoby::Coordinates::Horizontal)
@@ -29,16 +35,20 @@ RSpec.describe Astronoby::Refraction do
         latitude: Astronoby::Angle.as_degrees(52),
         longitude: Astronoby::Angle.zero
       )
+      observer = instance_double(
+        Astronoby::Observer,
+        pressure: 1008,
+        temperature: 273.15 + 13
+      )
 
       apparent_coordinates = described_class.correct_horizontal_coordinates(
         coordinates: true_coordinates,
-        pressure: 1008,
-        temperature: 13
+        observer: observer
       )
 
       expect(apparent_coordinates.azimuth).to eq(true_coordinates.azimuth)
       expect(apparent_coordinates.altitude.str(:dms)).to(
-        eq("+19° 22′ 47.0924″")
+        eq("+19° 22′ 47.0068″")
       )
       expect(apparent_coordinates.latitude).to eq(true_coordinates.latitude)
       expect(apparent_coordinates.longitude).to eq(true_coordinates.longitude)

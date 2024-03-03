@@ -2,21 +2,17 @@
 
 module Astronoby
   class Refraction
-    DEFAULT_PRESSURE = 1000
-    DEFAULT_TEMPERATURE = 25
+    KELVINS_AT_ZERO_DEGREES_CELCIUS = BigDecimal("273.15")
+    LOW_ALTITUDE_BODY_ANGLE = Angle.as_degrees(15)
+    ZENITH = Angle.as_degrees(90)
 
-    def self.correct_horizontal_coordinates(
-      coordinates:,
-      pressure: DEFAULT_PRESSURE,
-      temperature: DEFAULT_TEMPERATURE
-    )
-      new(coordinates, pressure, temperature).refract
+    def self.correct_horizontal_coordinates(coordinates:, observer:)
+      new(coordinates, observer).refract
     end
 
-    def initialize(coordinates, pressure, temperature)
+    def initialize(coordinates, observer)
       @coordinates = coordinates
-      @pressure = pressure
-      @temperature = temperature
+      @observer = observer
     end
 
     # Source:
@@ -25,36 +21,43 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 37 - Refraction
     def refract
-      altitude_in_degrees = @coordinates.altitude.degrees
-
-      refraction_angle = Angle.as_degrees(
-        if altitude_in_degrees > 15
-          zenith_angle = Angle.as_degrees(90 - @coordinates.altitude.degrees)
-          0.00452 * @pressure * zenith_angle.tan / (273 + @temperature)
-        else
-          (
-            @pressure *
-            (
-              0.1594 +
-              0.0196 * altitude_in_degrees +
-              0.00002 * altitude_in_degrees * altitude_in_degrees
-            )
-          )./(
-            (273 + @temperature) *
-            (
-              1 +
-              0.505 * altitude_in_degrees +
-              0.0845 * altitude_in_degrees * altitude_in_degrees
-            )
-          )
-        end
-      )
-
       Coordinates::Horizontal.new(
         azimuth: @coordinates.azimuth,
         altitude: @coordinates.altitude + refraction_angle,
         latitude: @coordinates.latitude,
         longitude: @coordinates.longitude
+      )
+    end
+
+    private
+
+    def pressure
+      @_pressure ||= @observer.pressure
+    end
+
+    def temperature
+      @_temperature ||= @observer.temperature
+    end
+
+    def altitude_in_degrees
+      @_altitude_in_degrees ||= @altitude.degrees
+    end
+
+    def refraction_angle
+      Angle.as_degrees(
+        if @coordinates.altitude > LOW_ALTITUDE_BODY_ANGLE
+          zenith_angle = ZENITH - @coordinates.altitude
+          0.00452 * pressure * zenith_angle.tan / temperature
+        else
+          term1 = pressure * (
+            0.1594 + 0.0196 * altitude_in_degrees + 0.00002 * altitude_in_degrees**2
+          )
+          term2 = temperature * (
+            1 + 0.505 * altitude_in_degrees + 0.0845 * altitude_in_degrees**2
+          )
+
+          term1 / term2
+        end
       )
     end
   end
