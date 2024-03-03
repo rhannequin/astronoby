@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Refraction do
-  describe "::for_horizontal_coordinates" do
+  describe "::correct_horizontal_coordinates" do
     it "returns horizontal coordinates" do
       true_coordinates = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.as_degrees(100),
@@ -10,7 +10,7 @@ RSpec.describe Astronoby::Refraction do
         longitude: Astronoby::Angle.zero
       )
 
-      apparent_coordinates = described_class.for_horizontal_coordinates(
+      apparent_coordinates = described_class.correct_horizontal_coordinates(
         coordinates: true_coordinates
       )
 
@@ -30,7 +30,7 @@ RSpec.describe Astronoby::Refraction do
         longitude: Astronoby::Angle.zero
       )
 
-      apparent_coordinates = described_class.for_horizontal_coordinates(
+      apparent_coordinates = described_class.correct_horizontal_coordinates(
         coordinates: true_coordinates,
         pressure: 1008,
         temperature: 13

@@ -5,7 +5,7 @@ module Astronoby
     DEFAULT_PRESSURE = 1000
     DEFAULT_TEMPERATURE = 25
 
-    def self.for_horizontal_coordinates(
+    def self.correct_horizontal_coordinates(
       coordinates:,
       pressure: DEFAULT_PRESSURE,
       temperature: DEFAULT_TEMPERATURE
