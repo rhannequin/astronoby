@@ -2,9 +2,12 @@
 
 module Astronoby
   class Refraction
-    KELVINS_AT_ZERO_DEGREES_CELCIUS = BigDecimal("273.15")
     LOW_ALTITUDE_BODY_ANGLE = Angle.as_degrees(15)
     ZENITH = Angle.as_degrees(90)
+
+    def self.angle(coordinates:, observer:)
+      new(coordinates, observer).refraction_angle
+    end
 
     def self.correct_horizontal_coordinates(coordinates:, observer:)
       new(coordinates, observer).refract
@@ -29,6 +32,14 @@ module Astronoby
       )
     end
 
+    def refraction_angle
+      if @coordinates.altitude > LOW_ALTITUDE_BODY_ANGLE
+        high_altitude_angle
+      else
+        low_altitude_angle
+      end
+    end
+
     private
 
     def pressure
@@ -40,25 +51,23 @@ module Astronoby
     end
 
     def altitude_in_degrees
-      @_altitude_in_degrees ||= @altitude.degrees
+      @_altitude_in_degrees ||= @coordinates.altitude.degrees
     end
 
-    def refraction_angle
-      Angle.as_degrees(
-        if @coordinates.altitude > LOW_ALTITUDE_BODY_ANGLE
-          zenith_angle = ZENITH - @coordinates.altitude
-          0.00452 * pressure * zenith_angle.tan / temperature
-        else
-          term1 = pressure * (
-            0.1594 + 0.0196 * altitude_in_degrees + 0.00002 * altitude_in_degrees**2
-          )
-          term2 = temperature * (
-            1 + 0.505 * altitude_in_degrees + 0.0845 * altitude_in_degrees**2
-          )
+    def high_altitude_angle
+      zenith_angle = ZENITH - @coordinates.altitude
+      Angle.as_degrees(0.00452 * pressure * zenith_angle.tan / temperature)
+    end
 
-          term1 / term2
-        end
+    def low_altitude_angle
+      term1 = pressure * (
+        0.1594 + 0.0196 * altitude_in_degrees + 0.00002 * altitude_in_degrees**2
       )
+      term2 = temperature * (
+        1 + 0.505 * altitude_in_degrees + 0.0845 * altitude_in_degrees**2
+      )
+
+      Angle.as_degrees(term1 / term2)
     end
   end
 end
