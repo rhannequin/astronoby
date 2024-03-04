@@ -3,7 +3,7 @@
 module Astronoby
   class Observer
     DEFAULT_ELEVATION = 0
-    DEFAULT_TEMPERATURE = BigDecimal("288.15")
+    DEFAULT_TEMPERATURE = BigDecimal("283.15")
     PRESSURE_AT_SEA_LEVEL = BigDecimal("1013.25")
     PASCAL_PER_MILLIBAR = BigDecimal("0.01")
     EARTH_GRAVITATIONAL_ACCELERATION = BigDecimal("9.80665")
