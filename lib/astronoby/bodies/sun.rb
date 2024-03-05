@@ -2,6 +2,9 @@
 
 module Astronoby
   class Sun
+    SEMI_MAJOR_AXIS_IN_METERS = 149_598_500_000
+    ANGULAR_DIAMETER = Angle.as_degrees(0.533128)
+
     # Source:
     #  Title: Celestial Calculations
     #  Author: J. L. Lawrence
@@ -27,6 +30,16 @@ module Astronoby
       ecliptic_coordinates
         .to_equatorial(epoch: @epoch)
         .to_horizontal(time: time, latitude: latitude, longitude: longitude)
+    end
+
+    # @return [Numeric] Earth-Sun distance in meters
+    def earth_distance
+      SEMI_MAJOR_AXIS_IN_METERS / distance_angular_size_factor
+    end
+
+    # @return [Angle] Apparent Sun's angular size
+    def angular_size
+      Angle.as_degrees(ANGULAR_DIAMETER.degrees * distance_angular_size_factor)
     end
 
     private
@@ -76,6 +89,13 @@ module Astronoby
       Angle.as_degrees(
         (0.01675104 - 0.0000418 * centuries - 0.000000126 * centuries**2) % 360
       )
+    end
+
+    def distance_angular_size_factor
+      term1 = 1 + orbital_eccentricity.degrees * true_anomaly.cos
+      term2 = 1 - orbital_eccentricity.degrees**2
+
+      term1 / term2
     end
   end
 end
