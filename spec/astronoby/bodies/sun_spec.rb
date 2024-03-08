@@ -182,4 +182,126 @@ RSpec.describe Astronoby::Sun do
       )
     end
   end
+
+  describe "#earth_distance" do
+    it "returns a number in meters" do
+      epoch = Astronoby::Epoch::DEFAULT_EPOCH
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.earth_distance).to be_a Numeric
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 48 - Calculating the Sun's distance and angular size
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(1988, 7, 27)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.earth_distance.round).to eq 151_920_130_151
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(2015, 2, 15)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.earth_distance.round).to eq 147_745_409_916
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(2015, 8, 9)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.earth_distance.round).to eq 151_683_526_945
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(2010, 5, 6)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.earth_distance.round).to eq 150_902_254_024
+    end
+  end
+
+  describe "#angular_size" do
+    it "returns an Angle" do
+      epoch = Astronoby::Epoch::DEFAULT_EPOCH
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.angular_size).to be_a Astronoby::Angle
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 48 - Calculating the Sun's distance and angular size
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(1988, 7, 27)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 29.9308″"
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(2015, 2, 15)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.angular_size.str(:dms)).to eq "+0° 32′ 23.333″"
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(2015, 8, 9)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 32.8788″"
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "computes and return the Earth-Sun distance for a given epoch" do
+      time = Time.utc(2010, 5, 6)
+      epoch = Astronoby::Epoch.from_time(time)
+      sun = described_class.new(epoch: epoch)
+
+      expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 42.6789″"
+    end
+  end
 end
