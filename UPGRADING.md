@@ -52,3 +52,11 @@ Returns the apparent Sun's angular size (`Angle`).
 
 With the inclusion of `Comparable`, comparison methods such as `#==`, `#<`,
 `#>`, `#<=`, `#>=`, `#!=`, `#<=>` have been added to `Angle`.
+
+### `GeocentricParallax` class added
+
+Calculates the equatorial horizontal parallax for an observed body. The
+class provided two class methods:
+- `::angle` which returns the parallax angle
+- `::for_equatorial_coordinates` which correct equatorial coordinates with
+  the parallax correction
