@@ -2,24 +2,31 @@
 
 module Astronoby
   class Body
+    DEFAULT_REFRACTION_VERTICAL_SHIFT = Angle.as_dms(0, 34, 0)
+    RISING_SETTING_HOUR_ANGLE_RATIO_RANGE = (-1..1)
+
     def initialize(equatorial_coordinates)
       @equatorial_coordinates = equatorial_coordinates
     end
 
     # Source:
-    #  Title: Celestial Calculations
-    #  Author: J. L. Lawrence
-    #  Edition: MIT Press
-    #  Chapter: 5 - Stars in the Nighttime Sky
-    def rising_time(latitude:, longitude:, date:)
-      h2_component = h2(latitude: latitude)
-      return nil if h2_component.nil?
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 33 - Rising and setting
+    def rising_time(latitude:, longitude:, date:, apparent: true)
+      ratio = ratio(latitude, apparent)
+      return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(ratio)
 
-      rising_lst = 24 +
-        @equatorial_coordinates.right_ascension.hours - h2_component.degrees
-      rising_lst -= 24 if rising_lst > 24
+      hour_angle = Angle.acos(ratio)
+      local_sidereal_time =
+        @equatorial_coordinates.right_ascension.hours - hour_angle.hours
 
-      Util::Time.lst_to_ut(date: date, longitude: longitude, lst: rising_lst)
+      Util::Time.lst_to_ut(
+        date: date,
+        longitude: longitude,
+        lst: local_sidereal_time
+      )
     end
 
     # Source:
@@ -28,25 +35,30 @@ module Astronoby
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     def rising_azimuth(latitude:)
-      ar = azimuth_component(latitude: latitude)
+      ar = azimuth_component(latitude)
       return nil if ar >= 1
 
       Angle.acos(ar)
     end
 
     # Source:
-    #  Title: Celestial Calculations
-    #  Author: J. L. Lawrence
-    #  Edition: MIT Press
-    #  Chapter: 5 - Stars in the Nighttime Sky
-    def setting_time(latitude:, longitude:, date:)
-      h2_component = h2(latitude: latitude)
-      return nil if h2_component.nil?
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 33 - Rising and setting
+    def setting_time(latitude:, longitude:, date:, apparent: true)
+      ratio = ratio(latitude, apparent)
+      return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(ratio)
 
-      setting_lst = @equatorial_coordinates.right_ascension.hours + h2_component.degrees
-      setting_lst -= 24 if setting_lst > 24
+      hour_angle = Angle.acos(ratio)
+      local_sidereal_time =
+        @equatorial_coordinates.right_ascension.hours + hour_angle.hours
 
-      Util::Time.lst_to_ut(date: date, longitude: longitude, lst: setting_lst)
+      Util::Time.lst_to_ut(
+        date: date,
+        longitude: longitude,
+        lst: local_sidereal_time
+      )
     end
 
     # Source:
@@ -63,18 +75,16 @@ module Astronoby
 
     private
 
-    def azimuth_component(latitude:)
-      @equatorial_coordinates.declination.sin / latitude.cos
+    def ratio(latitude, apparent)
+      shift = apparent ? DEFAULT_REFRACTION_VERTICAL_SHIFT : Angle.zero
+
+      -(shift.sin + latitude.sin * @equatorial_coordinates.declination.sin)./(
+        latitude.cos * @equatorial_coordinates.declination.cos
+      )
     end
 
-    def h2(latitude:)
-      ar = azimuth_component(latitude: latitude)
-      return nil if ar >= 1
-
-      h1 = latitude.tan * @equatorial_coordinates.declination.tan
-      return nil if h1.abs > 1
-
-      Angle.as_radians(Math.acos(-h1) / 15.0)
+    def azimuth_component(latitude)
+      @equatorial_coordinates.declination.sin / latitude.cos
     end
   end
 end

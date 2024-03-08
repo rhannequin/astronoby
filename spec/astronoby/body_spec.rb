@@ -19,7 +19,8 @@ RSpec.describe Astronoby::Body do
       rising_time = body.rising_time(
         latitude: Astronoby::Angle.as_degrees(38),
         longitude: Astronoby::Angle.as_degrees(-78),
-        date: Date.new(2016, 1, 21)
+        date: Date.new(2016, 1, 21),
+        apparent: false
       )
 
       expect(rising_time).to eq(Time.utc(2016, 1, 21, 20, 40, 46))
@@ -65,10 +66,32 @@ RSpec.describe Astronoby::Body do
       rising_time = body.rising_time(
         latitude: Astronoby::Angle.as_degrees(38.25),
         longitude: Astronoby::Angle.as_degrees(-78.3),
-        date: Date.new(2015, 6, 6)
+        date: Date.new(2015, 6, 6),
+        apparent: false
       )
 
       expect(rising_time).to eq(Time.utc(2015, 6, 6, 20, 57, 48))
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 33 - Rising and setting
+    it "bob returns the body's rising time" do
+      coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.as_hms(23, 39, 20),
+        declination: Astronoby::Angle.as_dms(21, 42, 0)
+      )
+      body = described_class.new(coordinates)
+
+      rising_time = body.rising_time(
+        latitude: Astronoby::Angle.as_degrees(30),
+        longitude: Astronoby::Angle.as_degrees(64),
+        date: Date.new(2010, 8, 24)
+      )
+
+      expect(rising_time).to eq(Time.utc(2010, 8, 24, 14, 16, 18))
     end
   end
 
@@ -113,7 +136,8 @@ RSpec.describe Astronoby::Body do
       setting_time = body.setting_time(
         latitude: Astronoby::Angle.as_degrees(38),
         longitude: Astronoby::Angle.as_degrees(-78),
-        date: Date.new(2016, 1, 21)
+        date: Date.new(2016, 1, 21),
+        apparent: false
       )
 
       expect(setting_time).to eq(Time.utc(2016, 1, 21, 9, 29, 50))
@@ -159,10 +183,32 @@ RSpec.describe Astronoby::Body do
       setting_time = body.setting_time(
         latitude: Astronoby::Angle.as_degrees(38.25),
         longitude: Astronoby::Angle.as_degrees(-78.3),
-        date: Date.new(2015, 6, 6)
+        date: Date.new(2015, 6, 6),
+        apparent: false
       )
 
       expect(setting_time).to eq(Time.utc(2015, 6, 6, 11, 59, 51))
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 33 - Rising and setting
+    it "bob returns the body's rising time" do
+      coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.as_hms(23, 39, 20),
+        declination: Astronoby::Angle.as_dms(21, 42, 0)
+      )
+      body = described_class.new(coordinates)
+
+      setting_time = body.setting_time(
+        latitude: Astronoby::Angle.as_degrees(30),
+        longitude: Astronoby::Angle.as_degrees(64),
+        date: Date.new(2010, 8, 24)
+      )
+
+      expect(setting_time).to eq(Time.utc(2010, 8, 24, 4, 10, 1))
     end
   end
 
