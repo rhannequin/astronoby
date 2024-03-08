@@ -10,7 +10,7 @@ module Astronoby
     MOLAR_MASS_OF_AIR = BigDecimal("0.0289644")
     UNIVERSAL_GAS_CONSTANT = BigDecimal("8.31432")
 
-    attr_reader :latitude, :longitude
+    attr_reader :latitude, :longitude, :elevation, :temperature
 
     # @param latitude [Angle] geographic latitude of the observer
     # @param longitude [Angle] geographic longitude of the observer
@@ -23,8 +23,8 @@ module Astronoby
     def initialize(
       latitude:,
       longitude:,
-      elevation: nil,
-      temperature: nil,
+      elevation: DEFAULT_ELEVATION,
+      temperature: DEFAULT_TEMPERATURE,
       pressure: nil
     )
       @latitude = latitude
@@ -42,25 +42,14 @@ module Astronoby
       @pressure ||= PRESSURE_AT_SEA_LEVEL * pressure_ratio
     end
 
-    # @return [Numeric] elevation of the observer, set or default, in meters
-    def elevation
-      @elevation || DEFAULT_ELEVATION
-    end
-
-    # @return [Numeric] temperature at the observer's location, set or default,
-    #   in kelvins
-    def temperature
-      @temperature || DEFAULT_TEMPERATURE
-    end
-
     private
 
     # Source:
     # Barometric formula
     # https://en.wikipedia.org/wiki/Barometric_formula
     def pressure_ratio
-      term1 = EARTH_GRAVITATIONAL_ACCELERATION * MOLAR_MASS_OF_AIR * elevation
-      term2 = UNIVERSAL_GAS_CONSTANT * temperature
+      term1 = EARTH_GRAVITATIONAL_ACCELERATION * MOLAR_MASS_OF_AIR * @elevation
+      term2 = UNIVERSAL_GAS_CONSTANT * @temperature
 
       Math.exp(-term1 / term2)
     end
