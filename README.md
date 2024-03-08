@@ -24,8 +24,11 @@ executing:
 
 ## Usage
 
-This library is still in heavy development. The following API is likely to 
-change any time.
+This library is still in heavy development. The public is not stable, please
+be aware new minor versions will probably lead to breaking changes until a
+major one is released.
+
+### Sun's location in the sky
 
 ```rb
 time = Time.utc(2023, 2, 17, 11, 0, 0)
@@ -46,6 +49,18 @@ horizontal_coordinates.altitude.degrees.to_f
 
 horizontal_coordinates.altitude.str(:dms)
 # => "+27° 30′ 8.5144″"
+```
+
+### Solstice and Equinox times
+
+```rb
+year = 2024
+
+Astronoby::EquinoxSolstice.march_equinox(year)
+# => 2024-03-20 03:05:00 UTC
+
+Astronoby::EquinoxSolstice.june_solstice(year)
+# => 2024-06-20 20:50:14 UTC
 ```
 
 ## Precision
