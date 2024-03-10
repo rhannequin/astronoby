@@ -48,6 +48,14 @@ Returns the approximate Earth-Sun distance in meters (`Numeric`).
 
 Returns the apparent Sun's angular size (`Angle`).
 
+### `Sun#true_anomaly` method added (#32)
+
+Returns the apparent Sun's true anomaly (`Angle`).
+
+### `Sun#longitude_at_perigee` method added (#32)
+
+Returns the apparent Sun's longitude (`Angle`) at its perigee.
+
 ### Added comparison methods to `Angle` (#21)
 
 With the inclusion of `Comparable`, comparison methods such as `#==`, `#<`,
@@ -60,3 +68,9 @@ class provided two class methods:
 - `::angle` which returns the parallax angle
 - `::for_equatorial_coordinates` which correct equatorial coordinates with
   the parallax correction
+
+### `EquinoxSolstice` class added
+
+This class exposes `::march_equinox`, `::june_solstice`,
+`::september_equinox` and `::december_soltice` that all require a year
+(`Integer`) as parameter and return a date-time (`Time`) computed for the event.
