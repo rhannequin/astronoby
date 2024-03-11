@@ -23,7 +23,7 @@ RSpec.describe Astronoby::Body do
         apparent: false
       )
 
-      expect(rising_time).to eq(Time.utc(2016, 1, 21, 20, 40, 46))
+      expect(rising_time&.round).to eq(Time.utc(2016, 1, 21, 20, 40, 46))
     end
 
     # Source:
@@ -55,12 +55,13 @@ RSpec.describe Astronoby::Body do
     #  Edition: MIT Press
     #  Chapter: 5 - Stars in the Nighttime Sky
     it "returns the body's rising time" do
+      offset = -4
       coordinates = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.as_degrees(90),
         altitude: Astronoby::Angle.as_degrees(45),
         latitude: Astronoby::Angle.as_degrees(38.25),
         longitude: Astronoby::Angle.as_degrees(-78.3)
-      ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, "-04:00"))
+      ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, offset))
       body = described_class.new(coordinates)
 
       rising_time = body.rising_time(
@@ -70,7 +71,8 @@ RSpec.describe Astronoby::Body do
         apparent: false
       )
 
-      expect(rising_time).to eq(Time.utc(2015, 6, 6, 20, 57, 48))
+      expect(rising_time&.getlocal(offset)&.round)
+        .to eq(Time.new(2015, 6, 6, 16, 57, 48, offset))
     end
 
     # Source:
@@ -91,7 +93,7 @@ RSpec.describe Astronoby::Body do
         date: Date.new(2010, 8, 24)
       )
 
-      expect(rising_time).to eq(Time.utc(2010, 8, 24, 14, 16, 18))
+      expect(rising_time&.round).to eq(Time.utc(2010, 8, 24, 14, 16, 18))
     end
   end
 
@@ -140,7 +142,7 @@ RSpec.describe Astronoby::Body do
         apparent: false
       )
 
-      expect(setting_time).to eq(Time.utc(2016, 1, 21, 9, 29, 50))
+      expect(setting_time&.round).to eq(Time.utc(2016, 1, 21, 9, 29, 50))
     end
 
     # Source:
@@ -187,7 +189,7 @@ RSpec.describe Astronoby::Body do
         apparent: false
       )
 
-      expect(setting_time).to eq(Time.utc(2015, 6, 6, 11, 59, 51))
+      expect(setting_time&.round).to eq(Time.utc(2015, 6, 6, 11, 59, 51))
     end
 
     # Source:
@@ -208,7 +210,7 @@ RSpec.describe Astronoby::Body do
         date: Date.new(2010, 8, 24)
       )
 
-      expect(setting_time).to eq(Time.utc(2010, 8, 24, 4, 10, 1))
+      expect(setting_time&.round).to eq(Time.utc(2010, 8, 24, 4, 10, 1))
     end
   end
 

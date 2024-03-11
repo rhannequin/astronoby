@@ -36,10 +36,10 @@ module Astronoby
         end
 
         hour_angle_hours = Angle.as_degrees(hour_angle_degrees).hours
-        right_ascension_decimal = Util::Time.local_sidereal_time(
-          time: time,
-          longitude: @longitude
-        ) - hour_angle_hours
+        lst = GreenwichSiderealTime
+          .from_utc(time.utc)
+          .to_lst(longitude: @longitude)
+        right_ascension_decimal = lst.time - hour_angle_hours
         right_ascension_decimal += 24 if right_ascension_decimal.negative?
         right_ascension = Angle.as_hours(right_ascension_decimal)
 

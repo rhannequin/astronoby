@@ -18,12 +18,11 @@ module Astronoby
       end
 
       def compute_hour_angle(time:, longitude:)
-        lst = Util::Time.local_sidereal_time(
-          time: time,
-          longitude: longitude
-        )
+        lst = GreenwichSiderealTime
+          .from_utc(time.utc)
+          .to_lst(longitude: longitude)
 
-        ha = (lst - @right_ascension.hours)
+        ha = (lst.time - @right_ascension.hours)
         ha += 24 if ha.negative?
 
         Angle.as_hours(ha)

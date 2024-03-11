@@ -19,14 +19,13 @@ module Astronoby
       return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(ratio)
 
       hour_angle = Angle.acos(ratio)
-      local_sidereal_time =
-        @equatorial_coordinates.right_ascension.hours - hour_angle.hours
-
-      Util::Time.lst_to_ut(
+      local_sidereal_time = LocalSiderealTime.new(
         date: date,
-        longitude: longitude,
-        lst: local_sidereal_time
+        time: @equatorial_coordinates.right_ascension.hours - hour_angle.hours,
+        longitude: longitude
       )
+
+      local_sidereal_time.to_gst.to_utc
     end
 
     # Source:
@@ -51,14 +50,13 @@ module Astronoby
       return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(ratio)
 
       hour_angle = Angle.acos(ratio)
-      local_sidereal_time =
-        @equatorial_coordinates.right_ascension.hours + hour_angle.hours
-
-      Util::Time.lst_to_ut(
+      local_sidereal_time = LocalSiderealTime.new(
         date: date,
-        longitude: longitude,
-        lst: local_sidereal_time
+        time: @equatorial_coordinates.right_ascension.hours + hour_angle.hours,
+        longitude: longitude
       )
+
+      local_sidereal_time.to_gst.to_utc
     end
 
     # Source:
