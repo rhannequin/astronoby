@@ -56,6 +56,14 @@ Returns the apparent Sun's true anomaly (`Angle`).
 
 Returns the apparent Sun's longitude (`Angle`) at its perigee.
 
+### `Sun#rising_time` method added (#35)
+
+Returns the UTC `Time` of the sunrise.
+
+### `Sun#setting_time` method added (#35)
+
+Returns the UTC `Time` of the sunset.
+
 ### Added comparison methods to `Angle` (#21)
 
 With the inclusion of `Comparable`, comparison methods such as `#==`, `#<`,
