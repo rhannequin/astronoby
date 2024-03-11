@@ -304,4 +304,150 @@ RSpec.describe Astronoby::Sun do
       expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 42.6789″"
     end
   end
+
+  describe "#rising_time" do
+    it "returns a time" do
+      date = Date.new
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_time = sun.rising_time(observer: observer)
+
+      expect(setting_time).to be_a(Time)
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "returns the Sun's rising time on 2015-02-05" do
+      date = Date.new(2015, 2, 5)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(38),
+        longitude: Astronoby::Angle.as_degrees(-78)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_time = sun.rising_time(observer: observer)
+
+      expect(rising_time).to eq Time.utc(2015, 2, 5, 12, 13, 27)
+      # Time from Celestial Calculations: 2015-02-05T12:18:00
+      # Time from IMCCE: 2015-02-05T12:14:12
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 49 - Sunrise and sunset
+    it "returns the Sun's rising time on 1986-03-10" do
+      date = Date.new(1986, 3, 10)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(42.37),
+        longitude: Astronoby::Angle.as_degrees(-71.05)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_time = sun.rising_time(observer: observer)
+
+      expect(rising_time).to eq Time.utc(1986, 3, 10, 11, 5, 43)
+      # Time from Practical Astronomy: 1986-03-10T11:06:00
+      # Time from IMCCE: 1986-03-10T11:06:22
+    end
+
+    it "returns the Sun's rising time on 1991-03-14" do
+      date = Date.new(1991, 3, 14)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(48.8566),
+        longitude: Astronoby::Angle.as_degrees(2.3522)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_time = sun.rising_time(observer: observer)
+
+      expect(rising_time).to eq Time.utc(1991, 3, 14, 6, 8, 16)
+      # Time from IMCCE: 1991-03-14T06:08:45
+    end
+  end
+
+  describe "#setting_time" do
+    it "returns a time" do
+      date = Date.new
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_time = sun.setting_time(observer: observer)
+
+      expect(setting_time).to be_a(Time)
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "returns the Sun's setting time on 2015-02-05" do
+      date = Date.new(2015, 2, 5)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(38),
+        longitude: Astronoby::Angle.as_degrees(-78)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_time = sun.setting_time(observer: observer)
+
+      expect(setting_time).to eq Time.utc(2015, 2, 5, 22, 35, 14)
+      # Time from Celestial Calculations: 2015-02-05T22:31:00
+      # Time from IMCCE: 2015-02-05T22:49:16
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 49 - Sunrise and sunset
+    it "returns the Sun's setting time on 1986-03-10" do
+      date = Date.new(1986, 3, 10)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(42.37),
+        longitude: Astronoby::Angle.as_degrees(-71.05)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_time = sun.setting_time(observer: observer)
+
+      expect(setting_time).to eq Time.utc(1986, 3, 10, 22, 40, 55)
+      # Time from Practical Astronomy: 1986-03-10T22:43:00
+      # Time from IMCCE: 1986-03-10T22:43:22
+    end
+
+    it "returns the Sun's setting time on 1991-03-14" do
+      date = Date.new(1991, 3, 14)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(48.8566),
+        longitude: Astronoby::Angle.as_degrees(2.3522)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_time = sun.setting_time(observer: observer)
+
+      expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 50, 37)
+      # Time from IMCCE: 1991-03-14T17:52:00
+    end
+  end
 end

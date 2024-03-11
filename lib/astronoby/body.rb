@@ -14,8 +14,14 @@ module Astronoby
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 33 - Rising and setting
-    def rising_time(latitude:, longitude:, date:, apparent: true)
-      ratio = ratio(latitude, apparent)
+    def rising_time(
+      latitude:,
+      longitude:,
+      date:,
+      apparent: true,
+      vertical_shift: nil
+    )
+      ratio = ratio(latitude, apparent, vertical_shift)
       return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(ratio)
 
       hour_angle = Angle.acos(ratio)
@@ -46,8 +52,14 @@ module Astronoby
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 33 - Rising and setting
-    def setting_time(latitude:, longitude:, date:, apparent: true)
-      ratio = ratio(latitude, apparent)
+    def setting_time(
+      latitude:,
+      longitude:,
+      date:,
+      apparent: true,
+      vertical_shift: nil
+    )
+      ratio = ratio(latitude, apparent, vertical_shift)
       return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(ratio)
 
       hour_angle = Angle.acos(ratio)
@@ -75,8 +87,14 @@ module Astronoby
 
     private
 
-    def ratio(latitude, apparent)
-      shift = apparent ? DEFAULT_REFRACTION_VERTICAL_SHIFT : Angle.zero
+    def ratio(latitude, apparent, vertical_shift)
+      shift = if vertical_shift
+        vertical_shift
+      elsif apparent
+        DEFAULT_REFRACTION_VERTICAL_SHIFT
+      else
+        Angle.zero
+      end
 
       -(shift.sin + latitude.sin * @equatorial_coordinates.declination.sin)./(
         latitude.cos * @equatorial_coordinates.declination.cos

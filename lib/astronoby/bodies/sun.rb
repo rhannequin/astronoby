@@ -4,6 +4,7 @@ module Astronoby
   class Sun
     SEMI_MAJOR_AXIS_IN_METERS = 149_598_500_000
     ANGULAR_DIAMETER = Angle.as_degrees(0.533128)
+    INTERPOLATION_FACTOR = BigDecimal("24.07")
 
     # Source:
     #  Title: Celestial Calculations
@@ -37,6 +38,38 @@ module Astronoby
       ecliptic_coordinates
         .to_equatorial(epoch: @epoch)
         .to_horizontal(time: time, latitude: latitude, longitude: longitude)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time] Time of sunrise
+    def rising_time(observer:)
+      event_date = Epoch.to_utc(@epoch).to_date
+      lst1 = event_local_sidereal_time_for_date(event_date, observer, :rising)
+      next_day = event_date.next_day(1)
+      lst2 = event_local_sidereal_time_for_date(next_day, observer, :rising)
+      time = (INTERPOLATION_FACTOR * lst1) / (INTERPOLATION_FACTOR + lst1 - lst2)
+
+      Util::Time.lst_to_ut(
+        date: event_date,
+        longitude: observer.longitude,
+        lst: time
+      )
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time] Time of sunset
+    def setting_time(observer:)
+      event_date = Epoch.to_utc(@epoch).to_date
+      lst1 = event_local_sidereal_time_for_date(event_date, observer, :setting)
+      next_day = event_date.next_day(1)
+      lst2 = event_local_sidereal_time_for_date(next_day, observer, :setting)
+      time = (INTERPOLATION_FACTOR * lst1) / (INTERPOLATION_FACTOR + lst1 - lst2)
+
+      Util::Time.lst_to_ut(
+        date: event_date,
+        longitude: observer.longitude,
+        lst: time
+      )
     end
 
     # @return [Numeric] Earth-Sun distance in meters
@@ -106,6 +139,38 @@ module Astronoby
       term2 = 1 - orbital_eccentricity.degrees**2
 
       term1 / term2
+    end
+
+    def event_local_sidereal_time_for_date(date, observer, event)
+      midnight_utc = Time.utc(date.year, date.month, date.day)
+      epoch = Epoch.from_time(midnight_utc)
+      sun_at_midnight = self.class.new(epoch: epoch)
+      shift = Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
+        GeocentricParallax.angle(distance: sun_at_midnight.earth_distance) +
+        Angle.as_degrees(sun_at_midnight.angular_size.degrees / 2)
+      ecliptic_coordinates = sun_at_midnight.ecliptic_coordinates
+      equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: epoch)
+
+      event_time = if event == :rising
+        Body.new(equatorial_coordinates).rising_time(
+          latitude: observer.latitude,
+          longitude: observer.longitude,
+          date: midnight_utc.to_date,
+          vertical_shift: shift
+        )
+      else
+        Body.new(equatorial_coordinates).setting_time(
+          latitude: observer.latitude,
+          longitude: observer.longitude,
+          date: midnight_utc.to_date,
+          vertical_shift: shift
+        )
+      end
+
+      Util::Time.local_sidereal_time(
+        time: event_time,
+        longitude: observer.longitude
+      )
     end
   end
 end
