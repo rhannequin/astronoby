@@ -74,3 +74,16 @@ class provided two class methods:
 This class exposes `::march_equinox`, `::june_solstice`,
 `::september_equinox` and `::december_soltice` that all require a year
 (`Integer`) as parameter and return a date-time (`Time`) computed for the event.
+
+### `Util::Time` class dropped
+
+Time-related utility functions have been deleted, in favor of new classes
+(see below).
+
+### `GreenwichSiderealTime` class added
+
+Enables to instantiate a GST from UTC, or convert a GST to UTC.
+
+### `LocalSiderealTime` class added
+
+Enables to instantiate a LST from GST, or convert a LST to GST.
