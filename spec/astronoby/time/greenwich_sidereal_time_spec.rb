@@ -67,7 +67,7 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
 
       utc = gst.to_utc
 
-      expect(utc.round(2)).to eq Time.utc(1980, 4, 22, 14, 36, 51.67).round(2)
+      expect(utc).to eq Time.utc(1980, 4, 22, 14, 36, 52)
     end
   end
 end
