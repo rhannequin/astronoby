@@ -336,7 +336,7 @@ RSpec.describe Astronoby::Sun do
 
       rising_time = sun.rising_time(observer: observer)
 
-      expect(rising_time.round).to eq Time.utc(2015, 2, 5, 12, 13, 27)
+      expect(rising_time).to eq Time.utc(2015, 2, 5, 12, 13, 27)
       # Time from Celestial Calculations: 2015-02-05T12:18:00
       # Time from IMCCE: 2015-02-05T12:14:12
     end
@@ -357,7 +357,7 @@ RSpec.describe Astronoby::Sun do
 
       rising_time = sun.rising_time(observer: observer)
 
-      expect(rising_time.round).to eq Time.utc(1986, 3, 10, 11, 5, 43)
+      expect(rising_time).to eq Time.utc(1986, 3, 10, 11, 5, 43)
       # Time from Practical Astronomy: 1986-03-10T11:06:00
       # Time from IMCCE: 1986-03-10T11:06:22
     end
@@ -373,7 +373,7 @@ RSpec.describe Astronoby::Sun do
 
       rising_time = sun.rising_time(observer: observer)
 
-      expect(rising_time.round).to eq Time.utc(1991, 3, 14, 6, 8, 16)
+      expect(rising_time).to eq Time.utc(1991, 3, 14, 6, 8, 16)
       # Time from IMCCE: 1991-03-14T06:08:45
     end
   end
@@ -409,7 +409,7 @@ RSpec.describe Astronoby::Sun do
 
       setting_time = sun.setting_time(observer: observer)
 
-      expect(setting_time.round).to eq Time.utc(2015, 2, 5, 22, 35, 13)
+      expect(setting_time).to eq Time.utc(2015, 2, 5, 22, 35, 14)
       # Time from Celestial Calculations: 2015-02-05T22:31:00
       # Time from IMCCE: 2015-02-05T22:49:16
     end
@@ -430,7 +430,7 @@ RSpec.describe Astronoby::Sun do
 
       setting_time = sun.setting_time(observer: observer)
 
-      expect(setting_time.round).to eq Time.utc(1986, 3, 10, 22, 40, 55)
+      expect(setting_time).to eq Time.utc(1986, 3, 10, 22, 40, 55)
       # Time from Practical Astronomy: 1986-03-10T22:43:00
       # Time from IMCCE: 1986-03-10T22:43:22
     end
@@ -446,7 +446,7 @@ RSpec.describe Astronoby::Sun do
 
       setting_time = sun.setting_time(observer: observer)
 
-      expect(setting_time.round).to eq Time.utc(1991, 3, 14, 17, 50, 37)
+      expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 50, 37)
       # Time from IMCCE: 1991-03-14T17:52:00
     end
   end

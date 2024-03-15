@@ -80,7 +80,7 @@ module Astronoby
       minute = decimal_minute.floor
       second = 60 * (absolute_decimal_minute - absolute_decimal_minute.floor)
 
-      ::Time.utc(date.year, date.month, date.day, hour, minute, second)
+      ::Time.utc(date.year, date.month, date.day, hour, minute, second).round
     end
   end
 end
