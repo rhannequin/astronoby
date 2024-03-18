@@ -57,6 +57,16 @@ module Astronoby
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Astronoby::Angle, nil] Azimuth of sunrise
+    def rising_azimuth(observer:)
+      equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: @epoch)
+      Body.new(equatorial_coordinates).rising_azimuth(
+        latitude: observer.latitude,
+        vertical_shift: vertical_shift
+      )
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
     # @return [Time] Time of sunset
     def setting_time(observer:)
       event_date = Epoch.to_utc(@epoch).to_date
@@ -70,6 +80,16 @@ module Astronoby
         time: time,
         longitude: observer.longitude
       ).to_gst.to_utc
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Astronoby::Angle, nil] Azimuth of sunset
+    def setting_azimuth(observer:)
+      equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: @epoch)
+      Body.new(equatorial_coordinates).setting_azimuth(
+        latitude: observer.latitude,
+        vertical_shift: vertical_shift
+      )
     end
 
     # @return [Numeric] Earth-Sun distance in meters
@@ -171,6 +191,12 @@ module Astronoby
         .from_utc(event_time.utc)
         .to_lst(longitude: observer.longitude)
         .time
+    end
+
+    def vertical_shift
+      Astronoby::Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
+        Astronoby::GeocentricParallax.angle(distance: earth_distance) +
+        Astronoby::Angle.as_degrees(angular_size.degrees / 2)
     end
   end
 end
