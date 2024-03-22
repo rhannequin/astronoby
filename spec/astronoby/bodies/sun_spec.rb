@@ -572,4 +572,84 @@ RSpec.describe Astronoby::Sun do
       # Time from IMCCE: +266° 52′
     end
   end
+
+  describe "::equation_of_time" do
+    it "returns an Integer" do
+      date = Date.new
+
+      equation_of_time = described_class.equation_of_time(date: date)
+
+      expect(equation_of_time).to be_an Integer
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 51 - The equation of time
+    it "returns the right value of 2010-07-27" do
+      date = Date.new(2010, 7, 27)
+
+      equation_of_time = described_class.equation_of_time(date: date)
+
+      expect(equation_of_time).to eq(-392)
+      # Value from Practical Astronomy: 392
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "returns the right value of 2016-05-05" do
+      date = Date.new(2016, 5, 5)
+
+      equation_of_time = described_class.equation_of_time(date: date)
+
+      expect(equation_of_time).to eq(199)
+      # Value from Celestial Calculations: 199
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "returns the right value of 2015-08-09" do
+      date = Date.new(2015, 8, 9)
+
+      equation_of_time = described_class.equation_of_time(date: date)
+
+      expect(equation_of_time).to eq(-334)
+      # Value from Celestial Calculations: 337
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "returns the right value of 2010-05-06" do
+      date = Date.new(2010, 5, 6)
+
+      equation_of_time = described_class.equation_of_time(date: date)
+
+      expect(equation_of_time).to eq(201)
+      # Value from Celestial Calculations: 201
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun
+    it "returns the right value of 2020-01-01" do
+      date = Date.new(2020, 1, 1)
+
+      equation_of_time = described_class.equation_of_time(date: date)
+
+      expect(equation_of_time).to eq(-200)
+      # Value from Celestial Calculations: 187
+    end
+  end
 end

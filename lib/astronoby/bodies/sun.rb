@@ -7,6 +7,30 @@ module Astronoby
     INTERPOLATION_FACTOR = BigDecimal("24.07")
 
     # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 51 - The equation of time
+
+    # @param date [Date] Requested date
+    # @return [Integer] Equation of time in seconds
+    def self.equation_of_time(date:)
+      noon = Time.utc(date.year, date.month, date.day, 12)
+      epoch_at_noon = Epoch.from_time(noon)
+      sun_at_noon = new(epoch: epoch_at_noon)
+      equatorial_hours = sun_at_noon
+        .ecliptic_coordinates
+        .to_equatorial(epoch: epoch_at_noon)
+        .right_ascension
+        .hours
+      gst = GreenwichSiderealTime
+        .new(date: date, time: equatorial_hours)
+        .to_utc
+
+      (noon - gst).to_i
+    end
+
+    # Source:
     #  Title: Celestial Calculations
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
