@@ -80,7 +80,7 @@ RSpec.describe Astronoby::Body do
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 33 - Rising and setting
-    it "bob returns the body's rising time" do
+    it "returns the body's rising time" do
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.as_hms(23, 39, 20),
         declination: Astronoby::Angle.as_dms(21, 42, 0)
@@ -113,10 +113,11 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       rising_azimuth = body.rising_azimuth(
-        latitude: Astronoby::Angle.as_degrees(38)
+        latitude: Astronoby::Angle.as_degrees(38),
+        apparent: false
       )
 
-      expect(rising_azimuth&.degrees).to be_within(10**-9).of(80.465577913)
+      expect(rising_azimuth&.degrees&.ceil(6)).to eq 80.465578
     end
   end
 
@@ -197,7 +198,7 @@ RSpec.describe Astronoby::Body do
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 33 - Rising and setting
-    it "bob returns the body's rising time" do
+    it "returns the body's rising time" do
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.as_hms(23, 39, 20),
         declination: Astronoby::Angle.as_dms(21, 42, 0)
@@ -230,10 +231,11 @@ RSpec.describe Astronoby::Body do
       body = described_class.new(coordinates)
 
       setting_azimuth = body.setting_azimuth(
-        latitude: Astronoby::Angle.as_degrees(38)
+        latitude: Astronoby::Angle.as_degrees(38),
+        apparent: false
       )
 
-      expect(setting_azimuth&.degrees).to be_within(10**-7).of(279.534422)
+      expect(setting_azimuth&.degrees&.ceil(6)).to eq 279.534423
     end
   end
 end

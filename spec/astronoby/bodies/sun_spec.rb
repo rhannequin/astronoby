@@ -378,6 +378,67 @@ RSpec.describe Astronoby::Sun do
     end
   end
 
+  describe "#rising_azimuth" do
+    it "returns an Angle" do
+      date = Date.new
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+
+      expect(rising_azimuth).to be_a(Astronoby::Angle)
+    end
+
+    it "returns the Sun's rising azimuth on 2015-02-05" do
+      date = Date.new(2015, 2, 5)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(38),
+        longitude: Astronoby::Angle.as_degrees(-78)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+
+      expect(rising_azimuth&.str(:dms)).to eq "+109° 41′ 24.0917″"
+      # Time from IMCCE: +109° 53′
+    end
+
+    it "returns the Sun's rising azimuth on 1986-03-10" do
+      date = Date.new(1986, 3, 10)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(42.37),
+        longitude: Astronoby::Angle.as_degrees(-71.05)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+
+      expect(rising_azimuth&.str(:dms)).to eq "+94° 59′ 15.7852″"
+      # Time from IMCCE: +95° 02′
+    end
+
+    it "returns the Sun's rising azimuth on 1991-03-14" do
+      date = Date.new(1991, 3, 14)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(48.8566),
+        longitude: Astronoby::Angle.as_degrees(2.3522)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+
+      expect(rising_azimuth&.str(:dms)).to eq "+93° 26′ 26.8564″"
+      # Time from IMCCE: +93° 26′
+    end
+  end
+
   describe "#setting_time" do
     it "returns a time" do
       date = Date.new
@@ -448,6 +509,67 @@ RSpec.describe Astronoby::Sun do
 
       expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 50, 37)
       # Time from IMCCE: 1991-03-14T17:52:00
+    end
+  end
+
+  describe "#setting_azimuth" do
+    it "returns an Angle" do
+      date = Date.new
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_azimuth = sun.setting_azimuth(observer: observer)
+
+      expect(setting_azimuth).to be_a(Astronoby::Angle)
+    end
+
+    it "returns the Sun's setting azimuth on 2015-02-05" do
+      date = Date.new(2015, 2, 5)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(38),
+        longitude: Astronoby::Angle.as_degrees(-78)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_azimuth = sun.setting_azimuth(observer: observer)
+
+      expect(setting_azimuth&.str(:dms)).to eq "+250° 18′ 35.9082″"
+      # Time from IMCCE: +250° 18′
+    end
+
+    it "returns the Sun's setting azimuth on 1986-03-10" do
+      date = Date.new(1986, 3, 10)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(42.37),
+        longitude: Astronoby::Angle.as_degrees(-71.05)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_azimuth = sun.setting_azimuth(observer: observer)
+
+      expect(setting_azimuth&.str(:dms)).to eq "+265° 0′ 44.2147″"
+      # Time from IMCCE: +265° 14′
+    end
+
+    it "returns the Sun's setting azimuth on 1991-03-14" do
+      date = Date.new(1991, 3, 14)
+      epoch = Astronoby::Epoch.from_time(date)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.as_degrees(48.8566),
+        longitude: Astronoby::Angle.as_degrees(2.3522)
+      )
+      sun = described_class.new(epoch: epoch)
+
+      setting_azimuth = sun.setting_azimuth(observer: observer)
+
+      expect(setting_azimuth&.str(:dms)).to eq "+266° 33′ 33.1435″"
+      # Time from IMCCE: +266° 52′
     end
   end
 end

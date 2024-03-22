@@ -58,11 +58,19 @@ Returns the apparent Sun's longitude (`Angle`) at its perigee.
 
 ### `Sun#rising_time` method added (#35)
 
-Returns the UTC `Time` of the sunrise.
+Returns the UTC `Time` of the sunrise.`
+
+### `Sun#rising_azimuth` method added (#39)
+
+Returns the Sun's azimuth (`Angle`) at sunrise.
 
 ### `Sun#setting_time` method added (#35)
 
 Returns the UTC `Time` of the sunset.
+
+### `Sun#setting_azimuth` method added (#39)
+
+Returns the Sun's azimuth (`Angle`) at sunset.
 
 ### Added comparison methods to `Angle` (#21)
 
