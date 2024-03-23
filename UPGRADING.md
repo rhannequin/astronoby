@@ -40,6 +40,10 @@ default vertical refraction angle or not.
 With a default value of `true`, this new argument will make consider a
 default vertical refraction angle or not.
 
+### `Sun::equation_of_time` method added (#40)
+
+Returns the equation of time for a given date.
+
 ### `Sun#distance` method added (#30)
 
 Returns the approximate Earth-Sun distance in meters (`Numeric`).
