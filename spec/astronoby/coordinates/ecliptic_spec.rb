@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Coordinates::Ecliptic do
-  describe "#to_equatorial" do
+  describe "#to_true_equatorial" do
     # Source:
     #  Title: Celestial Calculations
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
-    #  Chapter: 4 - Orbits and Coordinate Systems
+    #  Chapter: 4 - Orbits and Coordinate Systems, p.95
     context "with real life arguments (book example)" do
       it "computes properly" do
         latitude = Astronoby::Angle.as_dms(1, 12, 0)
@@ -16,13 +16,15 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
         equatorial_coordinates = described_class.new(
           latitude: latitude,
           longitude: longitude
-        ).to_equatorial(epoch: epoch)
+        ).to_true_equatorial(epoch: epoch)
 
         expect(equatorial_coordinates.right_ascension.str(:hms)).to(
           eq("12h 18m 47.4954s")
+          # Result from the book: 12h 18m 47.5s
         )
         expect(equatorial_coordinates.declination.str(:dms)).to(
           eq("-0° 43′ 35.5098″")
+          # Result from the book: -0° 43′ 35.5″
         )
       end
     end
@@ -31,7 +33,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
     #  Title: Celestial Calculations
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
-    #  Chapter: 4 - Orbits and Coordinate Systems
+    #  Chapter: 4 - Orbits and Coordinate Systems, p.106
     context "with real life arguments (book example)" do
       it "computes properly" do
         latitude = Astronoby::Angle.zero
@@ -41,13 +43,15 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
         equatorial_coordinates = described_class.new(
           latitude: latitude,
           longitude: longitude
-        ).to_equatorial(epoch: epoch)
+        ).to_true_equatorial(epoch: epoch)
 
         expect(equatorial_coordinates.right_ascension.str(:hms)).to(
           eq("8h 10m 50.4188s")
+          # Result from the book: 8h 10m 50s
         )
         expect(equatorial_coordinates.declination.str(:dms)).to(
           eq("+20° 2′ 30.795″")
+          # Result from the book: +20° 2′ 31″
         )
       end
     end
@@ -56,7 +60,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
     #  Title: Practical Astronomy with your Calculator or Spreadsheet
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
-    #  Chapter: 27 - Ecliptic to equatorial coordinate conversion
+    #  Chapter: 27 - Ecliptic to equatorial coordinate conversion, p.52
     context "with real life arguments (book example)" do
       it "computes properly" do
         latitude = Astronoby::Angle.as_dms(4, 52, 31)
@@ -66,13 +70,15 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
         equatorial_coordinates = described_class.new(
           latitude: latitude,
           longitude: longitude
-        ).to_equatorial(epoch: epoch)
+        ).to_true_equatorial(epoch: epoch)
 
         expect(equatorial_coordinates.right_ascension.str(:hms)).to(
           eq("9h 34m 53.3214s")
+          # Result from the book: 9h 34m 53.32s
         )
         expect(equatorial_coordinates.declination.str(:dms)).to(
           eq("+19° 32′ 6.0105″")
+          # Result from the book: +19° 32′ 6.01″
         )
       end
     end

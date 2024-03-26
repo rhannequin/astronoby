@@ -131,23 +131,9 @@ module Astronoby
 
     def correction(epoch)
       sun = Sun.new(epoch: epoch)
+      longitude = sun.apparent_ecliptic_coordinates.longitude
 
-      nutation = Nutation.for_ecliptic_longitude(epoch: epoch)
-
-      earth_radius_vector = 1 / (
-        1 +
-          sun.orbital_eccentricity.degrees *
-            (sun.true_anomaly - sun.longitude_at_perigee).cos
-      )
-      aberration = Angle.as_degrees(
-        Angle.as_dms(0, 0, 20.4898).degrees / -earth_radius_vector
-      )
-
-      corrected_longitude = sun.ecliptic_coordinates.longitude +
-        nutation +
-        aberration
-
-      58 * Angle.as_degrees(@event * 90 - corrected_longitude.degrees).sin
+      58 * Angle.as_degrees(@event * 90 - longitude.degrees).sin
     end
   end
 end

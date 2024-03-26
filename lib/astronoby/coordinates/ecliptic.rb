@@ -15,26 +15,37 @@ module Astronoby
       #  Author: J. L. Lawrence
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
-      def to_equatorial(epoch:)
-        mean_obliquity = MeanObliquity.for_epoch(epoch)
 
+      def to_true_equatorial(epoch:)
+        mean_obliquity = MeanObliquity.for_epoch(epoch)
+        to_equatorial(obliquity: mean_obliquity)
+      end
+
+      def to_apparent_equatorial(epoch:)
+        apparent_obliquity = TrueObliquity.for_epoch(epoch)
+        to_equatorial(obliquity: apparent_obliquity)
+      end
+
+      private
+
+      def to_equatorial(obliquity:)
         y = Angle.as_radians(
-          @longitude.sin * mean_obliquity.cos -
-          @latitude.tan * mean_obliquity.sin
+          @longitude.sin * obliquity.cos -
+            @latitude.tan * obliquity.sin
         )
         x = Angle.as_radians(@longitude.cos)
         r = Angle.atan(y.radians / x.radians)
         right_ascension = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 
         declination = Angle.asin(
-          @latitude.sin * mean_obliquity.cos +
-          @latitude.cos * mean_obliquity.sin * @longitude.sin
+          @latitude.sin * obliquity.cos +
+            @latitude.cos * obliquity.sin * @longitude.sin
         )
 
         Equatorial.new(
           right_ascension: right_ascension,
           declination: declination,
-          epoch: epoch
+          epoch: @epoch
         )
       end
     end
