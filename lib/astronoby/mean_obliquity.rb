@@ -16,7 +16,7 @@ module Astronoby
 
       t = (epoch - EPOCH_OF_REFERENCE) / Epoch::DAYS_PER_JULIAN_CENTURY
 
-      Angle.as_degrees(
+      Angle.from_degrees(
         obliquity_of_reference.degrees - (
           46.815 * t -
           0.0006 * t * t +
@@ -26,7 +26,7 @@ module Astronoby
     end
 
     def self.obliquity_of_reference
-      Angle.as_dms(23, 26, 21.45)
+      Angle.from_dms(23, 26, 21.45)
     end
   end
 end

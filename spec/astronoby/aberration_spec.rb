@@ -4,8 +4,8 @@ RSpec.describe Astronoby::Aberration do
   describe "::for_ecliptic_coordinates" do
     it "returns apparent ecliptic coordinates" do
       true_coordinates = Astronoby::Coordinates::Ecliptic.new(
-        latitude: Astronoby::Angle.as_dms(20, 30, 40),
-        longitude: Astronoby::Angle.as_dms(30, 40, 50)
+        latitude: Astronoby::Angle.from_dms(20, 30, 40),
+        longitude: Astronoby::Angle.from_dms(30, 40, 50)
       )
 
       apparent_coordinates = described_class.for_ecliptic_coordinates(
@@ -29,8 +29,8 @@ RSpec.describe Astronoby::Aberration do
     #  Chapter: 36 - Aberration
     it "computes accurate apparent coordinates" do
       true_coordinates = Astronoby::Coordinates::Ecliptic.new(
-        latitude: Astronoby::Angle.as_dms(-1, 32, 56.4),
-        longitude: Astronoby::Angle.as_dms(352, 37, 10.1)
+        latitude: Astronoby::Angle.from_dms(-1, 32, 56.4),
+        longitude: Astronoby::Angle.from_dms(352, 37, 10.1)
       )
       time = Time.utc(1988, 9, 8)
       epoch = Astronoby::Epoch.from_time(time)

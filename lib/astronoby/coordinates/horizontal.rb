@@ -31,17 +31,17 @@ module Astronoby
 
         if @azimuth.sin.positive?
           hour_angle_degrees = Angle
-            .as_degrees(BigDecimal("360") - hour_angle_degrees)
+            .from_degrees(BigDecimal("360") - hour_angle_degrees)
             .degrees
         end
 
-        hour_angle_hours = Angle.as_degrees(hour_angle_degrees).hours
+        hour_angle_hours = Angle.from_degrees(hour_angle_degrees).hours
         lst = GreenwichSiderealTime
           .from_utc(time.utc)
           .to_lst(longitude: @longitude)
         right_ascension_decimal = lst.time - hour_angle_hours
         right_ascension_decimal += 24 if right_ascension_decimal.negative?
-        right_ascension = Angle.as_hours(right_ascension_decimal)
+        right_ascension = Angle.from_hours(right_ascension_decimal)
 
         Equatorial.new(
           right_ascension: right_ascension,

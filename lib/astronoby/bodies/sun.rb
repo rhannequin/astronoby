@@ -3,7 +3,7 @@
 module Astronoby
   class Sun
     SEMI_MAJOR_AXIS_IN_METERS = 149_598_500_000
-    ANGULAR_DIAMETER = Angle.as_degrees(0.533128)
+    ANGULAR_DIAMETER = Angle.from_degrees(0.533128)
     INTERPOLATION_FACTOR = BigDecimal("24.07")
 
     # Source:
@@ -136,7 +136,9 @@ module Astronoby
 
     # @return [Astronoby::Angle] Apparent Sun's angular size
     def angular_size
-      Angle.as_degrees(ANGULAR_DIAMETER.degrees * distance_angular_size_factor)
+      Angle.from_degrees(
+        ANGULAR_DIAMETER.degrees * distance_angular_size_factor
+      )
     end
 
     # @return [Astronoby::Angle] Sun's true anomaly
@@ -152,19 +154,19 @@ module Astronoby
         (1 + orbital_eccentricity.degrees) / (1 - orbital_eccentricity.degrees)
       ) * Math.tan(eccentric_anomaly.radians / 2)
 
-      Angle.as_degrees((Angle.atan(tan).degrees * 2) % 360)
+      Angle.from_degrees((Angle.atan(tan).degrees * 2) % 360)
     end
 
     # @return [Astronoby::Angle] Sun's longitude at perigee
     def longitude_at_perigee
-      Angle.as_degrees(
+      Angle.from_degrees(
         (281.2208444 + 1.719175 * centuries + 0.000452778 * centuries**2) % 360
       )
     end
 
     # @return [Astronoby::Angle] Sun's orbital eccentricity
     def orbital_eccentricity
-      Angle.as_degrees(
+      Angle.from_degrees(
         (0.01675104 - 0.0000418 * centuries - 0.000000126 * centuries**2) % 360
       )
     end
@@ -172,13 +174,13 @@ module Astronoby
     private
 
     def true_longitude
-      Angle.as_degrees(
+      Angle.from_degrees(
         (true_anomaly + longitude_at_perigee).degrees % 360
       )
     end
 
     def mean_anomaly
-      Angle.as_degrees(
+      Angle.from_degrees(
         (longitude_at_base_epoch - longitude_at_perigee).degrees % 360
       )
     end
@@ -192,7 +194,7 @@ module Astronoby
     end
 
     def longitude_at_base_epoch
-      Angle.as_degrees(
+      Angle.from_degrees(
         (279.6966778 + 36000.76892 * centuries + 0.0003025 * centuries**2) % 360
       )
     end
@@ -210,7 +212,7 @@ module Astronoby
       sun_at_midnight = self.class.new(epoch: epoch)
       shift = Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
         GeocentricParallax.angle(distance: sun_at_midnight.earth_distance) +
-        Angle.as_degrees(sun_at_midnight.angular_size.degrees / 2)
+        Angle.from_degrees(sun_at_midnight.angular_size.degrees / 2)
       ecliptic_coordinates = sun_at_midnight.apparent_ecliptic_coordinates
       equatorial_coordinates = ecliptic_coordinates
         .to_apparent_equatorial(epoch: epoch)
@@ -240,7 +242,7 @@ module Astronoby
     def vertical_shift
       Astronoby::Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
         Astronoby::GeocentricParallax.angle(distance: earth_distance) +
-        Astronoby::Angle.as_degrees(angular_size.degrees / 2)
+        Astronoby::Angle.from_degrees(angular_size.degrees / 2)
     end
   end
 end

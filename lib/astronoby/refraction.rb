@@ -2,8 +2,8 @@
 
 module Astronoby
   class Refraction
-    LOW_ALTITUDE_BODY_ANGLE = Angle.as_degrees(15)
-    ZENITH = Angle.as_degrees(90)
+    LOW_ALTITUDE_BODY_ANGLE = Angle.from_degrees(15)
+    ZENITH = Angle.from_degrees(90)
 
     def self.angle(coordinates:, observer:)
       new(coordinates, observer).refraction_angle
@@ -56,7 +56,7 @@ module Astronoby
 
     def high_altitude_angle
       zenith_angle = ZENITH - @coordinates.altitude
-      Angle.as_degrees(0.00452 * pressure * zenith_angle.tan / temperature)
+      Angle.from_degrees(0.00452 * pressure * zenith_angle.tan / temperature)
     end
 
     def low_altitude_angle
@@ -67,7 +67,7 @@ module Astronoby
         1 + 0.505 * altitude_in_degrees + 0.0845 * altitude_in_degrees**2
       )
 
-      Angle.as_degrees(term1 / term2)
+      Angle.from_degrees(term1 / term2)
     end
   end
 end

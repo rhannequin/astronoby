@@ -29,11 +29,11 @@ module Astronoby
       private
 
       def to_equatorial(obliquity:)
-        y = Angle.as_radians(
+        y = Angle.from_radians(
           @longitude.sin * obliquity.cos -
             @latitude.tan * obliquity.sin
         )
-        x = Angle.as_radians(@longitude.cos)
+        x = Angle.from_radians(@longitude.cos)
         r = Angle.atan(y.radians / x.radians)
         right_ascension = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 

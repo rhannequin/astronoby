@@ -42,7 +42,7 @@ module Astronoby
                 previous_solution &&
                 (solution - previous_solution).abs <= precision
               )
-            return Angle.as_radians(solution)
+            return Angle.from_radians(solution)
           end
 
           eccentric_anomaly_newton_raphson(
@@ -51,7 +51,7 @@ module Astronoby
             precision,
             maximum_iteration_count,
             current_iteration + 1,
-            Angle.as_radians(solution)
+            Angle.from_radians(solution)
           )
         end
       end

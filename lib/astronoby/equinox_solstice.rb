@@ -102,13 +102,13 @@ module Astronoby
 
     def compute
       t = (julian_day - Epoch::J2000) / Epoch::DAYS_PER_JULIAN_CENTURY
-      w = Angle.as_degrees(35999.373 * t) - Angle.as_degrees(2.47)
+      w = Angle.from_degrees(35999.373 * t) - Angle.from_degrees(2.47)
       delta = 1 +
         0.0334 * w.cos +
-        0.0007 * Angle.as_degrees(w.degrees * 2).cos
+        0.0007 * Angle.from_degrees(w.degrees * 2).cos
 
       s = PERIODIC_TERMS.sum do |a, b, c|
-        a * (Angle.as_degrees(b) + Angle.as_degrees(c * t)).cos
+        a * (Angle.from_degrees(b) + Angle.from_degrees(c * t)).cos
       end
 
       delta_days = 0.00001 * s / delta
@@ -133,7 +133,7 @@ module Astronoby
       sun = Sun.new(epoch: epoch)
       longitude = sun.apparent_ecliptic_coordinates.longitude
 
-      58 * Angle.as_degrees(@event * 90 - longitude.degrees).sin
+      58 * Angle.from_degrees(@event * 90 - longitude.degrees).sin
     end
   end
 end

@@ -37,6 +37,26 @@ Returns the true equatorial coordinates for ths date's epoch.
 Returns the apparent equatorial coordinates for the date's epoch, including
 corrections for the obliquity.
 
+### `Angle::as_radians` renamed into `Angle::from_radians` (#43)
+
+Behaviour not changed.
+
+### `Angle::as_degrees` renamed into `Angle::from_degrees` (#43)
+
+Behaviour not changed.
+
+### `Angle::as_hours` renamed into `Angle::from_hours` (#43)
+
+Behaviour not changed.
+
+### `Angle::as_dms` renamed into `Angle::from_dms` (#43)
+
+Behaviour not changed.
+
+### `Angle::as_hms` renamed into `Angle::from_hms` (#43)
+
+Behaviour not changed.
+
 ## Upgrading from 0.1.0 to 0.2.0
 
 ### `Observer` class added (#29)

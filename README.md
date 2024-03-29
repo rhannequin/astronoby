@@ -31,9 +31,9 @@ major one is released.
 ### Angle manipulation
 
 ```rb
-angle1 = Astronoby::Angle.as_degrees(90)
-angle2 = Astronoby::Angle.as_radians(Astronoby::Angle::PI / 2)
-angle3 = Astronoby::Angle.as_hours(12)
+angle1 = Astronoby::Angle.from_degrees(90)
+angle2 = Astronoby::Angle.from_radians(Astronoby::Angle::PI / 2)
+angle3 = Astronoby::Angle.from_hours(12)
 
 angle1 == angle2
 # => true
@@ -50,14 +50,14 @@ angle.cos
 
 ```rb
 equatorial = Astronoby::Coordinates::Equatorial.new(
-  right_ascension: Astronoby::Angle.as_hms(17, 43, 54),
-  declination: Astronoby::Angle.as_dms(-22, 10, 0)
+  right_ascension: Astronoby::Angle.from_hms(17, 43, 54),
+  declination: Astronoby::Angle.from_dms(-22, 10, 0)
 )
 
 horizontal = equatorial.to_horizontal(
   time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"),
-  latitude: Astronoby::Angle.as_degrees(38),
-  longitude: Astronoby::Angle.as_degrees(-78)
+  latitude: Astronoby::Angle.from_degrees(38),
+  longitude: Astronoby::Angle.from_degrees(-78)
 )
 
 horizontal.altitude.str(:dms)
@@ -73,8 +73,8 @@ horizontal.azimuth.str(:dms)
 time = Time.utc(2023, 2, 17, 11, 0, 0)
 epoch = Astronoby::Epoch.from_time(time)
 
-latitude = Astronoby::Angle.as_degrees(48.8566)
-longitude = Astronoby::Angle.as_degrees(2.3522)
+latitude = Astronoby::Angle.from_degrees(48.8566)
+longitude = Astronoby::Angle.from_degrees(2.3522)
 
 sun = Astronoby::Sun.new(epoch: epoch)
 
@@ -96,8 +96,8 @@ horizontal_coordinates.altitude.str(:dms)
 date = Date.new(2015, 2, 5)
 epoch = Astronoby::Epoch.from_time(date)
 observer = Astronoby::Observer.new(
-  latitude: Astronoby::Angle.as_degrees(38),
-  longitude: Astronoby::Angle.as_degrees(-78)
+  latitude: Astronoby::Angle.from_degrees(38),
+  longitude: Astronoby::Angle.from_degrees(-78)
 )
 sun = Astronoby::Sun.new(epoch: epoch)
 

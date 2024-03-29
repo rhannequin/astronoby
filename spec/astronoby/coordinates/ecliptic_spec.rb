@@ -9,8 +9,8 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
     #  Chapter: 4 - Orbits and Coordinate Systems, p.95
     context "with real life arguments (book example)" do
       it "computes properly" do
-        latitude = Astronoby::Angle.as_dms(1, 12, 0)
-        longitude = Astronoby::Angle.as_dms(184, 36, 0)
+        latitude = Astronoby::Angle.from_dms(1, 12, 0)
+        longitude = Astronoby::Angle.from_dms(184, 36, 0)
         epoch = Astronoby::Epoch::J2000
 
         equatorial_coordinates = described_class.new(
@@ -37,7 +37,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
     context "with real life arguments (book example)" do
       it "computes properly" do
         latitude = Astronoby::Angle.zero
-        longitude = Astronoby::Angle.as_dms(120, 30, 30)
+        longitude = Astronoby::Angle.from_dms(120, 30, 30)
         epoch = Astronoby::Epoch::J2000
 
         equatorial_coordinates = described_class.new(
@@ -63,8 +63,8 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
     #  Chapter: 27 - Ecliptic to equatorial coordinate conversion, p.52
     context "with real life arguments (book example)" do
       it "computes properly" do
-        latitude = Astronoby::Angle.as_dms(4, 52, 31)
-        longitude = Astronoby::Angle.as_dms(139, 41, 10)
+        latitude = Astronoby::Angle.from_dms(4, 52, 31)
+        longitude = Astronoby::Angle.from_dms(139, 41, 10)
         epoch = Astronoby::Epoch.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
 
         equatorial_coordinates = described_class.new(

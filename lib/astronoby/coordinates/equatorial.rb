@@ -25,7 +25,7 @@ module Astronoby
         ha = (lst.time - @right_ascension.hours)
         ha += 24 if ha.negative?
 
-        Angle.as_hours(ha)
+        Angle.from_hours(ha)
       end
 
       def to_horizontal(time:, latitude:, longitude:)
@@ -39,7 +39,7 @@ module Astronoby
         azimuth = Angle.acos(t2)
 
         if ha.sin.positive?
-          azimuth = Angle.as_degrees(BigDecimal("360") - azimuth.degrees)
+          azimuth = Angle.from_degrees(BigDecimal("360") - azimuth.degrees)
         end
 
         Horizontal.new(
@@ -58,11 +58,11 @@ module Astronoby
       def to_ecliptic(epoch:)
         mean_obliquity = MeanObliquity.for_epoch(epoch)
 
-        y = Angle.as_radians(
+        y = Angle.from_radians(
           @right_ascension.sin * mean_obliquity.cos +
           @declination.tan * mean_obliquity.sin
         )
-        x = Angle.as_radians(@right_ascension.cos)
+        x = Angle.from_radians(@right_ascension.cos)
         r = Angle.atan(y.radians / x.radians)
         longitude = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 

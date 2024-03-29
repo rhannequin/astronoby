@@ -15,10 +15,10 @@ module Astronoby
           return angle if y.positive? && x.positive?
 
           if y.negative? && x.positive?
-            return Angle.as_degrees(angle.degrees + 360)
+            return Angle.from_degrees(angle.degrees + 360)
           end
 
-          Angle.as_degrees(angle.degrees + 180)
+          Angle.from_degrees(angle.degrees + 180)
         end
       end
     end

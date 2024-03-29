@@ -13,7 +13,7 @@ RSpec.describe Astronoby::LocalSiderealTime do
         date: date,
         time: 4 + 40 / 60.0 + 5.23 / 3600.0
       )
-      longitude = Astronoby::Angle.as_degrees(-64)
+      longitude = Astronoby::Angle.from_degrees(-64)
 
       lst = described_class.from_gst(gst: gst, longitude: longitude)
 
@@ -35,7 +35,7 @@ RSpec.describe Astronoby::LocalSiderealTime do
         date: date,
         time: 2 + 3 / 60.0 + 41 / 3600.0
       )
-      longitude = Astronoby::Angle.as_degrees(-40)
+      longitude = Astronoby::Angle.from_degrees(-40)
 
       lst = described_class.from_gst(gst: gst, longitude: longitude)
 
@@ -54,7 +54,7 @@ RSpec.describe Astronoby::LocalSiderealTime do
     #  Edition: Cambridge University Press
     #  Chapter: 15 - Converting LST to GST
     it "returns the Greenwich sidereal time for 2024-03-14" do
-      longitude = Astronoby::Angle.as_degrees(-64)
+      longitude = Astronoby::Angle.from_degrees(-64)
       date = Date.new(2024, 3, 14)
       time = 24 / 60.0 + 5.23 / 3600.0
       lst = described_class.new(date: date, time: time, longitude: longitude)
@@ -74,7 +74,7 @@ RSpec.describe Astronoby::LocalSiderealTime do
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
     it "returns the Greenwich sidereal time for 2014-12-13" do
-      longitude = Astronoby::Angle.as_degrees(-77)
+      longitude = Astronoby::Angle.from_degrees(-77)
       date = Date.new(2014, 12, 13)
       time = 1 + 18 / 60.0 + 34 / 3600.0
       lst = described_class.new(date: date, time: time, longitude: longitude)
@@ -94,7 +94,7 @@ RSpec.describe Astronoby::LocalSiderealTime do
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
     it "returns the Greenwich sidereal time for 200-07-05" do
-      longitude = Astronoby::Angle.as_degrees(60)
+      longitude = Astronoby::Angle.from_degrees(60)
       date = Date.new(2000, 7, 5)
       time = 5 + 54 / 60.0 + 20 / 3600.0
       lst = described_class.new(date: date, time: time, longitude: longitude)

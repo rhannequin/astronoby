@@ -68,13 +68,13 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the corrected equatorial coordinates for the Moon" do
-      latitude = Astronoby::Angle.as_degrees(50)
-      longitude = Astronoby::Angle.as_degrees(-100)
+      latitude = Astronoby::Angle.from_degrees(50)
+      longitude = Astronoby::Angle.from_degrees(-100)
       elevation = 60
       time = Time.utc(1979, 2, 26, 16, 45)
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
-        right_ascension: Astronoby::Angle.as_hms(22, 35, 19),
-        declination: Astronoby::Angle.as_dms(-7, 41, 13)
+        right_ascension: Astronoby::Angle.from_hms(22, 35, 19),
+        declination: Astronoby::Angle.from_dms(-7, 41, 13)
       )
       distance = BigDecimal("56.221228") *
         described_class::EARTH_EQUATORIAL_RADIUS
@@ -100,13 +100,13 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the corrected equatorial coordinates for the Sun" do
-      latitude = Astronoby::Angle.as_degrees(50)
-      longitude = Astronoby::Angle.as_degrees(-100)
+      latitude = Astronoby::Angle.from_degrees(50)
+      longitude = Astronoby::Angle.from_degrees(-100)
       elevation = 60
       time = Time.utc(1979, 2, 26, 16, 45)
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
-        right_ascension: Astronoby::Angle.as_hms(22, 36, 44),
-        declination: Astronoby::Angle.as_dms(-8, 44, 24)
+        right_ascension: Astronoby::Angle.from_hms(22, 36, 44),
+        declination: Astronoby::Angle.from_dms(-8, 44, 24)
       )
       distance = BigDecimal("0.9901") *
         described_class::ASTRONOMICAL_UNIT_IN_METERS

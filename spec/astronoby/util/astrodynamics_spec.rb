@@ -3,7 +3,7 @@
 RSpec.describe Astronoby::Util::Astrodynamics do
   describe "::eccentric_anomaly_newton_raphson" do
     it "returns an angle" do
-      mean_anomaly = Astronoby::Angle.as_radians(0.431845)
+      mean_anomaly = Astronoby::Angle.from_radians(0.431845)
       orbital_eccentricity = 0.5
       precision = 2e-06
       iterations = 10
@@ -24,7 +24,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
     #  Edition: MIT Press
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "computes and returns an approximate solution" do
-      mean_anomaly = Astronoby::Angle.as_radians(0.431845)
+      mean_anomaly = Astronoby::Angle.from_radians(0.431845)
       orbital_eccentricity = 0.5
       precision = 2e-06
       iterations = 10
@@ -45,7 +45,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
     #  Edition: MIT Press
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "computes and returns an approximate solution" do
-      mean_anomaly = Astronoby::Angle.as_degrees(5.498078)
+      mean_anomaly = Astronoby::Angle.from_degrees(5.498078)
       orbital_eccentricity = 0.00035
       precision = 2e-06
       iterations = 10
@@ -66,7 +66,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
     #  Edition: MIT Press
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "computes and returns an approximate solution" do
-      mean_anomaly = Astronoby::Angle.as_degrees(5.498078)
+      mean_anomaly = Astronoby::Angle.from_degrees(5.498078)
       orbital_eccentricity = 0.6813025
       precision = 2e-06
       iterations = 10
@@ -87,7 +87,7 @@ RSpec.describe Astronoby::Util::Astrodynamics do
     #  Edition: MIT Press
     #  Chapter: 4 - Orbits and Coordinate Systems
     it "computes and returns an approximate solution" do
-      mean_anomaly = Astronoby::Angle.as_degrees(5.498078)
+      mean_anomaly = Astronoby::Angle.from_degrees(5.498078)
       orbital_eccentricity = 0.85
       precision = 2e-06
       iterations = 10
