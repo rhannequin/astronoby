@@ -1,10 +1,27 @@
 # Changelog
 
-## 0.2.0 - 2024-03-24
+## 0.3.0 - 2024-03-29
 
 _If you are upgrading: please see [`UPGRADING.md`]._
 
-[`UPGRADING.md`]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
+### Improvements
+
+* Drop `Angle#==` ([#42])
+* Improved accuracy with Sun's location predictions ([#41])
+
+### Breaking changes
+
+* **breaking:** Difference between true and apparent ecliptic and equatorial
+  coordinates ([#41])
+* **breaking:** Rename `Angle::as_*` into `Angle::from_*` ([#43])
+
+[#41]: https://github.com/rhannequin/astronoby/pull/41
+[#42]: https://github.com/rhannequin/astronoby/pull/42
+[#43]: https://github.com/rhannequin/astronoby/pull/43
+
+## 0.2.0 - 2024-03-24
+
+_If you are upgrading: please see [`UPGRADING.md`]._
 
 ### Features
 
@@ -74,3 +91,5 @@ _If you are upgrading: please see [`UPGRADING.md`]._
 
 * Add `Astronoby::Angle`
 * Support angles in degrees and radians
+
+[`UPGRADING.md`]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
