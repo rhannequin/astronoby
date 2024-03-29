@@ -7,6 +7,36 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.2.0 to 0.3.0
+
+### `Sun#ecliptic_coordinates` method removed (#41)
+
+Removed in favor of `#true_ecliptic_coordinates` and
+`#apparent_ecliptic_coordinates`.
+
+### `Coordinates::Ecliptic#to_horizontal` method removed (#41)
+
+Removed in favor of `#to_true_horizontal` and
+`#to_apparent_horizontal`.
+
+### `Sun#true_ecliptic_coordinates` method added (#41)
+
+Returns the true ecliptic coordinates for the date's epoch.
+
+### `Sun#apparent_ecliptic_coordinates` method added (#41)
+
+Returns the apparent ecliptic coordinates for the date's epoch, including
+corrections for the nutation and aberration.
+
+### `Coordinates::Ecliptic#to_true_horizontal` method added (#41)
+
+Returns the true equatorial coordinates for ths date's epoch.
+
+### `Coordinates::Ecliptic#to_apparent_horizontal` method added (#41)
+
+Returns the apparent equatorial coordinates for the date's epoch, including
+corrections for the obliquity.
+
 ## Upgrading from 0.1.0 to 0.2.0
 
 ### `Observer` class added (#29)

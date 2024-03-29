@@ -28,6 +28,45 @@ This library is still in heavy development. The public is not stable, please
 be aware new minor versions will probably lead to breaking changes until a
 major one is released.
 
+### Angle manipulation
+
+```rb
+angle1 = Astronoby::Angle.as_degrees(90)
+angle2 = Astronoby::Angle.as_radians(Astronoby::Angle::PI / 2)
+angle3 = Astronoby::Angle.as_hours(12)
+
+angle1 == angle2
+# => true
+
+angle1 < angle3
+# => true
+
+angle = angle1 + angle2 + angle3
+angle.cos
+# => 1.0
+```
+
+### Coordinates conversion
+
+```rb
+equatorial = Astronoby::Coordinates::Equatorial.new(
+  right_ascension: Astronoby::Angle.as_hms(17, 43, 54),
+  declination: Astronoby::Angle.as_dms(-22, 10, 0)
+)
+
+horizontal = equatorial.to_horizontal(
+  time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"),
+  latitude: Astronoby::Angle.as_degrees(38),
+  longitude: Astronoby::Angle.as_degrees(-78)
+)
+
+horizontal.altitude.str(:dms)
+# => "-73° 27′ 19.1557″"
+
+horizontal.azimuth.str(:dms)
+# => "+341° 33′ 21.587″"
+```
+
 ### Sun's location in the sky
 
 ```rb
@@ -45,10 +84,34 @@ horizontal_coordinates = sun.horizontal_coordinates(
 )
 
 horizontal_coordinates.altitude.degrees.to_f
-# => 27.502365130176567
+# => 27.50008242057459
 
 horizontal_coordinates.altitude.str(:dms)
-# => "+27° 30′ 8.5144″"
+# => "+27° 30′ 0.2967″"
+```
+
+### Sunrise and sunset times and azimuths
+
+```rb
+date = Date.new(2015, 2, 5)
+epoch = Astronoby::Epoch.from_time(date)
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.as_degrees(38),
+  longitude: Astronoby::Angle.as_degrees(-78)
+)
+sun = Astronoby::Sun.new(epoch: epoch)
+
+sun.rising_time(observer: observer)
+# => 2015-02-05 12:13:26 UTC
+
+sun.rising_azimuth(observer: observer).str(:dms)
+# => "+109° 41′ 22.2585″"
+
+sun.setting_time(observer: observer)
+# => 2015-02-05 22:35:12 UTC
+
+sun.setting_azimuth(observer: observer).str(:dms)
+# => "+250° 18′ 37.7414″"
 ```
 
 ### Solstice and Equinox times
@@ -57,10 +120,10 @@ horizontal_coordinates.altitude.str(:dms)
 year = 2024
 
 Astronoby::EquinoxSolstice.march_equinox(year)
-# => 2024-03-20 03:05:00 UTC
+# => 2024-03-20 03:05:08 UTC
 
 Astronoby::EquinoxSolstice.june_solstice(year)
-# => 2024-06-20 20:50:14 UTC
+# => 2024-06-20 20:50:18 UTC
 ```
 
 ## Precision

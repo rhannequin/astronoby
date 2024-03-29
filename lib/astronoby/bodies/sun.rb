@@ -19,8 +19,8 @@ module Astronoby
       epoch_at_noon = Epoch.from_time(noon)
       sun_at_noon = new(epoch: epoch_at_noon)
       equatorial_hours = sun_at_noon
-        .ecliptic_coordinates
-        .to_equatorial(epoch: epoch_at_noon)
+        .apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: epoch_at_noon)
         .right_ascension
         .hours
       gst = GreenwichSiderealTime
@@ -41,13 +41,24 @@ module Astronoby
       @epoch = epoch
     end
 
-    # @return [Astronoby::Coordinates::Ecliptic] Sun's ecliptic coordinates
-    def ecliptic_coordinates
+    def true_ecliptic_coordinates
       Coordinates::Ecliptic.new(
         latitude: Angle.zero,
-        longitude: Angle.as_degrees(
-          (true_anomaly + longitude_at_perigee).degrees % 360
-        )
+        longitude: true_longitude
+      )
+    end
+
+    def apparent_ecliptic_coordinates
+      nutation = Nutation.for_ecliptic_longitude(epoch: @epoch)
+      longitude_with_aberration = Aberration.for_ecliptic_coordinates(
+        coordinates: true_ecliptic_coordinates,
+        epoch: @epoch
+      ).longitude
+      apparent_longitude = nutation + longitude_with_aberration
+
+      Coordinates::Ecliptic.new(
+        latitude: Angle.zero,
+        longitude: apparent_longitude
       )
     end
 
@@ -59,8 +70,8 @@ module Astronoby
     def horizontal_coordinates(latitude:, longitude:)
       time = Epoch.to_utc(@epoch)
 
-      ecliptic_coordinates
-        .to_equatorial(epoch: @epoch)
+      apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: @epoch)
         .to_horizontal(time: time, latitude: latitude, longitude: longitude)
     end
 
@@ -83,7 +94,8 @@ module Astronoby
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle, nil] Azimuth of sunrise
     def rising_azimuth(observer:)
-      equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: @epoch)
+      equatorial_coordinates = apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: @epoch)
       Body.new(equatorial_coordinates).rising_azimuth(
         latitude: observer.latitude,
         vertical_shift: vertical_shift
@@ -109,7 +121,8 @@ module Astronoby
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle, nil] Azimuth of sunset
     def setting_azimuth(observer:)
-      equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: @epoch)
+      equatorial_coordinates = apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: @epoch)
       Body.new(equatorial_coordinates).setting_azimuth(
         latitude: observer.latitude,
         vertical_shift: vertical_shift
@@ -158,6 +171,12 @@ module Astronoby
 
     private
 
+    def true_longitude
+      Angle.as_degrees(
+        (true_anomaly + longitude_at_perigee).degrees % 360
+      )
+    end
+
     def mean_anomaly
       Angle.as_degrees(
         (longitude_at_base_epoch - longitude_at_perigee).degrees % 360
@@ -192,8 +211,9 @@ module Astronoby
       shift = Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
         GeocentricParallax.angle(distance: sun_at_midnight.earth_distance) +
         Angle.as_degrees(sun_at_midnight.angular_size.degrees / 2)
-      ecliptic_coordinates = sun_at_midnight.ecliptic_coordinates
-      equatorial_coordinates = ecliptic_coordinates.to_equatorial(epoch: epoch)
+      ecliptic_coordinates = sun_at_midnight.apparent_ecliptic_coordinates
+      equatorial_coordinates = ecliptic_coordinates
+        .to_apparent_equatorial(epoch: epoch)
 
       event_time = if event == :rising
         Body.new(equatorial_coordinates).rising_time(
