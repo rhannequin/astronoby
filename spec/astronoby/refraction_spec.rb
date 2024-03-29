@@ -4,9 +4,9 @@ RSpec.describe Astronoby::Refraction do
   describe "::angle" do
     it "returns an Angle" do
       coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.as_degrees(100),
-        altitude: Astronoby::Angle.as_degrees(80),
-        latitude: Astronoby::Angle.as_degrees(50),
+        azimuth: Astronoby::Angle.from_degrees(100),
+        altitude: Astronoby::Angle.from_degrees(80),
+        latitude: Astronoby::Angle.from_degrees(50),
         longitude: Astronoby::Angle.zero
       )
       observer = instance_double(
@@ -32,11 +32,11 @@ RSpec.describe Astronoby::Refraction do
     # The book example expects a refraction angle of +0° 10′ 11.2464″
     it "computes the refraction angle" do
       time = Time.utc(1987, 3, 23, 1, 1, 24)
-      latitude = Astronoby::Angle.as_degrees(BigDecimal("51.203611"))
-      longitude = Astronoby::Angle.as_degrees(BigDecimal("0.17"))
+      latitude = Astronoby::Angle.from_degrees(BigDecimal("51.203611"))
+      longitude = Astronoby::Angle.from_degrees(BigDecimal("0.17"))
       true_equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
-        right_ascension: Astronoby::Angle.as_hms(23, 14, 0),
-        declination: Astronoby::Angle.as_dms(40, 10, 0)
+        right_ascension: Astronoby::Angle.from_hms(23, 14, 0),
+        declination: Astronoby::Angle.from_dms(40, 10, 0)
       )
       true_horizontal_coordinates = true_equatorial_coordinates.to_horizontal(
         time: time,
@@ -64,9 +64,9 @@ RSpec.describe Astronoby::Refraction do
     #  Chapter: 37 - Refraction
     it "computes the refraction angle" do
       coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.as_dms(283, 16, 15.70),
-        altitude: Astronoby::Angle.as_dms(19, 20, 3.64),
-        latitude: Astronoby::Angle.as_degrees(52),
+        azimuth: Astronoby::Angle.from_dms(283, 16, 15.70),
+        altitude: Astronoby::Angle.from_dms(19, 20, 3.64),
+        latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
       )
       observer = instance_double(
@@ -87,9 +87,9 @@ RSpec.describe Astronoby::Refraction do
   describe "::correct_horizontal_coordinates" do
     it "returns horizontal coordinates" do
       true_coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.as_degrees(100),
-        altitude: Astronoby::Angle.as_degrees(80),
-        latitude: Astronoby::Angle.as_degrees(50),
+        azimuth: Astronoby::Angle.from_degrees(100),
+        altitude: Astronoby::Angle.from_degrees(80),
+        latitude: Astronoby::Angle.from_degrees(50),
         longitude: Astronoby::Angle.zero
       )
       observer = instance_double(
@@ -113,9 +113,9 @@ RSpec.describe Astronoby::Refraction do
     #  Chapter: 37 - Refraction
     it "computes accurate apparent coordinates" do
       true_coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.as_dms(283, 16, 15.70),
-        altitude: Astronoby::Angle.as_dms(19, 20, 3.64),
-        latitude: Astronoby::Angle.as_degrees(52),
+        azimuth: Astronoby::Angle.from_dms(283, 16, 15.70),
+        altitude: Astronoby::Angle.from_dms(19, 20, 3.64),
+        latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
       )
       observer = instance_double(

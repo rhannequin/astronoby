@@ -21,7 +21,7 @@ module Astronoby
     end
 
     def for_ecliptic_longitude
-      Angle.as_dms(
+      Angle.from_dms(
         0,
         0,
         (
@@ -32,7 +32,7 @@ module Astronoby
     end
 
     def for_obliquity_of_the_ecliptic
-      Angle.as_dms(
+      Angle.from_dms(
         0,
         0,
         (
@@ -49,13 +49,13 @@ module Astronoby
     end
 
     def sun_mean_longitude
-      Angle.as_degrees(
+      Angle.from_degrees(
         (279.6967 + 360.0 * (centuries_a - centuries_a.to_i)) % 360
       )
     end
 
     def moon_ascending_node_longitude
-      Angle.as_degrees(
+      Angle.from_degrees(
         (259.1833 - 360.0 * (centuries_b - centuries_b.to_i)) % 360
       )
     end

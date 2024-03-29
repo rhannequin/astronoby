@@ -25,45 +25,45 @@ module Astronoby
         new(0)
       end
 
-      def as_radians(radians)
+      def from_radians(radians)
         normalized_radians = radians.remainder(FULL_CIRCLE_IN_RADIANS)
         new(normalized_radians)
       end
 
-      def as_degrees(degrees)
+      def from_degrees(degrees)
         radians = degrees / PI_IN_DEGREES * PI
-        as_radians(radians)
+        from_radians(radians)
       end
 
-      def as_hours(hours)
+      def from_hours(hours)
         radians = hours * RADIAN_PER_HOUR
-        as_radians(radians)
+        from_radians(radians)
       end
 
-      def as_hms(hour, minute, second)
+      def from_hms(hour, minute, second)
         hours = hour + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
-        as_hours(hours)
+        from_hours(hours)
       end
 
-      def as_dms(degree, minute, second)
+      def from_dms(degree, minute, second)
         sign = degree.negative? ? -1 : 1
         degrees = degree.abs + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
-        as_degrees(sign * degrees)
+        from_degrees(sign * degrees)
       end
 
       def asin(ratio)
         radians = Math.asin(ratio)
-        as_radians(radians)
+        from_radians(radians)
       end
 
       def acos(ratio)
         radians = Math.acos(ratio)
-        as_radians(radians)
+        from_radians(radians)
       end
 
       def atan(ratio)
         radians = Math.atan(ratio)
-        as_radians(radians)
+        from_radians(radians)
       end
     end
 
@@ -87,11 +87,11 @@ module Astronoby
     end
 
     def +(other)
-      self.class.as_radians(radians + other.radians)
+      self.class.from_radians(radians + other.radians)
     end
 
     def -(other)
-      self.class.as_radians(@radians - other.radians)
+      self.class.from_radians(@radians - other.radians)
     end
 
     def sin

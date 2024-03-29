@@ -21,8 +21,8 @@ RSpec.describe Astronoby::Util::Trigonometry do
       it "doesn't adjust" do
         initial_angle = Astronoby::Angle.zero
         adjustement = described_class.adjustement_for_arctangent(
-          Astronoby::Angle.as_degrees(1),
-          Astronoby::Angle.as_degrees(1),
+          Astronoby::Angle.from_degrees(1),
+          Astronoby::Angle.from_degrees(1),
           initial_angle
         )
 
@@ -33,8 +33,8 @@ RSpec.describe Astronoby::Util::Trigonometry do
     context "when term1 is positive and term2 is negative" do
       it "adjusts by 180°" do
         adjustement = described_class.adjustement_for_arctangent(
-          Astronoby::Angle.as_degrees(1),
-          Astronoby::Angle.as_degrees(-1),
+          Astronoby::Angle.from_degrees(1),
+          Astronoby::Angle.from_degrees(-1),
           Astronoby::Angle.zero
         )
 
@@ -46,8 +46,8 @@ RSpec.describe Astronoby::Util::Trigonometry do
     context "when term1 is negative and term2 is positive" do
       it "adjusts by 360°" do
         adjustement = described_class.adjustement_for_arctangent(
-          Astronoby::Angle.as_degrees(-1),
-          Astronoby::Angle.as_degrees(1),
+          Astronoby::Angle.from_degrees(-1),
+          Astronoby::Angle.from_degrees(1),
           Astronoby::Angle.zero
         )
 
@@ -59,8 +59,8 @@ RSpec.describe Astronoby::Util::Trigonometry do
     context "when term1 is negative and term2 is negative" do
       it "adjusts by 180°" do
         adjustement = described_class.adjustement_for_arctangent(
-          Astronoby::Angle.as_degrees(-1),
-          Astronoby::Angle.as_degrees(-1),
+          Astronoby::Angle.from_degrees(-1),
+          Astronoby::Angle.from_degrees(-1),
           Astronoby::Angle.zero
         )
 

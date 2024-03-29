@@ -101,8 +101,8 @@ RSpec.describe Astronoby::Sun do
       coordinates = described_class
         .new(epoch: epoch)
         .horizontal_coordinates(
-          latitude: Astronoby::Angle.as_degrees(-20),
-          longitude: Astronoby::Angle.as_degrees(-30)
+          latitude: Astronoby::Angle.from_degrees(-20),
+          longitude: Astronoby::Angle.from_degrees(-30)
         )
 
       expect(coordinates).to be_a(Astronoby::Coordinates::Horizontal)
@@ -119,8 +119,8 @@ RSpec.describe Astronoby::Sun do
       sun = described_class.new(epoch: epoch)
 
       horizontal_coordinates = sun.horizontal_coordinates(
-        latitude: Astronoby::Angle.as_degrees(38),
-        longitude: Astronoby::Angle.as_degrees(-78)
+        latitude: Astronoby::Angle.from_degrees(38),
+        longitude: Astronoby::Angle.from_degrees(-78)
       )
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
@@ -144,8 +144,8 @@ RSpec.describe Astronoby::Sun do
       sun = described_class.new(epoch: epoch)
 
       horizontal_coordinates = sun.horizontal_coordinates(
-        latitude: Astronoby::Angle.as_degrees(30),
-        longitude: Astronoby::Angle.as_degrees(-95)
+        latitude: Astronoby::Angle.from_degrees(30),
+        longitude: Astronoby::Angle.from_degrees(-95)
       )
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
@@ -169,8 +169,8 @@ RSpec.describe Astronoby::Sun do
       sun = described_class.new(epoch: epoch)
 
       horizontal_coordinates = sun.horizontal_coordinates(
-        latitude: Astronoby::Angle.as_degrees(-20),
-        longitude: Astronoby::Angle.as_degrees(-30)
+        latitude: Astronoby::Angle.from_degrees(-20),
+        longitude: Astronoby::Angle.from_degrees(-30)
       )
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
@@ -338,8 +338,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(2015, 2, 5)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(38),
-        longitude: Astronoby::Angle.as_degrees(-78)
+        latitude: Astronoby::Angle.from_degrees(38),
+        longitude: Astronoby::Angle.from_degrees(-78)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -359,8 +359,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1986, 3, 10)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(42.37),
-        longitude: Astronoby::Angle.as_degrees(-71.05)
+        latitude: Astronoby::Angle.from_degrees(42.37),
+        longitude: Astronoby::Angle.from_degrees(-71.05)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -375,8 +375,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1991, 3, 14)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(48.8566),
-        longitude: Astronoby::Angle.as_degrees(2.3522)
+        latitude: Astronoby::Angle.from_degrees(48.8566),
+        longitude: Astronoby::Angle.from_degrees(2.3522)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -406,8 +406,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(2015, 2, 5)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(38),
-        longitude: Astronoby::Angle.as_degrees(-78)
+        latitude: Astronoby::Angle.from_degrees(38),
+        longitude: Astronoby::Angle.from_degrees(-78)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -421,8 +421,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1986, 3, 10)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(42.37),
-        longitude: Astronoby::Angle.as_degrees(-71.05)
+        latitude: Astronoby::Angle.from_degrees(42.37),
+        longitude: Astronoby::Angle.from_degrees(-71.05)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -436,8 +436,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1991, 3, 14)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(48.8566),
-        longitude: Astronoby::Angle.as_degrees(2.3522)
+        latitude: Astronoby::Angle.from_degrees(48.8566),
+        longitude: Astronoby::Angle.from_degrees(2.3522)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -472,8 +472,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(2015, 2, 5)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(38),
-        longitude: Astronoby::Angle.as_degrees(-78)
+        latitude: Astronoby::Angle.from_degrees(38),
+        longitude: Astronoby::Angle.from_degrees(-78)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -493,8 +493,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1986, 3, 10)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(42.37),
-        longitude: Astronoby::Angle.as_degrees(-71.05)
+        latitude: Astronoby::Angle.from_degrees(42.37),
+        longitude: Astronoby::Angle.from_degrees(-71.05)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -509,8 +509,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1991, 3, 14)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(48.8566),
-        longitude: Astronoby::Angle.as_degrees(2.3522)
+        latitude: Astronoby::Angle.from_degrees(48.8566),
+        longitude: Astronoby::Angle.from_degrees(2.3522)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -540,8 +540,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(2015, 2, 5)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(38),
-        longitude: Astronoby::Angle.as_degrees(-78)
+        latitude: Astronoby::Angle.from_degrees(38),
+        longitude: Astronoby::Angle.from_degrees(-78)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -555,8 +555,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1986, 3, 10)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(42.37),
-        longitude: Astronoby::Angle.as_degrees(-71.05)
+        latitude: Astronoby::Angle.from_degrees(42.37),
+        longitude: Astronoby::Angle.from_degrees(-71.05)
       )
       sun = described_class.new(epoch: epoch)
 
@@ -570,8 +570,8 @@ RSpec.describe Astronoby::Sun do
       date = Date.new(1991, 3, 14)
       epoch = Astronoby::Epoch.from_time(date)
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.as_degrees(48.8566),
-        longitude: Astronoby::Angle.as_degrees(2.3522)
+        latitude: Astronoby::Angle.from_degrees(48.8566),
+        longitude: Astronoby::Angle.from_degrees(2.3522)
       )
       sun = described_class.new(epoch: epoch)
 

@@ -2,7 +2,7 @@
 
 module Astronoby
   class Body
-    DEFAULT_REFRACTION_VERTICAL_SHIFT = Angle.as_dms(0, 34, 0)
+    DEFAULT_REFRACTION_VERTICAL_SHIFT = Angle.from_dms(0, 34, 0)
     RISING_SETTING_HOUR_ANGLE_RATIO_RANGE = (-1..1)
 
     def initialize(equatorial_coordinates)
@@ -80,7 +80,7 @@ module Astronoby
       vertical_shift: nil
     )
       time_ratio = time_ratio(latitude, apparent, vertical_shift)
-      return nil unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(time_ratio)
+      return unless RISING_SETTING_HOUR_ANGLE_RATIO_RANGE.cover?(time_ratio)
 
       hour_angle = Angle.acos(time_ratio)
       local_sidereal_time = LocalSiderealTime.new(
@@ -108,7 +108,7 @@ module Astronoby
 
       azimuth_ratio = azimuth_ratio(latitude, apparent, vertical_shift)
 
-      Angle.as_degrees(360 - Angle.acos(azimuth_ratio).degrees)
+      Angle.from_degrees(360 - Angle.acos(azimuth_ratio).degrees)
     end
 
     private

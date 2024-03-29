@@ -3,8 +3,8 @@
 RSpec.describe Astronoby::Observer do
   describe "#pressure" do
     it "returns the computed pression in millibars" do
-      latitude = Astronoby::Angle.as_degrees(0)
-      longitude = Astronoby::Angle.as_degrees(0)
+      latitude = Astronoby::Angle.from_degrees(0)
+      longitude = Astronoby::Angle.from_degrees(0)
       elevation = 100
       temperature = 273.15 + 10
 
@@ -20,8 +20,8 @@ RSpec.describe Astronoby::Observer do
 
     context "when elevation and temperature are not provided" do
       it "returns the computed pression in millibars" do
-        latitude = Astronoby::Angle.as_degrees(0)
-        longitude = Astronoby::Angle.as_degrees(0)
+        latitude = Astronoby::Angle.from_degrees(0)
+        longitude = Astronoby::Angle.from_degrees(0)
 
         pressure = described_class
           .new(latitude: latitude, longitude: longitude)
