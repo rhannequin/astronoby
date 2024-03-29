@@ -118,20 +118,16 @@ module Astronoby
       radians.zero?
     end
 
-    def ==(other)
-      other.is_a?(self.class) && radians == other.radians
-    end
-    alias_method :eql?, :==
-
     def hash
       [radians, self.class].hash
     end
 
     def <=>(other)
-      return nil unless other.is_a?(self.class)
+      return unless other.is_a?(self.class)
 
       radians <=> other.radians
     end
+    alias_method :eql?, :==
 
     def str(format)
       case format
