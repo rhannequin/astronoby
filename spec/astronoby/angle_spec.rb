@@ -18,22 +18,19 @@ RSpec.describe Astronoby::Angle do
 
   describe "::from_radians" do
     it "returns an Angle object" do
-      expect(described_class.from_radians(described_class::PI))
-        .to be_a(described_class)
+      expect(described_class.from_radians(Math::PI)).to be_a(described_class)
     end
 
     it "normalizes the angle" do
-      expect(described_class.from_radians(2 * described_class::PI).radians)
-        .to eq 0
+      expect(described_class.from_radians(2 * Math::PI).radians).to eq 0
 
-      expect(described_class.from_radians(3 * described_class::PI).radians)
-        .to eq described_class::PI
+      expect(described_class.from_radians(3 * Math::PI).radians).to eq Math::PI
 
-      expect(described_class.from_radians(-5 * described_class::PI).radians)
-        .to eq(-described_class::PI)
+      expect(described_class.from_radians(-5 * Math::PI).radians)
+        .to eq(-Math::PI)
 
-      expect(described_class.from_radians(described_class::PI / 2).radians)
-        .to eq described_class::PI / 2
+      expect(described_class.from_radians(Math::PI / 2).radians)
+        .to eq Math::PI / 2
     end
   end
 
@@ -72,11 +69,11 @@ RSpec.describe Astronoby::Angle do
 
     it "initializes an angle with the inverse sine of a ratio" do
       ratio = 0.5
-      angle = described_class.asin(ratio)
-      precision = 10**-described_class::PRECISION
-      radians = described_class::PI / 6
+      precision = 10**-described_class::MIN_PRECISION
 
-      expect(angle.radians).to be_within(precision).of(radians)
+      angle = described_class.asin(ratio)
+
+      expect(angle.radians).to be_within(precision).of(Math::PI / 6)
     end
   end
 
@@ -87,11 +84,11 @@ RSpec.describe Astronoby::Angle do
 
     it "initializes an angle with the inverse sine of a ratio" do
       ratio = 0.5
-      angle = described_class.acos(ratio)
-      precision = 10**-described_class::PRECISION
-      radians = described_class::PI / 3
+      precision = 10**-described_class::MIN_PRECISION
 
-      expect(angle.radians).to be_within(precision).of(radians)
+      angle = described_class.acos(ratio)
+
+      expect(angle.radians).to be_within(precision).of(Math::PI / 3)
     end
   end
 
@@ -102,35 +99,34 @@ RSpec.describe Astronoby::Angle do
 
     it "initializes an angle with the inverse sine of a ratio" do
       ratio = 1
-      angle = described_class.atan(ratio)
-      precision = 10**-described_class::PRECISION
-      radians = described_class::PI / 4
+      precision = 10**-described_class::MIN_PRECISION
 
-      expect(angle.radians).to be_within(precision).of(radians)
+      angle = described_class.atan(ratio)
+
+      expect(angle.radians).to be_within(precision).of(Math::PI / 4)
     end
   end
 
   describe "#radians" do
     it "returns the angle value in radian unit" do
-      radians = described_class.new(described_class::PI).radians
+      radians = described_class.new(Math::PI).radians
 
-      expect(radians).to eq described_class::PI
+      expect(radians).to eq Math::PI
     end
 
     context "when the angle is initialized from degrees" do
       it "returns the angle value in radian unit" do
         radians = described_class.from_degrees(180).radians
 
-        expect(radians).to eq described_class::PI
+        expect(radians).to eq Math::PI
       end
     end
 
     context "when the angle is initialized from hours" do
-      it "returns the angle value in radian unit within fixed precision" do
+      it "returns the angle value in radian unit" do
         radians = described_class.from_hours(12).radians
 
-        expect(radians)
-          .to be_within(10**-described_class::PRECISION).of(described_class::PI)
+        expect(radians).to eq Math::PI
       end
     end
   end
@@ -144,48 +140,48 @@ RSpec.describe Astronoby::Angle do
 
     context "when the angle is initialized from radians" do
       it "returns the angle value in degree unit" do
-        degrees = described_class.from_radians(described_class::PI).degrees
+        degrees = described_class.from_radians(Math::PI).degrees
 
         expect(degrees).to eq 180
       end
     end
 
     context "when the angle is initialized from hours" do
-      it "returns the angle value in degree unit within fixed precision" do
+      it "returns the angle value in degree unit" do
         degrees = described_class.from_hours(12).degrees
 
-        expect(degrees).to be_within(10**-described_class::PRECISION).of(180)
+        expect(degrees).to eq 180
       end
     end
   end
 
   describe "#hours" do
-    it "returns the angle value in degree unit within fixed precision" do
+    it "returns the angle value in degree unit" do
       hours = described_class.from_hours(12).hours
 
       expect(hours).to eq 12
     end
 
     context "when the angle is initialized from radians" do
-      it "returns the angle value in degree unit within fixed precision" do
-        hours = described_class.from_radians(described_class::PI).hours
+      it "returns the angle value in degree unit" do
+        hours = described_class.from_radians(Math::PI).hours
 
-        expect(hours).to be_within(10**-described_class::PRECISION).of(12)
+        expect(hours).to eq 12
       end
     end
 
     context "when the angle is initialized from degrees" do
-      it "returns the angle value in degree unit within fixed precision" do
+      it "returns the angle value in degree unit" do
         hours = described_class.from_degrees(180).hours
 
-        expect(hours).to be_within(10**-described_class::PRECISION).of(12)
+        expect(hours).to eq 12
       end
     end
   end
 
   describe "#+" do
     it "returns a new angle with a value of the two angles added" do
-      angle_1 = described_class.from_radians(described_class::PI)
+      angle_1 = described_class.from_radians(Math::PI)
       angle_2 = described_class.from_degrees(45)
 
       new_angle = angle_1 + angle_2
@@ -196,7 +192,7 @@ RSpec.describe Astronoby::Angle do
 
   describe "#-" do
     it "returns a new angle with a value of the two angles substracted" do
-      angle_1 = described_class.from_radians(described_class::PI)
+      angle_1 = described_class.from_radians(Math::PI)
       angle_2 = described_class.from_degrees(45)
 
       new_angle = angle_1 - angle_2
@@ -207,10 +203,10 @@ RSpec.describe Astronoby::Angle do
 
   describe "#sin" do
     it "returns the sine value of the angle" do
-      radians = described_class::PI / 6
+      radians = Math::PI / 6
       angle = described_class.from_radians(radians)
 
-      sine = angle.sin.ceil(described_class::PRECISION)
+      sine = angle.sin.round(described_class::MIN_PRECISION)
 
       expect(sine).to eq 0.5
     end
@@ -218,10 +214,10 @@ RSpec.describe Astronoby::Angle do
 
   describe "#cos" do
     it "returns the cosine value of the angle" do
-      radians = described_class::PI / 3
+      radians = Math::PI / 3
       angle = described_class.from_radians(radians)
 
-      cosine = angle.cos.ceil(described_class::PRECISION)
+      cosine = angle.cos.round(described_class::MIN_PRECISION)
 
       expect(cosine).to eq 0.5
     end
@@ -229,10 +225,10 @@ RSpec.describe Astronoby::Angle do
 
   describe "#tan" do
     it "returns the tangent value of the angle" do
-      radians = described_class::PI / 4
+      radians = Math::PI / 4
       angle = described_class.from_radians(radians)
 
-      tangent = angle.tan.ceil(described_class::PRECISION)
+      tangent = angle.tan.round(described_class::MIN_PRECISION)
 
       expect(tangent).to eq 1
     end
@@ -318,10 +314,10 @@ RSpec.describe Astronoby::Angle do
     it "handles comparison of angles" do
       angle = described_class.from_degrees(10)
       same_angle = described_class.from_degrees(10)
-      greater_angle = described_class.from_radians(described_class::PI)
+      greater_angle = described_class.from_radians(Math::PI)
       smaller_angle = described_class.from_degrees(5)
       way_greater_angle = described_class.from_degrees(365)
-      negative_angle = described_class.from_radians(-described_class::PI)
+      negative_angle = described_class.from_radians(-Math::PI)
 
       expect(angle == same_angle).to be true
       expect(angle != same_angle).to be false
@@ -370,7 +366,7 @@ RSpec.describe Astronoby::Angle do
         it "properly formats the angle" do
           angle = described_class.from_degrees(10.2958)
 
-          expect(angle.str(:dms)).to eq "+10° 17′ 44.88″"
+          expect(angle.str(:dms)).to eq "+10° 17′ 44.8799″"
         end
       end
 
@@ -387,7 +383,7 @@ RSpec.describe Astronoby::Angle do
       it "properly formats the angle" do
         angle = described_class.from_hours(12.345678)
 
-        expect(angle.str(:hms)).to eq "12h 20m 44.4408s"
+        expect(angle.str(:hms)).to eq "12h 20m 44.4407s"
       end
     end
 

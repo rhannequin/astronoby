@@ -3,9 +3,9 @@
 module Astronoby
   class GreenwichSiderealTime
     JULIAN_CENTURIES_EXPONENTS = [
-      BigDecimal("6.697374558"),
-      BigDecimal("2400.051336"),
-      BigDecimal("0.000025862")
+      6.697374558,
+      2400.051336,
+      0.000025862
     ].freeze
 
     attr_reader :date, :time
@@ -29,7 +29,7 @@ module Astronoby
         utc.min / 60.0 +
         (utc.sec + utc.subsec) / 3600.0
 
-      gmst = BigDecimal("1.002737909") * ut_in_hours + t0
+      gmst = 1.002737909 * ut_in_hours + t0
       gmst += 24 if gmst.negative?
       gmst -= 24 if gmst > 24
 
@@ -61,7 +61,7 @@ module Astronoby
       a += 24 if a.negative?
       a -= 24 if a > 24
 
-      utc = BigDecimal("0.9972695663") * a
+      utc = 0.9972695663 * a
 
       decimal_hour_to_time(date, utc)
     end

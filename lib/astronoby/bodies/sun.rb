@@ -4,7 +4,7 @@ module Astronoby
   class Sun
     SEMI_MAJOR_AXIS_IN_METERS = 149_598_500_000
     ANGULAR_DIAMETER = Angle.from_degrees(0.533128)
-    INTERPOLATION_FACTOR = BigDecimal("24.07")
+    INTERPOLATION_FACTOR = 24.07
 
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet

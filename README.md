@@ -32,7 +32,7 @@ major one is released.
 
 ```rb
 angle1 = Astronoby::Angle.from_degrees(90)
-angle2 = Astronoby::Angle.from_radians(Astronoby::Angle::PI / 2)
+angle2 = Astronoby::Angle.from_radians(Math::PI / 2)
 angle3 = Astronoby::Angle.from_hours(12)
 
 angle1 == angle2
@@ -83,8 +83,8 @@ horizontal_coordinates = sun.horizontal_coordinates(
   longitude: longitude
 )
 
-horizontal_coordinates.altitude.degrees.to_f
-# => 27.50008242057459
+horizontal_coordinates.altitude.degrees
+# => 27.500082420575094
 
 horizontal_coordinates.altitude.str(:dms)
 # => "+27° 30′ 0.2967″"

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "bigdecimal/math"
-
 module Astronoby
   module Util
     module Trigonometry

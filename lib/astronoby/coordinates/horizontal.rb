@@ -31,7 +31,7 @@ module Astronoby
 
         if @azimuth.sin.positive?
           hour_angle_degrees = Angle
-            .from_degrees(BigDecimal("360") - hour_angle_degrees)
+            .from_degrees(360 - hour_angle_degrees)
             .degrees
         end
 
