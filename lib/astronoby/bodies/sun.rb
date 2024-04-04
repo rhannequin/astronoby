@@ -6,6 +6,23 @@ module Astronoby
     ANGULAR_DIAMETER = Angle.from_degrees(0.533128)
     INTERPOLATION_FACTOR = 24.07
 
+    TWILIGHTS = [
+      CIVIL = :civil,
+      NAUTICAL = :nautical,
+      ASTRONOMICAL = :astronomical
+    ].freeze
+
+    TWILIGHT_ANGLES = {
+      CIVIL => Angle.from_degrees(96),
+      NAUTICAL => Angle.from_degrees(102),
+      ASTRONOMICAL => Angle.from_degrees(108)
+    }.freeze
+
+    PERIODS_OF_THE_DAY = [
+      MORNING = :morning,
+      EVENING = :evening
+    ].freeze
+
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
@@ -122,6 +139,42 @@ module Astronoby
       rise_transit_set(observer).transit_altitude
     end
 
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time] Time the morning civil twilight starts
+    def morning_civil_twilight_time(observer:)
+      twilight_time(CIVIL, MORNING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the evening civil twilight ends
+    def evening_civil_twilight_time(observer:)
+      twilight_time(CIVIL, EVENING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the morning nautical twilight starts
+    def morning_nautical_twilight_time(observer:)
+      twilight_time(NAUTICAL, MORNING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the evening nautical twilight ends
+    def evening_nautical_twilight_time(observer:)
+      twilight_time(NAUTICAL, EVENING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the morning astronomical twilight starts
+    def morning_astronomical_twilight_time(observer:)
+      twilight_time(ASTRONOMICAL, MORNING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the evening astronomical twilight ends
+    def evening_astronomical_twilight_time(observer:)
+      twilight_time(ASTRONOMICAL, EVENING, observer)
+    end
+
     # @return [Numeric] Earth-Sun distance in meters
     def earth_distance
       SEMI_MAJOR_AXIS_IN_METERS / distance_angular_size_factor
@@ -232,6 +285,54 @@ module Astronoby
           additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
         )
       end
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 50 - Twilight
+    def twilight_time(twilight, period_of_the_day, observer)
+      hour_angle_at_period = Angle.acos(
+        -observer.latitude.tan * declination_at_midday.tan
+      )
+      zenith_angle = TWILIGHT_ANGLES[twilight]
+
+      hour_angle_ratio_at_twilight = (
+        zenith_angle.cos - observer.latitude.sin * declination_at_midday.sin)./(
+          observer.latitude.cos * declination_at_midday.cos
+        )
+      return nil unless hour_angle_ratio_at_twilight.between?(-1, 1)
+
+      hour_angle_at_twilight = Angle.acos(hour_angle_ratio_at_twilight)
+      twilight_in_hours = (
+        (hour_angle_at_twilight.degrees - hour_angle_at_period.degrees) / 15.0
+      ) * 0.9973
+      twilight_in_seconds = twilight_in_hours * 3600
+      twilight_in_seconds *= -1 if period_of_the_day == MORNING
+      period_time = if period_of_the_day == MORNING
+        rising_time(observer: observer)
+      else
+        setting_time(observer: observer)
+      end
+
+      (period_time + twilight_in_seconds).round
+    end
+
+    def midday
+      utc_from_epoch = Epoch.to_utc(@epoch)
+      Time.utc(
+        utc_from_epoch.year,
+        utc_from_epoch.month,
+        utc_from_epoch.day,
+        12
+      )
+    end
+
+    def declination_at_midday
+      apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: Epoch.from_time(midday))
+        .declination
     end
   end
 end

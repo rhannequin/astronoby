@@ -643,6 +643,208 @@ RSpec.describe Astronoby::Sun do
     end
   end
 
+  describe "#morning_civil_twilight_time" do
+    it "returns a time" do
+      epoch = Astronoby::Epoch.from_time(Time.new)
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.morning_civil_twilight_time(observer: observer))
+        .to be_a Time
+    end
+
+    it "returns when the morning civil twilight starts" do
+      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(52),
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.morning_civil_twilight_time(observer: observer))
+        .to eq Time.utc(1979, 9, 7, 4, 40, 9)
+      # Time from IMCCE: 04:46
+    end
+  end
+
+  describe "#evening_civil_twilight_time" do
+    it "returns a time" do
+      epoch = Astronoby::Epoch.from_time(Time.new)
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.evening_civil_twilight_time(observer: observer))
+        .to be_a Time
+    end
+
+    it "returns when the evening civil twilight ends" do
+      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(52),
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.evening_civil_twilight_time(observer: observer))
+        .to eq Time.utc(1979, 9, 7, 19, 15, 7)
+      # Time from IMCCE: 19:10
+    end
+  end
+
+  describe "#morning_nautical_twilight_time" do
+    it "returns a time" do
+      epoch = Astronoby::Epoch.from_time(Time.new)
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.morning_nautical_twilight_time(observer: observer))
+        .to be_a Time
+    end
+
+    it "returns when the morning nautical twilight starts" do
+      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(52),
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.morning_nautical_twilight_time(observer: observer))
+        .to eq Time.utc(1979, 9, 7, 3, 57, 57)
+      # Time from IMCCE: 04:03
+    end
+  end
+
+  describe "#evening_nautical_twilight_time" do
+    it "returns a time" do
+      epoch = Astronoby::Epoch.from_time(Time.new)
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.evening_nautical_twilight_time(observer: observer))
+        .to be_a Time
+    end
+
+    it "returns when the evening nautical twilight ends" do
+      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(52),
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.evening_nautical_twilight_time(observer: observer))
+        .to eq Time.utc(1979, 9, 7, 19, 57, 19)
+      # Time from IMCCE: 19:52
+    end
+  end
+
+  describe "#morning_astronomical_twilight_time" do
+    it "returns a time" do
+      epoch = Astronoby::Epoch.from_time(Time.new)
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.morning_astronomical_twilight_time(observer: observer))
+        .to be_a Time
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 50 - Twilight, p.114
+    it "returns when the morning astronomical twilight starts" do
+      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(52),
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.morning_astronomical_twilight_time(observer: observer))
+        .to eq Time.utc(1979, 9, 7, 3, 11, 58)
+      # Time from Practical Astronomy: 03:12
+      # Time from IMCCE: 03:17
+    end
+
+    context "when the twilight never ends" do
+      it "returns nil" do
+        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
+        sun = described_class.new(epoch: epoch)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(65),
+          longitude: Astronoby::Angle.zero
+        )
+
+        expect(sun.morning_astronomical_twilight_time(observer: observer))
+          .to be_nil
+      end
+    end
+  end
+
+  describe "#evening_astronomical_twilight_time" do
+    it "returns a time" do
+      epoch = Astronoby::Epoch.from_time(Time.new)
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.evening_astronomical_twilight_time(observer: observer))
+        .to be_a Time
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 50 - Twilight, p.114
+    it "returns when the evening astronomical twilight ends" do
+      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
+      sun = described_class.new(epoch: epoch)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(52),
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(sun.evening_astronomical_twilight_time(observer: observer))
+        .to eq Time.utc(1979, 9, 7, 20, 43, 18)
+      # Time from Practical Astronomy: 20:43
+      # Time from IMCCE: 20:37
+    end
+
+    context "when the twilight never ends" do
+      it "returns nil" do
+        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
+        sun = described_class.new(epoch: epoch)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(65),
+          longitude: Astronoby::Angle.zero
+        )
+
+        expect(sun.evening_astronomical_twilight_time(observer: observer))
+          .to be_nil
+      end
+    end
+  end
+
   describe "::equation_of_time" do
     it "returns an Integer" do
       date = Date.new
