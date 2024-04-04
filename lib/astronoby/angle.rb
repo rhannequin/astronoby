@@ -1,21 +1,18 @@
 # frozen_string_literal: true
 
-require "bigdecimal/math"
-
 module Astronoby
   class Angle
     include Comparable
 
-    PRECISION = 14
-    PI = BigMath.PI(PRECISION)
-    PI_IN_DEGREES = BigDecimal("180")
+    MIN_PRECISION = 10
+    PI_IN_DEGREES = 180.0
 
-    FULL_CIRCLE_IN_RADIANS = (2 * PI)
+    FULL_CIRCLE_IN_RADIANS = (2 * Math::PI)
 
-    RADIAN_PER_HOUR = PI / BigDecimal("12")
-    MINUTES_PER_DEGREE = BigDecimal("60")
-    MINUTES_PER_HOUR = BigDecimal("60")
-    SECONDS_PER_MINUTE = BigDecimal("60")
+    RADIAN_PER_HOUR = Math::PI / 12.0
+    MINUTES_PER_DEGREE = 60.0
+    MINUTES_PER_HOUR = 60.0
+    SECONDS_PER_MINUTE = 60.0
     SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE
 
     FORMATS = %i[dms hms].freeze
@@ -31,7 +28,7 @@ module Astronoby
       end
 
       def from_degrees(degrees)
-        radians = degrees / PI_IN_DEGREES * PI
+        radians = degrees / PI_IN_DEGREES * Math::PI
         from_radians(radians)
       end
 
@@ -70,16 +67,12 @@ module Astronoby
     attr_reader :radians
 
     def initialize(radians)
-      @radians = if radians.is_a?(Integer) || radians.is_a?(BigDecimal)
-        BigDecimal(radians)
-      else
-        BigDecimal(radians, PRECISION)
-      end
+      @radians = radians
       freeze
     end
 
     def degrees
-      @radians * PI_IN_DEGREES / PI
+      @radians * PI_IN_DEGREES / Math::PI
     end
 
     def hours
@@ -153,7 +146,7 @@ module Astronoby
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
-      Dms.new(sign, degrees, minutes, seconds.to_f.floor(4))
+      Dms.new(sign, degrees, minutes, seconds.floor(4))
     end
 
     def to_hms(hrs)
@@ -168,7 +161,7 @@ module Astronoby
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
-      Hms.new(hours, minutes, seconds.to_f.floor(4))
+      Hms.new(hours, minutes, seconds.floor(4))
     end
   end
 end

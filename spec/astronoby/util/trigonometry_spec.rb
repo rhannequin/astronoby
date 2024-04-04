@@ -38,8 +38,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
           Astronoby::Angle.zero
         )
 
-        expect(adjustement.radians)
-          .to be_within(Astronoby::Angle::PRECISION).of(Math::PI)
+        expect(adjustement.radians).to eq Math::PI
       end
     end
 
@@ -48,11 +47,10 @@ RSpec.describe Astronoby::Util::Trigonometry do
         adjustement = described_class.adjustement_for_arctangent(
           Astronoby::Angle.from_degrees(-1),
           Astronoby::Angle.from_degrees(1),
-          Astronoby::Angle.zero
+          Astronoby::Angle.from_degrees(-90)
         )
 
-        expect(adjustement.radians)
-          .to be_within(Astronoby::Angle::PRECISION).of(Math::PI * 2)
+        expect(adjustement.degrees).to eq 270
       end
     end
 
@@ -64,8 +62,7 @@ RSpec.describe Astronoby::Util::Trigonometry do
           Astronoby::Angle.zero
         )
 
-        expect(adjustement.radians)
-          .to be_within(Astronoby::Angle::PRECISION).of(Math::PI)
+        expect(adjustement.radians).to eq Math::PI
       end
     end
   end

@@ -3,12 +3,12 @@
 module Astronoby
   class Observer
     DEFAULT_ELEVATION = 0
-    DEFAULT_TEMPERATURE = BigDecimal("283.15")
-    PRESSURE_AT_SEA_LEVEL = BigDecimal("1013.25")
-    PASCAL_PER_MILLIBAR = BigDecimal("0.01")
-    EARTH_GRAVITATIONAL_ACCELERATION = BigDecimal("9.80665")
-    MOLAR_MASS_OF_AIR = BigDecimal("0.0289644")
-    UNIVERSAL_GAS_CONSTANT = BigDecimal("8.31432")
+    DEFAULT_TEMPERATURE = 283.15
+    PRESSURE_AT_SEA_LEVEL = 1013.25
+    PASCAL_PER_MILLIBAR = 0.01
+    EARTH_GRAVITATIONAL_ACCELERATION = 9.80665
+    MOLAR_MASS_OF_AIR = 0.0289644
+    UNIVERSAL_GAS_CONSTANT = 8.31432
 
     attr_reader :latitude, :longitude, :elevation, :temperature
 
@@ -37,7 +37,7 @@ module Astronoby
     # Compute an estimation of the atmospheric pressure based on the elevation
     # and temperature
     #
-    # @return [BigDecimal] the atmospheric pressure in millibars.
+    # @return [Float] the atmospheric pressure in millibars.
     def pressure
       @pressure ||= PRESSURE_AT_SEA_LEVEL * pressure_ratio
     end

@@ -9,8 +9,8 @@ module Astronoby
     #  Chapter: 39 - Calculating correction for parallax
 
     ASTRONOMICAL_UNIT_IN_METERS = 149_597_870_700
-    EARTH_FLATTENING_CORRECTION = BigDecimal("0.996647")
-    EARTH_EQUATORIAL_RADIUS = BigDecimal("6378140")
+    EARTH_FLATTENING_CORRECTION = 0.996647
+    EARTH_EQUATORIAL_RADIUS = 6378140.0
 
     # Equatorial horizontal parallax
     # @param distance [Numeric] Distance of the body from the center of the

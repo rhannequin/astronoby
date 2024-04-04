@@ -39,7 +39,7 @@ module Astronoby
         azimuth = Angle.acos(t2)
 
         if ha.sin.positive?
-          azimuth = Angle.from_degrees(BigDecimal("360") - azimuth.degrees)
+          azimuth = Angle.from_degrees(360 - azimuth.degrees)
         end
 
         Horizontal.new(

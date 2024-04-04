@@ -32,8 +32,8 @@ RSpec.describe Astronoby::Refraction do
     # The book example expects a refraction angle of +0° 10′ 11.2464″
     it "computes the refraction angle" do
       time = Time.utc(1987, 3, 23, 1, 1, 24)
-      latitude = Astronoby::Angle.from_degrees(BigDecimal("51.203611"))
-      longitude = Astronoby::Angle.from_degrees(BigDecimal("0.17"))
+      latitude = Astronoby::Angle.from_degrees(51.203611)
+      longitude = Astronoby::Angle.from_degrees(0.17)
       true_equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.from_hms(23, 14, 0),
         declination: Astronoby::Angle.from_dms(40, 10, 0)
