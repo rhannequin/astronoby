@@ -63,24 +63,11 @@ module Astronoby
 
       utc = 0.9972695663 * a
 
-      decimal_hour_to_time(date, utc)
+      Util::Time.decimal_hour_to_time(date, utc)
     end
 
     def to_lst(longitude:)
       LocalSiderealTime.from_gst(gst: self, longitude: longitude)
-    end
-
-    private
-
-    def decimal_hour_to_time(date, decimal)
-      absolute_hour = decimal.abs
-      hour = absolute_hour.floor
-      decimal_minute = 60 * (absolute_hour - hour)
-      absolute_decimal_minute = (60 * (absolute_hour - hour)).abs
-      minute = decimal_minute.floor
-      second = 60 * (absolute_decimal_minute - absolute_decimal_minute.floor)
-
-      ::Time.utc(date.year, date.month, date.day, hour, minute, second).round
     end
   end
 end
