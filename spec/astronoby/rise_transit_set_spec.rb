@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::RiseTransitSet do
-  describe "#rising_time_v2" do
+  describe "#times" do
     # Source:
     #  Title: Astronomical Algorithms
     #  Author: Jean Meeus
@@ -27,13 +27,13 @@ RSpec.describe Astronoby::RiseTransitSet do
         declination: Astronoby::Angle.from_dms(18, 49, 38.7)
       )
 
-      rising_time, transit_time, setting_time = described_class.new.compute(
+      rising_time, transit_time, setting_time = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_previous_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_next_day
-      )
+      ).times
 
       expect(rising_time).to eq Time.utc(1988, 3, 20, 12, 25, 26)
       # Time from the book: 1988-03-20T12:25:00
@@ -75,14 +75,14 @@ RSpec.describe Astronoby::RiseTransitSet do
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: epoch_of_the_next_day)
 
-      rising_time, transit_time, setting_time = described_class.new.compute(
+      rising_time, transit_time, setting_time = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_previous_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_next_day,
         standard_altitude: Astronoby::Angle.from_dms(0, -50, 0)
-      )
+      ).times
 
       expect(rising_time).to eq Time.utc(2015, 2, 5, 12, 13, 0)
       # Time from IMCCE: 2015-02-05T12:12:14
@@ -92,6 +92,36 @@ RSpec.describe Astronoby::RiseTransitSet do
 
       expect(setting_time).to eq Time.utc(2015, 2, 5, 22, 39, 26)
       # Time from IMCCE: 2015-02-05T22:38:11
+    end
+
+    # TODO: check if conversion to epoch works
+    it "returns Betelgeuse's rising, transit and setting times on 2016-01-21" do
+      date = Date.new(2016, 1, 21)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(38),
+        longitude: Astronoby::Angle.from_degrees(-78)
+      )
+      coordinates_of_the_day = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(5, 56, 2.43),
+        declination: Astronoby::Angle.from_dms(7, 24, 22)
+      )
+
+      rising_time, transit_time, setting_time = described_class.new(
+        observer: observer,
+        date: date,
+        coordinates_of_the_previous_day: coordinates_of_the_day,
+        coordinates_of_the_day: coordinates_of_the_day,
+        coordinates_of_the_next_day: coordinates_of_the_day
+      ).times
+
+      expect(rising_time).to eq Time.utc(2016, 1, 21, 20, 39, 12)
+      # Time from SkySafari: 2016-01-21T20:39:09
+
+      expect(transit_time).to eq Time.utc(2016, 1, 21, 3, 8, 18)
+      # Time from SkySafari: 2016-01-21T03:08:18
+
+      expect(setting_time).to eq Time.utc(2016, 1, 21, 9, 33, 29)
+      # Time from SkySafari: 2016-01-21T20:33:31
     end
   end
 end
