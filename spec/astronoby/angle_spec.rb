@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set" # rubocop:disable Lint/RedundantRequireStatement
+
 RSpec.describe Astronoby::Angle do
   describe "object immutability" do
     context "when a mutable method is added" do
