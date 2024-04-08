@@ -101,17 +101,33 @@ observer = Astronoby::Observer.new(
 )
 sun = Astronoby::Sun.new(epoch: epoch)
 
-sun.rising_time(observer: observer)
-# => 2015-02-05 12:13:26 UTC
+sunrise_time,
+sun_meridian_transit_time,
+sunset_time = sun.rise_transit_set_times(observer: observer)
 
-sun.rising_azimuth(observer: observer).str(:dms)
+sunrise_time
+# => 2015-02-05 12:12:59 UTC
+
+sun_meridian_transit_time
+# => 2015-02-05 17:25:59 UTC
+
+sunset_time
+# => 2015-02-05 22:39:27 UTC
+
+rising_azimuth, setting_azimuth =
+  sun.rise_set_azimuths(observer: observer)
+
+rising_azimuth.str(:dms)
 # => "+109° 41′ 22.2585″"
 
-sun.setting_time(observer: observer)
-# => 2015-02-05 22:35:12 UTC
+setting_azimuth.str(:dms)
+# => "+250° 23′ 33.6177″"
 
-sun.setting_azimuth(observer: observer).str(:dms)
-# => "+250° 18′ 37.7414″"
+altitude_at_transit =
+  sun.altitude_at_transit(observer: observer)
+
+altitude_at_transit.str(:dms)
+# => "+36° 8′ 15.7669″"
 ```
 
 ### Solstice and Equinox times

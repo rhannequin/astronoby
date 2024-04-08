@@ -21,43 +21,48 @@ module Astronoby
     #   Coordinates of the body of the day
     # @param coordinates_of_the_next_day [Astronoby::Coordinates::Equatorial]
     #   Coordinates of the body of the next day
-    # @param standard_altitude [Astronoby::Angle] Standard altitude adjustment
+    # @param additional_altitude [Astronoby::Angle] Additional altitude to the
+    #   standard altitude adjustment
     def initialize(
       observer:,
       date:,
       coordinates_of_the_previous_day:,
       coordinates_of_the_day:,
       coordinates_of_the_next_day:,
-      standard_altitude: STANDARD_ALTITUDE
+      additional_altitude: Angle.zero
     )
       @observer = observer
       @date = date
       @coordinates_of_the_previous_day = coordinates_of_the_previous_day
       @coordinates_of_the_day = coordinates_of_the_day
       @coordinates_of_the_next_day = coordinates_of_the_next_day
-      @standard_altitude = standard_altitude
+      @standard_altitude = STANDARD_ALTITUDE
+      @additional_altitude = additional_altitude
     end
 
     # @return [Array<Time, Time, Time>, nil] Rising, transit, and setting times
     def times
       return nil if h0.nil?
 
-      delta_m_rising = (local_horizontal_altitude_rising - @standard_altitude).degrees./(
+      delta_m_rising = (local_horizontal_altitude_rising - shift).degrees./(
         360 * declination_rising.cos * @observer.latitude.cos * local_hour_angle_rising.sin
       )
       delta_m_transit = - local_hour_angle_transit.degrees / 360
-      delta_m_setting = (local_horizontal_altitude_setting - @standard_altitude).degrees./(
+      delta_m_setting = (local_horizontal_altitude_setting - shift).degrees./(
         360 * declination_setting.cos * @observer.latitude.cos * local_hour_angle_setting.sin
       )
 
-      corrected_rising = initial_rising + delta_m_rising
-      corrected_transit = initial_transit + delta_m_transit
-      corrected_setting = initial_setting + delta_m_setting
+      corrected_rising =
+        rationalize_decimal_hours(24 * (initial_rising + delta_m_rising))
+      corrected_transit =
+        rationalize_decimal_hours(24 * (initial_transit + delta_m_transit))
+      corrected_setting =
+        rationalize_decimal_hours(24 * (initial_setting + delta_m_setting))
 
       [
-        Util::Time.decimal_hour_to_time(@date, 24 * corrected_rising),
-        Util::Time.decimal_hour_to_time(@date, 24 * corrected_transit),
-        Util::Time.decimal_hour_to_time(@date, 24 * corrected_setting)
+        Util::Time.decimal_hour_to_time(@date, corrected_rising),
+        Util::Time.decimal_hour_to_time(@date, corrected_transit),
+        Util::Time.decimal_hour_to_time(@date, corrected_setting)
       ]
     end
 
@@ -85,7 +90,7 @@ module Astronoby
 
     def h0
       @h0 ||= begin
-        term1 = @standard_altitude.sin -
+        term1 = shift.sin -
           @observer.latitude.sin * @coordinates_of_the_day.declination.sin
         term2 = @observer.latitude.cos * @coordinates_of_the_day.declination.cos
         ratio = term1 / term2
@@ -209,6 +214,12 @@ module Astronoby
       decimal_time
     end
 
+    def rationalize_decimal_hours(decimal_hours)
+      decimal_hours += 24 if decimal_hours.negative?
+      decimal_hours -= 24 if decimal_hours > 24
+      decimal_hours
+    end
+
     def right_ascension_rising
       Angle.from_degrees(
         Util::Maths.interpolate(
@@ -285,6 +296,10 @@ module Astronoby
           initial_setting + leap_day_portion
         )
       )
+    end
+
+    def shift
+      @standard_altitude - @additional_altitude
     end
   end
 end
