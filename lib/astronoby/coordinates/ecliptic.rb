@@ -18,17 +18,17 @@ module Astronoby
 
       def to_true_equatorial(epoch:)
         mean_obliquity = MeanObliquity.for_epoch(epoch)
-        to_equatorial(obliquity: mean_obliquity)
+        to_equatorial(obliquity: mean_obliquity, epoch: epoch)
       end
 
       def to_apparent_equatorial(epoch:)
         apparent_obliquity = TrueObliquity.for_epoch(epoch)
-        to_equatorial(obliquity: apparent_obliquity)
+        to_equatorial(obliquity: apparent_obliquity, epoch: epoch)
       end
 
       private
 
-      def to_equatorial(obliquity:)
+      def to_equatorial(obliquity:, epoch:)
         y = Angle.from_radians(
           @longitude.sin * obliquity.cos -
             @latitude.tan * obliquity.sin
@@ -45,7 +45,7 @@ module Astronoby
         Equatorial.new(
           right_ascension: right_ascension,
           declination: declination,
-          epoch: @epoch
+          epoch: epoch
         )
       end
     end
