@@ -203,6 +203,16 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "#-@" do
+    it "returns a new angle with a value of the opposite of the angle" do
+      angle = described_class.from_degrees(45)
+
+      new_angle = -angle
+
+      expect(new_angle.degrees).to eq(-45)
+    end
+  end
+
   describe "#sin" do
     it "returns the sine value of the angle" do
       radians = Math::PI / 6

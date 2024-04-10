@@ -87,6 +87,10 @@ module Astronoby
       self.class.from_radians(@radians - other.radians)
     end
 
+    def -@
+      self.class.from_radians(-@radians)
+    end
+
     def sin
       Math.sin(radians)
     end
