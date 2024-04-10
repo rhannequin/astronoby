@@ -403,7 +403,7 @@ RSpec.describe Astronoby::Sun do
       expect(transit_time).to eq Time.utc(1991, 3, 14, 11, 59, 58)
       # Time from IMCCE: 1991-03-14T11:59:56
 
-      expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 53, 25)
+      expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 53, 26)
       # Time from IMCCE: 1991-03-14T17:52:00
     end
   end
@@ -462,10 +462,10 @@ RSpec.describe Astronoby::Sun do
       rising_azimuth, setting_azimuth =
         sun.rise_set_azimuths(observer: observer)
 
-      expect(rising_azimuth.str(:dms)).to eq "+95° 1′ 7.3522″"
+      expect(rising_azimuth.str(:dms)).to eq "+95° 1′ 6.1239″"
       # Time from IMCCE: +95° 01′ 55″
 
-      expect(setting_azimuth.str(:dms)).to eq "+265° 14′ 19.4006″"
+      expect(setting_azimuth.str(:dms)).to eq "+265° 14′ 20.6301″"
       # Time from IMCCE: +265° 13′ 32″
     end
 
@@ -481,10 +481,10 @@ RSpec.describe Astronoby::Sun do
       rising_azimuth, setting_azimuth =
         sun.rise_set_azimuths(observer: observer)
 
-      expect(rising_azimuth.str(:dms)).to eq "+93° 33′ 34.0977″"
+      expect(rising_azimuth.str(:dms)).to eq "+93° 33′ 32.6479″"
       # Time from IMCCE: +93° 25′ 58″
 
-      expect(setting_azimuth.str(:dms)).to eq "+266° 44′ 2.3246″"
+      expect(setting_azimuth.str(:dms)).to eq "+266° 44′ 3.7751″"
       # Time from IMCCE: +266° 51′ 37″
     end
   end
@@ -531,7 +531,7 @@ RSpec.describe Astronoby::Sun do
 
       altitude = sun.altitude_at_transit(observer: observer)
 
-      expect(altitude&.str(:dms)).to eq "+43° 35′ 59.202″"
+      expect(altitude&.str(:dms)).to eq "+43° 36′ 0.1105″"
       # Time from IMCCE: +45° 35′ 41″
     end
 
@@ -546,7 +546,7 @@ RSpec.describe Astronoby::Sun do
 
       altitude = sun.altitude_at_transit(observer: observer)
 
-      expect(altitude&.str(:dms)).to eq "+38° 31′ 32.4275″"
+      expect(altitude&.str(:dms)).to eq "+38° 31′ 33.382″"
       # Time from IMCCE: +38° 31′ 20″
     end
   end

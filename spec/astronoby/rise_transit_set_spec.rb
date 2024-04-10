@@ -39,7 +39,7 @@ RSpec.describe Astronoby::RiseTransitSet do
       # Time from the book: 1988-03-20T12:25:00
       # Time from IMCCE: 1988-03-20T12:25:11
 
-      expect(transit_time).to eq Time.utc(1988, 3, 20, 19, 40, 30)
+      expect(transit_time).to eq Time.utc(1988, 3, 20, 19, 40, 31)
       # Time from the book: 1988-03-20T19:41:00
       # Time from IMCCE: 1988-03-20T19:40:30
 

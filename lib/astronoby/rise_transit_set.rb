@@ -151,7 +151,7 @@ module Astronoby
 
     def leap_day_portion
       @leap_day_portion ||= begin
-        leap_seconds = Util::Time.leap_seconds_for(@date)
+        leap_seconds = Util::Time.terrestrial_universal_time_delta(@date)
         leap_seconds / SECONDS_IN_A_DAY
       end
     end
