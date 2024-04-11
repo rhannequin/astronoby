@@ -76,7 +76,7 @@ module Astronoby
     end
 
     # @return [Astronoby::Angle] Altitude at transit
-    def altitude_at_transit
+    def transit_altitude
       local_horizontal_altitude_transit
     end
 

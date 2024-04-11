@@ -89,9 +89,37 @@ module Astronoby
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time] Time of sunrise
+    def rising_time(observer:)
+      rise_transit_set(observer).times[0]
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Astronoby::Angle, nil] Azimuth of sunrise
+    def rising_azimuth(observer:)
+      rise_transit_set(observer).azimuths[0]
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time] Time of sunset
+    def setting_time(observer:)
+      rise_transit_set(observer).times[2]
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Astronoby::Angle, nil] Azimuth of sunset
+    def setting_azimuth(observer:)
+      rise_transit_set(observer).azimuths[1]
+    end
+
+    def transit_time(observer:)
+      rise_transit_set(observer).times[1]
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle] Altitude at transit
-    def altitude_at_transit(observer:)
-      rise_transit_set(observer).altitude_at_transit
+    def transit_altitude(observer:)
+      rise_transit_set(observer).transit_altitude
     end
 
     # @return [Numeric] Earth-Sun distance in meters
@@ -171,40 +199,39 @@ module Astronoby
       term1 / term2
     end
 
-    def vertical_shift
-      Astronoby::Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
-        Astronoby::GeocentricParallax.angle(distance: earth_distance) +
-        Astronoby::Angle.from_degrees(angular_size.degrees / 2)
-    end
-
     def current_date
       Epoch.to_utc(@epoch).to_date
     end
 
     def rise_transit_set(observer)
-      date = Epoch.to_utc(@epoch).to_date
-      yesterday_epoch = Epoch.from_time(date.prev_day)
-      tomorrow_epoch = Epoch.from_time(date.next_day)
+      @rise_transit_set ||= {}
+      return @rise_transit_set[observer] if @rise_transit_set.key?(observer)
 
-      coordinates_of_the_previous_day = self.class
-        .new(epoch: yesterday_epoch)
-        .apparent_ecliptic_coordinates
-        .to_apparent_equatorial(epoch: yesterday_epoch)
-      coordinates_of_the_day =
-        apparent_ecliptic_coordinates.to_apparent_equatorial(epoch: @epoch)
-      coordinates_of_the_next_day = self.class
-        .new(epoch: tomorrow_epoch)
-        .apparent_ecliptic_coordinates
-        .to_apparent_equatorial(epoch: tomorrow_epoch)
+      @rise_transit_set[observer] = begin
+        date = Epoch.to_utc(@epoch).to_date
+        yesterday_epoch = Epoch.from_time(date.prev_day)
+        tomorrow_epoch = Epoch.from_time(date.next_day)
 
-      RiseTransitSet.new(
-        observer: observer,
-        date: date,
-        coordinates_of_the_previous_day: coordinates_of_the_previous_day,
-        coordinates_of_the_day: coordinates_of_the_day,
-        coordinates_of_the_next_day: coordinates_of_the_next_day,
-        additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
-      )
+        coordinates_of_the_previous_day = self.class
+          .new(epoch: yesterday_epoch)
+          .apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: yesterday_epoch)
+        coordinates_of_the_day =
+          apparent_ecliptic_coordinates.to_apparent_equatorial(epoch: @epoch)
+        coordinates_of_the_next_day = self.class
+          .new(epoch: tomorrow_epoch)
+          .apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: tomorrow_epoch)
+
+        RiseTransitSet.new(
+          observer: observer,
+          date: date,
+          coordinates_of_the_previous_day: coordinates_of_the_previous_day,
+          coordinates_of_the_day: coordinates_of_the_day,
+          coordinates_of_the_next_day: coordinates_of_the_next_day,
+          additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
+        )
+      end
     end
   end
 end

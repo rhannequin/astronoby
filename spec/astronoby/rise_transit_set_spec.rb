@@ -206,7 +206,7 @@ RSpec.describe Astronoby::RiseTransitSet do
     end
   end
 
-  describe "#altitude_at_transit" do
+  describe "#transit_altitude" do
     it "returns the body's altitude at transit on 2015-02-05" do
       date = Date.new(2015, 2, 5)
       observer = Astronoby::Observer.new(
@@ -219,15 +219,15 @@ RSpec.describe Astronoby::RiseTransitSet do
         declination: Astronoby::Angle.from_dms(38, 47, 59.4)
       )
 
-      altitude_at_transit = described_class.new(
+      transit_altitude = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_day
-      ).altitude_at_transit
+      ).transit_altitude
 
-      expect(altitude_at_transit.str(:dms)).to eq "+89° 4′ 6.548″"
+      expect(transit_altitude.str(:dms)).to eq "+89° 4′ 6.548″"
       # Azimuth from SkySafari: +89° 12′ 1.4″
     end
   end
