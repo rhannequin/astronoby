@@ -10,7 +10,7 @@ module Astronoby
     MOLAR_MASS_OF_AIR = 0.0289644
     UNIVERSAL_GAS_CONSTANT = 8.31432
 
-    attr_reader :latitude, :longitude, :elevation, :temperature
+    attr_reader :latitude, :longitude, :elevation, :temperature, :pressure
 
     # @param latitude [Angle] geographic latitude of the observer
     # @param longitude [Angle] geographic longitude of the observer
@@ -31,18 +31,37 @@ module Astronoby
       @longitude = longitude
       @elevation = elevation
       @temperature = temperature
-      @pressure = pressure
+      @pressure = pressure || compute_pressure
     end
 
-    # Compute an estimation of the atmospheric pressure based on the elevation
-    # and temperature
-    #
-    # @return [Float] the atmospheric pressure in millibars.
-    def pressure
-      @pressure ||= PRESSURE_AT_SEA_LEVEL * pressure_ratio
+    def ==(other)
+      return false unless other.is_a?(self.class)
+
+      @latitude == other.latitude &&
+        @longitude == other.longitude &&
+        @elevation == other.elevation &&
+        @temperature == other.temperature &&
+        @pressure == other.pressure
+    end
+    alias_method :eql?, :==
+
+    def hash
+      [
+        self.class,
+        @latitude,
+        @longitude,
+        @elevation,
+        @temperature,
+        @pressure
+      ].hash
     end
 
     private
+
+    # @return [Float] the atmospheric pressure in millibars.
+    def compute_pressure
+      @pressure ||= PRESSURE_AT_SEA_LEVEL * pressure_ratio
+    end
 
     # Source:
     # Barometric formula
