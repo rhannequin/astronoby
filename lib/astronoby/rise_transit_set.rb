@@ -179,11 +179,13 @@ module Astronoby
     end
 
     def local_horizontal_azimuth_rising
-      shift = -@standard_altitude
-      term1 = declination_rising.sin + shift.sin * @observer.latitude.cos
-      term2 = shift.cos * @observer.latitude.cos
-      angle = term1 / term2
-      Angle.acos(angle)
+      @local_horizontal_azimuth_rising ||= begin
+        shift = -@standard_altitude
+        term1 = declination_rising.sin + shift.sin * @observer.latitude.cos
+        term2 = shift.cos * @observer.latitude.cos
+        angle = term1 / term2
+        Angle.acos(angle)
+      end
     end
 
     def local_horizontal_altitude_transit
