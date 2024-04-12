@@ -75,58 +75,51 @@ module Astronoby
         .to_horizontal(time: time, latitude: latitude, longitude: longitude)
     end
 
+    # @param observer [Astronoby::Observer] Observer of the events
+    # @return [Array<Time, Time, Time>, nil] Sunrise, transit and sunset times
+    def rise_transit_set_times(observer:)
+      rise_transit_set(observer).times
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the events
+    # @return [Array<Astronoby::Angle, Astronoby::Angle>] Azimuths of sunrise
+    #   and sunset
+    def rise_set_azimuths(observer:)
+      rise_transit_set(observer).azimuths
+    end
+
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Time] Time of sunrise
     def rising_time(observer:)
-      event_date = Epoch.to_utc(@epoch).to_date
-      lst1 = event_local_sidereal_time_for_date(event_date, observer, :rising)
-      next_day = event_date.next_day(1)
-      lst2 = event_local_sidereal_time_for_date(next_day, observer, :rising)
-      time = (INTERPOLATION_FACTOR * lst1) / (INTERPOLATION_FACTOR + lst1 - lst2)
-
-      LocalSiderealTime.new(
-        date: event_date,
-        time: time,
-        longitude: observer.longitude
-      ).to_gst.to_utc
+      rise_transit_set(observer).times[0]
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle, nil] Azimuth of sunrise
     def rising_azimuth(observer:)
-      equatorial_coordinates = apparent_ecliptic_coordinates
-        .to_apparent_equatorial(epoch: @epoch)
-      Body.new(equatorial_coordinates).rising_azimuth(
-        latitude: observer.latitude,
-        vertical_shift: vertical_shift
-      )
+      rise_transit_set(observer).azimuths[0]
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Time] Time of sunset
     def setting_time(observer:)
-      event_date = Epoch.to_utc(@epoch).to_date
-      lst1 = event_local_sidereal_time_for_date(event_date, observer, :setting)
-      next_day = event_date.next_day(1)
-      lst2 = event_local_sidereal_time_for_date(next_day, observer, :setting)
-      time = (INTERPOLATION_FACTOR * lst1) / (INTERPOLATION_FACTOR + lst1 - lst2)
-
-      LocalSiderealTime.new(
-        date: event_date,
-        time: time,
-        longitude: observer.longitude
-      ).to_gst.to_utc
+      rise_transit_set(observer).times[2]
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle, nil] Azimuth of sunset
     def setting_azimuth(observer:)
-      equatorial_coordinates = apparent_ecliptic_coordinates
-        .to_apparent_equatorial(epoch: @epoch)
-      Body.new(equatorial_coordinates).setting_azimuth(
-        latitude: observer.latitude,
-        vertical_shift: vertical_shift
-      )
+      rise_transit_set(observer).azimuths[1]
+    end
+
+    def transit_time(observer:)
+      rise_transit_set(observer).times[1]
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Astronoby::Angle] Altitude at transit
+    def transit_altitude(observer:)
+      rise_transit_set(observer).transit_altitude
     end
 
     # @return [Numeric] Earth-Sun distance in meters
@@ -206,43 +199,39 @@ module Astronoby
       term1 / term2
     end
 
-    def event_local_sidereal_time_for_date(date, observer, event)
-      midnight_utc = Time.utc(date.year, date.month, date.day)
-      epoch = Epoch.from_time(midnight_utc)
-      sun_at_midnight = self.class.new(epoch: epoch)
-      shift = Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
-        GeocentricParallax.angle(distance: sun_at_midnight.earth_distance) +
-        Angle.from_degrees(sun_at_midnight.angular_size.degrees / 2)
-      ecliptic_coordinates = sun_at_midnight.apparent_ecliptic_coordinates
-      equatorial_coordinates = ecliptic_coordinates
-        .to_apparent_equatorial(epoch: epoch)
-
-      event_time = if event == :rising
-        Body.new(equatorial_coordinates).rising_time(
-          latitude: observer.latitude,
-          longitude: observer.longitude,
-          date: midnight_utc.to_date,
-          vertical_shift: shift
-        )
-      else
-        Body.new(equatorial_coordinates).setting_time(
-          latitude: observer.latitude,
-          longitude: observer.longitude,
-          date: midnight_utc.to_date,
-          vertical_shift: shift
-        )
-      end
-
-      GreenwichSiderealTime
-        .from_utc(event_time.utc)
-        .to_lst(longitude: observer.longitude)
-        .time
+    def current_date
+      Epoch.to_utc(@epoch).to_date
     end
 
-    def vertical_shift
-      Astronoby::Body::DEFAULT_REFRACTION_VERTICAL_SHIFT +
-        Astronoby::GeocentricParallax.angle(distance: earth_distance) +
-        Astronoby::Angle.from_degrees(angular_size.degrees / 2)
+    def rise_transit_set(observer)
+      @rise_transit_set ||= {}
+      return @rise_transit_set[observer] if @rise_transit_set.key?(observer)
+
+      @rise_transit_set[observer] = begin
+        date = Epoch.to_utc(@epoch).to_date
+        yesterday_epoch = Epoch.from_time(date.prev_day)
+        tomorrow_epoch = Epoch.from_time(date.next_day)
+
+        coordinates_of_the_previous_day = self.class
+          .new(epoch: yesterday_epoch)
+          .apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: yesterday_epoch)
+        coordinates_of_the_day =
+          apparent_ecliptic_coordinates.to_apparent_equatorial(epoch: @epoch)
+        coordinates_of_the_next_day = self.class
+          .new(epoch: tomorrow_epoch)
+          .apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: tomorrow_epoch)
+
+        RiseTransitSet.new(
+          observer: observer,
+          date: date,
+          coordinates_of_the_previous_day: coordinates_of_the_previous_day,
+          coordinates_of_the_day: coordinates_of_the_day,
+          coordinates_of_the_next_day: coordinates_of_the_next_day,
+          additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
+        )
+      end
     end
   end
 end
