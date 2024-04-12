@@ -8,6 +8,8 @@ module Astronoby
       0.000025862
     ].freeze
 
+    SIDEREAL_MINUTE_IN_UT_MINUTE = 0.9972695663
+
     attr_reader :date, :time
 
     # Source:
@@ -61,7 +63,7 @@ module Astronoby
       a += 24 if a.negative?
       a -= 24 if a > 24
 
-      utc = 0.9972695663 * a
+      utc = SIDEREAL_MINUTE_IN_UT_MINUTE * a
 
       Util::Time.decimal_hour_to_time(date, utc)
     end

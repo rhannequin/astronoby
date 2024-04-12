@@ -665,7 +665,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(sun.morning_civil_twilight_time(observer: observer))
-        .to eq Time.utc(1979, 9, 7, 4, 40, 9)
+        .to eq Time.utc(1979, 9, 7, 4, 44, 23)
       # Time from IMCCE: 04:46
     end
   end
@@ -692,7 +692,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(sun.evening_civil_twilight_time(observer: observer))
-        .to eq Time.utc(1979, 9, 7, 19, 15, 7)
+        .to eq Time.utc(1979, 9, 7, 19, 8, 22)
       # Time from IMCCE: 19:10
     end
   end
@@ -719,7 +719,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(sun.morning_nautical_twilight_time(observer: observer))
-        .to eq Time.utc(1979, 9, 7, 3, 57, 57)
+        .to eq Time.utc(1979, 9, 7, 4, 2, 11)
       # Time from IMCCE: 04:03
     end
   end
@@ -746,7 +746,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(sun.evening_nautical_twilight_time(observer: observer))
-        .to eq Time.utc(1979, 9, 7, 19, 57, 19)
+        .to eq Time.utc(1979, 9, 7, 19, 50, 34)
       # Time from IMCCE: 19:52
     end
   end
@@ -778,7 +778,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(sun.morning_astronomical_twilight_time(observer: observer))
-        .to eq Time.utc(1979, 9, 7, 3, 11, 58)
+        .to eq Time.utc(1979, 9, 7, 3, 16, 13)
       # Time from Practical Astronomy: 03:12
       # Time from IMCCE: 03:17
     end
@@ -825,7 +825,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(sun.evening_astronomical_twilight_time(observer: observer))
-        .to eq Time.utc(1979, 9, 7, 20, 43, 18)
+        .to eq Time.utc(1979, 9, 7, 20, 36, 33)
       # Time from Practical Astronomy: 20:43
       # Time from IMCCE: 20:37
     end

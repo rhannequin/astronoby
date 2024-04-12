@@ -293,29 +293,38 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 50 - Twilight
     def twilight_time(twilight, period_of_the_day, observer)
-      hour_angle_at_period = Angle.acos(
-        -observer.latitude.tan * declination_at_midday.tan
-      )
-      zenith_angle = TWILIGHT_ANGLES[twilight]
-
-      hour_angle_ratio_at_twilight = (
-        zenith_angle.cos - observer.latitude.sin * declination_at_midday.sin)./(
-          observer.latitude.cos * declination_at_midday.cos
-        )
-      return nil unless hour_angle_ratio_at_twilight.between?(-1, 1)
-
-      hour_angle_at_twilight = Angle.acos(hour_angle_ratio_at_twilight)
-      twilight_in_hours = (
-        (hour_angle_at_twilight.degrees - hour_angle_at_period.degrees) / 15.0
-      ) * 0.9973
-      twilight_in_seconds = twilight_in_hours * 3600
-      twilight_in_seconds *= -1 if period_of_the_day == MORNING
       period_time = if period_of_the_day == MORNING
         rising_time(observer: observer)
       else
         setting_time(observer: observer)
       end
 
+      hour_angle_at_period = equatorial_coordinates_at_midday
+        .compute_hour_angle(time: period_time, longitude: observer.longitude)
+
+      zenith_angle = TWILIGHT_ANGLES[twilight]
+
+      term1 = zenith_angle.cos -
+        observer.latitude.sin *
+          equatorial_coordinates_at_midday.declination.sin
+      term2 = observer.latitude.cos *
+        equatorial_coordinates_at_midday.declination.cos
+      hour_angle_ratio_at_twilight = term1 / term2
+      return nil unless hour_angle_ratio_at_twilight.between?(-1, 1)
+
+      hour_angle_at_twilight = Angle.acos(hour_angle_ratio_at_twilight)
+      time_sign = -1
+
+      if period_of_the_day == MORNING
+        hour_angle_at_twilight =
+          Angle.from_degrees(360 - hour_angle_at_twilight.degrees)
+        time_sign = 1
+      end
+
+      twilight_in_hours =
+        time_sign * (hour_angle_at_twilight - hour_angle_at_period).hours *
+        GreenwichSiderealTime::SIDEREAL_MINUTE_IN_UT_MINUTE
+      twilight_in_seconds = time_sign * twilight_in_hours * 3600
       (period_time + twilight_in_seconds).round
     end
 
@@ -329,10 +338,9 @@ module Astronoby
       )
     end
 
-    def declination_at_midday
+    def equatorial_coordinates_at_midday
       apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: Epoch.from_time(midday))
-        .declination
     end
   end
 end
