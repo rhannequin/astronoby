@@ -280,7 +280,7 @@ RSpec.describe Astronoby::Events::ObservationEvents do
     end
 
     context "when the body does not rise" do
-      it "returns nil" do
+      it "returns an object's upper transit time" do
         date = Date.new(2016, 1, 21)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(38),
@@ -300,7 +300,33 @@ RSpec.describe Astronoby::Events::ObservationEvents do
 
         transit_time = events.transit_time
 
-        expect(transit_time).to be_nil
+        expect(transit_time).to eq Time.utc(2016, 1, 21, 0, 8, 2)
+      end
+    end
+
+    context "when the body is circumpolar" do
+      it "returns an object's upper transit time" do
+        date = Date.new(2016, 1, 21)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(38),
+          longitude: Astronoby::Angle.from_degrees(-78)
+        )
+        coordinates_of_the_day = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(2, 52, 43),
+          declination: Astronoby::Angle.from_dms(89, 20, 9)
+        )
+        events = described_class.new(
+          observer: observer,
+          date: date,
+          coordinates_of_the_previous_day: coordinates_of_the_day,
+          coordinates_of_the_day: coordinates_of_the_day,
+          coordinates_of_the_next_day: coordinates_of_the_day
+        )
+
+        transit_time = events.transit_time
+
+        expect(transit_time).to eq Time.utc(2016, 1, 21, 0, 0, 14)
+        # Time from Stellarium: 2016-01-21T00:01:35
       end
     end
   end
@@ -536,6 +562,32 @@ RSpec.describe Astronoby::Events::ObservationEvents do
 
       expect(transit_altitude.str(:dms)).to eq "+89° 4′ 6.548″"
       # Azimuth from SkySafari: +89° 12′ 1.4″
+    end
+
+    context "when the body is circumpolar" do
+      it "returns an object's upper transit azimuth" do
+        date = Date.new(2016, 1, 21)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(38),
+          longitude: Astronoby::Angle.from_degrees(-78)
+        )
+        coordinates_of_the_day = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(2, 52, 43),
+          declination: Astronoby::Angle.from_dms(89, 20, 9)
+        )
+        events = described_class.new(
+          observer: observer,
+          date: date,
+          coordinates_of_the_previous_day: coordinates_of_the_day,
+          coordinates_of_the_day: coordinates_of_the_day,
+          coordinates_of_the_next_day: coordinates_of_the_day
+        )
+
+        transit_altitude = events.transit_altitude
+
+        expect(transit_altitude.str(:dms)).to eq "+38° 39′ 50.9999″"
+        # Azimuth from Stellarium: +38° 41′ 5.4″
+      end
     end
   end
 end

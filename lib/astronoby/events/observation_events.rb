@@ -52,6 +52,9 @@ module Astronoby
       private
 
       def compute
+        @transit_time = Util::Time.decimal_hour_to_time(@date, initial_transit)
+        @transit_altitude = local_horizontal_altitude_transit
+
         return if h0.nil?
 
         delta_m_rising = (local_horizontal_altitude_rising - shift).degrees./(
@@ -72,7 +75,6 @@ module Astronoby
         @rising_time = Util::Time.decimal_hour_to_time(@date, corrected_rising)
         @rising_azimuth = local_horizontal_azimuth_rising
         @transit_time = Util::Time.decimal_hour_to_time(@date, corrected_transit)
-        @transit_altitude = local_horizontal_altitude_transit
         @setting_time = Util::Time.decimal_hour_to_time(@date, corrected_setting)
         @setting_azimuth = local_horizontal_azimuth_setting
       end
@@ -174,7 +176,6 @@ module Astronoby
       end
 
       def local_horizontal_azimuth_rising
-        # TODO: What happens if the body doesn't rise or is circumpolar?
         @local_horizontal_azimuth_rising ||= begin
           shift = -@standard_altitude
           term1 = declination_rising.sin + shift.sin * @observer.latitude.cos
@@ -185,7 +186,6 @@ module Astronoby
       end
 
       def local_horizontal_altitude_transit
-        # TODO: What happens if the body doesn't rise/set or is circumpolar?
         @local_horizontal_altitude_transit ||= Angle.asin(
           @observer.latitude.sin * declination_transit.sin +
             @observer.latitude.cos * declination_transit.cos * local_hour_angle_transit.cos
@@ -200,7 +200,6 @@ module Astronoby
       end
 
       def local_horizontal_azimuth_setting
-        # TODO: What happens if the body doesn't set or is circumpolar?
         shift = -@standard_altitude
         term1 = declination_setting.sin + shift.sin * @observer.latitude.cos
         term2 = shift.cos * @observer.latitude.cos
