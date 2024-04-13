@@ -8,6 +8,13 @@ module Astronoby
       SECONDS_IN_A_DAY = 86_400
       EARTH_SIDEREAL_ROTATION_RATE = 360.98564736629
 
+      attr_reader :rising_time,
+        :rising_azimuth,
+        :transit_time,
+        :transit_altitude,
+        :setting_time,
+        :setting_azimuth
+
       # Source:
       #  Title: Astronomical Algorithms
       #  Author: Jean Meeus
@@ -39,11 +46,13 @@ module Astronoby
         @coordinates_of_the_next_day = coordinates_of_the_next_day
         @standard_altitude = STANDARD_ALTITUDE
         @additional_altitude = additional_altitude
+        compute
       end
 
-      # @return [Array<Time, Time, Time>, nil] Rising, transit, and setting times
-      def times
-        return nil if h0.nil?
+      private
+
+      def compute
+        return if h0.nil?
 
         delta_m_rising = (local_horizontal_altitude_rising - shift).degrees./(
           360 * declination_rising.cos * @observer.latitude.cos * local_hour_angle_rising.sin
@@ -60,28 +69,13 @@ module Astronoby
         corrected_setting =
           rationalize_decimal_hours(24 * (initial_setting + delta_m_setting))
 
-        [
-          Util::Time.decimal_hour_to_time(@date, corrected_rising),
-          Util::Time.decimal_hour_to_time(@date, corrected_transit),
-          Util::Time.decimal_hour_to_time(@date, corrected_setting)
-        ]
+        @rising_time = Util::Time.decimal_hour_to_time(@date, corrected_rising)
+        @rising_azimuth = local_horizontal_azimuth_rising
+        @transit_time = Util::Time.decimal_hour_to_time(@date, corrected_transit)
+        @transit_altitude = local_horizontal_altitude_transit
+        @setting_time = Util::Time.decimal_hour_to_time(@date, corrected_setting)
+        @setting_azimuth = local_horizontal_azimuth_setting
       end
-
-      # @return [Array<Astronoby::Angle, Astronoby::Angle>] Rising, and setting
-      #   times
-      def azimuths
-        [
-          local_horizontal_azimuth_rising,
-          local_horizontal_azimuth_setting
-        ]
-      end
-
-      # @return [Astronoby::Angle] Altitude at transit
-      def transit_altitude
-        local_horizontal_altitude_transit
-      end
-
-      private
 
       def observer_longitude
         # Longitude must be treated positively westwards from the meridian of
@@ -180,6 +174,7 @@ module Astronoby
       end
 
       def local_horizontal_azimuth_rising
+        # TODO: What happens if the body doesn't rise or is circumpolar?
         @local_horizontal_azimuth_rising ||= begin
           shift = -@standard_altitude
           term1 = declination_rising.sin + shift.sin * @observer.latitude.cos
@@ -190,6 +185,7 @@ module Astronoby
       end
 
       def local_horizontal_altitude_transit
+        # TODO: What happens if the body doesn't rise/set or is circumpolar?
         @local_horizontal_altitude_transit ||= Angle.asin(
           @observer.latitude.sin * declination_transit.sin +
             @observer.latitude.cos * declination_transit.cos * local_hour_angle_transit.cos
@@ -204,6 +200,7 @@ module Astronoby
       end
 
       def local_horizontal_azimuth_setting
+        # TODO: What happens if the body doesn't set or is circumpolar?
         shift = -@standard_altitude
         term1 = declination_setting.sin + shift.sin * @observer.latitude.cos
         term2 = shift.cos * @observer.latitude.cos

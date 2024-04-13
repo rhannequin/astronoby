@@ -26,14 +26,17 @@ RSpec.describe Astronoby::Events::ObservationEvents do
         right_ascension: Astronoby::Angle.from_hms(2, 51, 7.69),
         declination: Astronoby::Angle.from_dms(18, 49, 38.7)
       )
-
-      rising_time, transit_time, setting_time = described_class.new(
+      events = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_previous_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_next_day
-      ).times
+      )
+
+      rising_time = events.rising_time
+      transit_time = events.transit_time
+      setting_time = events.setting_time
 
       expect(rising_time).to eq Time.utc(1988, 3, 20, 12, 25, 26)
       # Time from the book: 1988-03-20T12:25:00
@@ -59,14 +62,17 @@ RSpec.describe Astronoby::Events::ObservationEvents do
         right_ascension: Astronoby::Angle.from_hms(5, 56, 2.43),
         declination: Astronoby::Angle.from_dms(7, 24, 22)
       )
-
-      rising_time, transit_time, setting_time = described_class.new(
+      events = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_day
-      ).times
+      )
+
+      rising_time = events.rising_time
+      transit_time = events.transit_time
+      setting_time = events.setting_time
 
       expect(rising_time).to eq Time.utc(2016, 1, 21, 20, 39, 12)
       # Time from SkySafari: 2016-01-21T20:39:09
@@ -96,16 +102,19 @@ RSpec.describe Astronoby::Events::ObservationEvents do
         latitude: Astronoby::Angle.from_degrees(38.25),
         longitude: Astronoby::Angle.from_degrees(-78.3)
       ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, offset))
-
       # Cancel refraction correction to match the book that ignores it
-      rising_time, transit_time, setting_time = described_class.new(
+      events = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_day,
         additional_altitude: described_class::STANDARD_ALTITUDE
-      ).times
+      )
+
+      rising_time = events.rising_time
+      transit_time = events.transit_time
+      setting_time = events.setting_time
 
       expect(rising_time.getlocal(offset))
         .to eq Time.new(2015, 6, 6, 16, 57, 48, offset)
@@ -134,14 +143,17 @@ RSpec.describe Astronoby::Events::ObservationEvents do
         right_ascension: Astronoby::Angle.from_hms(23, 39, 20),
         declination: Astronoby::Angle.from_dms(21, 42, 0)
       )
-
-      rising_time, transit_time, setting_time = described_class.new(
+      events = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_day
-      ).times
+      )
+
+      rising_time = events.rising_time
+      transit_time = events.transit_time
+      setting_time = events.setting_time
 
       expect(rising_time).to eq Time.utc(2010, 8, 24, 14, 16, 18)
       # Time from the book: 2010-08-24T14:16
@@ -163,16 +175,21 @@ RSpec.describe Astronoby::Events::ObservationEvents do
           right_ascension: Astronoby::Angle.from_hms(6, 0, 0),
           declination: Astronoby::Angle.from_dms(-60, 0, 0)
         )
-
-        times = described_class.new(
+        events = described_class.new(
           observer: observer,
           date: date,
           coordinates_of_the_previous_day: coordinates_of_the_day,
           coordinates_of_the_day: coordinates_of_the_day,
           coordinates_of_the_next_day: coordinates_of_the_day
-        ).times
+        )
 
-        expect(times).to be_nil
+        rising_time = events.rising_time
+        transit_time = events.transit_time
+        setting_time = events.setting_time
+
+        expect(rising_time).to be_nil
+        expect(transit_time).to be_nil
+        expect(setting_time).to be_nil
       end
     end
   end
@@ -189,14 +206,16 @@ RSpec.describe Astronoby::Events::ObservationEvents do
         right_ascension: Astronoby::Angle.from_hms(18, 37, 27.06),
         declination: Astronoby::Angle.from_dms(38, 47, 59.4)
       )
-
-      rising_azimuth, setting_azimuth = described_class.new(
+      events = described_class.new(
         observer: observer,
         date: date,
         coordinates_of_the_previous_day: coordinates_of_the_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_day
-      ).azimuths
+      )
+
+      rising_azimuth = events.rising_azimuth
+      setting_azimuth = events.setting_azimuth
 
       expect(rising_azimuth.str(:dms)).to eq "+36° 22′ 48.9402″"
       # Azimuth from SkySafari: +36° 34′ 44.5″

@@ -309,20 +309,20 @@ RSpec.describe Astronoby::Sun do
   end
 
   describe "#rise_transit_set_times" do
-    it "returns an array of times" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      times = sun.rise_transit_set_times(observer: observer)
-
-      expect(times).to be_an Array
-      times.each { expect(_1).to be_a Time }
-    end
+    # it "returns an array of times" do
+    #   date = Date.new(2024, 3, 14)
+    #   epoch = Astronoby::Epoch.from_time(date)
+    #   observer = Astronoby::Observer.new(
+    #     latitude: Astronoby::Angle.zero,
+    #     longitude: Astronoby::Angle.zero
+    #   )
+    #   sun = described_class.new(epoch: epoch)
+    #
+    #   times = sun.rise_transit_set_times(observer: observer)
+    #
+    #   expect(times).to be_an Array
+    #   times.each { expect(_1).to be_a Time }
+    # end
 
     # Source:
     #  Title: Celestial Calculations
@@ -338,8 +338,9 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      rising_time, transit_time, setting_time =
-        sun.rise_transit_set_times(observer: observer)
+      rising_time = sun.rising_time(observer: observer)
+      transit_time = sun.transit_time(observer: observer)
+      setting_time = sun.setting_time(observer: observer)
 
       expect(rising_time).to eq Time.utc(2015, 2, 5, 12, 12, 59)
       # Time from Celestial Calculations: 2015-02-05T12:18:00
@@ -370,8 +371,9 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      rising_time, transit_time, setting_time =
-        sun.rise_transit_set_times(observer: observer)
+      rising_time = sun.rising_time(observer: observer)
+      transit_time = sun.transit_time(observer: observer)
+      setting_time = sun.setting_time(observer: observer)
 
       expect(rising_time).to eq Time.utc(1986, 3, 10, 11, 5, 7)
       # Time from Practical Astronomy: 1986-03-10T11:06:00
@@ -394,8 +396,9 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      rising_time, transit_time, setting_time =
-        sun.rise_transit_set_times(observer: observer)
+      rising_time = sun.rising_time(observer: observer)
+      transit_time = sun.transit_time(observer: observer)
+      setting_time = sun.setting_time(observer: observer)
 
       expect(rising_time).to eq Time.utc(1991, 3, 14, 6, 7, 23)
       # Time from IMCCE: 1991-03-14T06:08:45
@@ -418,74 +421,14 @@ RSpec.describe Astronoby::Sun do
 
       allow(Astronoby::Events::ObservationEvents).to receive(:new).and_call_original
 
-      sun.rise_transit_set_times(observer: observer)
-      sun.rise_transit_set_times(observer: observer)
+      sun.rising_time(observer: observer)
+      sun.rising_time(observer: observer)
 
       expect(Astronoby::Events::ObservationEvents).to have_received(:new).once
     end
   end
 
-  describe "#rising_time" do
-    it "delegates to #rise_transit_set_times" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      expect(sun.rising_time(observer: observer))
-        .to eq sun.rise_transit_set_times(observer: observer)[0]
-    end
-  end
-
-  describe "#transit_time" do
-    it "delegates to #rise_transit_set_times" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      expect(sun.transit_time(observer: observer))
-        .to eq sun.rise_transit_set_times(observer: observer)[1]
-    end
-  end
-
-  describe "#setting_time" do
-    it "delegates to #rise_transit_set_times" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      expect(sun.setting_time(observer: observer))
-        .to eq sun.rise_transit_set_times(observer: observer)[2]
-    end
-  end
-
   describe "#rise_set_azimuths" do
-    it "returns an array of angles" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      azimuths = sun.rise_set_azimuths(observer: observer)
-
-      expect(azimuths).to be_an Array
-      azimuths.each { expect(_1).to be_a Astronoby::Angle }
-    end
-
     # Source:
     #  Title: Celestial Calculations
     #  Author: J. L. Lawrence
@@ -500,8 +443,8 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      rising_azimuth, setting_azimuth =
-        sun.rise_set_azimuths(observer: observer)
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+      setting_azimuth = sun.setting_azimuth(observer: observer)
 
       expect(rising_azimuth.str(:dms)).to eq "+109° 46′ 43.1427″"
       # Time from SkySafari: +109° 41′ 0.3″
@@ -521,8 +464,8 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      rising_azimuth, setting_azimuth =
-        sun.rise_set_azimuths(observer: observer)
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+      setting_azimuth = sun.setting_azimuth(observer: observer)
 
       expect(rising_azimuth.str(:dms)).to eq "+95° 1′ 6.1239″"
       # Time from IMCCE: +95° 01′ 55″
@@ -540,44 +483,14 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      rising_azimuth, setting_azimuth =
-        sun.rise_set_azimuths(observer: observer)
+      rising_azimuth = sun.rising_azimuth(observer: observer)
+      setting_azimuth = sun.setting_azimuth(observer: observer)
 
       expect(rising_azimuth.str(:dms)).to eq "+93° 33′ 32.6479″"
       # Time from IMCCE: +93° 25′ 58″
 
       expect(setting_azimuth.str(:dms)).to eq "+266° 44′ 3.7751″"
       # Time from IMCCE: +266° 51′ 37″
-    end
-  end
-
-  describe "#rising_azimuth" do
-    it "delegates to #rise_set_azimuths" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      expect(sun.rising_azimuth(observer: observer))
-        .to eq sun.rise_set_azimuths(observer: observer)[0]
-    end
-  end
-
-  describe "#setting_azimuth" do
-    it "delegates to #rise_set_azimuths" do
-      date = Date.new(2024, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
-      observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.zero,
-        longitude: Astronoby::Angle.zero
-      )
-      sun = described_class.new(epoch: epoch)
-
-      expect(sun.setting_azimuth(observer: observer))
-        .to eq sun.rise_set_azimuths(observer: observer)[1]
     end
   end
 

@@ -92,45 +92,32 @@ module Astronoby
         .to_horizontal(time: time, latitude: latitude, longitude: longitude)
     end
 
-    # @param observer [Astronoby::Observer] Observer of the events
-    # @return [Array<Time, Time, Time>, nil] Sunrise, transit and sunset times
-    def rise_transit_set_times(observer:)
-      rise_transit_set(observer).times
-    end
-
-    # @param observer [Astronoby::Observer] Observer of the events
-    # @return [Array<Astronoby::Angle, Astronoby::Angle>] Azimuths of sunrise
-    #   and sunset
-    def rise_set_azimuths(observer:)
-      rise_transit_set(observer).azimuths
-    end
-
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Time] Time of sunrise
     def rising_time(observer:)
-      rise_transit_set(observer).times[0]
+      rise_transit_set(observer).rising_time
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle, nil] Azimuth of sunrise
     def rising_azimuth(observer:)
-      rise_transit_set(observer).azimuths[0]
+      rise_transit_set(observer).rising_azimuth
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Time] Time of sunset
     def setting_time(observer:)
-      rise_transit_set(observer).times[2]
+      rise_transit_set(observer).setting_time
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Angle, nil] Azimuth of sunset
     def setting_azimuth(observer:)
-      rise_transit_set(observer).azimuths[1]
+      rise_transit_set(observer).setting_azimuth
     end
 
     def transit_time(observer:)
-      rise_transit_set(observer).times[1]
+      rise_transit_set(observer).transit_time
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
