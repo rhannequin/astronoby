@@ -6,6 +6,23 @@ module Astronoby
     ANGULAR_DIAMETER = Angle.from_degrees(0.533128)
     INTERPOLATION_FACTOR = 24.07
 
+    TWILIGHTS = [
+      CIVIL = :civil,
+      NAUTICAL = :nautical,
+      ASTRONOMICAL = :astronomical
+    ].freeze
+
+    TWILIGHT_ANGLES = {
+      CIVIL => Angle.from_degrees(96),
+      NAUTICAL => Angle.from_degrees(102),
+      ASTRONOMICAL => Angle.from_degrees(108)
+    }.freeze
+
+    PERIODS_OF_THE_DAY = [
+      MORNING = :morning,
+      EVENING = :evening
+    ].freeze
+
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
@@ -122,6 +139,42 @@ module Astronoby
       rise_transit_set(observer).transit_altitude
     end
 
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time] Time the morning civil twilight starts
+    def morning_civil_twilight_time(observer:)
+      twilight_time(CIVIL, MORNING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the evening civil twilight ends
+    def evening_civil_twilight_time(observer:)
+      twilight_time(CIVIL, EVENING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the morning nautical twilight starts
+    def morning_nautical_twilight_time(observer:)
+      twilight_time(NAUTICAL, MORNING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the evening nautical twilight ends
+    def evening_nautical_twilight_time(observer:)
+      twilight_time(NAUTICAL, EVENING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the morning astronomical twilight starts
+    def morning_astronomical_twilight_time(observer:)
+      twilight_time(ASTRONOMICAL, MORNING, observer)
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Time, nil] Time the evening astronomical twilight ends
+    def evening_astronomical_twilight_time(observer:)
+      twilight_time(ASTRONOMICAL, EVENING, observer)
+    end
+
     # @return [Numeric] Earth-Sun distance in meters
     def earth_distance
       SEMI_MAJOR_AXIS_IN_METERS / distance_angular_size_factor
@@ -232,6 +285,62 @@ module Astronoby
           additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
         )
       end
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 50 - Twilight
+    def twilight_time(twilight, period_of_the_day, observer)
+      period_time = if period_of_the_day == MORNING
+        rising_time(observer: observer)
+      else
+        setting_time(observer: observer)
+      end
+
+      hour_angle_at_period = equatorial_coordinates_at_midday
+        .compute_hour_angle(time: period_time, longitude: observer.longitude)
+
+      zenith_angle = TWILIGHT_ANGLES[twilight]
+
+      term1 = zenith_angle.cos -
+        observer.latitude.sin *
+          equatorial_coordinates_at_midday.declination.sin
+      term2 = observer.latitude.cos *
+        equatorial_coordinates_at_midday.declination.cos
+      hour_angle_ratio_at_twilight = term1 / term2
+      return nil unless hour_angle_ratio_at_twilight.between?(-1, 1)
+
+      hour_angle_at_twilight = Angle.acos(hour_angle_ratio_at_twilight)
+      time_sign = -1
+
+      if period_of_the_day == MORNING
+        hour_angle_at_twilight =
+          Angle.from_degrees(360 - hour_angle_at_twilight.degrees)
+        time_sign = 1
+      end
+
+      twilight_in_hours =
+        time_sign * (hour_angle_at_twilight - hour_angle_at_period).hours *
+        GreenwichSiderealTime::SIDEREAL_MINUTE_IN_UT_MINUTE
+      twilight_in_seconds = time_sign * twilight_in_hours * 3600
+      (period_time + twilight_in_seconds).round
+    end
+
+    def midday
+      utc_from_epoch = Epoch.to_utc(@epoch)
+      Time.utc(
+        utc_from_epoch.year,
+        utc_from_epoch.month,
+        utc_from_epoch.day,
+        12
+      )
+    end
+
+    def equatorial_coordinates_at_midday
+      apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: Epoch.from_time(midday))
     end
   end
 end
