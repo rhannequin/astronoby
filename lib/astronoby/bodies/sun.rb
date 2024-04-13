@@ -93,41 +93,35 @@ module Astronoby
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
-    # @return [Time] Time of sunrise
-    def rising_time(observer:)
-      rise_transit_set(observer).rising_time
+    # @return [Astronoby::Events::ObservationEvents] Sun's observation events
+    def observation_events(observer:)
+      date = Epoch.to_utc(@epoch).to_date
+      yesterday_epoch = Epoch.from_time(date.prev_day)
+      tomorrow_epoch = Epoch.from_time(date.next_day)
+
+      coordinates_of_the_previous_day = self.class
+        .new(epoch: yesterday_epoch)
+        .apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: yesterday_epoch)
+      coordinates_of_the_day =
+        apparent_ecliptic_coordinates.to_apparent_equatorial(epoch: @epoch)
+      coordinates_of_the_next_day = self.class
+        .new(epoch: tomorrow_epoch)
+        .apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: tomorrow_epoch)
+
+      Events::ObservationEvents.new(
+        observer: observer,
+        date: date,
+        coordinates_of_the_previous_day: coordinates_of_the_previous_day,
+        coordinates_of_the_day: coordinates_of_the_day,
+        coordinates_of_the_next_day: coordinates_of_the_next_day,
+        additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
+      )
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
-    # @return [Astronoby::Angle, nil] Azimuth of sunrise
-    def rising_azimuth(observer:)
-      rise_transit_set(observer).rising_azimuth
-    end
-
-    # @param observer [Astronoby::Observer] Observer of the event
-    # @return [Time] Time of sunset
-    def setting_time(observer:)
-      rise_transit_set(observer).setting_time
-    end
-
-    # @param observer [Astronoby::Observer] Observer of the event
-    # @return [Astronoby::Angle, nil] Azimuth of sunset
-    def setting_azimuth(observer:)
-      rise_transit_set(observer).setting_azimuth
-    end
-
-    def transit_time(observer:)
-      rise_transit_set(observer).transit_time
-    end
-
-    # @param observer [Astronoby::Observer] Observer of the event
-    # @return [Astronoby::Angle] Altitude at transit
-    def transit_altitude(observer:)
-      rise_transit_set(observer).transit_altitude
-    end
-
-    # @param observer [Astronoby::Observer] Observer of the event
-    # @return [Time] Time the morning civil twilight starts
+    # @return [Time, nil] Time the morning civil twilight starts
     def morning_civil_twilight_time(observer:)
       twilight_time(CIVIL, MORNING, observer)
     end
@@ -243,47 +237,17 @@ module Astronoby
       Epoch.to_utc(@epoch).to_date
     end
 
-    def rise_transit_set(observer)
-      @rise_transit_set ||= {}
-      return @rise_transit_set[observer] if @rise_transit_set.key?(observer)
-
-      @rise_transit_set[observer] = begin
-        date = Epoch.to_utc(@epoch).to_date
-        yesterday_epoch = Epoch.from_time(date.prev_day)
-        tomorrow_epoch = Epoch.from_time(date.next_day)
-
-        coordinates_of_the_previous_day = self.class
-          .new(epoch: yesterday_epoch)
-          .apparent_ecliptic_coordinates
-          .to_apparent_equatorial(epoch: yesterday_epoch)
-        coordinates_of_the_day =
-          apparent_ecliptic_coordinates.to_apparent_equatorial(epoch: @epoch)
-        coordinates_of_the_next_day = self.class
-          .new(epoch: tomorrow_epoch)
-          .apparent_ecliptic_coordinates
-          .to_apparent_equatorial(epoch: tomorrow_epoch)
-
-        Events::ObservationEvents.new(
-          observer: observer,
-          date: date,
-          coordinates_of_the_previous_day: coordinates_of_the_previous_day,
-          coordinates_of_the_day: coordinates_of_the_day,
-          coordinates_of_the_next_day: coordinates_of_the_next_day,
-          additional_altitude: Angle.from_degrees(angular_size.degrees / 2)
-        )
-      end
-    end
-
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 50 - Twilight
     def twilight_time(twilight, period_of_the_day, observer)
+      observation_events = observation_events(observer: observer)
       period_time = if period_of_the_day == MORNING
-        rising_time(observer: observer)
+        observation_events.rising_time
       else
-        setting_time(observer: observer)
+        observation_events.setting_time
       end
 
       hour_angle_at_period = equatorial_coordinates_at_midday
