@@ -416,12 +416,12 @@ RSpec.describe Astronoby::Sun do
       )
       sun = described_class.new(epoch: epoch)
 
-      allow(Astronoby::RiseTransitSet).to receive(:new).and_call_original
+      allow(Astronoby::Events::ObservationEvents).to receive(:new).and_call_original
 
       sun.rise_transit_set_times(observer: observer)
       sun.rise_transit_set_times(observer: observer)
 
-      expect(Astronoby::RiseTransitSet).to have_received(:new).once
+      expect(Astronoby::Events::ObservationEvents).to have_received(:new).once
     end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::RiseTransitSet do
+RSpec.describe Astronoby::Events::ObservationEvents do
   describe "#times" do
     # Source:
     #  Title: Astronomical Algorithms

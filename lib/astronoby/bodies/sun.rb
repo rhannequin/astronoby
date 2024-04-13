@@ -276,7 +276,7 @@ module Astronoby
           .apparent_ecliptic_coordinates
           .to_apparent_equatorial(epoch: tomorrow_epoch)
 
-        RiseTransitSet.new(
+        Events::ObservationEvents.new(
           observer: observer,
           date: date,
           coordinates_of_the_previous_day: coordinates_of_the_previous_day,
