@@ -121,6 +121,36 @@ observation_events.setting_azimuth.str(:dms)
 # => "+250° 23′ 33.6177″"
 ```
 
+### Twilight times
+
+```rb
+epoch = Astronoby::Epoch.from_time(Date.new(2024, 1, 1))
+sun = Astronoby::Sun.new(epoch: epoch)
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(48.8566),
+  longitude: Astronoby::Angle.from_degrees(2.3522)
+)
+twilight_events = sun.twilight_events(observer: observer)
+
+twilight_events.morning_astronomical_twilight_time
+# => 2024-01-01 05:47:24 UTC
+
+twilight_events.morning_nautical_twilight_time
+# => 2024-01-01 06:25:41 UTC
+
+twilight_events.morning_civil_twilight_time
+# => 2024-01-01 07:05:51 UTC
+
+twilight_events.evening_civil_twilight_time
+# => 2024-01-01 16:37:37 UTC
+
+twilight_events.evening_nautical_twilight_time
+# => 2024-01-01 17:17:46 UTC
+
+twilight_events.evening_astronomical_twilight_time
+# => 2024-01-01 17:56:03 UTC
+```
+
 ### Solstice and Equinox times
 
 ```rb
