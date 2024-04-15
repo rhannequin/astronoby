@@ -5,7 +5,6 @@ module Astronoby
     class ObservationEvents
       STANDARD_ALTITUDE = Angle.from_dms(0, -34, 0)
       RISING_SETTING_HOUR_ANGLE_RATIO_RANGE = (-1..1)
-      SECONDS_IN_A_DAY = 86_400
       EARTH_SIDEREAL_ROTATION_RATE = 360.98564736629
 
       attr_reader :rising_time,
@@ -58,19 +57,28 @@ module Astronoby
         return if h0.nil?
 
         delta_m_rising = (local_horizontal_altitude_rising - shift).degrees./(
-          360 * declination_rising.cos * @observer.latitude.cos * local_hour_angle_rising.sin
+          Constants::DEGREES_PER_CIRCLE *
+            declination_rising.cos *
+            @observer.latitude.cos *
+            local_hour_angle_rising.sin
         )
-        delta_m_transit = - local_hour_angle_transit.degrees / 360
+        delta_m_transit = -local_hour_angle_transit.degrees / Constants::DEGREES_PER_CIRCLE
         delta_m_setting = (local_horizontal_altitude_setting - shift).degrees./(
-          360 * declination_setting.cos * @observer.latitude.cos * local_hour_angle_setting.sin
+          Constants::DEGREES_PER_CIRCLE *
+            declination_setting.cos *
+            @observer.latitude.cos *
+            local_hour_angle_setting.sin
         )
 
-        corrected_rising =
-          rationalize_decimal_hours(24 * (initial_rising + delta_m_rising))
-        corrected_transit =
-          rationalize_decimal_hours(24 * (initial_transit + delta_m_transit))
-        corrected_setting =
-          rationalize_decimal_hours(24 * (initial_setting + delta_m_setting))
+        corrected_rising = rationalize_decimal_hours(
+          Constants::HOURS_PER_DAY * (initial_rising + delta_m_rising)
+        )
+        corrected_transit = rationalize_decimal_hours(
+          Constants::HOURS_PER_DAY * (initial_transit + delta_m_transit)
+        )
+        corrected_setting = rationalize_decimal_hours(
+          Constants::HOURS_PER_DAY * (initial_setting + delta_m_setting)
+        )
 
         @rising_time = Util::Time.decimal_hour_to_time(@date, corrected_rising)
         @rising_azimuth = local_horizontal_azimuth_rising
@@ -111,18 +119,22 @@ module Astronoby
             @coordinates_of_the_day.right_ascension.degrees +
               observer_longitude.degrees -
               apparent_gst_at_midnight.degrees
-          ) / 360.0
+          ) / Constants::DEGREES_PER_CIRCLE
         )
       end
 
       def initial_rising
         @initial_rising ||=
-          rationalize_decimal_time(initial_transit - h0.degrees / 360)
+          rationalize_decimal_time(
+            initial_transit - h0.degrees / Constants::DEGREES_PER_CIRCLE
+          )
       end
 
       def initial_setting
         @initial_setting ||=
-          rationalize_decimal_time(initial_transit + h0.degrees / 360)
+          rationalize_decimal_time(
+            initial_transit + h0.degrees / Constants::DEGREES_PER_CIRCLE
+          )
       end
 
       def gst_rising
@@ -149,7 +161,7 @@ module Astronoby
       def leap_day_portion
         @leap_day_portion ||= begin
           leap_seconds = Util::Time.terrestrial_universal_time_delta(@date)
-          leap_seconds / SECONDS_IN_A_DAY
+          leap_seconds / Constants::SECONDS_PER_DAY
         end
       end
 
@@ -204,7 +216,9 @@ module Astronoby
         term1 = declination_setting.sin + shift.sin * @observer.latitude.cos
         term2 = shift.cos * @observer.latitude.cos
         angle = term1 / term2
-        Angle.from_degrees(360 - Angle.acos(angle).degrees)
+        Angle.from_degrees(
+          Constants::DEGREES_PER_CIRCLE - Angle.acos(angle).degrees
+        )
       end
 
       def rationalize_decimal_time(decimal_time)
@@ -214,8 +228,8 @@ module Astronoby
       end
 
       def rationalize_decimal_hours(decimal_hours)
-        decimal_hours += 24 if decimal_hours.negative?
-        decimal_hours -= 24 if decimal_hours > 24
+        decimal_hours += Constants::HOURS_PER_DAY if decimal_hours.negative?
+        decimal_hours -= Constants::HOURS_PER_DAY if decimal_hours > Constants::HOURS_PER_DAY
         decimal_hours
       end
 

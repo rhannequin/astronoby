@@ -31,7 +31,7 @@ module Astronoby
 
         if @azimuth.sin.positive?
           hour_angle_degrees = Angle
-            .from_degrees(360 - hour_angle_degrees)
+            .from_degrees(Constants::DEGREES_PER_CIRCLE - hour_angle_degrees)
             .degrees
         end
 
@@ -40,7 +40,11 @@ module Astronoby
           .from_utc(time.utc)
           .to_lst(longitude: @longitude)
         right_ascension_decimal = lst.time - hour_angle_hours
-        right_ascension_decimal += 24 if right_ascension_decimal.negative?
+
+        if right_ascension_decimal.negative?
+          right_ascension_decimal += Constants::HOURS_PER_DAY
+        end
+
         right_ascension = Angle.from_hours(right_ascension_decimal)
 
         Equatorial.new(

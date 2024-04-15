@@ -45,18 +45,20 @@ module Astronoby
     private
 
     def julian_centuries
-      (@epoch - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
+      (@epoch - Epoch::J1900) / Constants::DAYS_PER_JULIAN_CENTURY
     end
 
     def sun_mean_longitude
       Angle.from_degrees(
-        (279.6967 + 360.0 * (centuries_a - centuries_a.to_i)) % 360
+        (279.6967 + Constants::DEGREES_PER_CIRCLE * (centuries_a - centuries_a.to_i)) %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 
     def moon_ascending_node_longitude
       Angle.from_degrees(
-        (259.1833 - 360.0 * (centuries_b - centuries_b.to_i)) % 360
+        (259.1833 - Constants::DEGREES_PER_CIRCLE * (centuries_b - centuries_b.to_i)) %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 

@@ -20,20 +20,20 @@ module Astronoby
     def self.from_utc(utc)
       date = utc.to_date
       julian_day = utc.to_date.ajd
-      t = (julian_day - Epoch::J2000) / Epoch::DAYS_PER_JULIAN_CENTURY
+      t = (julian_day - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
       t0 = (
         (JULIAN_CENTURIES_EXPONENTS[0] +
           (JULIAN_CENTURIES_EXPONENTS[1] * t) +
-          (JULIAN_CENTURIES_EXPONENTS[2] * t * t)) % 24
+          (JULIAN_CENTURIES_EXPONENTS[2] * t * t)) % Constants::HOURS_PER_DAY
       ).abs
 
       ut_in_hours = utc.hour +
-        utc.min / 60.0 +
-        (utc.sec + utc.subsec) / 3600.0
+        utc.min / Constants::MINUTES_PER_HOUR +
+        (utc.sec + utc.subsec) / Constants::SECONDS_PER_HOUR
 
       gmst = 1.002737909 * ut_in_hours + t0
-      gmst += 24 if gmst.negative?
-      gmst -= 24 if gmst > 24
+      gmst += Constants::HOURS_PER_DAY if gmst.negative?
+      gmst -= Constants::HOURS_PER_DAY if gmst > Constants::HOURS_PER_DAY
 
       new(date: date, time: gmst)
     end
@@ -51,17 +51,17 @@ module Astronoby
     def to_utc
       date = @date
       julian_day = @date.ajd
-      t = (julian_day - Epoch::J2000) / Epoch::DAYS_PER_JULIAN_CENTURY
+      t = (julian_day - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
 
       t0 = (
         (JULIAN_CENTURIES_EXPONENTS[0] +
           (JULIAN_CENTURIES_EXPONENTS[1] * t) +
-          (JULIAN_CENTURIES_EXPONENTS[2] * t * t)) % 24
+          (JULIAN_CENTURIES_EXPONENTS[2] * t * t)) % Constants::HOURS_PER_DAY
       ).abs
 
       a = @time - t0
-      a += 24 if a.negative?
-      a -= 24 if a > 24
+      a += Constants::HOURS_PER_DAY if a.negative?
+      a -= Constants::HOURS_PER_DAY if a > Constants::HOURS_PER_DAY
 
       utc = SIDEREAL_MINUTE_IN_UT_MINUTE * a
 

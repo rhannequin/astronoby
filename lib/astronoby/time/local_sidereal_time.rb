@@ -12,8 +12,8 @@ module Astronoby
     def self.from_gst(gst:, longitude:)
       date = gst.date
       time = gst.time + longitude.hours
-      time += 24 if time.negative?
-      time -= 24 if time > 24
+      time += Constants::HOURS_PER_DAY if time.negative?
+      time -= Constants::HOURS_PER_DAY if time > Constants::HOURS_PER_DAY
 
       new(date: date, time: time, longitude: longitude)
     end
@@ -32,8 +32,8 @@ module Astronoby
     def to_gst
       date = @date
       time = @time - @longitude.hours
-      time += 24 if time.negative?
-      time -= 24 if time > 24
+      time += Constants::HOURS_PER_DAY if time.negative?
+      time -= Constants::HOURS_PER_DAY if time > Constants::HOURS_PER_DAY
 
       GreenwichSiderealTime.new(date: date, time: time)
     end

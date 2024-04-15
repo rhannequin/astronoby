@@ -101,7 +101,7 @@ module Astronoby
     end
 
     def compute
-      t = (julian_day - Epoch::J2000) / Epoch::DAYS_PER_JULIAN_CENTURY
+      t = (julian_day - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
       w = Angle.from_degrees(35999.373 * t) - Angle.from_degrees(2.47)
       delta = 1 +
         0.0334 * w.cos +
