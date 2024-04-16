@@ -9,8 +9,6 @@ module Astronoby
     J2000 = 2451545.0
 
     DEFAULT_EPOCH = J2000
-    DAYS_PER_JULIAN_CENTURY = 36525.0
-
     JULIAN_DAY_NUMBER_OFFSET = 0.5
 
     def self.from_time(time)

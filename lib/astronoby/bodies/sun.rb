@@ -153,20 +153,24 @@ module Astronoby
         (1 + orbital_eccentricity.degrees) / (1 - orbital_eccentricity.degrees)
       ) * Math.tan(eccentric_anomaly.radians / 2)
 
-      Angle.from_degrees((Angle.atan(tan).degrees * 2) % 360)
+      Angle.from_degrees(
+        (Angle.atan(tan).degrees * 2) % Constants::DEGREES_PER_CIRCLE
+      )
     end
 
     # @return [Astronoby::Angle] Sun's longitude at perigee
     def longitude_at_perigee
       Angle.from_degrees(
-        (281.2208444 + 1.719175 * centuries + 0.000452778 * centuries**2) % 360
+        (281.2208444 + 1.719175 * centuries + 0.000452778 * centuries**2) %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 
     # @return [Astronoby::Angle] Sun's orbital eccentricity
     def orbital_eccentricity
       Angle.from_degrees(
-        (0.01675104 - 0.0000418 * centuries - 0.000000126 * centuries**2) % 360
+        (0.01675104 - 0.0000418 * centuries - 0.000000126 * centuries**2) %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 
@@ -174,13 +178,15 @@ module Astronoby
 
     def true_longitude
       Angle.from_degrees(
-        (true_anomaly + longitude_at_perigee).degrees % 360
+        (true_anomaly + longitude_at_perigee).degrees %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 
     def mean_anomaly
       Angle.from_degrees(
-        (longitude_at_base_epoch - longitude_at_perigee).degrees % 360
+        (longitude_at_base_epoch - longitude_at_perigee).degrees %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 
@@ -189,12 +195,13 @@ module Astronoby
     end
 
     def centuries
-      @centuries ||= (@epoch - Epoch::J1900) / Epoch::DAYS_PER_JULIAN_CENTURY
+      @centuries ||= (@epoch - Epoch::J1900) / Constants::DAYS_PER_JULIAN_CENTURY
     end
 
     def longitude_at_base_epoch
       Angle.from_degrees(
-        (279.6966778 + 36000.76892 * centuries + 0.0003025 * centuries**2) % 360
+        (279.6966778 + 36000.76892 * centuries + 0.0003025 * centuries**2) %
+          Constants::DEGREES_PER_CIRCLE
       )
     end
 

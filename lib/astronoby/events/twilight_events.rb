@@ -74,15 +74,18 @@ module Astronoby
         time_sign = -1
 
         if period_of_the_day == MORNING
-          hour_angle_at_twilight =
-            Angle.from_degrees(360 - hour_angle_at_twilight.degrees)
+          hour_angle_at_twilight = Angle.from_degrees(
+            Constants::DEGREES_PER_CIRCLE - hour_angle_at_twilight.degrees
+          )
           time_sign = 1
         end
 
         twilight_in_hours =
           time_sign * (hour_angle_at_twilight - hour_angle_at_period).hours *
           GreenwichSiderealTime::SIDEREAL_MINUTE_IN_UT_MINUTE
-        twilight_in_seconds = time_sign * twilight_in_hours * 3600
+        twilight_in_seconds = time_sign *
+          twilight_in_hours *
+          Constants::SECONDS_PER_HOUR
 
         instance_variable_set(
           :"@#{period_of_the_day}_#{twilight}_twilight_time",

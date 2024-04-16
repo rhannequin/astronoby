@@ -5,16 +5,6 @@ module Astronoby
     include Comparable
 
     MIN_PRECISION = 10
-    PI_IN_DEGREES = 180.0
-
-    FULL_CIRCLE_IN_RADIANS = (2 * Math::PI)
-
-    RADIAN_PER_HOUR = Math::PI / 12.0
-    MINUTES_PER_DEGREE = 60.0
-    MINUTES_PER_HOUR = 60.0
-    SECONDS_PER_MINUTE = 60.0
-    SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE
-
     FORMATS = %i[dms hms].freeze
 
     class << self
@@ -23,28 +13,32 @@ module Astronoby
       end
 
       def from_radians(radians)
-        normalized_radians = radians.remainder(FULL_CIRCLE_IN_RADIANS)
+        normalized_radians = radians.remainder(Constants::RADIANS_PER_CIRCLE)
         new(normalized_radians)
       end
 
       def from_degrees(degrees)
-        radians = degrees / PI_IN_DEGREES * Math::PI
+        radians = degrees / Constants::PI_IN_DEGREES * Math::PI
         from_radians(radians)
       end
 
       def from_hours(hours)
-        radians = hours * RADIAN_PER_HOUR
+        radians = hours * Constants::RADIAN_PER_HOUR
         from_radians(radians)
       end
 
       def from_hms(hour, minute, second)
-        hours = hour + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
+        hours = hour +
+          minute / Constants::MINUTES_PER_HOUR +
+          second / Constants::SECONDS_PER_HOUR
         from_hours(hours)
       end
 
       def from_dms(degree, minute, second)
         sign = degree.negative? ? -1 : 1
-        degrees = degree.abs + minute / MINUTES_PER_HOUR + second / SECONDS_PER_HOUR
+        degrees = degree.abs +
+          minute / Constants::MINUTES_PER_HOUR +
+          second / Constants::SECONDS_PER_HOUR
         from_degrees(sign * degrees)
       end
 
@@ -72,11 +66,11 @@ module Astronoby
     end
 
     def degrees
-      @radians * PI_IN_DEGREES / Math::PI
+      @radians * Constants::PI_IN_DEGREES / Math::PI
     end
 
     def hours
-      @radians / RADIAN_PER_HOUR
+      @radians / Constants::RADIAN_PER_HOUR
     end
 
     def +(other)
@@ -141,12 +135,13 @@ module Astronoby
       sign = deg.negative? ? "-" : "+"
       absolute_degrees = deg.abs
       degrees = absolute_degrees.floor
-      decimal_minutes = MINUTES_PER_DEGREE * (absolute_degrees - degrees)
+      decimal_minutes = Constants::MINUTES_PER_DEGREE *
+        (absolute_degrees - degrees)
       absolute_decimal_minutes = (
-        MINUTES_PER_DEGREE * (absolute_degrees - degrees)
+        Constants::MINUTES_PER_DEGREE * (absolute_degrees - degrees)
       ).abs
       minutes = decimal_minutes.floor
-      seconds = SECONDS_PER_MINUTE * (
+      seconds = Constants::SECONDS_PER_MINUTE * (
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
@@ -156,12 +151,12 @@ module Astronoby
     def to_hms(hrs)
       absolute_hours = hrs.abs
       hours = absolute_hours.floor
-      decimal_minutes = MINUTES_PER_HOUR * (absolute_hours - hours)
+      decimal_minutes = Constants::MINUTES_PER_HOUR * (absolute_hours - hours)
       absolute_decimal_minutes = (
-        MINUTES_PER_HOUR * (absolute_hours - hours)
+        Constants::MINUTES_PER_HOUR * (absolute_hours - hours)
       ).abs
       minutes = decimal_minutes.floor
-      seconds = SECONDS_PER_MINUTE * (
+      seconds = Constants::SECONDS_PER_MINUTE * (
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 

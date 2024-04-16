@@ -2,6 +2,8 @@
 
 module Astronoby
   class Aberration
+    MAXIMUM_SHIFT = Angle.from_degrees(20.5)
+
     def self.for_ecliptic_coordinates(coordinates:, epoch:)
       new(coordinates, epoch).apply
     end
@@ -18,15 +20,15 @@ module Astronoby
     #  Chapter: 36 - Aberration
     def apply
       delta_longitude = Angle.from_degrees(
-        -20.5 * (
+        -MAXIMUM_SHIFT.degrees * (
           sun_longitude - @coordinates.longitude
-        ).cos / @coordinates.latitude.cos / 3600
+        ).cos / @coordinates.latitude.cos / Constants::SECONDS_PER_DEGREE
       )
 
       delta_latitude = Angle.from_degrees(
-        -20.5 *
+        -MAXIMUM_SHIFT.degrees *
         (sun_longitude - @coordinates.longitude).sin *
-        @coordinates.latitude.sin / 3600
+        @coordinates.latitude.sin / Constants::SECONDS_PER_DEGREE
       )
 
       Coordinates::Ecliptic.new(

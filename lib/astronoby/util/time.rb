@@ -10,14 +10,20 @@ module Astronoby
         absolute_hour = decimal.abs
         hour = absolute_hour.floor
 
-        unless hour.between?(0, 24)
-          raise IncompatibleArgumentsError, "Hour must be between 0 and 24, got #{hour}"
+        unless hour.between?(0, Constants::HOURS_PER_DAY)
+          raise(
+            IncompatibleArgumentsError,
+            "Hour must be between 0 and #{Constants::HOURS_PER_DAY.to_i}, got #{hour}"
+          )
         end
 
-        decimal_minute = 60 * (absolute_hour - hour)
-        absolute_decimal_minute = (60 * (absolute_hour - hour)).abs
+        decimal_minute = Constants::MINUTES_PER_HOUR * (absolute_hour - hour)
+        absolute_decimal_minute = (
+          Constants::MINUTES_PER_HOUR * (absolute_hour - hour)
+        ).abs
         minute = decimal_minute.floor
-        second = 60 * (absolute_decimal_minute - absolute_decimal_minute.floor)
+        second = Constants::SECONDS_PER_MINUTE *
+          (absolute_decimal_minute - absolute_decimal_minute.floor)
 
         ::Time.utc(date.year, date.month, date.day, hour, minute, second).round
       end

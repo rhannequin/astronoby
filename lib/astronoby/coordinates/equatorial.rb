@@ -23,7 +23,7 @@ module Astronoby
           .to_lst(longitude: longitude)
 
         ha = (lst.time - @right_ascension.hours)
-        ha += 24 if ha.negative?
+        ha += Constants::HOURS_PER_DAY if ha.negative?
 
         Angle.from_hours(ha)
       end
@@ -39,7 +39,8 @@ module Astronoby
         azimuth = Angle.acos(t2)
 
         if ha.sin.positive?
-          azimuth = Angle.from_degrees(360 - azimuth.degrees)
+          azimuth =
+            Angle.from_degrees(Constants::DEGREES_PER_CIRCLE - azimuth.degrees)
         end
 
         Horizontal.new(

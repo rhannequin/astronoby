@@ -45,7 +45,7 @@ module Astronoby
     private
 
     def matrix_for_epoch(epoch)
-      t = (epoch - Epoch::DEFAULT_EPOCH) / Epoch::DAYS_PER_JULIAN_CENTURY
+      t = (epoch - Epoch::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
 
       zeta = Angle.from_degrees(
         0.6406161 * t + 0.0000839 * t * t + 0.000005 * t * t * t
