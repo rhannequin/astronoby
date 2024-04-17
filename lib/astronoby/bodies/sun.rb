@@ -26,27 +26,41 @@ module Astronoby
     attr_reader :epoch
 
     # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 51 - The equation of time
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 28 - Equation of Time
 
-    # @param date [Date] Requested date
+    # @param date_or_time [Date, Time] Requested date
     # @return [Integer] Equation of time in seconds
-    def self.equation_of_time(date:)
-      noon = Time.utc(date.year, date.month, date.day, 12)
-      epoch_at_noon = Epoch.from_time(noon)
-      sun_at_noon = new(epoch: epoch_at_noon)
-      equatorial_hours = sun_at_noon
+    def self.equation_of_time(date_or_time:)
+      noon = Time.utc(date_or_time.year, date_or_time.month, date_or_time.day, 12)
+      time = date_or_time.is_a?(Time) ? date_or_time : noon
+      epoch = Epoch.from_time(time)
+      sun = new(epoch: epoch)
+      right_ascension = sun
         .apparent_ecliptic_coordinates
-        .to_apparent_equatorial(epoch: epoch_at_noon)
+        .to_apparent_equatorial(epoch: epoch)
         .right_ascension
-        .hours
-      gst = GreenwichSiderealTime
-        .new(date: date, time: equatorial_hours)
-        .to_utc
+      t = (epoch - Epoch::J2000) / Constants::DAYS_PER_JULIAN_MILLENIA
+      l0 = (280.4664567 +
+        360_007.6982779 * t +
+        0.03032028 * t**2 +
+        t**3 / 49_931 -
+        t**4 / 15_300 -
+        t**5 / 2_000_000) % Constants::DEGREES_PER_CIRCLE
+      nutation = Nutation.for_ecliptic_longitude(epoch: epoch)
+      obliquity = TrueObliquity.for_epoch(epoch)
 
-      (noon - gst).to_i
+      (
+        Angle
+         .from_degrees(
+           l0 -
+           Constants::EQUATION_OF_TIME_CONSTANT -
+           right_ascension.degrees +
+           nutation.degrees * obliquity.cos
+         ).hours * Constants::SECONDS_PER_HOUR
+      ).round
     end
 
     # Source:

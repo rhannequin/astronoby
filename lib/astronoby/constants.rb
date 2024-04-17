@@ -3,6 +3,7 @@
 module Astronoby
   class Constants
     DAYS_PER_JULIAN_CENTURY = 36525.0
+    DAYS_PER_JULIAN_MILLENIA = DAYS_PER_JULIAN_CENTURY * 10
 
     HOURS_PER_DAY = 24.0
     DEGREES_PER_CIRCLE = 360.0
@@ -18,5 +19,7 @@ module Astronoby
     RADIAN_PER_HOUR = Math::PI / 12.0
 
     PI_IN_DEGREES = 180.0
+
+    EQUATION_OF_TIME_CONSTANT = 0.0057183
   end
 end
