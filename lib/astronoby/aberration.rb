@@ -39,7 +39,7 @@ module Astronoby
 
     def sun_longitude
       @_sun_longitude ||= Sun
-        .new(epoch: @epoch)
+        .new(time: Epoch.to_utc(@epoch))
         .true_ecliptic_coordinates
         .longitude
     end

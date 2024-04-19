@@ -3,9 +3,9 @@
 RSpec.describe Astronoby::Sun do
   describe "#true_ecliptic_coordinates" do
     it "returns ecliptic coordinates" do
-      epoch = Astronoby::Epoch::DEFAULT_EPOCH
+      time = Time.new
 
-      coordinates = described_class.new(epoch: epoch).true_ecliptic_coordinates
+      coordinates = described_class.new(time: time).true_ecliptic_coordinates
 
       expect(coordinates).to be_a(Astronoby::Coordinates::Ecliptic)
     end
@@ -17,10 +17,9 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p136
     it "computes the coordinates for 2015-02-05" do
       time = Time.new(2015, 2, 5, 12, 0, 0, "-05:00")
-      epoch = Astronoby::Epoch.from_time(time)
 
       ecliptic_coordinates = described_class
-        .new(epoch: epoch)
+        .new(time: time)
         .true_ecliptic_coordinates
 
       expect(ecliptic_coordinates.longitude.degrees).to eq 316.5726713406949
@@ -35,10 +34,9 @@ RSpec.describe Astronoby::Sun do
     #
     it "computes the coordinates for 2000-08-09" do
       time = Time.new(2000, 8, 9, 12, 0, 0, "-04:00")
-      epoch = Astronoby::Epoch.from_time(time)
 
       ecliptic_coordinates = described_class
-        .new(epoch: epoch)
+        .new(time: time)
         .true_ecliptic_coordinates
 
       expect(ecliptic_coordinates.longitude.degrees).to eq 137.36484079770804
@@ -52,10 +50,9 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p149
     it "computes the coordinates for 2015-05-06" do
       time = Time.new(2015, 5, 6, 14, 30, 0, "-04:00")
-      epoch = Astronoby::Epoch.from_time(time)
 
       ecliptic_coordinates = described_class
-        .new(epoch: epoch)
+        .new(time: time)
         .true_ecliptic_coordinates
 
       expect(ecliptic_coordinates.longitude.degrees).to eq 45.921851914456795
@@ -72,7 +69,7 @@ RSpec.describe Astronoby::Sun do
       epoch = Astronoby::Epoch.from_time(time)
 
       ecliptic_coordinates = described_class
-        .new(epoch: epoch)
+        .new(time: time)
         .true_ecliptic_coordinates
       equatorial_coordinates = ecliptic_coordinates
         .to_true_equatorial(epoch: epoch)
@@ -90,10 +87,10 @@ RSpec.describe Astronoby::Sun do
 
   describe "#horizontal_coordinates" do
     it "returns horizontal coordinates" do
-      epoch = Astronoby::Epoch::DEFAULT_EPOCH
+      time = Time.new
 
       coordinates = described_class
-        .new(epoch: epoch)
+        .new(time: time)
         .horizontal_coordinates(
           latitude: Astronoby::Angle.from_degrees(-20),
           longitude: Astronoby::Angle.from_degrees(-30)
@@ -109,8 +106,7 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.137
     it "computes the horizontal coordinates for the epoch" do
       time = Time.new(2015, 2, 5, 12, 0, 0, "-05:00")
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
 
       horizontal_coordinates = sun.horizontal_coordinates(
         latitude: Astronoby::Angle.from_degrees(38),
@@ -122,7 +118,7 @@ RSpec.describe Astronoby::Sun do
         # Result from the book: 35° 47′ 0.1″
       )
       expect(horizontal_coordinates.azimuth.str(:dms)).to(
-        eq("+172° 17′ 22.7259″")
+        eq("+172° 17′ 22.7257″")
         # Result from the book: 172° 17′ 46″
       )
     end
@@ -134,8 +130,7 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.149
     it "computes the coordinates for a given epoch" do
       time = Time.new(2000, 8, 9, 12, 0, 0, "-05:00")
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
 
       horizontal_coordinates = sun.horizontal_coordinates(
         latitude: Astronoby::Angle.from_degrees(30),
@@ -143,11 +138,11 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
-        eq("+65° 42′ 21.6059″")
+        eq("+65° 42′ 21.6058″")
         # Result from the book: 65° 43′
       )
       expect(horizontal_coordinates.azimuth.str(:dms)).to(
-        eq("+121° 33′ 22.4259″")
+        eq("+121° 33′ 22.4256″")
         # Result from the book: 121° 34′
       )
     end
@@ -159,8 +154,7 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.149
     it "computes the coordinates for a given epoch" do
       time = Time.new(2015, 5, 6, 14, 30, 0, "-04:00")
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
 
       horizontal_coordinates = sun.horizontal_coordinates(
         latitude: Astronoby::Angle.from_degrees(-20),
@@ -168,7 +162,7 @@ RSpec.describe Astronoby::Sun do
       )
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
-        eq("+13° 34′ 7.6911″")
+        eq("+13° 34′ 7.6913″")
         # Result from the book: 13° 34′
       )
       expect(horizontal_coordinates.azimuth.str(:dms)).to(
@@ -180,8 +174,9 @@ RSpec.describe Astronoby::Sun do
 
   describe "#earth_distance" do
     it "returns a number in meters" do
-      epoch = Astronoby::Epoch::DEFAULT_EPOCH
-      sun = described_class.new(epoch: epoch)
+      time = Time.new
+
+      sun = described_class.new(time: time)
 
       expect(sun.earth_distance).to be_a Numeric
     end
@@ -193,8 +188,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 48 - Calculating the Sun's distance and angular size, p.110
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(1988, 7, 27)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.earth_distance.round).to eq 151_920_130_151
       # Result from the book: 1.519189×10^8 km
@@ -207,8 +202,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.147
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(2015, 2, 15)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.earth_distance.round).to eq 147_745_409_916
       # Result from the book: 1.478×10^8 km
@@ -221,8 +216,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.150
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(2015, 8, 9)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.earth_distance.round).to eq 151_683_526_945
       # Result from the book: 1.517×10^8 km
@@ -235,8 +230,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.150
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(2010, 5, 6)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.earth_distance.round).to eq 150_902_254_024
       # Result from the book: 1.509×10^8 km
@@ -245,8 +240,9 @@ RSpec.describe Astronoby::Sun do
 
   describe "#angular_size" do
     it "returns an Angle" do
-      epoch = Astronoby::Epoch::DEFAULT_EPOCH
-      sun = described_class.new(epoch: epoch)
+      time = Time.new
+
+      sun = described_class.new(time: time)
 
       expect(sun.angular_size).to be_a Astronoby::Angle
     end
@@ -258,8 +254,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 48 - Calculating the Sun's distance and angular size, p.110
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(1988, 7, 27)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 29.9308″"
       # Result from the book: 0° 31′ 30″
@@ -272,8 +268,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.147
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(2015, 2, 15)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.angular_size.str(:dms)).to eq "+0° 32′ 23.333″"
       # Result from the book: 0° 32′″
@@ -286,8 +282,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.150
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(2015, 8, 9)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 32.8788″"
       # Result from the book: 0° 32′″
@@ -300,8 +296,8 @@ RSpec.describe Astronoby::Sun do
     #  Chapter: 6 - The Sun, p.150
     it "computes and return the Earth-Sun distance for a given epoch" do
       time = Time.utc(2010, 5, 6)
-      epoch = Astronoby::Epoch.from_time(time)
-      sun = described_class.new(epoch: epoch)
+
+      sun = described_class.new(time: time)
 
       expect(sun.angular_size.str(:dms)).to eq "+0° 31′ 42.6789″"
       # Result from the book: 0° 32′″
@@ -316,13 +312,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: MIT Press
       #  Chapter: 6 - The Sun, p.139
       it "returns the sunrise time on 2015-02-05" do
-        date = Date.new(2015, 2, 5)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(2015, 2, 5)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(38),
           longitude: Astronoby::Angle.from_degrees(-78)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         rising_time = observation_events.rising_time
@@ -339,13 +334,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: Cambridge University Press
       #  Chapter: 49 - Sunrise and sunset, p.112
       it "returns the sunrise time on 1986-03-10" do
-        date = Date.new(1986, 3, 10)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1986, 3, 10)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(42.37),
           longitude: Astronoby::Angle.from_degrees(-71.05)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         rising_time = observation_events.rising_time
@@ -356,19 +350,35 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the sunrise time on 1991-03-14" do
-        date = Date.new(1991, 3, 14)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1991, 3, 14)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(48.8566),
           longitude: Astronoby::Angle.from_degrees(2.3522)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         rising_time = observation_events.rising_time
 
         expect(rising_time).to eq Time.utc(1991, 3, 14, 6, 7, 23)
         # Time from IMCCE: 1991-03-14T06:08:45
+      end
+
+      context "when the given time includes a time zone far from the Greenwich meridian" do
+        it "returns the sunrise time for the right date" do
+          time = Time.new(1991, 3, 14, 0, 0, 0, "-10:00")
+          observer = Astronoby::Observer.new(
+            latitude: Astronoby::Angle.from_degrees(-17.6509),
+            longitude: Astronoby::Angle.from_degrees(-149.4260)
+          )
+          sun = described_class.new(time: time)
+          observation_events = sun.observation_events(observer: observer)
+
+          rising_time = observation_events.rising_time
+
+          expect(rising_time).to eq Time.utc(1991, 3, 14, 16, 0, 16)
+          # Time from IMCCE: 1991-03-14T16:01:12
+        end
       end
     end
 
@@ -379,13 +389,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: MIT Press
       #  Chapter: 6 - The Sun, p.139
       it "returns the Sun's transit time on 2015-02-05" do
-        date = Date.new(2015, 2, 5)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(2015, 2, 5)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(38),
           longitude: Astronoby::Angle.from_degrees(-78)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         transit_time = observation_events.transit_time
@@ -401,13 +410,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: Cambridge University Press
       #  Chapter: 49 - Sunrise and sunset, p.112
       it "returns the Sun's transit time on 1986-03-10" do
-        date = Date.new(1986, 3, 10)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1986, 3, 10)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(42.37),
           longitude: Astronoby::Angle.from_degrees(-71.05)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         transit_time = observation_events.transit_time
@@ -417,13 +425,12 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the Sun's transit time on 1991-03-14" do
-        date = Date.new(1991, 3, 14)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1991, 3, 14)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(48.8566),
           longitude: Astronoby::Angle.from_degrees(2.3522)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         transit_time = observation_events.transit_time
@@ -440,13 +447,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: MIT Press
       #  Chapter: 6 - The Sun, p.139
       it "returns the sunset time on 2015-02-05" do
-        date = Date.new(2015, 2, 5)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(2015, 2, 5)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(38),
           longitude: Astronoby::Angle.from_degrees(-78)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_time = observation_events.setting_time
@@ -463,13 +469,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: Cambridge University Press
       #  Chapter: 49 - Sunrise and sunset, p.112
       it "returns the sunset time on 1986-03-10" do
-        date = Date.new(1986, 3, 10)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1986, 3, 10)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(42.37),
           longitude: Astronoby::Angle.from_degrees(-71.05)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_time = observation_events.setting_time
@@ -480,19 +485,35 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the sunset time on 1991-03-14" do
-        date = Date.new(1991, 3, 14)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1991, 3, 14)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(48.8566),
           longitude: Astronoby::Angle.from_degrees(2.3522)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_time = observation_events.setting_time
 
         expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 53, 26)
         # Time from IMCCE: 1991-03-14T17:52:00
+      end
+    end
+
+    context "when the given time includes a time zone far from the Greenwich meridian" do
+      it "returns the sunset time for the right date" do
+        time = Time.new(1991, 3, 14, 6, 0, 0, "+12:00")
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(-36.8509),
+          longitude: Astronoby::Angle.from_degrees(174.7645)
+        )
+        sun = described_class.new(time: time)
+        observation_events = sun.observation_events(observer: observer)
+
+        setting_time = observation_events.setting_time
+
+        expect(setting_time).to eq Time.utc(1991, 3, 14, 6, 42, 40)
+        # Time from IMCCE: 1991-03-14T06:41:30
       end
     end
   end
@@ -505,13 +526,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: MIT Press
       #  Chapter: 6 - The Sun, p.139
       it "returns the sunrise azimuth on 2015-02-05" do
-        date = Date.new(2015, 2, 5)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(2015, 2, 5)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(38),
           longitude: Astronoby::Angle.from_degrees(-78)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         rising_azimuth = observation_events.rising_azimuth
@@ -522,13 +542,12 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the sunrise azimuth on 1986-03-10" do
-        date = Date.new(1986, 3, 10)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1986, 3, 10)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(42.37),
           longitude: Astronoby::Angle.from_degrees(-71.05)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         rising_azimuth = observation_events.rising_azimuth
@@ -538,13 +557,12 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the sunrise azimuth on 1991-03-14" do
-        date = Date.new(1991, 3, 14)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1991, 3, 14)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(48.8566),
           longitude: Astronoby::Angle.from_degrees(2.3522)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         rising_azimuth = observation_events.rising_azimuth
@@ -561,13 +579,12 @@ RSpec.describe Astronoby::Sun do
       #  Edition: MIT Press
       #  Chapter: 6 - The Sun, p.139
       it "returns the sunset azimuth on 2015-02-05" do
-        date = Date.new(2015, 2, 5)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(2015, 2, 5)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(38),
           longitude: Astronoby::Angle.from_degrees(-78)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_azimuth = observation_events.setting_azimuth
@@ -578,13 +595,12 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the sunset azimuth on 1986-03-10" do
-        date = Date.new(1986, 3, 10)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1986, 3, 10)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(42.37),
           longitude: Astronoby::Angle.from_degrees(-71.05)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_azimuth = observation_events.setting_azimuth
@@ -594,13 +610,12 @@ RSpec.describe Astronoby::Sun do
       end
 
       it "returns the sunset azimuth on 1991-03-14" do
-        date = Date.new(1991, 3, 14)
-        epoch = Astronoby::Epoch.from_time(date)
+        time = Time.utc(1991, 3, 14)
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(48.8566),
           longitude: Astronoby::Angle.from_degrees(2.3522)
         )
-        sun = described_class.new(epoch: epoch)
+        sun = described_class.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_azimuth = observation_events.setting_azimuth
@@ -613,13 +628,12 @@ RSpec.describe Astronoby::Sun do
 
   describe "#transit_altitude" do
     it "returns an Angle" do
-      date = Date.new
-      epoch = Astronoby::Epoch.from_time(date)
+      time = Time.new
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
       )
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
       observation_events = sun.observation_events(observer: observer)
 
       altitude = observation_events.transit_altitude
@@ -628,13 +642,12 @@ RSpec.describe Astronoby::Sun do
     end
 
     it "returns the Sun's altitude at transit on 2015-02-05" do
-      date = Date.new(2015, 2, 5)
-      epoch = Astronoby::Epoch.from_time(date)
+      time = Time.utc(2015, 2, 5)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(38),
         longitude: Astronoby::Angle.from_degrees(-78)
       )
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
       observation_events = sun.observation_events(observer: observer)
 
       altitude = observation_events.transit_altitude
@@ -645,13 +658,12 @@ RSpec.describe Astronoby::Sun do
     end
 
     it "returns the Sun's altitude at transit on 1986-03-10" do
-      date = Date.new(1986, 3, 10)
-      epoch = Astronoby::Epoch.from_time(date)
+      time = Time.utc(1986, 3, 10)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(42.37),
         longitude: Astronoby::Angle.from_degrees(-71.05)
       )
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
       observation_events = sun.observation_events(observer: observer)
 
       altitude = observation_events.transit_altitude
@@ -661,13 +673,12 @@ RSpec.describe Astronoby::Sun do
     end
 
     it "returns the Sun's altitude at transit on 1991-03-14" do
-      date = Date.new(1991, 3, 14)
-      epoch = Astronoby::Epoch.from_time(date)
+      time = Time.utc(1991, 3, 14)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(48.8566),
         longitude: Astronoby::Angle.from_degrees(2.3522)
       )
-      sun = described_class.new(epoch: epoch)
+      sun = described_class.new(time: time)
       observation_events = sun.observation_events(observer: observer)
 
       altitude = observation_events.transit_altitude

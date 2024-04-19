@@ -130,7 +130,8 @@ module Astronoby
     end
 
     def correction(epoch)
-      sun = Sun.new(epoch: epoch)
+      time = Epoch.to_utc(epoch)
+      sun = Sun.new(time: time)
       longitude = sun.apparent_ecliptic_coordinates.longitude
 
       58 * Angle.from_degrees(@event * 90 - longitude.degrees).sin

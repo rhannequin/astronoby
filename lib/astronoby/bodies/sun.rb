@@ -23,7 +23,7 @@ module Astronoby
       EVENING = :evening
     ].freeze
 
-    attr_reader :epoch
+    attr_reader :time
 
     # Source:
     #  Title: Astronomical Algorithms
@@ -37,7 +37,7 @@ module Astronoby
       noon = Time.utc(date_or_time.year, date_or_time.month, date_or_time.day, 12)
       time = date_or_time.is_a?(Time) ? date_or_time : noon
       epoch = Epoch.from_time(time)
-      sun = new(epoch: epoch)
+      sun = new(time: time)
       right_ascension = sun
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: epoch)
@@ -69,9 +69,13 @@ module Astronoby
     #  Edition: MIT Press
     #  Chapter: 6 - The Sun
 
-    # @param epoch [Numeric] Considered epoch, in Julian days
-    def initialize(epoch:)
-      @epoch = epoch
+    # @param time [Time] Considered time
+    def initialize(time:)
+      @time = time
+    end
+
+    def epoch
+      @epoch ||= Epoch.from_time(@time)
     end
 
     def true_ecliptic_coordinates
@@ -82,10 +86,10 @@ module Astronoby
     end
 
     def apparent_ecliptic_coordinates
-      nutation = Nutation.for_ecliptic_longitude(epoch: @epoch)
+      nutation = Nutation.for_ecliptic_longitude(epoch: epoch)
       longitude_with_aberration = Aberration.for_ecliptic_coordinates(
         coordinates: true_ecliptic_coordinates,
-        epoch: @epoch
+        epoch: epoch
       ).longitude
       apparent_longitude = nutation + longitude_with_aberration
 
@@ -101,34 +105,37 @@ module Astronoby
     # @param longitude [Astronoby::Angle] Longitude of the observer
     # @return [Astronoby::Coordinates::Horizontal] Sun's horizontal coordinates
     def horizontal_coordinates(latitude:, longitude:)
-      time = Epoch.to_utc(@epoch)
-
       apparent_ecliptic_coordinates
-        .to_apparent_equatorial(epoch: @epoch)
-        .to_horizontal(time: time, latitude: latitude, longitude: longitude)
+        .to_apparent_equatorial(epoch: epoch)
+        .to_horizontal(time: @time, latitude: latitude, longitude: longitude)
     end
 
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Events::ObservationEvents] Sun's observation events
     def observation_events(observer:)
-      date = Epoch.to_utc(@epoch).to_date
-      yesterday_epoch = Epoch.from_time(date.prev_day)
-      tomorrow_epoch = Epoch.from_time(date.next_day)
+      today = @time.to_date
+      yesterday = today.prev_day
+      yesterday_epoch = Epoch.from_time(yesterday)
+      today_epoch = Epoch.from_time(today)
+      tomorrow = today.next_day
+      tomorrow_epoch = Epoch.from_time(tomorrow)
 
       coordinates_of_the_previous_day = self.class
-        .new(epoch: yesterday_epoch)
+        .new(time: yesterday)
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: yesterday_epoch)
-      coordinates_of_the_day =
-        apparent_ecliptic_coordinates.to_apparent_equatorial(epoch: @epoch)
+      coordinates_of_the_day = self.class
+        .new(time: today)
+        .apparent_ecliptic_coordinates
+        .to_apparent_equatorial(epoch: today_epoch)
       coordinates_of_the_next_day = self.class
-        .new(epoch: tomorrow_epoch)
+        .new(time: tomorrow)
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: tomorrow_epoch)
 
       Events::ObservationEvents.new(
         observer: observer,
-        date: date,
+        date: today,
         coordinates_of_the_previous_day: coordinates_of_the_previous_day,
         coordinates_of_the_day: coordinates_of_the_day,
         coordinates_of_the_next_day: coordinates_of_the_next_day,
@@ -205,11 +212,11 @@ module Astronoby
     end
 
     def days_since_epoch
-      Epoch::DEFAULT_EPOCH - @epoch
+      Epoch::DEFAULT_EPOCH - epoch
     end
 
     def centuries
-      @centuries ||= (@epoch - Epoch::J1900) / Constants::DAYS_PER_JULIAN_CENTURY
+      @centuries ||= (epoch - Epoch::J1900) / Constants::DAYS_PER_JULIAN_CENTURY
     end
 
     def longitude_at_base_epoch
