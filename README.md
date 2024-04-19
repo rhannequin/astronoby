@@ -104,19 +104,19 @@ observation_events.rising_time
 # => 2015-02-05 12:12:59 UTC
 
 observation_events.rising_azimuth.str(:dms)
-# => "+109° 46′ 42.044″"
+# => "+109° 46′ 43.145″"
 
 observation_events.transit_time
 # => 2015-02-05 17:25:59 UTC
 
 observation_events.transit_altitude.str(:dms)
-# => "+36° 8′ 16.6162″"
+# => "+36° 8′ 15.7638″"
 
 observation_events.setting_time
 # => 2015-02-05 22:39:27 UTC
 
 observation_events.setting_azimuth.str(:dms)
-# => "+250° 23′ 34.7233″"
+# => "+250° 23′ 33.614″"
 ```
 
 ### Twilight times

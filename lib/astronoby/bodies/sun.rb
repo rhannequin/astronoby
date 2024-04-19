@@ -114,22 +114,29 @@ module Astronoby
     # @return [Astronoby::Events::ObservationEvents] Sun's observation events
     def observation_events(observer:)
       today = @time.to_date
+      leap_seconds = Util::Time.terrestrial_universal_time_delta(today)
       yesterday = today.prev_day
-      yesterday_epoch = Epoch.from_time(yesterday)
-      today_epoch = Epoch.from_time(today)
+      yesterday_midnight_terrestrial_time =
+        Time.utc(yesterday.year, yesterday.month, yesterday.day) - leap_seconds
+      yesterday_epoch = Epoch.from_time(yesterday_midnight_terrestrial_time)
+      today_midnight_terrestrial_time =
+        Time.utc(today.year, today.month, today.day) - leap_seconds
+      today_epoch = Epoch.from_time(today_midnight_terrestrial_time)
       tomorrow = today.next_day
-      tomorrow_epoch = Epoch.from_time(tomorrow)
+      tomorrow_midnight_terrestrial_time =
+        Time.utc(tomorrow.year, tomorrow.month, tomorrow.day) - leap_seconds
+      tomorrow_epoch = Epoch.from_time(tomorrow_midnight_terrestrial_time)
 
       coordinates_of_the_previous_day = self.class
-        .new(time: yesterday)
+        .new(time: yesterday_midnight_terrestrial_time)
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: yesterday_epoch)
       coordinates_of_the_day = self.class
-        .new(time: today)
+        .new(time: today_midnight_terrestrial_time)
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: today_epoch)
       coordinates_of_the_next_day = self.class
-        .new(time: tomorrow)
+        .new(time: tomorrow_midnight_terrestrial_time)
         .apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: tomorrow_epoch)
 
