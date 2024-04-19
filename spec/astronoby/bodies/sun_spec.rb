@@ -681,7 +681,7 @@ RSpec.describe Astronoby::Sun do
     it "returns an Integer" do
       date = Date.new
 
-      equation_of_time = described_class.equation_of_time(date: date)
+      equation_of_time = described_class.equation_of_time(date_or_time: date)
 
       expect(equation_of_time).to be_an Integer
     end
@@ -694,7 +694,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2010-07-27" do
       date = Date.new(2010, 7, 27)
 
-      equation_of_time = described_class.equation_of_time(date: date)
+      equation_of_time = described_class.equation_of_time(date_or_time: date)
 
       expect(equation_of_time).to eq(-391)
       # Value from Practical Astronomy: 392
@@ -708,7 +708,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2016-05-05" do
       date = Date.new(2016, 5, 5)
 
-      equation_of_time = described_class.equation_of_time(date: date)
+      equation_of_time = described_class.equation_of_time(date_or_time: date)
 
       expect(equation_of_time).to eq(200)
       # Value from Celestial Calculations: 199
@@ -722,9 +722,9 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2015-08-09" do
       date = Date.new(2015, 8, 9)
 
-      equation_of_time = described_class.equation_of_time(date: date)
+      equation_of_time = described_class.equation_of_time(date_or_time: date)
 
-      expect(equation_of_time).to eq(-332)
+      expect(equation_of_time).to eq(-333)
       # Value from Celestial Calculations: 337
     end
 
@@ -736,9 +736,9 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2010-05-06" do
       date = Date.new(2010, 5, 6)
 
-      equation_of_time = described_class.equation_of_time(date: date)
+      equation_of_time = described_class.equation_of_time(date_or_time: date)
 
-      expect(equation_of_time).to eq(201)
+      expect(equation_of_time).to eq(203)
       # Value from Celestial Calculations: 201
     end
 
@@ -750,10 +750,24 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2020-01-01" do
       date = Date.new(2020, 1, 1)
 
-      equation_of_time = described_class.equation_of_time(date: date)
+      equation_of_time = described_class.equation_of_time(date_or_time: date)
 
-      expect(equation_of_time).to eq(-198)
+      expect(equation_of_time).to eq(-199)
       # Value from Celestial Calculations: 187
+    end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 28 - Equation of Time, p.184
+    it "returns the right value of 1992-10-13" do
+      time = Time.new(1992, 10, 13, 0, 0, 0)
+
+      equation_of_time = described_class.equation_of_time(date_or_time: time)
+
+      expect(equation_of_time).to eq(822)
+      # Value from Astronomical Algorithms: 13m 42s=822s
     end
   end
 end
