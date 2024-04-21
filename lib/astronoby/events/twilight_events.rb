@@ -92,19 +92,18 @@ module Astronoby
       end
 
       def midday
-        utc_from_epoch = Epoch.to_utc(@sun.epoch)
-        Time.utc(
-          utc_from_epoch.year,
-          utc_from_epoch.month,
-          utc_from_epoch.day,
-          12
-        )
+        date = @sun.time.to_date
+        Time.utc(date.year, date.month, date.day, 12)
+      end
+
+      def sun_at_midday
+        Sun.new(time: midday)
       end
 
       def equatorial_coordinates_at_midday
-        @equatorial_coordinates_at_midday ||=
-          @sun.apparent_ecliptic_coordinates
-            .to_apparent_equatorial(epoch: Epoch.from_time(midday))
+        @equatorial_coordinates_at_midday ||= sun_at_midday
+          .apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: Epoch.from_time(midday))
       end
     end
   end
