@@ -71,12 +71,11 @@ horizontal.azimuth.str(:dms)
 
 ```rb
 time = Time.utc(2023, 2, 17, 11, 0, 0)
-epoch = Astronoby::Epoch.from_time(time)
 
 latitude = Astronoby::Angle.from_degrees(48.8566)
 longitude = Astronoby::Angle.from_degrees(2.3522)
 
-sun = Astronoby::Sun.new(epoch: epoch)
+sun = Astronoby::Sun.new(time: time)
 
 horizontal_coordinates = sun.horizontal_coordinates(
   latitude: latitude,
@@ -84,48 +83,47 @@ horizontal_coordinates = sun.horizontal_coordinates(
 )
 
 horizontal_coordinates.altitude.degrees
-# => 27.500082420575094
+# => 27.500082409271247
 
 horizontal_coordinates.altitude.str(:dms)
-# => "+27° 30′ 0.2967″"
+# => "+27° 30′ 0.2966″"
 ```
 
 ### Sunrise and sunset times and azimuths
 
 ```rb
-date = Date.new(2015, 2, 5)
-epoch = Astronoby::Epoch.from_time(date)
+time = Time.new(2015, 2, 5)
 observer = Astronoby::Observer.new(
   latitude: Astronoby::Angle.from_degrees(38),
   longitude: Astronoby::Angle.from_degrees(-78)
 )
-sun = Astronoby::Sun.new(epoch: epoch)
+sun = Astronoby::Sun.new(time: time)
 observation_events = sun.observation_events(observer: observer)
 
 observation_events.rising_time
 # => 2015-02-05 12:12:59 UTC
 
 observation_events.rising_azimuth.str(:dms)
-# => "+109° 46′ 43.1427″"
+# => "+109° 46′ 43.145″"
 
 observation_events.transit_time
 # => 2015-02-05 17:25:59 UTC
 
 observation_events.transit_altitude.str(:dms)
-# => "+36° 8′ 15.7669″"
+# => "+36° 8′ 15.7638″"
 
 observation_events.setting_time
 # => 2015-02-05 22:39:27 UTC
 
 observation_events.setting_azimuth.str(:dms)
-# => "+250° 23′ 33.6177″"
+# => "+250° 23′ 33.614″"
 ```
 
 ### Twilight times
 
 ```rb
-epoch = Astronoby::Epoch.from_time(Date.new(2024, 1, 1))
-sun = Astronoby::Sun.new(epoch: epoch)
+time = Time.new(2024, 1, 1)
+sun = Astronoby::Sun.new(time: time)
 observer = Astronoby::Observer.new(
   latitude: Astronoby::Angle.from_degrees(48.8566),
   longitude: Astronoby::Angle.from_degrees(2.3522)
@@ -133,22 +131,22 @@ observer = Astronoby::Observer.new(
 twilight_events = sun.twilight_events(observer: observer)
 
 twilight_events.morning_astronomical_twilight_time
-# => 2024-01-01 05:47:24 UTC
+# => 2024-01-01 05:47:14 UTC
 
 twilight_events.morning_nautical_twilight_time
-# => 2024-01-01 06:25:41 UTC
+# => 2024-01-01 06:25:31 UTC
 
 twilight_events.morning_civil_twilight_time
-# => 2024-01-01 07:05:51 UTC
+# => 2024-01-01 07:05:41 UTC
 
 twilight_events.evening_civil_twilight_time
-# => 2024-01-01 16:37:37 UTC
+# => 2024-01-01 16:37:24 UTC
 
 twilight_events.evening_nautical_twilight_time
-# => 2024-01-01 17:17:46 UTC
+# => 2024-01-01 17:17:34 UTC
 
 twilight_events.evening_astronomical_twilight_time
-# => 2024-01-01 17:56:03 UTC
+# => 2024-01-01 17:55:51 UTC
 ```
 
 ### Solstice and Equinox times

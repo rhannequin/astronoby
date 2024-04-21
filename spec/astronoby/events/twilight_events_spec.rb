@@ -3,8 +3,7 @@
 RSpec.describe Astronoby::Events::TwilightEvents do
   describe "#morning_civil_twilight_time" do
     it "returns a time" do
-      epoch = Astronoby::Epoch.from_time(Date.new)
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.new)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -15,8 +14,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the morning civil twilight starts" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(1979, 9, 7))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
@@ -29,8 +27,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the morning civil twilight starts" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(2024, 3, 14))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(2024, 3, 14))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -44,8 +41,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
     context "when the civil twilight doesn't start" do
       it "returns nil" do
-        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
-        sun = Astronoby::Sun.new(epoch: epoch)
+        sun = Astronoby::Sun.new(time: Time.utc(2024, 6, 20))
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(65),
           longitude: Astronoby::Angle.zero
@@ -59,8 +55,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
   describe "#evening_civil_twilight_time" do
     it "returns a time" do
-      epoch = Astronoby::Epoch.from_time(Date.new)
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.new)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -71,8 +66,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the evening civil twilight ends" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(1979, 9, 7))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
@@ -85,8 +79,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the evening civil twilight ends" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(2024, 3, 14))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(2024, 3, 14))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -100,8 +93,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
     context "when the civil twilight doesn't start" do
       it "returns nil" do
-        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
-        sun = Astronoby::Sun.new(epoch: epoch)
+        sun = Astronoby::Sun.new(time: Time.utc(2024, 6, 20))
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(65),
           longitude: Astronoby::Angle.zero
@@ -115,8 +107,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
   describe "#morning_nautical_twilight_time" do
     it "returns a time" do
-      epoch = Astronoby::Epoch.from_time(Date.new)
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.new)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -127,8 +118,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the morning nautical twilight starts" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(1979, 9, 7))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
@@ -141,8 +131,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the morning nautical twilight starts" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(2024, 3, 14))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(2024, 3, 14))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -156,8 +145,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
     context "when the nautical twilight doesn't start" do
       it "returns nil" do
-        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
-        sun = Astronoby::Sun.new(epoch: epoch)
+        sun = Astronoby::Sun.new(time: Time.utc(2024, 6, 20))
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(55),
           longitude: Astronoby::Angle.zero
@@ -171,8 +159,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
   describe "#evening_nautical_twilight_time" do
     it "returns a time" do
-      epoch = Astronoby::Epoch.from_time(Date.new)
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.new)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -183,8 +170,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the evening nautical twilight ends" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(1979, 9, 7))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
@@ -197,8 +183,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the evening nautical twilight ends" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(2024, 3, 14))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(2024, 3, 14))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -212,8 +197,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
     context "when the nautical twilight doesn't start" do
       it "returns nil" do
-        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
-        sun = Astronoby::Sun.new(epoch: epoch)
+        sun = Astronoby::Sun.new(time: Time.utc(2024, 6, 20))
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(55),
           longitude: Astronoby::Angle.zero
@@ -227,8 +211,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
   describe "#morning_astronomical_twilight_time" do
     it "returns a time" do
-      epoch = Astronoby::Epoch.from_time(Date.new)
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.new)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -244,8 +227,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     #  Edition: Cambridge University Press
     #  Chapter: 50 - Twilight, p.114
     it "returns when the morning astronomical twilight starts" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(1979, 9, 7))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
@@ -259,8 +241,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the morning astronomical twilight starts" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(2024, 3, 14))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(2024, 3, 14))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -274,8 +255,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
     context "when the astronomical twilight doesn't start" do
       it "returns nil" do
-        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
-        sun = Astronoby::Sun.new(epoch: epoch)
+        sun = Astronoby::Sun.new(time: Time.utc(2024, 6, 20))
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(49),
           longitude: Astronoby::Angle.zero
@@ -289,8 +269,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
   describe "#evening_astronomical_twilight_time" do
     it "returns a time" do
-      epoch = Astronoby::Epoch.from_time(Date.new)
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.new)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -306,8 +285,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     #  Edition: Cambridge University Press
     #  Chapter: 50 - Twilight, p.114
     it "returns when the evening astronomical twilight ends" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(1979, 9, 7))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(1979, 9, 7))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(52),
         longitude: Astronoby::Angle.zero
@@ -321,8 +299,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     end
 
     it "returns when the evening astronomical twilight ends" do
-      epoch = Astronoby::Epoch.from_time(Time.utc(2024, 3, 14))
-      sun = Astronoby::Sun.new(epoch: epoch)
+      sun = Astronoby::Sun.new(time: Time.utc(2024, 3, 14))
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -336,8 +313,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
 
     context "when the astronomical twilight doesn't start" do
       it "returns nil" do
-        epoch = Astronoby::Epoch.from_time(Time.utc(2024, 6, 20))
-        sun = Astronoby::Sun.new(epoch: epoch)
+        sun = Astronoby::Sun.new(time: Time.utc(2024, 6, 20))
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(49),
           longitude: Astronoby::Angle.zero
