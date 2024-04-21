@@ -41,6 +41,17 @@ module Astronoby
         end
       end
 
+      # @param period_of_the_day [Symbol] :morning or :evening
+      # @param zenith_angle [Angle] The zenith angle of the twilight
+      def time_for_zenith_angle(period_of_the_day:, zenith_angle:)
+        unless PERIODS_OF_THE_DAY.include?(period_of_the_day)
+          raise IncompatibleArgumentsError,
+            "Only #{PERIODS_OF_THE_DAY.join(" or ")} are allowed as period_of_the_day, got #{period_of_the_day}"
+        end
+
+        compute(period_of_the_day, zenith_angle)
+      end
+
       private
 
       # Source:

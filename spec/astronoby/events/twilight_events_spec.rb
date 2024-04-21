@@ -324,4 +324,42 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       end
     end
   end
+
+  describe "#time_for_zenith_angle" do
+    it "returns a time" do
+      sun = Astronoby::Sun.new(time: Time.new)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      twilight_events = described_class.new(observer: observer, sun: sun)
+      zenith_angle = Astronoby::Angle.from_degrees(90 + 17)
+
+      time = twilight_events.time_for_zenith_angle(
+        period_of_the_day: :morning,
+        zenith_angle: zenith_angle
+      )
+
+      expect(time).to be_a(Time)
+    end
+
+    context "when the period of time is incompatible" do
+      it "raises an error" do
+        sun = Astronoby::Sun.new(time: Time.new)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        twilight_events = described_class.new(observer: observer, sun: sun)
+        zenith_angle = Astronoby::Angle.zero
+
+        expect {
+          twilight_events.time_for_zenith_angle(
+            period_of_the_day: :afternoon,
+            zenith_angle: zenith_angle
+          )
+        }.to raise_error(Astronoby::IncompatibleArgumentsError)
+      end
+    end
+  end
 end
