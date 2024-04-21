@@ -32,7 +32,11 @@ module Astronoby
         @sun = sun
         PERIODS_OF_THE_DAY.each do |period_of_the_day|
           TWILIGHT_ANGLES.each do |twilight, _|
-            compute(period_of_the_day, twilight)
+            zenith_angle = TWILIGHT_ANGLES[twilight]
+            instance_variable_set(
+              :"@#{period_of_the_day}_#{twilight}_twilight_time",
+              compute(period_of_the_day, zenith_angle)
+            )
           end
         end
       end
@@ -44,7 +48,7 @@ module Astronoby
       #  Authors: Peter Duffett-Smith and Jonathan Zwart
       #  Edition: Cambridge University Press
       #  Chapter: 50 - Twilight
-      def compute(period_of_the_day, twilight)
+      def compute(period_of_the_day, zenith_angle)
         period_time = if period_of_the_day == MORNING
           observation_events.rising_time
         else
@@ -54,8 +58,6 @@ module Astronoby
         hour_angle_at_period = equatorial_coordinates_at_midday
           .compute_hour_angle(time: period_time, longitude: @observer.longitude)
 
-        zenith_angle = TWILIGHT_ANGLES[twilight]
-
         term1 = zenith_angle.cos -
           @observer.latitude.sin *
             @equatorial_coordinates_at_midday.declination.sin
@@ -63,12 +65,7 @@ module Astronoby
           equatorial_coordinates_at_midday.declination.cos
         hour_angle_ratio_at_twilight = term1 / term2
 
-        unless hour_angle_ratio_at_twilight.between?(-1, 1)
-          return instance_variable_set(
-            :"@#{period_of_the_day}_#{twilight}_twilight_time",
-            nil
-          )
-        end
+        return unless hour_angle_ratio_at_twilight.between?(-1, 1)
 
         hour_angle_at_twilight = Angle.acos(hour_angle_ratio_at_twilight)
         time_sign = -1
@@ -87,10 +84,7 @@ module Astronoby
           twilight_in_hours *
           Constants::SECONDS_PER_HOUR
 
-        instance_variable_set(
-          :"@#{period_of_the_day}_#{twilight}_twilight_time",
-          (period_time + twilight_in_seconds).round
-        )
+        (period_time + twilight_in_seconds).round
       end
 
       def observation_events
