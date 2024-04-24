@@ -22,7 +22,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.morning_civil_twilight_time)
-        .to eq Time.utc(1979, 9, 7, 4, 44, 23)
+        .to eq Time.utc(1979, 9, 7, 4, 47, 13)
       # Time from IMCCE: 04:46
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.morning_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 19, 25, 38)
+        .to eq Time.utc(2024, 3, 14, 19, 28, 0)
       # Time from IMCCE: 19:29:29
     end
 
@@ -74,7 +74,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.evening_civil_twilight_time)
-        .to eq Time.utc(1979, 9, 7, 19, 8, 22)
+        .to eq Time.utc(1979, 9, 7, 19, 9, 8)
       # Time from IMCCE: 19:10
     end
 
@@ -87,7 +87,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.evening_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 8, 38, 28)
+        .to eq Time.utc(2024, 3, 14, 8, 39, 45)
       # Time from IMCCE: 08:39:23
     end
 
@@ -126,7 +126,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.morning_nautical_twilight_time)
-        .to eq Time.utc(1979, 9, 7, 4, 2, 11)
+        .to eq Time.utc(1979, 9, 7, 4, 5, 7)
       # Time from IMCCE: 04:03
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.morning_nautical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 18, 56, 26)
+        .to eq Time.utc(2024, 3, 14, 18, 58, 49)
       # Time from IMCCE: 19:00:13
     end
 
@@ -178,7 +178,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.evening_nautical_twilight_time)
-        .to eq Time.utc(1979, 9, 7, 19, 50, 34)
+        .to eq Time.utc(1979, 9, 7, 19, 51, 14)
       # Time from IMCCE: 19:52
     end
 
@@ -191,7 +191,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.evening_nautical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 9, 7, 39)
+        .to eq Time.utc(2024, 3, 14, 9, 8, 56)
       # Time from IMCCE: 09:08:37
     end
 
@@ -235,7 +235,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.morning_astronomical_twilight_time)
-        .to eq Time.utc(1979, 9, 7, 3, 16, 13)
+        .to eq Time.utc(1979, 9, 7, 3, 19, 20)
       # Time from Practical Astronomy: 03:12
       # Time from IMCCE: 03:17
     end
@@ -249,7 +249,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.morning_astronomical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 18, 26, 47)
+        .to eq Time.utc(2024, 3, 14, 18, 29, 12)
       # Time from IMCCE: 18:30:31
     end
 
@@ -293,7 +293,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.evening_astronomical_twilight_time)
-        .to eq Time.utc(1979, 9, 7, 20, 36, 33)
+        .to eq Time.utc(1979, 9, 7, 20, 37, 1)
       # Time from Practical Astronomy: 20:43
       # Time from IMCCE: 20:37
     end
@@ -307,7 +307,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       twilight_events = described_class.new(observer: observer, sun: sun)
 
       expect(twilight_events.evening_astronomical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 9, 37, 18)
+        .to eq Time.utc(2024, 3, 14, 9, 38, 33)
       # Time from IMCCE: 09:38:17
     end
 
@@ -321,6 +321,44 @@ RSpec.describe Astronoby::Events::TwilightEvents do
         twilight_events = described_class.new(observer: observer, sun: sun)
 
         expect(twilight_events.evening_astronomical_twilight_time).to be_nil
+      end
+    end
+  end
+
+  describe "#time_for_zenith_angle" do
+    it "returns a time" do
+      sun = Astronoby::Sun.new(time: Time.new)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      twilight_events = described_class.new(observer: observer, sun: sun)
+      zenith_angle = Astronoby::Angle.from_degrees(90 + 17)
+
+      time = twilight_events.time_for_zenith_angle(
+        period_of_the_day: :morning,
+        zenith_angle: zenith_angle
+      )
+
+      expect(time).to be_a(Time)
+    end
+
+    context "when the period of time is incompatible" do
+      it "raises an error" do
+        sun = Astronoby::Sun.new(time: Time.new)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        twilight_events = described_class.new(observer: observer, sun: sun)
+        zenith_angle = Astronoby::Angle.zero
+
+        expect {
+          twilight_events.time_for_zenith_angle(
+            period_of_the_day: :afternoon,
+            zenith_angle: zenith_angle
+          )
+        }.to raise_error(Astronoby::IncompatibleArgumentsError)
       end
     end
   end

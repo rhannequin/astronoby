@@ -131,22 +131,22 @@ observer = Astronoby::Observer.new(
 twilight_events = sun.twilight_events(observer: observer)
 
 twilight_events.morning_astronomical_twilight_time
-# => 2024-01-01 05:47:14 UTC
+# => 2024-01-01 05:49:25 UTC
 
 twilight_events.morning_nautical_twilight_time
-# => 2024-01-01 06:25:31 UTC
+# => 2024-01-01 06:27:42 UTC
 
 twilight_events.morning_civil_twilight_time
-# => 2024-01-01 07:05:41 UTC
+# => 2024-01-01 07:07:50 UTC
 
 twilight_events.evening_civil_twilight_time
-# => 2024-01-01 16:37:24 UTC
+# => 2024-01-01 16:40:01 UTC
 
 twilight_events.evening_nautical_twilight_time
-# => 2024-01-01 17:17:34 UTC
+# => 2024-01-01 17:20:10 UTC
 
 twilight_events.evening_astronomical_twilight_time
-# => 2024-01-01 17:55:51 UTC
+# => 2024-01-01 17:58:26 UTC
 ```
 
 ### Solstice and Equinox times
