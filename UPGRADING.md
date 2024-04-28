@@ -7,6 +7,30 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.3.0 to 0.4.0
+
+### `Body` class removed ([#50])
+
+The different behaviors from `Body` have been moved to other classes like
+`Events::ObservationEvents`.
+
+[#50]: https://github.com/rhannequin/astronoby/pull/50
+
+### Rising and setting times and azimuths removed from `Sun` ([#60])
+
+`#rising_time`, `#rising_azimuth`, `#setting_time` and `#setting_azimuth`
+have been removed from `Astronoby::Sun` and moved to
+`Astronoby::Events::ObservationEvents`.
+
+[#60]: https://github.com/rhannequin/astronoby/pull/60
+
+### `Sun` constructor changed ([#64])
+
+The `Sun` constructor now doesn't accept the `epoch` key argument anymore,
+but only a new `time` key argument.
+
+[#64]: https://github.com/rhannequin/astronoby/pull/64
+
 ## Upgrading from 0.2.0 to 0.3.0
 
 ### `Sun#ecliptic_coordinates` method removed (#41)
