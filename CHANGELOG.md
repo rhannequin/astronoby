@@ -1,5 +1,77 @@
 # Changelog
 
+## 0.4.0 - 2024-04-29
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
+
+### Bug fixes
+
+* Fix ecliptic to equatorial epoch ([#56])
+
+[#56]: https://github.com/rhannequin/astronoby/pull/56
+
+### Features
+
+* Add twilight times ([#49])
+* Add interpolation method ([#52])
+* Add decimal_hour_to_time util ([#53])
+* Calculate leap seconds for an instant ([#54])
+* Add `Angle#-@` ([#55])
+* Enable equivalence and hash equality to `Observer` ([#57])
+* Twilight events dedicated class ([#61])
+
+[#49]: https://github.com/rhannequin/astronoby/pull/49
+[#52]: https://github.com/rhannequin/astronoby/pull/52
+[#53]: https://github.com/rhannequin/astronoby/pull/53
+[#54]: https://github.com/rhannequin/astronoby/pull/54
+[#55]: https://github.com/rhannequin/astronoby/pull/55
+[#57]: https://github.com/rhannequin/astronoby/pull/57
+[#61]: https://github.com/rhannequin/astronoby/pull/61
+
+### Improvements
+
+* Upgrade bundler from 2.3.11 to 2.5.7 by @dorianmariecom ([#45])
+* Drop `BigDecimal` ([#46])
+* Bump rake from 13.1.0 to 13.2.0 ([#47])
+* Increase Ruby versions support ([#48])
+* Bump rake from 13.2.0 to 13.2.1 ([#51])
+* Dedicated constants class ([#62])
+* Improve accuracy of equation of time ([#63])
+* Twilight times better accuracy ([#65])
+* Update UPGRADING.md ([#66])
+* release: Bump version to 0.4.0 ([#67])
+
+[#45]: https://github.com/rhannequin/astronoby/pull/45
+[#46]: https://github.com/rhannequin/astronoby/pull/46
+[#47]: https://github.com/rhannequin/astronoby/pull/47
+[#48]: https://github.com/rhannequin/astronoby/pull/48
+[#51]: https://github.com/rhannequin/astronoby/pull/51
+[#62]: https://github.com/rhannequin/astronoby/pull/62
+[#63]: https://github.com/rhannequin/astronoby/pull/63
+[#65]: https://github.com/rhannequin/astronoby/pull/65
+[#66]: https://github.com/rhannequin/astronoby/pull/66
+[#67]: https://github.com/rhannequin/astronoby/pull/67
+
+### Backward-incompatible changes
+
+* More accurate rising, transit and setting times ([#50])
+* Observation events dedicated and centralized class ([#60])
+* Change `Astronoby::Sun` constructor ([#64])
+
+[#50]: https://github.com/rhannequin/astronoby/pull/50
+[#60]: https://github.com/rhannequin/astronoby/pull/60
+[#64]: https://github.com/rhannequin/astronoby/pull/64
+
+### New Contributors
+
+* @dorianmariecom made their first contribution in [#45]
+
+[#45]: https://github.com/rhannequin/astronoby/pull/45
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.3.0...v0.4.0
+
 ## 0.3.0 - 2024-03-29
 
 _If you are upgrading: please see [`UPGRADING.md`]._
