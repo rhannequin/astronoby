@@ -88,13 +88,14 @@ RSpec.describe Astronoby::Sun do
   describe "#horizontal_coordinates" do
     it "returns horizontal coordinates" do
       time = Time.new
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(-20),
+        longitude: Astronoby::Angle.from_degrees(-30)
+      )
 
       coordinates = described_class
         .new(time: time)
-        .horizontal_coordinates(
-          latitude: Astronoby::Angle.from_degrees(-20),
-          longitude: Astronoby::Angle.from_degrees(-30)
-        )
+        .horizontal_coordinates(observer: observer)
 
       expect(coordinates).to be_a(Astronoby::Coordinates::Horizontal)
     end
@@ -107,11 +108,12 @@ RSpec.describe Astronoby::Sun do
     it "computes the horizontal coordinates for the epoch" do
       time = Time.new(2015, 2, 5, 12, 0, 0, "-05:00")
       sun = described_class.new(time: time)
-
-      horizontal_coordinates = sun.horizontal_coordinates(
+      observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(38),
         longitude: Astronoby::Angle.from_degrees(-78)
       )
+
+      horizontal_coordinates = sun.horizontal_coordinates(observer: observer)
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
         eq("+35° 47′ 15.717″")
@@ -131,11 +133,12 @@ RSpec.describe Astronoby::Sun do
     it "computes the coordinates for a given epoch" do
       time = Time.new(2000, 8, 9, 12, 0, 0, "-05:00")
       sun = described_class.new(time: time)
-
-      horizontal_coordinates = sun.horizontal_coordinates(
+      observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(30),
         longitude: Astronoby::Angle.from_degrees(-95)
       )
+
+      horizontal_coordinates = sun.horizontal_coordinates(observer: observer)
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
         eq("+65° 42′ 21.6058″")
@@ -155,11 +158,12 @@ RSpec.describe Astronoby::Sun do
     it "computes the coordinates for a given epoch" do
       time = Time.new(2015, 5, 6, 14, 30, 0, "-04:00")
       sun = described_class.new(time: time)
-
-      horizontal_coordinates = sun.horizontal_coordinates(
+      observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(-20),
         longitude: Astronoby::Angle.from_degrees(-30)
       )
+
+      horizontal_coordinates = sun.horizontal_coordinates(observer: observer)
 
       expect(horizontal_coordinates.altitude.str(:dms)).to(
         eq("+13° 34′ 7.6913″")

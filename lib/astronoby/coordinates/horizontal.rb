@@ -3,30 +3,28 @@
 module Astronoby
   module Coordinates
     class Horizontal
-      attr_reader :azimuth, :altitude, :latitude, :longitude
+      attr_reader :azimuth, :altitude, :observer
 
       def initialize(
         azimuth:,
         altitude:,
-        latitude:,
-        longitude:
+        observer:
       )
         @azimuth = azimuth
         @altitude = altitude
-        @latitude = latitude
-        @longitude = longitude
+        @observer = observer
       end
 
       def to_equatorial(time:)
-        t0 = @altitude.sin * @latitude.sin +
-          @altitude.cos * @latitude.cos * @azimuth.cos
+        t0 = @altitude.sin * latitude.sin +
+          @altitude.cos * latitude.cos * @azimuth.cos
 
         declination = Angle.asin(t0)
 
-        t1 = @altitude.sin - @latitude.sin * declination.sin
+        t1 = @altitude.sin - latitude.sin * declination.sin
 
         hour_angle_degrees = Angle
-          .acos(t1 / (@latitude.cos * declination.cos))
+          .acos(t1 / (latitude.cos * declination.cos))
           .degrees
 
         if @azimuth.sin.positive?
@@ -38,7 +36,7 @@ module Astronoby
         hour_angle_hours = Angle.from_degrees(hour_angle_degrees).hours
         lst = GreenwichSiderealTime
           .from_utc(time.utc)
-          .to_lst(longitude: @longitude)
+          .to_lst(longitude: longitude)
         right_ascension_decimal = lst.time - hour_angle_hours
 
         if right_ascension_decimal.negative?
@@ -51,6 +49,16 @@ module Astronoby
           right_ascension: right_ascension,
           declination: declination
         )
+      end
+
+      private
+
+      def latitude
+        @observer.latitude
+      end
+
+      def longitude
+        @observer.longitude
       end
     end
   end

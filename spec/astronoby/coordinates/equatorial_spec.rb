@@ -30,14 +30,16 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
   describe "#to_horizontal" do
     it "returns a new instance of Astronoby::Coordinates::Horizontal" do
       time = Time.new
-      latitude = Astronoby::Angle.from_degrees(50)
-      longitude = Astronoby::Angle.zero
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(50),
+        longitude: Astronoby::Angle.zero
+      )
 
       expect(
         described_class.new(
           right_ascension: Astronoby::Angle.from_dms(23, 59, 59),
           declination: Astronoby::Angle.from_dms(89, 59, 59)
-        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+        ).to_horizontal(time: time, observer: observer)
       ).to be_an_instance_of(Astronoby::Coordinates::Horizontal)
     end
 
@@ -49,13 +51,15 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 30, 0, "-05:00")
-        latitude = Astronoby::Angle.from_degrees(38)
-        longitude = Astronoby::Angle.from_degrees(-78)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(38),
+          longitude: Astronoby::Angle.from_degrees(-78)
+        )
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.from_hms(17, 43, 54),
           declination: Astronoby::Angle.from_dms(-22, 10, 0)
-        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+        ).to_horizontal(time: time, observer: observer)
 
         expect(horizontal_coordinates.altitude.str(:dms)).to(
           eq("-73° 27′ 19.1557″")
@@ -74,13 +78,15 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2016, 1, 21, 21, 45, 0, "-05:00")
-        latitude = Astronoby::Angle.from_degrees(38)
-        longitude = Astronoby::Angle.from_degrees(-78)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(38),
+          longitude: Astronoby::Angle.from_degrees(-78)
+        )
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.from_hms(5, 54, 58),
           declination: Astronoby::Angle.from_dms(7, 29, 54)
-        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+        ).to_horizontal(time: time, observer: observer)
 
         expect(horizontal_coordinates.altitude.str(:dms)).to(
           eq("+59° 13′ 0.3617″")
@@ -99,13 +105,15 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2015, 12, 1, 9, 0, 0, "-08:00")
-        latitude = Astronoby::Angle.from_degrees(45)
-        longitude = Astronoby::Angle.from_degrees(-100)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(45),
+          longitude: Astronoby::Angle.from_degrees(-100)
+        )
 
         horizontal_coordinates = described_class.new(
           right_ascension: Astronoby::Angle.from_hms(6, 0, 0),
           declination: Astronoby::Angle.from_degrees(-60)
-        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+        ).to_horizontal(time: time, observer: observer)
 
         expect(horizontal_coordinates.altitude.str(:dms)).to(
           eq("-59° 41′ 58.4833″")
@@ -124,14 +132,16 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
     context "with real life arguments (book example)" do
       it "computes properly" do
         time = Time.new(2015, 12, 1, 9, 0, 0, "-08:00")
-        latitude = Astronoby::Angle.from_degrees(52)
-        longitude = Astronoby::Angle.zero
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(52),
+          longitude: Astronoby::Angle.zero
+        )
 
         horizontal_coordinates = described_class.new(
           declination: Astronoby::Angle.from_dms(23, 13, 10),
           right_ascension: nil,
           hour_angle: Astronoby::Angle.from_hms(5, 51, 44)
-        ).to_horizontal(time: time, latitude: latitude, longitude: longitude)
+        ).to_horizontal(time: time, observer: observer)
 
         expect(horizontal_coordinates.altitude.str(:dms)).to(
           eq("+19° 20′ 3.6428″")

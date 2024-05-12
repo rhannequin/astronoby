@@ -5,17 +5,16 @@ module Astronoby
     LOW_ALTITUDE_BODY_ANGLE = Angle.from_degrees(15)
     ZENITH = Angle.from_degrees(90)
 
-    def self.angle(coordinates:, observer:)
-      new(coordinates, observer).refraction_angle
+    def self.angle(coordinates:)
+      new(coordinates).refraction_angle
     end
 
-    def self.correct_horizontal_coordinates(coordinates:, observer:)
-      new(coordinates, observer).refract
+    def self.correct_horizontal_coordinates(coordinates:)
+      new(coordinates).refract
     end
 
-    def initialize(coordinates, observer)
+    def initialize(coordinates)
       @coordinates = coordinates
-      @observer = observer
     end
 
     # Source:
@@ -27,8 +26,7 @@ module Astronoby
       Coordinates::Horizontal.new(
         azimuth: @coordinates.azimuth,
         altitude: @coordinates.altitude + refraction_angle,
-        latitude: @coordinates.latitude,
-        longitude: @coordinates.longitude
+        observer: @coordinates.observer
       )
     end
 
@@ -43,11 +41,11 @@ module Astronoby
     private
 
     def pressure
-      @_pressure ||= @observer.pressure
+      @_pressure ||= @coordinates.observer.pressure
     end
 
     def temperature
-      @_temperature ||= @observer.temperature
+      @_temperature ||= @coordinates.observer.temperature
     end
 
     def altitude_in_degrees

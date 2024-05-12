@@ -28,7 +28,9 @@ module Astronoby
         Angle.from_hours(ha)
       end
 
-      def to_horizontal(time:, latitude:, longitude:)
+      def to_horizontal(time:, observer:)
+        latitude = observer.latitude
+        longitude = observer.longitude
         ha = @hour_angle || compute_hour_angle(time: time, longitude: longitude)
         t0 = @declination.sin * latitude.sin +
           @declination.cos * latitude.cos * ha.cos
@@ -46,8 +48,7 @@ module Astronoby
         Horizontal.new(
           azimuth: azimuth,
           altitude: altitude,
-          latitude: latitude,
-          longitude: longitude
+          observer: observer
         )
       end
 
