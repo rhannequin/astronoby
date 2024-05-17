@@ -2,10 +2,19 @@
 
 module Astronoby
   class Moon
+    MEAN_GEOCENTRIC_DISTANCE = 385_000_560
+
     def initialize(time:)
       @time = time
     end
 
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 47 - Position of the Moon
+
+    # @return [Coordinates::Ecliptic] Ecliptic coordinates of the Moon
     def apparent_ecliptic_coordinates
       @ecliptic_coordinates ||= begin
         latitude = Astronoby::Angle.from_degrees(
@@ -27,9 +36,10 @@ module Astronoby
 
     # @return [Integer] Distance between the Earth and the Moon centers in meters
     def distance
-      @distance ||= (385_000_560 + distance_terms).round
+      @distance ||= (MEAN_GEOCENTRIC_DISTANCE + distance_terms).round
     end
 
+    # @return [Angle] Moon's mean longitude
     def mean_longitude
       @mean_longitude ||= begin
         degrees =
@@ -43,6 +53,7 @@ module Astronoby
       end
     end
 
+    # @return [Angle] Moon's mean elongation
     def mean_elongation
       @mean_elongation ||= begin
         degrees =
@@ -56,6 +67,7 @@ module Astronoby
       end
     end
 
+    # @return [Angle] Moon's mean anomaly
     def mean_anomaly
       @mean_anomaly ||= begin
         degrees =
@@ -69,6 +81,7 @@ module Astronoby
       end
     end
 
+    # @return [Angle] Moon's argument of latitude
     def argument_of_latitude
       @argument_of_latitude ||= begin
         degrees =
