@@ -79,8 +79,7 @@ RSpec.describe Astronoby::Events::ObservationEvents do
       coordinates_of_the_day = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.from_degrees(90),
         altitude: Astronoby::Angle.from_degrees(45),
-        latitude: Astronoby::Angle.from_degrees(38.25),
-        longitude: Astronoby::Angle.from_degrees(-78.3)
+        observer: observer
       ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, offset))
       # Cancel refraction correction to match the book that ignores it
       events = described_class.new(
@@ -232,8 +231,7 @@ RSpec.describe Astronoby::Events::ObservationEvents do
       coordinates_of_the_day = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.from_degrees(90),
         altitude: Astronoby::Angle.from_degrees(45),
-        latitude: Astronoby::Angle.from_degrees(38.25),
-        longitude: Astronoby::Angle.from_degrees(-78.3)
+        observer: observer
       ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, offset))
       # Cancel refraction correction to match the book that ignores it
       events = described_class.new(
@@ -410,8 +408,7 @@ RSpec.describe Astronoby::Events::ObservationEvents do
       coordinates_of_the_day = Astronoby::Coordinates::Horizontal.new(
         azimuth: Astronoby::Angle.from_degrees(90),
         altitude: Astronoby::Angle.from_degrees(45),
-        latitude: Astronoby::Angle.from_degrees(38.25),
-        longitude: Astronoby::Angle.from_degrees(-78.3)
+        observer: observer
       ).to_equatorial(time: Time.new(2015, 6, 6, 21, 0, 0, offset))
       # Cancel refraction correction to match the book that ignores it
       events = described_class.new(

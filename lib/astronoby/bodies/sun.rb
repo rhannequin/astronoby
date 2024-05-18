@@ -101,13 +101,12 @@ module Astronoby
 
     # Computes the Sun's horizontal coordinates
     #
-    # @param latitude [Astronoby::Angle] Latitude of the observer
-    # @param longitude [Astronoby::Angle] Longitude of the observer
+    # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Coordinates::Horizontal] Sun's horizontal coordinates
-    def horizontal_coordinates(latitude:, longitude:)
+    def horizontal_coordinates(observer:)
       apparent_ecliptic_coordinates
         .to_apparent_equatorial(epoch: epoch)
-        .to_horizontal(time: @time, latitude: latitude, longitude: longitude)
+        .to_horizontal(time: @time, observer: observer)
     end
 
     # @param observer [Astronoby::Observer] Observer of the event

@@ -49,6 +49,11 @@ angle.cos
 ### Coordinates conversion
 
 ```rb
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(38),
+  longitude: Astronoby::Angle.from_degrees(-78)
+)
+
 equatorial = Astronoby::Coordinates::Equatorial.new(
   right_ascension: Astronoby::Angle.from_hms(17, 43, 54),
   declination: Astronoby::Angle.from_dms(-22, 10, 0)
@@ -56,8 +61,7 @@ equatorial = Astronoby::Coordinates::Equatorial.new(
 
 horizontal = equatorial.to_horizontal(
   time: Time.new(2016, 1, 21, 21, 30, 0, "-05:00"),
-  latitude: Astronoby::Angle.from_degrees(38),
-  longitude: Astronoby::Angle.from_degrees(-78)
+  observer: observer
 )
 
 horizontal.altitude.str(:dms)
@@ -72,15 +76,14 @@ horizontal.azimuth.str(:dms)
 ```rb
 time = Time.utc(2023, 2, 17, 11, 0, 0)
 
-latitude = Astronoby::Angle.from_degrees(48.8566)
-longitude = Astronoby::Angle.from_degrees(2.3522)
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(48.8566),
+  longitude: Astronoby::Angle.from_degrees(2.3522)
+)
 
 sun = Astronoby::Sun.new(time: time)
 
-horizontal_coordinates = sun.horizontal_coordinates(
-  latitude: latitude,
-  longitude: longitude
-)
+horizontal_coordinates = sun.horizontal_coordinates(observer: observer)
 
 horizontal_coordinates.altitude.degrees
 # => 27.500082409271247
