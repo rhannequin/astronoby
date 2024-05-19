@@ -2,7 +2,7 @@
 
 module Astronoby
   class Moon
-    MEAN_GEOCENTRIC_DISTANCE = 385_000_560
+    MEAN_GEOCENTRIC_DISTANCE = Astronoby::Distance.from_meters(385_000_560)
 
     def initialize(time:)
       @time = time
@@ -63,7 +63,7 @@ module Astronoby
     # @return [Astronoby::Distance] Distance between the Earth and the Moon centers
     def distance
       @distance ||= Astronoby::Distance.from_meters(
-        (MEAN_GEOCENTRIC_DISTANCE + distance_terms).round
+        (MEAN_GEOCENTRIC_DISTANCE.meters + distance_terms).round
       )
     end
 
