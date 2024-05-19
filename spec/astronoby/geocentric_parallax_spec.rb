@@ -40,9 +40,11 @@ RSpec.describe Astronoby::GeocentricParallax do
 
   describe "::for_equatorial_coordinates" do
     it "returns equatorial coordinates" do
-      elevation = Astronoby::Distance.zero
-      latitude = Astronoby::Angle.zero
-      longitude = Astronoby::Angle.zero
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        elevation: Astronoby::Distance.zero
+      )
       time = Time.new
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.zero,
@@ -51,9 +53,7 @@ RSpec.describe Astronoby::GeocentricParallax do
       distance = Astronoby::Distance.from_meters(100_000_000)
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
-        latitude: latitude,
-        longitude: longitude,
-        elevation: elevation,
+        observer: observer,
         time: time,
         coordinates: true_coordinates,
         distance: distance
@@ -68,9 +68,11 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the corrected equatorial coordinates for the Moon" do
-      latitude = Astronoby::Angle.from_degrees(50)
-      longitude = Astronoby::Angle.from_degrees(-100)
-      elevation = Astronoby::Distance.from_meters(60)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(50),
+        longitude: Astronoby::Angle.from_degrees(-100),
+        elevation: Astronoby::Distance.from_meters(60)
+      )
       time = Time.utc(1979, 2, 26, 16, 45)
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.from_hms(22, 35, 19),
@@ -81,9 +83,7 @@ RSpec.describe Astronoby::GeocentricParallax do
       )
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
-        latitude: latitude,
-        longitude: longitude,
-        elevation: elevation,
+        observer: observer,
         time: time,
         coordinates: true_coordinates,
         distance: distance
@@ -101,9 +101,11 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the corrected equatorial coordinates for the Sun" do
-      latitude = Astronoby::Angle.from_degrees(50)
-      longitude = Astronoby::Angle.from_degrees(-100)
-      elevation = Astronoby::Distance.from_meters(60)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(50),
+        longitude: Astronoby::Angle.from_degrees(-100),
+        elevation: Astronoby::Distance.from_meters(60)
+      )
       time = Time.utc(1979, 2, 26, 16, 45)
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.from_hms(22, 36, 44),
@@ -112,9 +114,7 @@ RSpec.describe Astronoby::GeocentricParallax do
       distance = Astronoby::Distance.from_au(0.9901)
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
-        latitude: latitude,
-        longitude: longitude,
-        elevation: elevation,
+        observer: observer,
         time: time,
         coordinates: true_coordinates,
         distance: distance
