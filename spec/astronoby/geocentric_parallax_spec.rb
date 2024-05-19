@@ -19,7 +19,7 @@ RSpec.describe Astronoby::GeocentricParallax do
 
       angle = described_class.angle(distance: distance)
 
-      expect(angle.str(:dms)).to eq "+1° 1′ 8.9999″"
+      expect(angle.str(:dms)).to eq "+1° 1′ 8.7447″"
     end
 
     # Source:
@@ -86,9 +86,9 @@ RSpec.describe Astronoby::GeocentricParallax do
       )
 
       expect(apparent_coordinates.right_ascension.str(:hms))
-        .to eq "22h 36m 43.2195s"
+        .to eq "22h 36m 43.2136s"
       expect(apparent_coordinates.declination.str(:dms))
-        .to eq "-8° 32′ 17.3947″"
+        .to eq "-8° 32′ 17.18″"
     end
 
     # Source:
@@ -119,7 +119,7 @@ RSpec.describe Astronoby::GeocentricParallax do
       expect(apparent_coordinates.right_ascension.str(:hms))
         .to eq "22h 36m 44.2044s"
       expect(apparent_coordinates.declination.str(:dms))
-        .to eq "-8° 44′ 31.4305″"
+        .to eq "-8° 44′ 31.4304″"
     end
   end
 end

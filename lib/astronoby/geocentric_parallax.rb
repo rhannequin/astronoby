@@ -8,7 +8,7 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
 
-    ASTRONOMICAL_UNIT_IN_METERS = 149_597_870_700
+    ASTRONOMICAL_UNIT_IN_METERS = 149_597_870_700.0
     EARTH_FLATTENING_CORRECTION = 0.996647
     EARTH_EQUATORIAL_RADIUS = 6378140.0
 
@@ -17,8 +17,8 @@ module Astronoby
     #   Earth, in meters
     # @return [Astronoby::Angle] Equatorial horizontal parallax angle
     def self.angle(distance:)
-      distance_in_earth_radius = distance / EARTH_EQUATORIAL_RADIUS
-      Angle.asin(1 / distance_in_earth_radius)
+      distance_in_au = distance / ASTRONOMICAL_UNIT_IN_METERS
+      Angle.from_radians(Angle.from_dms(0, 0, 8.794).sin / distance_in_au)
     end
 
     # Correct equatorial coordinates with the equatorial horizontal parallax
@@ -80,26 +80,17 @@ module Astronoby
       quantity2 = EARTH_FLATTENING_CORRECTION * term1.sin +
         elevation_ratio * @latitude.sin
 
-      term2 = quantity1 * hour_angle.sin
-      term3 = distance_in_earth_radius * declination.cos -
-        quantity1 * hour_angle.cos
+      term1 = -quantity1 * equatorial_horizontal_parallax.sin * hour_angle.sin
+      term2 = declination.cos - quantity1 * equatorial_horizontal_parallax.sin * hour_angle.cos
+      delta_right_ascension = Angle.atan(term1 / term2)
 
-      delta = Angle.atan(term2 / term3)
-
-      apparent_hour_angle = hour_angle + delta
-      apparent_right_ascension = right_ascension - delta
-      apparent_declination = Angle.atan(
-        (
-          apparent_hour_angle.cos *
-            (distance_in_earth_radius * declination.sin - quantity2)
-        ) / (
-          distance_in_earth_radius * declination.cos * hour_angle.cos - quantity1
-        )
-      )
+      term1 = (declination.sin - quantity2 * equatorial_horizontal_parallax.sin) * delta_right_ascension.cos
+      term2 = declination.cos - quantity1 * equatorial_horizontal_parallax.sin * hour_angle.cos
+      new_declination = Angle.atan(term1 / term2)
 
       Coordinates::Equatorial.new(
-        right_ascension: apparent_right_ascension,
-        declination: apparent_declination,
+        right_ascension: delta_right_ascension + right_ascension,
+        declination: new_declination,
         epoch: @coordinates.epoch
       )
     end
@@ -123,8 +114,8 @@ module Astronoby
       @elevation / EARTH_EQUATORIAL_RADIUS
     end
 
-    def distance_in_earth_radius
-      @distance / EARTH_EQUATORIAL_RADIUS
+    def equatorial_horizontal_parallax
+      self.class.angle(distance: @distance)
     end
   end
 end
