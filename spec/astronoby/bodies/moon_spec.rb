@@ -221,41 +221,32 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
-  # TODO: moon.distance is given, check what value should be given to get the
-  # most accurate results:
-  # - distance between the observer and the Moon center
-  # - distance between the Earth and the Moon centers
+  describe "#horizontal_coordinates" do
+    # TODO: moon.distance is given, check what value should be given to get the
+    # most accurate results:
+    # - distance between the observer and the Moon center
+    # - distance between the Earth and the Moon centers
 
-  it "returns the apparent ecliptic coordinates for 2015-01-01" do
-    time = Time.utc(2015, 1, 2)
-    observer = Astronoby::Observer.new(
-      latitude: Astronoby::Angle.from_degrees(42),
-      longitude: Astronoby::Angle.zero
-    )
-    moon = described_class.new(time: time)
-    apparent_geocentric_equatorial_coordinates =
-      moon.apparent_geocentric_equatorial_coordinates
+    # TODO: Rename "apparent" methods from Moon because the Moon will only deal
+    # with apparent and not standard epoch.
+    # This might change in the future if we implement ICRS.
 
-    apparent_topocentric_equatorial_coordinates =
-      Astronoby::GeocentricParallax.for_equatorial_coordinates(
-        latitude: observer.latitude,
-        longitude: observer.longitude,
-        elevation: observer.elevation,
-        time: time,
-        coordinates: apparent_geocentric_equatorial_coordinates,
-        distance: moon.distance
+    it "returns the apparent ecliptic coordinates for 2015-01-01" do
+      time = Time.utc(2015, 1, 2)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(42),
+        longitude: Astronoby::Angle.zero
       )
+      moon = described_class.new(time: time)
 
-    horizontal_coordinates =
-      apparent_topocentric_equatorial_coordinates.to_horizontal(
-        observer: observer,
-        time: time
-      )
+      horizontal_coordinates =
+        moon.horizontal_coordinates(observer: observer)
 
-    expect(horizontal_coordinates.azimuth.str(:dms)).to eq "+245° 7′ 32.2346″"
-    # Result from IMCCE: +245° 7′ 30.36″
+      expect(horizontal_coordinates.azimuth.str(:dms)).to eq "+245° 7′ 32.2346″"
+      # Result from IMCCE: +245° 7′ 30.36″
 
-    expect(horizontal_coordinates.altitude.str(:dms)).to eq "+48° 1′ 21.8373″"
-    # Result from IMCCE: +48° 1′ 21″
+      expect(horizontal_coordinates.altitude.str(:dms)).to eq "+48° 1′ 21.8373″"
+      # Result from IMCCE: +48° 1′ 21″
+    end
   end
 end
