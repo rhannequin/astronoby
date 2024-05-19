@@ -8,16 +8,12 @@ module Astronoby
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
 
-    ASTRONOMICAL_UNIT_IN_METERS = 149_597_870_700.0
-    EARTH_FLATTENING_CORRECTION = 0.996647
-    EARTH_EQUATORIAL_RADIUS = 6378140.0
-
     # Equatorial horizontal parallax
     # @param distance [Numeric] Distance of the body from the center of the
     #   Earth, in meters
     # @return [Astronoby::Angle] Equatorial horizontal parallax angle
     def self.angle(distance:)
-      distance_in_au = distance / ASTRONOMICAL_UNIT_IN_METERS
+      distance_in_au = distance / Constants::ASTRONOMICAL_UNIT_IN_METERS
       Angle.from_radians(Angle.from_dms(0, 0, 8.794).sin / distance_in_au)
     end
 
@@ -75,9 +71,9 @@ module Astronoby
     end
 
     def apply
-      term1 = Angle.atan(EARTH_FLATTENING_CORRECTION * @latitude.tan)
+      term1 = Angle.atan(Constants::EARTH_FLATTENING_CORRECTION * @latitude.tan)
       quantity1 = term1.cos + elevation_ratio * @latitude.cos
-      quantity2 = EARTH_FLATTENING_CORRECTION * term1.sin +
+      quantity2 = Constants::EARTH_FLATTENING_CORRECTION * term1.sin +
         elevation_ratio * @latitude.sin
 
       term1 = -quantity1 * equatorial_horizontal_parallax.sin * hour_angle.sin
@@ -111,7 +107,7 @@ module Astronoby
     end
 
     def elevation_ratio
-      @elevation / EARTH_EQUATORIAL_RADIUS
+      @elevation / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
     end
 
     def equatorial_horizontal_parallax

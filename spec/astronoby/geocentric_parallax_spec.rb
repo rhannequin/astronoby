@@ -15,7 +15,8 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the equatorial horizontal parallax for the Moon" do
-      distance = 56.2212278 * described_class::EARTH_EQUATORIAL_RADIUS
+      distance =
+        56.2212278 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
 
       angle = described_class.angle(distance: distance)
 
@@ -28,7 +29,7 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the equatorial horizontal parallax for the Sun" do
-      distance = 0.9901 * described_class::ASTRONOMICAL_UNIT_IN_METERS
+      distance = 0.9901 * Astronoby::Constants::ASTRONOMICAL_UNIT_IN_METERS
 
       angle = described_class.angle(distance: distance)
 
@@ -74,7 +75,8 @@ RSpec.describe Astronoby::GeocentricParallax do
         right_ascension: Astronoby::Angle.from_hms(22, 35, 19),
         declination: Astronoby::Angle.from_dms(-7, 41, 13)
       )
-      distance = 56.221228 * described_class::EARTH_EQUATORIAL_RADIUS
+      distance =
+        56.221228 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,
@@ -105,7 +107,7 @@ RSpec.describe Astronoby::GeocentricParallax do
         right_ascension: Astronoby::Angle.from_hms(22, 36, 44),
         declination: Astronoby::Angle.from_dms(-8, 44, 24)
       )
-      distance = 0.9901 * described_class::ASTRONOMICAL_UNIT_IN_METERS
+      distance = 0.9901 * Astronoby::Constants::ASTRONOMICAL_UNIT_IN_METERS
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,
