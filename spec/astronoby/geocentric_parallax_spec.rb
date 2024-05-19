@@ -3,7 +3,7 @@
 RSpec.describe Astronoby::GeocentricParallax do
   describe "::angle" do
     it "returns an Angle" do
-      distance = 1_000_000_000
+      distance = Astronoby::Distance.from_meters(1_000_000_000)
 
       expect(described_class.angle(distance: distance))
         .to be_a(Astronoby::Angle)
@@ -15,8 +15,9 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the equatorial horizontal parallax for the Moon" do
-      distance =
+      distance = Astronoby::Distance.from_meters(
         56.2212278 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
+      )
 
       angle = described_class.angle(distance: distance)
 
@@ -29,7 +30,7 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the equatorial horizontal parallax for the Sun" do
-      distance = 0.9901 * Astronoby::Constants::ASTRONOMICAL_UNIT_IN_METERS
+      distance = Astronoby::Distance.from_au(0.9901)
 
       angle = described_class.angle(distance: distance)
 
@@ -39,7 +40,7 @@ RSpec.describe Astronoby::GeocentricParallax do
 
   describe "::for_equatorial_coordinates" do
     it "returns equatorial coordinates" do
-      elevation = 0
+      elevation = Astronoby::Distance.zero
       latitude = Astronoby::Angle.zero
       longitude = Astronoby::Angle.zero
       time = Time.new
@@ -47,7 +48,7 @@ RSpec.describe Astronoby::GeocentricParallax do
         right_ascension: Astronoby::Angle.zero,
         declination: Astronoby::Angle.zero
       )
-      distance = 100_000_000
+      distance = Astronoby::Distance.from_meters(100_000_000)
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,
@@ -69,14 +70,15 @@ RSpec.describe Astronoby::GeocentricParallax do
     it "returns the corrected equatorial coordinates for the Moon" do
       latitude = Astronoby::Angle.from_degrees(50)
       longitude = Astronoby::Angle.from_degrees(-100)
-      elevation = 60
+      elevation = Astronoby::Distance.from_meters(60)
       time = Time.utc(1979, 2, 26, 16, 45)
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.from_hms(22, 35, 19),
         declination: Astronoby::Angle.from_dms(-7, 41, 13)
       )
-      distance =
-        56.221228 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
+      distance = Astronoby::Distance.from_meters(
+        56.2212278 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
+      )
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,
@@ -101,13 +103,13 @@ RSpec.describe Astronoby::GeocentricParallax do
     it "returns the corrected equatorial coordinates for the Sun" do
       latitude = Astronoby::Angle.from_degrees(50)
       longitude = Astronoby::Angle.from_degrees(-100)
-      elevation = 60
+      elevation = Astronoby::Distance.from_meters(60)
       time = Time.utc(1979, 2, 26, 16, 45)
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.from_hms(22, 36, 44),
         declination: Astronoby::Angle.from_dms(-8, 44, 24)
       )
-      distance = 0.9901 * Astronoby::Constants::ASTRONOMICAL_UNIT_IN_METERS
+      distance = Astronoby::Distance.from_au(0.9901)
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,

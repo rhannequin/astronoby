@@ -60,9 +60,11 @@ module Astronoby
       )
     end
 
-    # @return [Integer] Distance between the Earth and the Moon centers in meters
+    # @return [Astronoby::Distance] Distance between the Earth and the Moon centers
     def distance
-      @distance ||= (MEAN_GEOCENTRIC_DISTANCE + distance_terms).round
+      @distance ||= Astronoby::Distance.from_meters(
+        (MEAN_GEOCENTRIC_DISTANCE + distance_terms).round
+      )
     end
 
     # @return [Angle] Moon's mean longitude

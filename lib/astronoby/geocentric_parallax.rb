@@ -9,23 +9,22 @@ module Astronoby
     #  Chapter: 39 - Calculating correction for parallax
 
     # Equatorial horizontal parallax
-    # @param distance [Numeric] Distance of the body from the center of the
-    #   Earth, in meters
+    # @param distance [Astronoby::Distance] Distance of the body from the center
+    #   of the Earth
     # @return [Astronoby::Angle] Equatorial horizontal parallax angle
     def self.angle(distance:)
-      distance_in_au = distance / Constants::ASTRONOMICAL_UNIT_IN_METERS
-      Angle.from_radians(Angle.from_dms(0, 0, 8.794).sin / distance_in_au)
+      Angle.from_radians(Angle.from_dms(0, 0, 8.794).sin / distance.au)
     end
 
     # Correct equatorial coordinates with the equatorial horizontal parallax
     # @param latitude [Astronoby::Angle] Observer's latitude
     # @param longitude [Astronoby::Angle] Observer's longitude
-    # @param elevation [Numeric] Observer's elevation above sea level in meters
+    # @param elevation [Astronoby::Distance] Observer's elevation above sea level
     # @param time [Time] Date-time of the observation
     # @param coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates of the observed body
-    # @param distance [Numeric] Distance of the observed body from the center of
-    #   the Earth, in meters
+    # @param distance [Astronoby::Distance] Distance of the observed body from
+    #   the center of the Earth
     # @return [Astronoby::Coordinates::Equatorial] Apparent equatorial
     #   coordinates with equatorial horizontal parallax
     def self.for_equatorial_coordinates(
@@ -48,12 +47,12 @@ module Astronoby
 
     # @param latitude [Astronoby::Angle] Observer's latitude
     # @param longitude [Astronoby::Angle] Observer's longitude
-    # @param elevation [Numeric] Observer's elevation above sea level in meters
+    # @param elevation [Astronoby::Distance] Observer's elevation above sea level
     # @param time [Time] Date-time of the observation
     # @param coordinates [Astronoby::Coordinates::Equatorial] Equatorial
     #   coordinates of the observed body
-    # @param distance [Numeric] Distance of the observed body from the center of
-    #   the Earth, in meters
+    # @param distance [Astronoby::Distance] Distance of the observed body from
+    #   the center of the Earth
     def initialize(
       latitude,
       longitude,
@@ -107,7 +106,7 @@ module Astronoby
     end
 
     def elevation_ratio
-      @elevation / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
+      @elevation.meters / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
     end
 
     def equatorial_horizontal_parallax

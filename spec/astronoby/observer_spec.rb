@@ -8,14 +8,14 @@ RSpec.describe Astronoby::Observer do
       observer1 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
@@ -27,14 +27,14 @@ RSpec.describe Astronoby::Observer do
       observer1 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 15
       )
@@ -48,14 +48,14 @@ RSpec.describe Astronoby::Observer do
       observer1 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
@@ -68,14 +68,14 @@ RSpec.describe Astronoby::Observer do
       observer1 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
-        elevation: 100,
+        elevation: Astronoby::Distance.from_meters(100),
         temperature: 280,
         pressure: 10
       )
@@ -89,7 +89,7 @@ RSpec.describe Astronoby::Observer do
     it "returns the computed pression in millibars" do
       latitude = Astronoby::Angle.from_degrees(0)
       longitude = Astronoby::Angle.from_degrees(0)
-      elevation = 100
+      elevation = Astronoby::Distance.from_meters(100)
       temperature = 273.15 + 10
 
       pressure = described_class.new(
