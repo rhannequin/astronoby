@@ -106,7 +106,7 @@ module Astronoby
     end
 
     def elevation_ratio
-      @elevation.meters / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
+      @elevation.meters / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS.to_f
     end
 
     def equatorial_horizontal_parallax

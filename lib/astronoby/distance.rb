@@ -36,12 +36,12 @@ module Astronoby
     end
 
     def kilometers
-      @meters / Constants::KILOMETER_IN_METERS
+      @meters / Constants::KILOMETER_IN_METERS.to_f
     end
     alias_method :km, :kilometers
 
     def astronomical_units
-      @meters / Constants::ASTRONOMICAL_UNIT_IN_METERS
+      @meters / Constants::ASTRONOMICAL_UNIT_IN_METERS.to_f
     end
     alias_method :au, :astronomical_units
 

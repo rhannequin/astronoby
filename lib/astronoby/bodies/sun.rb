@@ -155,9 +155,11 @@ module Astronoby
       Events::TwilightEvents.new(sun: self, observer: observer)
     end
 
-    # @return [Numeric] Earth-Sun distance in meters
+    # @return [Astronoby::Distance] Earth-Sun distance
     def earth_distance
-      SEMI_MAJOR_AXIS_IN_METERS / distance_angular_size_factor
+      Distance.from_meters(
+        SEMI_MAJOR_AXIS_IN_METERS / distance_angular_size_factor
+      )
     end
 
     # @return [Astronoby::Angle] Apparent Sun's angular size
