@@ -185,6 +185,14 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Angle] Sun's mean anomaly
+    def mean_anomaly
+      Angle.from_degrees(
+        (longitude_at_base_epoch - longitude_at_perigee).degrees %
+          Constants::DEGREES_PER_CIRCLE
+      )
+    end
+
     # @return [Astronoby::Angle] Sun's longitude at perigee
     def longitude_at_perigee
       Angle.from_degrees(
@@ -206,13 +214,6 @@ module Astronoby
     def true_longitude
       Angle.from_degrees(
         (true_anomaly + longitude_at_perigee).degrees %
-          Constants::DEGREES_PER_CIRCLE
-      )
-    end
-
-    def mean_anomaly
-      Angle.from_degrees(
-        (longitude_at_base_epoch - longitude_at_perigee).degrees %
           Constants::DEGREES_PER_CIRCLE
       )
     end

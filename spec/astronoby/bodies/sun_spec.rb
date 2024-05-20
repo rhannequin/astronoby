@@ -85,6 +85,64 @@ RSpec.describe Astronoby::Sun do
     end
   end
 
+  describe "#mean_anomaly" do
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 25 - Solar Coordinates, p.165
+    it "returns the mean anomaly for 1992-10-13" do
+      # Example gives 1992-04-12 00:00:00 TT (and not UTC)
+      time = Time.utc(1992, 10, 13, 0, 0, 0)
+      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      sun = described_class.new(time: time)
+
+      expect(sun.mean_anomaly.degrees.round(6)).to eq 278.989677
+      # Result from the book: 278.99397°
+    end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 47 - Position of the Moon, p.342
+    it "returns the mean anomaly for 1992-04-12" do
+      # Example gives 1992-04-12 00:00:00 TT (and not UTC)
+      time = Time.utc(1992, 4, 12, 0, 0, 0)
+      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      sun = described_class.new(time: time)
+
+      expect(sun.mean_anomaly.degrees.round(6)).to eq 97.639231
+      # Result from the book: 97.643514°
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 6 - The Sun, p.148
+    it "returns the mean anomaly for 2016-05-05" do
+      time = Time.utc(2016, 5, 5, 12)
+      sun = described_class.new(time: time)
+
+      expect(sun.mean_anomaly.degrees.round(6)).to eq 120.573368
+      # Result from the book: 120.363970°
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 65 - Calculating the Moon’s position, p.165
+    it "returns the mean anomaly for 2003-09-01" do
+      time = Time.utc(2003, 9, 1)
+      sun = described_class.new(time: time)
+
+      expect(sun.mean_anomaly.degrees.round(6)).to eq 236.751374
+      # Result from the book: 236.642435°
+    end
+  end
+
   describe "#horizontal_coordinates" do
     it "returns horizontal coordinates" do
       time = Time.new
