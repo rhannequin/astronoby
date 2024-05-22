@@ -14,7 +14,8 @@ module Astronoby
     #  Edition: 2nd edition
     #  Chapter: 47 - Position of the Moon
 
-    # @return [Coordinates::Ecliptic] Ecliptic coordinates of the Moon
+    # @return [Astronoby::Coordinates::Ecliptic] Apparent ecliptic coordinates
+    #   of the Moon
     def apparent_ecliptic_coordinates
       @ecliptic_coordinates ||= begin
         latitude = Astronoby::Angle.from_degrees(
@@ -31,6 +32,15 @@ module Astronoby
           latitude: latitude,
           longitude: longitude
         )
+      end
+    end
+
+    # @return [Astronoby::Coordinates::Equatorial] Apparent geocentric
+    #   equatorial coordinates of the Moon
+    def apparent_geocentric_equatorial_coordinates
+      @apparent_geocentric_equatorial_coordinates ||= begin
+        ecliptic = apparent_ecliptic_coordinates
+        ecliptic.to_apparent_equatorial(epoch: Epoch.from_time(@time))
       end
     end
 

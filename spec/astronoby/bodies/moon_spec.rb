@@ -120,4 +120,104 @@ RSpec.describe Astronoby::Moon do
       # Result from IMCCE: 368439405 (0.002462865305 AU)
     end
   end
+
+  describe "#apparent_geocentric_equatorial_coordinates" do
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 47 - Position of the Moon, p.342
+    it "returns the apparent geocentric equatorial coordinates for 1992-04-12" do
+      # Example gives 1992-04-12 00:00:00 TT (and not UTC)
+      time = Time.utc(1992, 4, 12, 0, 0, 0)
+      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      moon = described_class.new(time: time)
+
+      coordinates = moon.apparent_geocentric_equatorial_coordinates
+
+      expect(coordinates.right_ascension.str(:hms)).to eq "8h 58m 45.21s"
+      # Result from the book: 8h 58m 45.1s
+      # Result from IMCCE: 8h 58m 45.0996s
+
+      expect(coordinates.declination.str(:dms)).to eq "+13° 46′ 6.1119″"
+      # Result from the book: +13° 46′ 6″
+      # Result from IMCCE: +13° 46′ 6.424″
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.166
+    it "returns the apparent geocentric equatorial coordinates for 2015-01-01" do
+      moon = described_class.new(time: Time.new(2015, 1, 1, 22, 0, 0, "-05:00"))
+
+      coordinates = moon.apparent_geocentric_equatorial_coordinates
+
+      expect(coordinates.right_ascension.str(:hms)).to eq "4h 16m 35.1442s"
+      # Result from the book: 4h 15m 27.7703s (4.257714h)
+      # Result from IMCCE: 4h 16m 35.0164s
+
+      expect(coordinates.declination.str(:dms)).to eq "+17° 24′ 14.7897″"
+      # Result from the book: +17° 14′ 55.9679″ (17.24888°)
+      # Result from IMCCE: +17° 24′ 13.492″
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.185
+    it "returns the apparent geocentric equatorial coordinates for 2000-08-09" do
+      moon = described_class.new(time: Time.new(2000, 8, 9, 12, 0, 0, "-05:00"))
+
+      coordinates = moon.apparent_geocentric_equatorial_coordinates
+
+      expect(coordinates.right_ascension.str(:hms)).to eq "17h 6m 3.1276s"
+      # Result from the book: 17h 5m 41.2872s (17.094802h)
+      # Result from IMCCE: 17h 6m 3.1064s
+
+      expect(coordinates.declination.str(:dms)).to eq "-19° 39′ 20.8685″"
+      # Result from the book: -19° 47′ 39.9372″ (-19.794427°)
+      # Result from IMCCE: -19° 39′ 20.54″
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.185
+    it "returns the apparent geocentric equatorial coordinates for 2010-05-15" do
+      moon = described_class.new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
+
+      coordinates = moon.apparent_geocentric_equatorial_coordinates
+
+      expect(coordinates.right_ascension.str(:hms)).to eq "5h 0m 44.3733s"
+      # Result from the book: 4h 59m 54.1103s (4.998364h)
+      # Result from IMCCE: 5h 0m 44.454s
+
+      expect(coordinates.declination.str(:dms)).to eq "+25° 1′ 18.2266″"
+      # Result from the book: +25° 9′ 2.6999″ (25.150750°)
+      # Result from IMCCE: +25° 1′ 19.227″
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 65 - Calculating the Moon’s position, p.165
+    it "returns the apparent geocentric equatorial coordinates for 2003-09-01" do
+      moon = described_class.new(time: Time.utc(2003, 9, 1))
+
+      coordinates = moon.apparent_geocentric_equatorial_coordinates
+
+      expect(coordinates.right_ascension.str(:hms)).to eq "14h 12m 12.2352s"
+      # Result from the book: 14h 12m 42s
+      # Result from IMCCE: 14h 12m 12.2872s
+
+      expect(coordinates.declination.str(:dms)).to eq "-11° 35′ 7.9466″"
+      # Result from the book: -11° 31′ 38″
+      # Result from IMCCE: -11° 35′ 7.994″
+    end
+  end
 end
