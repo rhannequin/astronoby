@@ -4,15 +4,22 @@ module Astronoby
   class Moon
     MEAN_GEOCENTRIC_DISTANCE = Astronoby::Distance.from_meters(385_000_560)
 
-    def initialize(time:)
-      @time = time
-    end
-
     # Source:
     #  Title: Astronomical Algorithms
     #  Author: Jean Meeus
     #  Edition: 2nd edition
-    #  Chapter: 47 - Position of the Moon
+    #  Chapter: 49 - Phases of the Moon
+
+    # @param year [Integer] Requested year
+    # @param month [Integer] Requested month
+    # @return [Array<Astronoby::MoonPhase>] Moon phases for the requested year
+    def self.monthly_phase_events(year:, month:)
+      Events::MoonPhases.phases_for(year: year, month: month)
+    end
+
+    def initialize(time:)
+      @time = time
+    end
 
     # @return [Astronoby::Coordinates::Ecliptic] Apparent ecliptic coordinates
     #   of the Moon
@@ -34,6 +41,12 @@ module Astronoby
         )
       end
     end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 47 - Position of the Moon
 
     # @return [Astronoby::Coordinates::Equatorial] Apparent geocentric
     #   equatorial coordinates of the Moon
@@ -119,6 +132,12 @@ module Astronoby
         Angle.from_degrees(degrees)
       end
     end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
 
     # @return [Angle] Moon's phase angle
     def phase_angle

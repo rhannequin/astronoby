@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Moon do
+  describe "::monthly_phase_events" do
+    it "returns an array" do
+      moon_phases = described_class.monthly_phase_events(year: 2024, month: 1)
+
+      expect(moon_phases).to be_an(Array)
+    end
+  end
+
   describe "#apparent_ecliptic_coordinates" do
     # Source:
     #  Title: Astronomical Algorithms
