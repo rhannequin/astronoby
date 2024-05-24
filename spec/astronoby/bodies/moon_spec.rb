@@ -220,4 +220,70 @@ RSpec.describe Astronoby::Moon do
       # Result from IMCCE: -11° 35′ 7.994″
     end
   end
+
+  describe "#horizontal_coordinates" do
+    it "returns the apparent ecliptic coordinates for 2015-01-01" do
+      time = Time.utc(2015, 1, 2)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(42),
+        longitude: Astronoby::Angle.zero
+      )
+      moon = described_class.new(time: time)
+
+      horizontal_coordinates =
+        moon.horizontal_coordinates(observer: observer)
+
+      expect(horizontal_coordinates.azimuth.str(:dms)).to eq "+245° 7′ 32.2346″"
+      # Result from IMCCE: +245° 7′ 30.36″
+
+      expect(horizontal_coordinates.altitude.str(:dms)).to eq "+48° 1′ 21.8373″"
+      # Result from IMCCE: +48° 1′ 21″
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.185
+    it "returns the horizon coordinates for 2000-08-09" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(30),
+        longitude: Astronoby::Angle.from_degrees(-95)
+      )
+      moon = described_class.new(time: Time.new(2000, 8, 9, 12, 0, 0, "-05:00"))
+
+      coordinates = moon.horizontal_coordinates(observer: observer)
+
+      expect(coordinates.altitude.str(:dms)).to eq "-51° 19′ 13.9407″"
+      # Result from the book: -50° 44′
+      # Result from IMCCE: -51° 19′ 22.44″
+
+      expect(coordinates.azimuth.str(:dms)).to eq "+84° 40′ 12.0274″"
+      # Result from the book: +84° 56′
+      # Result from IMCCE: +84° 40′ 5.52″
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.185
+    it "returns the apparent ecliptic coordinates for 2010-05-15" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(-20),
+        longitude: Astronoby::Angle.from_degrees(-30)
+      )
+      moon = described_class.new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
+
+      coordinates = moon.horizontal_coordinates(observer: observer)
+
+      expect(coordinates.altitude.str(:dms)).to eq "+25° 52′ 49.8989″"
+      # Result from the book: 26° 32′
+      # Result from IMCCE: 25° 52′ 40.8″
+
+      expect(coordinates.azimuth.str(:dms)).to eq "+313° 26′ 5.3866″"
+      # Result from the book: +313° 24′
+      # Result from IMCCE: +313° 25′ 58.08″
+    end
+  end
 end

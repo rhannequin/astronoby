@@ -44,6 +44,23 @@ module Astronoby
       end
     end
 
+    def horizontal_coordinates(observer:)
+      apparent_topocentric_equatorial_coordinates =
+        Astronoby::GeocentricParallax.for_equatorial_coordinates(
+          latitude: observer.latitude,
+          longitude: observer.longitude,
+          elevation: observer.elevation,
+          time: @time,
+          coordinates: apparent_geocentric_equatorial_coordinates,
+          distance: distance
+        )
+
+      apparent_topocentric_equatorial_coordinates.to_horizontal(
+        observer: observer,
+        time: @time
+      )
+    end
+
     # @return [Integer] Distance between the Earth and the Moon centers in meters
     def distance
       @distance ||= (MEAN_GEOCENTRIC_DISTANCE + distance_terms).round

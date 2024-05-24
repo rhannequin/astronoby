@@ -15,11 +15,12 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the equatorial horizontal parallax for the Moon" do
-      distance = 56.2212278 * described_class::EARTH_EQUATORIAL_RADIUS
+      distance =
+        56.2212278 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
 
       angle = described_class.angle(distance: distance)
 
-      expect(angle.str(:dms)).to eq "+1° 1′ 8.9999″"
+      expect(angle.str(:dms)).to eq "+1° 1′ 8.7447″"
     end
 
     # Source:
@@ -28,7 +29,7 @@ RSpec.describe Astronoby::GeocentricParallax do
     #  Edition: Cambridge University Press
     #  Chapter: 39 - Calculating correction for parallax
     it "returns the equatorial horizontal parallax for the Sun" do
-      distance = 0.9901 * described_class::ASTRONOMICAL_UNIT_IN_METERS
+      distance = 0.9901 * Astronoby::Constants::ASTRONOMICAL_UNIT_IN_METERS
 
       angle = described_class.angle(distance: distance)
 
@@ -74,7 +75,8 @@ RSpec.describe Astronoby::GeocentricParallax do
         right_ascension: Astronoby::Angle.from_hms(22, 35, 19),
         declination: Astronoby::Angle.from_dms(-7, 41, 13)
       )
-      distance = 56.221228 * described_class::EARTH_EQUATORIAL_RADIUS
+      distance =
+        56.221228 * Astronoby::Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,
@@ -86,9 +88,9 @@ RSpec.describe Astronoby::GeocentricParallax do
       )
 
       expect(apparent_coordinates.right_ascension.str(:hms))
-        .to eq "22h 36m 43.2195s"
+        .to eq "22h 36m 43.2136s"
       expect(apparent_coordinates.declination.str(:dms))
-        .to eq "-8° 32′ 17.3947″"
+        .to eq "-8° 32′ 17.18″"
     end
 
     # Source:
@@ -105,7 +107,7 @@ RSpec.describe Astronoby::GeocentricParallax do
         right_ascension: Astronoby::Angle.from_hms(22, 36, 44),
         declination: Astronoby::Angle.from_dms(-8, 44, 24)
       )
-      distance = 0.9901 * described_class::ASTRONOMICAL_UNIT_IN_METERS
+      distance = 0.9901 * Astronoby::Constants::ASTRONOMICAL_UNIT_IN_METERS
 
       apparent_coordinates = described_class.for_equatorial_coordinates(
         latitude: latitude,
@@ -119,7 +121,7 @@ RSpec.describe Astronoby::GeocentricParallax do
       expect(apparent_coordinates.right_ascension.str(:hms))
         .to eq "22h 36m 44.2044s"
       expect(apparent_coordinates.declination.str(:dms))
-        .to eq "-8° 44′ 31.4305″"
+        .to eq "-8° 44′ 31.4304″"
     end
   end
 end
