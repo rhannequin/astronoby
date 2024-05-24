@@ -121,7 +121,7 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
-  describe "#apparent_geocentric_equatorial_coordinates" do
+  describe "#apparent_equatorial_coordinates" do
     # Source:
     #  Title: Astronomical Algorithms
     #  Author: Jean Meeus
@@ -133,7 +133,7 @@ RSpec.describe Astronoby::Moon do
       time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
       moon = described_class.new(time: time)
 
-      coordinates = moon.apparent_geocentric_equatorial_coordinates
+      coordinates = moon.apparent_equatorial_coordinates
 
       expect(coordinates.right_ascension.str(:hms)).to eq "8h 58m 45.21s"
       # Result from the book: 8h 58m 45.1s
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent geocentric equatorial coordinates for 2015-01-01" do
       moon = described_class.new(time: Time.new(2015, 1, 1, 22, 0, 0, "-05:00"))
 
-      coordinates = moon.apparent_geocentric_equatorial_coordinates
+      coordinates = moon.apparent_equatorial_coordinates
 
       expect(coordinates.right_ascension.str(:hms)).to eq "4h 16m 35.1442s"
       # Result from the book: 4h 15m 27.7703s (4.257714h)
@@ -171,7 +171,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent geocentric equatorial coordinates for 2000-08-09" do
       moon = described_class.new(time: Time.new(2000, 8, 9, 12, 0, 0, "-05:00"))
 
-      coordinates = moon.apparent_geocentric_equatorial_coordinates
+      coordinates = moon.apparent_equatorial_coordinates
 
       expect(coordinates.right_ascension.str(:hms)).to eq "17h 6m 3.1276s"
       # Result from the book: 17h 5m 41.2872s (17.094802h)
@@ -190,7 +190,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent geocentric equatorial coordinates for 2010-05-15" do
       moon = described_class.new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
 
-      coordinates = moon.apparent_geocentric_equatorial_coordinates
+      coordinates = moon.apparent_equatorial_coordinates
 
       expect(coordinates.right_ascension.str(:hms)).to eq "5h 0m 44.3733s"
       # Result from the book: 4h 59m 54.1103s (4.998364h)
@@ -209,7 +209,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent geocentric equatorial coordinates for 2003-09-01" do
       moon = described_class.new(time: Time.utc(2003, 9, 1))
 
-      coordinates = moon.apparent_geocentric_equatorial_coordinates
+      coordinates = moon.apparent_equatorial_coordinates
 
       expect(coordinates.right_ascension.str(:hms)).to eq "14h 12m 12.2352s"
       # Result from the book: 14h 12m 42s

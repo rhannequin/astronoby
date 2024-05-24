@@ -37,11 +37,10 @@ module Astronoby
 
     # @return [Astronoby::Coordinates::Equatorial] Apparent geocentric
     #   equatorial coordinates of the Moon
-    def apparent_geocentric_equatorial_coordinates
-      @apparent_geocentric_equatorial_coordinates ||= begin
-        ecliptic = apparent_ecliptic_coordinates
-        ecliptic.to_apparent_equatorial(epoch: Epoch.from_time(@time))
-      end
+    def apparent_equatorial_coordinates
+      @apparent_equatorial_coordinates ||=
+        apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: Epoch.from_time(@time))
     end
 
     def horizontal_coordinates(observer:)
@@ -51,7 +50,7 @@ module Astronoby
           longitude: observer.longitude,
           elevation: observer.elevation,
           time: @time,
-          coordinates: apparent_geocentric_equatorial_coordinates,
+          coordinates: apparent_equatorial_coordinates,
           distance: distance
         )
 
