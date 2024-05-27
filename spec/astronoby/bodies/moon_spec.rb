@@ -115,7 +115,7 @@ RSpec.describe Astronoby::Moon do
 
       distance = moon.distance
 
-      expect(distance).to eq 368409707
+      expect(distance.meters).to eq 368409707
       # Result from the book: 368409700 (36849.7 km)
       # Result from IMCCE: 368439405 (0.002462865305 AU)
     end

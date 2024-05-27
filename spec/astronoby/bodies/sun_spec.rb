@@ -235,12 +235,12 @@ RSpec.describe Astronoby::Sun do
   end
 
   describe "#earth_distance" do
-    it "returns a number in meters" do
+    it "returns a Astronoby::Distance" do
       time = Time.new
 
       sun = described_class.new(time: time)
 
-      expect(sun.earth_distance).to be_a Numeric
+      expect(sun.earth_distance).to be_a Astronoby::Distance
     end
 
     # Source:
@@ -253,7 +253,7 @@ RSpec.describe Astronoby::Sun do
 
       sun = described_class.new(time: time)
 
-      expect(sun.earth_distance.round).to eq 151_920_130_151
+      expect(sun.earth_distance.km.round).to eq 151_920_130
       # Result from the book: 1.519189×10^8 km
     end
 
@@ -267,7 +267,7 @@ RSpec.describe Astronoby::Sun do
 
       sun = described_class.new(time: time)
 
-      expect(sun.earth_distance.round).to eq 147_745_409_916
+      expect(sun.earth_distance.km.round).to eq 147_745_410
       # Result from the book: 1.478×10^8 km
     end
 
@@ -281,7 +281,7 @@ RSpec.describe Astronoby::Sun do
 
       sun = described_class.new(time: time)
 
-      expect(sun.earth_distance.round).to eq 151_683_526_945
+      expect(sun.earth_distance.km.round).to eq 151_683_527
       # Result from the book: 1.517×10^8 km
     end
 
@@ -295,7 +295,7 @@ RSpec.describe Astronoby::Sun do
 
       sun = described_class.new(time: time)
 
-      expect(sun.earth_distance.round).to eq 150_902_254_024
+      expect(sun.earth_distance.km.round).to eq 150_902_254
       # Result from the book: 1.509×10^8 km
     end
   end
