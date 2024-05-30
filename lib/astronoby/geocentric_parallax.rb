@@ -17,9 +17,7 @@ module Astronoby
     end
 
     # Correct equatorial coordinates with the equatorial horizontal parallax
-    # @param latitude [Astronoby::Angle] Observer's latitude
-    # @param longitude [Astronoby::Angle] Observer's longitude
-    # @param elevation [Astronoby::Distance] Observer's elevation above sea level
+    # @param observer [Astronoby::Observer] Observer
     # @param time [Time] Date-time of the observation
     # @param coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates of the observed body
@@ -28,52 +26,42 @@ module Astronoby
     # @return [Astronoby::Coordinates::Equatorial] Apparent equatorial
     #   coordinates with equatorial horizontal parallax
     def self.for_equatorial_coordinates(
-      latitude:,
-      longitude:,
-      elevation:,
+      observer:,
       time:,
       coordinates:,
       distance:
     )
       new(
-        latitude,
-        longitude,
-        elevation,
+        observer,
         time,
         coordinates,
         distance
       ).apply
     end
 
-    # @param latitude [Astronoby::Angle] Observer's latitude
-    # @param longitude [Astronoby::Angle] Observer's longitude
-    # @param elevation [Astronoby::Distance] Observer's elevation above sea level
+    # @param observer [Astronoby::Observer] Observer
     # @param time [Time] Date-time of the observation
     # @param coordinates [Astronoby::Coordinates::Equatorial] Equatorial
     #   coordinates of the observed body
     # @param distance [Astronoby::Distance] Distance of the observed body from
     #   the center of the Earth
     def initialize(
-      latitude,
-      longitude,
-      elevation,
+      observer,
       time,
       coordinates,
       distance
     )
-      @latitude = latitude
-      @longitude = longitude
-      @elevation = elevation
+      @observer = observer
       @time = time
       @coordinates = coordinates
       @distance = distance
     end
 
     def apply
-      term1 = Angle.atan(Constants::EARTH_FLATTENING_CORRECTION * @latitude.tan)
-      quantity1 = term1.cos + elevation_ratio * @latitude.cos
+      term1 = Angle.atan(Constants::EARTH_FLATTENING_CORRECTION * latitude.tan)
+      quantity1 = term1.cos + elevation_ratio * latitude.cos
       quantity2 = Constants::EARTH_FLATTENING_CORRECTION * term1.sin +
-        elevation_ratio * @latitude.sin
+        elevation_ratio * latitude.sin
 
       term1 = -quantity1 * equatorial_horizontal_parallax.sin * hour_angle.sin
       term2 = declination.cos - quantity1 * equatorial_horizontal_parallax.sin * hour_angle.cos
@@ -92,6 +80,10 @@ module Astronoby
 
     private
 
+    def latitude
+      @observer.latitude
+    end
+
     def right_ascension
       @coordinates.right_ascension
     end
@@ -101,12 +93,14 @@ module Astronoby
     end
 
     def hour_angle
-      @_hour_angle ||=
-        @coordinates.compute_hour_angle(time: @time, longitude: @longitude)
+      @_hour_angle ||= @coordinates.compute_hour_angle(
+        time: @time,
+        longitude: @observer.longitude
+      )
     end
 
     def elevation_ratio
-      @elevation.meters / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS.to_f
+      @observer.elevation.meters / Constants::EARTH_EQUATORIAL_RADIUS_IN_METERS.to_f
     end
 
     def equatorial_horizontal_parallax

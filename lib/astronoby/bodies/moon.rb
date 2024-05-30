@@ -46,9 +46,7 @@ module Astronoby
     def horizontal_coordinates(observer:)
       apparent_topocentric_equatorial_coordinates =
         Astronoby::GeocentricParallax.for_equatorial_coordinates(
-          latitude: observer.latitude,
-          longitude: observer.longitude,
-          elevation: observer.elevation,
+          observer: observer,
           time: @time,
           coordinates: apparent_equatorial_coordinates,
           distance: distance
