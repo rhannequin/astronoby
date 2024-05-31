@@ -80,57 +80,53 @@ module Astronoby
 
     # @return [Angle] Moon's mean longitude
     def mean_longitude
-      @mean_longitude ||= begin
-        degrees =
+      @mean_longitude ||= Angle.from_degrees(
+        (
           218.3164477 +
           481267.88123421 * elapsed_centuries -
           0.0015786 * elapsed_centuries**2 +
           elapsed_centuries**3 / 538841 -
           elapsed_centuries**4 / 65194000
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+        ) % 360
+      )
     end
 
     # @return [Angle] Moon's mean elongation
     def mean_elongation
-      @mean_elongation ||= begin
-        degrees =
+      @mean_elongation ||= Angle.from_degrees(
+        (
           297.8501921 +
           445267.1114034 * elapsed_centuries -
           0.0018819 * elapsed_centuries**2 +
           elapsed_centuries**3 / 545868 -
           elapsed_centuries**4 / 113065000
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+        ) % 360
+      )
     end
 
     # @return [Angle] Moon's mean anomaly
     def mean_anomaly
-      @mean_anomaly ||= begin
-        degrees =
+      @mean_anomaly ||= Angle.from_degrees(
+        (
           134.9633964 +
           477198.8675055 * elapsed_centuries +
           0.0087414 * elapsed_centuries**2 +
           elapsed_centuries**3 / 69699 -
           elapsed_centuries**4 / 14712000
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+        ) % 360
+      )
     end
 
     # @return [Angle] Moon's argument of latitude
     def argument_of_latitude
-      @argument_of_latitude ||= begin
-        degrees =
+      @argument_of_latitude ||= Angle.from_degrees(
+        (
           93.2720950 +
           483202.0175233 * elapsed_centuries -
           0.0036539 * elapsed_centuries**2 -
           elapsed_centuries**3 / 3526000
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+        ) % 360
+      )
     end
 
     # Source:
@@ -196,27 +192,21 @@ module Astronoby
     end
 
     def a1
-      @a1 ||= begin
-        degrees = 119.75 + 131.849 * elapsed_centuries
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+      @a1 ||= Angle.from_degrees(
+        (119.75 + 131.849 * elapsed_centuries) % 360
+      )
     end
 
     def a2
-      @a2 ||= begin
-        degrees = 53.09 + 479264.290 * elapsed_centuries
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+      @a2 ||= Angle.from_degrees(
+        (53.09 + 479264.290 * elapsed_centuries) % 360
+      )
     end
 
     def a3
-      @a3 ||= begin
-        degrees = 313.45 + 481266.484 * elapsed_centuries
-        degrees += Constants::DEGREES_PER_CIRCLE while degrees.negative?
-        Angle.from_degrees(degrees)
-      end
+      @a3 ||= Angle.from_degrees(
+        (313.45 + 481266.484 * elapsed_centuries) % 360
+      )
     end
 
     def eccentricity_correction
