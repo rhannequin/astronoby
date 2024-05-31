@@ -286,4 +286,107 @@ RSpec.describe Astronoby::Moon do
       # Result from IMCCE: +313° 25′ 58.08″
     end
   end
+
+  describe "#phase_angle" do
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk, p.346
+    it "returns the phase angle for 1992-04-12" do
+      # Example gives 1992-04-12 00:00:00 TT (and not UTC)
+      time = Time.utc(1992, 4, 12, 0, 0, 0)
+      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      moon = described_class.new(time: time)
+
+      phase_angle = moon.phase_angle
+
+      expect(phase_angle.degrees.round(4)).to eq 69.0742
+      # Result from the book: 69.0756°
+      # Result from IMCCE: 69.07611798°
+    end
+  end
+
+  describe "#illuminated_fraction" do
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk, p.346
+    it "returns the illuminated fraction for 1992-04-12" do
+      # Example gives 1992-04-12 00:00:00 TT (and not UTC)
+      time = Time.utc(1992, 4, 12, 0, 0, 0)
+      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      moon = described_class.new(time: time)
+
+      illuminated_fraction = moon.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.6786
+      # Result from the book: 0.6786
+      # Result from IMCCE: 0.679
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.180
+    it "returns the illuminated fraction for 2015-01-01" do
+      moon = described_class.new(time: Time.utc(2015, 1, 1))
+
+      illuminated_fraction = moon.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.8243
+      # Result from the book: 0.82
+      # Result from IMCCE: 0.824
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.185
+    it "returns the apparent ecliptic coordinates for 2005-08-09" do
+      moon = described_class.new(time: Time.utc(2005, 8, 9))
+
+      illuminated_fraction = moon.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.1315
+      # Result from the book: 0.13
+      # Result from IMCCE: 0.132
+    end
+
+    # Source:
+    #  Title: Celestial Calculations
+    #  Author: J. L. Lawrence
+    #  Edition: MIT Press
+    #  Chapter: 7 - The Moon, p.185
+    it "returns the apparent ecliptic coordinates for 2005-05-06" do
+      moon = described_class.new(time: Time.utc(2005, 5, 6, 14, 30))
+
+      illuminated_fraction = moon.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.0347
+      # Result from the book: 0.06
+      # Result from IMCCE: 0.035
+    end
+
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 67 - The phases of the Moon, p.171
+    it "returns the apparent ecliptic coordinates for 2003-09-01" do
+      # Example gives 2003-09-01 00:00:00 TT (and not UTC)
+      time = Time.utc(2003, 9, 1, 0, 0, 0)
+      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      moon = described_class.new(time: time)
+
+      illuminated_fraction = moon.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.2257
+      # Result from the book: 0.225
+      # Result from IMCCE: 0.226
+    end
+  end
 end

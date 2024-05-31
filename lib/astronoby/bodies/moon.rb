@@ -120,6 +120,37 @@ module Astronoby
       end
     end
 
+    # @return [Angle] Moon's phase angle
+    def phase_angle
+      @phase_angle ||= begin
+        sun_apparent_equatorial_coordinates = sun
+          .apparent_ecliptic_coordinates
+          .to_apparent_equatorial(epoch: Epoch.from_time(@time))
+        moon_apparent_equatorial_coordinates = apparent_equatorial_coordinates
+        geocentric_elongation = Angle.acos(
+          sun_apparent_equatorial_coordinates.declination.sin *
+            moon_apparent_equatorial_coordinates.declination.sin +
+            sun_apparent_equatorial_coordinates.declination.cos *
+            moon_apparent_equatorial_coordinates.declination.cos *
+            (
+              sun_apparent_equatorial_coordinates.right_ascension -
+              moon_apparent_equatorial_coordinates.right_ascension
+            ).cos
+        )
+
+        term1 = sun.earth_distance.km * geocentric_elongation.sin
+        term2 = distance.km - sun.earth_distance.km * geocentric_elongation.cos
+        angle = Angle.atan(term1 / term2)
+        Astronoby::Util::Trigonometry
+          .adjustement_for_arctangent(term1, term2, angle)
+      end
+    end
+
+    # @return [Float] Moon's illuminated fraction
+    def illuminated_fraction
+      @illuminated_fraction ||= (1 + phase_angle.cos) / 2
+    end
+
     private
 
     def terrestrial_time
@@ -137,8 +168,12 @@ module Astronoby
       (julian_date - Epoch::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
     end
 
+    def sun
+      @sun ||= Sun.new(time: @time)
+    end
+
     def sun_mean_anomaly
-      @sun_mean_anomaly ||= Sun.new(time: @time).mean_anomaly
+      @sun_mean_anomaly ||= sun.mean_anomaly
     end
 
     def a1
