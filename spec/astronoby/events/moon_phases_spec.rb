@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+RSpec.describe Astronoby::Events::MoonPhases do
+  it "returns a list of Moon phases" do
+    expect(described_class.phases_for(year: 2024, month: 1))
+      .to all(be_a(Astronoby::MoonPhase))
+  end
+
+  it "returns the phases for a given year and month: January 2024" do
+    moon_phases = described_class.phases_for(year: 2024, month: 1)
+
+    expect(moon_phases[0].phase).to eq(:last_quarter)
+    expect(moon_phases[0].time).to eq(Time.utc(2024, 1, 4, 3, 30, 26))
+    # Result from IMCCE: 2024-01-04T03:30:27Z
+
+    expect(moon_phases[1].phase).to eq(:new_moon)
+    expect(moon_phases[1].time).to eq(Time.utc(2024, 1, 11, 11, 57, 23))
+    # Result from IMCCE: 2024-01-11T11:57:25Z
+
+    expect(moon_phases[2].phase).to eq(:first_quarter)
+    expect(moon_phases[2].time).to eq(Time.utc(2024, 1, 18, 3, 52, 37))
+    # Result from IMCCE: 2024-01-18T03:52:37Z
+
+    expect(moon_phases[3].phase).to eq(:full_moon)
+    expect(moon_phases[3].time).to eq(Time.utc(2024, 1, 25, 17, 54, 1))
+    # Result from IMCCE: 2024-01-25T17:54:01Z
+  end
+
+  context "when there are more than 4 phases in a month" do
+    it "returns all of them" do
+      moon_phases = described_class.phases_for(year: 2024, month: 5)
+
+      expect(moon_phases.map(&:phase))
+        .to eq(%i[last_quarter new_moon first_quarter full_moon last_quarter])
+    end
+  end
+end
