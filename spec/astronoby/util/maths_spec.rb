@@ -56,7 +56,7 @@ RSpec.describe Astronoby::Util::Maths do
         expect { described_class.interpolate([1, 2, 3], 4) }
           .to raise_error(
             Astronoby::IncompatibleArgumentsError,
-            "Interpolation factor must be between 0 and 1"
+            "Interpolation factor must be between 0 and 1, got 4"
           )
       end
     end

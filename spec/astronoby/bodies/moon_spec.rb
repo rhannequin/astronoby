@@ -397,4 +397,153 @@ RSpec.describe Astronoby::Moon do
       # Result from IMCCE: 0.226
     end
   end
+
+  describe "#observation_events" do
+    describe "#rising_time" do
+      it "returns the moonrise time on 2024-05-31" do
+        time = Time.utc(2024, 5, 31)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        rising_time = observation_events.rising_time
+
+        expect(rising_time).to eq Time.utc(2024, 5, 31, 0, 29, 50)
+        # Time from IMCCE: 2024-05-31T00:30:47
+      end
+    end
+
+    it "returns the sunrise time on 1991-03-14" do
+      time = Time.utc(1991, 3, 14)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8566),
+        longitude: Astronoby::Angle.from_degrees(2.3522)
+      )
+      moon = described_class.new(time: time)
+      observation_events = moon.observation_events(observer: observer)
+
+      rising_time = observation_events.rising_time
+
+      expect(rising_time).to eq Time.utc(1991, 3, 14, 5, 6, 51)
+      # Time from IMCCE: 1991-03-14T05:08:08
+    end
+
+    describe "#rising_azimuth" do
+      it "returns the moonrise azimuth on 2024-05-31" do
+        time = Time.utc(2024, 5, 31)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        rising_azimuth = observation_events.rising_azimuth
+
+        expect(rising_azimuth.str(:dms)).to eq "+98° 47′ 20.2285″"
+        # Time from IMCCE: +98° 37′ 50″
+      end
+    end
+
+    describe "#transit_time" do
+      it "returns the Moon's transit time on 2024-05-31" do
+        time = Time.utc(2024, 5, 31)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        transit_time = observation_events.transit_time
+
+        expect(transit_time).to eq Time.utc(2024, 5, 31, 6, 41, 22)
+        # Time from IMCCE: 2024-05-31T06:41:19
+      end
+
+      it "returns the Moon's transit time on 1991-03-14" do
+        time = Time.utc(1991, 3, 14)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.8566),
+          longitude: Astronoby::Angle.from_degrees(2.3522)
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        transit_time = observation_events.transit_time
+
+        expect(transit_time).to eq Time.utc(1991, 3, 14, 10, 29, 26)
+        # Time from IMCCE: 1991-03-14T10:29:23
+      end
+    end
+
+    describe "#transit_altitude" do
+      it "returns the moonrise azimuth on 2024-05-31" do
+        time = Time.utc(2024, 5, 31)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        transit_altitude = observation_events.transit_altitude
+
+        expect(transit_altitude.str(:dms)).to eq "+83° 2′ 9.8145″"
+        # Time from IMCCE: +82° 55′ 41″
+      end
+    end
+
+    describe "#setting_time" do
+      it "returns the moonset time on 2024-05-31" do
+        time = Time.utc(2024, 5, 31)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        setting_time = observation_events.setting_time
+
+        expect(setting_time).to eq Time.utc(2024, 5, 31, 12, 52, 48)
+        # Time from IMCCE: 2024-05-31T12:51:47
+      end
+
+      it "returns the moonset time on 1991-03-14" do
+        time = Time.utc(1991, 3, 14)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.8566),
+          longitude: Astronoby::Angle.from_degrees(2.3522)
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        setting_time = observation_events.setting_time
+
+        expect(setting_time).to eq Time.utc(1991, 3, 14, 16, 4, 3)
+        # Time from IMCCE: 1991-03-14T16:02:38
+      end
+    end
+
+    describe "#setting_azimuth" do
+      it "returns the moonset azimuth on 2024-05-31" do
+        time = Time.utc(2024, 5, 31)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero
+        )
+        moon = described_class.new(time: time)
+        observation_events = moon.observation_events(observer: observer)
+
+        setting_azimuth = observation_events.setting_azimuth
+
+        expect(setting_azimuth.str(:dms)).to eq "+264° 35′ 11.0134″"
+        # Time from IMCCE: +264° 45′ 18″
+      end
+    end
+  end
 end

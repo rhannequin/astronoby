@@ -16,7 +16,7 @@ module Astronoby
         def interpolate(values, factor)
           unless factor.between?(0, 1)
             raise IncompatibleArgumentsError,
-              "Interpolation factor must be between 0 and 1"
+              "Interpolation factor must be between 0 and 1, got #{factor}"
           end
 
           if values.length == 3
