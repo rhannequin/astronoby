@@ -7,6 +7,54 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.4.0 to 0.5.0
+
+### `Sun#horizontal_coordinates` method signature changed ([#69])
+
+`Astronoby::Sun#horizontal_coordinates` expects an `observer`
+(`Astronoby::Observer`) key argument instead of `latitude` and `longitude`
+angles.
+
+[#69]: https://github.com/rhannequin/astronoby/pull/69
+
+### `Sun#distance` now returns an `Astronoby::Distance` ([#78])
+
+[#78]: https://github.com/rhannequin/astronoby/pull/78
+
+### `Coordinates::Equatorial#to_horizontal` method signature changed ([#69])
+
+`Astronoby::Coordinates::Equatorial#to_horizontal` expects an `observer`
+(`Astronoby::Observer`) key argument instead of `latitude` and `longitude`
+angles.
+
+### `Coordinates::Horizontal` constructor and attributes changed ([#69])
+
+`Astronoby::Coordinates::Horizontal::new` now expects an `observer`
+(`Astronoby::Observer`) key argument instead of `latitude` and `longitude`,
+and therefore now exposes `#observer` instead of `#latitude` and `#longitude`.
+
+### `GeocentricParallax#angle` method signature changed ([#78])
+
+`Astronoby::GeocentricParallax#angle`'s key argument `distance` is now
+expected to be an instance of `Astronoby::Distance` instead of a `Numeric`.
+
+### `GeocentricParallax#for_equatorial_coordinates` method signature changed ([#69])
+
+`Astronoby::GeocentricParallax#for_equatorial_coordinates` expects an
+`observer` (`Astronoby::Observer`) key argument instead of `latitude`,
+`longitude` and `elevation`.
+
+### `Observer` constructor changed ([#78])
+
+`Astronoby::Observer::new`'s key argument `distance` is now expected to be
+an instance of `Astronoby::Distance` instead of a `Numeric`.
+
+### `Refraction` methods signatures changed ([#69])
+
+`Astronoby::Refraction`'s constructor doesn't accept the `observer` key
+argument anymore. Therefore, the methods `::angle` and
+`::correct_horizontal_coordinates` neither.
+
 ## Upgrading from 0.3.0 to 0.4.0
 
 ### `Body` class removed ([#50])
