@@ -11,6 +11,27 @@ The main reference is:
 - _Practical Astronomy with your Calculator or Spreadsheet_ by Peter
   Duffet-Smith and Jonathan Zwart
 
+## Content
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Angle manipulation](#angle-manipulation)
+  - [Coordinates conversion](#coordinates-conversion)
+  - [Sun](#sun)
+    - [Sun's location in the sky](#suns-location-in-the-sky)
+    - [Sunrise and sunset times and azimuths](#sunrise-and-sunset-times-and-azimuths)
+    - [Twilight times](#twilight-times)
+  - [Solstice and Equinox times](#solstice-and-equinox-times)
+  - [Moon](#moon)
+    - [Moon's location in the sky](#moons-location-in-the-sky)
+    - [Moon's current attributes](#moons-current-attributes)
+    - [Moon's phases of the month](#moons-phases-of-the-month)
+    - [Moonrise and moonset times and azimuths](#moonrise-and-moonset-times-and-azimuths)
+- [Precision](#precision)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
@@ -46,6 +67,27 @@ angle.cos
 # => 1.0
 ```
 
+### Distance manipulation
+
+```rb
+distance1 = Astronoby::Distance.from_astronomical_units(1)
+distance2 = Astronoby::Distance.from_kilometers(149_597_870.7)
+distance3 = Astronoby::Distance.from_meters(300)
+
+distance1 == distance2
+# => true
+
+distance1 > distance3
+# => true
+
+distance =
+  Astronoby::Distance.from_m(300) +
+  Astronoby::Distance.from_km(3)
+
+distance.km
+# => 3.3
+```
+
 ### Coordinates conversion
 
 ```rb
@@ -71,7 +113,9 @@ horizontal.azimuth.str(:dms)
 # => "+341° 33′ 21.587″"
 ```
 
-### Sun's location in the sky
+### Sun
+
+#### Sun's location in the sky
 
 ```rb
 time = Time.utc(2023, 2, 17, 11, 0, 0)
@@ -83,7 +127,9 @@ observer = Astronoby::Observer.new(
 
 sun = Astronoby::Sun.new(time: time)
 
-horizontal_coordinates = sun.horizontal_coordinates(observer: observer)
+horizontal_coordinates = sun.horizontal_coordinates(
+  observer: observer
+)
 
 horizontal_coordinates.altitude.degrees
 # => 27.500082409271247
@@ -92,7 +138,7 @@ horizontal_coordinates.altitude.str(:dms)
 # => "+27° 30′ 0.2966″"
 ```
 
-### Sunrise and sunset times and azimuths
+#### Sunrise and sunset times and azimuths
 
 ```rb
 time = Time.new(2015, 2, 5)
@@ -107,22 +153,22 @@ observation_events.rising_time
 # => 2015-02-05 12:12:59 UTC
 
 observation_events.rising_azimuth.str(:dms)
-# => "+109° 46′ 43.145″"
+# => "+109° 29′ 34.3674″"
 
 observation_events.transit_time
 # => 2015-02-05 17:25:59 UTC
 
 observation_events.transit_altitude.str(:dms)
-# => "+36° 8′ 15.7638″"
+# => "+36° 8′ 15.8197″"
 
 observation_events.setting_time
 # => 2015-02-05 22:39:27 UTC
 
 observation_events.setting_azimuth.str(:dms)
-# => "+250° 23′ 33.614″"
+# => "+250° 40′ 42.8609″"
 ```
 
-### Twilight times
+#### Twilight times
 
 ```rb
 time = Time.new(2024, 1, 1)
@@ -162,6 +208,92 @@ Astronoby::EquinoxSolstice.march_equinox(year)
 
 Astronoby::EquinoxSolstice.june_solstice(year)
 # => 2024-06-20 20:50:18 UTC
+```
+
+### Moon
+
+#### Moon's location in the sky
+
+```rb
+time = Time.utc(2023, 2, 17, 11, 0, 0)
+
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(48.8566),
+  longitude: Astronoby::Angle.from_degrees(2.3522)
+)
+
+moon = Astronoby::Moon.new(time: time)
+
+horizontal_coordinates = moon.horizontal_coordinates(
+  observer: observer
+)
+
+horizontal_coordinates.altitude.degrees
+# => 10.277834691708053
+
+horizontal_coordinates.altitude.str(:dms)
+# => "+10° 16′ 40.2048″"
+```
+
+#### Moon's current attributes
+
+```rb
+time = Time.utc(2024, 6, 1, 10, 0, 0)
+moon = Astronoby::Moon.new(time: time)
+
+moon.illuminated_fraction.round(2)
+# => 0.31
+
+moon.distance.km.round
+# => 368409
+
+moon.phase_angle.degrees.round
+# => 112
+```
+
+#### Moon's phases of the month
+
+```rb
+june_phases = Astronoby::Moon.monthly_phase_events(
+  year: 2024,
+  month: 6
+)
+
+june_phases.each { puts "#{_1.phase}: #{_1.time}" }
+# new_moon: 2024-06-06 12:37:41 UTC
+# first_quarter: 2024-06-14 05:18:28 UTC
+# full_moon: 2024-06-22 01:07:53 UTC
+# last_quarter: 2024-06-28 21:53:25 UTC
+```
+
+#### Moonrise and moonset times and azimuths
+
+```rb
+time = Time.utc(2024, 6, 1, 10, 0, 0)
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(48.8566),
+  longitude: Astronoby::Angle.from_degrees(2.3522)
+)
+moon = Astronoby::Moon.new(time: time)
+observation_events = moon.observation_events(observer: observer)
+
+observation_events.rising_time
+# => 2024-06-01 00:35:36 UTC
+
+observation_events.rising_azimuth.str(:dms)
+# => "+93° 7′ 43.2347″"
+
+observation_events.transit_time
+# => 2024-06-01 02:42:43 UTC
+
+observation_events.transit_altitude.str(:dms)
+# => "+26° 59′ 30.9915″"
+
+observation_events.setting_time
+# => 2024-06-01 16:02:26 UTC
+
+observation_events.setting_azimuth.str(:dms)
+# => "+273° 29′ 30.0954″"
 ```
 
 ## Precision
