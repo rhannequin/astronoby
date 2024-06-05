@@ -2,6 +2,7 @@
 
 module Astronoby
   class Moon
+    SEMIDIAMETER_VARIATION = 0.7275
     MEAN_GEOCENTRIC_DISTANCE = Astronoby::Distance.from_meters(385_000_560)
 
     # Source:
@@ -164,6 +165,44 @@ module Astronoby
     # @return [Float] Moon's illuminated fraction
     def illuminated_fraction
       @illuminated_fraction ||= (1 + phase_angle.cos) / 2
+    end
+
+    # @param observer [Astronoby::Observer] Observer of the event
+    # @return [Astronoby::Events::ObservationEvents] Moon's observation events
+    def observation_events(observer:)
+      today = @time.to_date
+      leap_seconds = Util::Time.terrestrial_universal_time_delta(today)
+      yesterday = today.prev_day
+      yesterday_midnight_terrestrial_time =
+        Time.utc(yesterday.year, yesterday.month, yesterday.day) - leap_seconds
+      today_midnight_terrestrial_time =
+        Time.utc(today.year, today.month, today.day) - leap_seconds
+      tomorrow = today.next_day
+      tomorrow_midnight_terrestrial_time =
+        Time.utc(tomorrow.year, tomorrow.month, tomorrow.day) - leap_seconds
+
+      coordinates_of_the_previous_day = self.class
+        .new(time: yesterday_midnight_terrestrial_time)
+        .apparent_equatorial_coordinates
+      coordinates_of_the_day = self.class
+        .new(time: today_midnight_terrestrial_time)
+        .apparent_equatorial_coordinates
+      coordinates_of_the_next_day = self.class
+        .new(time: tomorrow_midnight_terrestrial_time)
+        .apparent_equatorial_coordinates
+      additional_altitude = -Angle.from_degrees(
+        SEMIDIAMETER_VARIATION *
+          GeocentricParallax.angle(distance: distance).degrees
+      )
+
+      Events::ObservationEvents.new(
+        observer: observer,
+        date: today,
+        coordinates_of_the_previous_day: coordinates_of_the_previous_day,
+        coordinates_of_the_day: coordinates_of_the_day,
+        coordinates_of_the_next_day: coordinates_of_the_next_day,
+        additional_altitude: additional_altitude
+      )
     end
 
     private

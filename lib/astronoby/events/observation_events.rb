@@ -6,6 +6,7 @@ module Astronoby
       STANDARD_ALTITUDE = Angle.from_dms(0, -34, 0)
       RISING_SETTING_HOUR_ANGLE_RATIO_RANGE = (-1..1)
       EARTH_SIDEREAL_ROTATION_RATE = 360.98564736629
+      ITERATION_PRECISION = 0.0001
 
       attr_reader :rising_time,
         :rising_azimuth,
@@ -51,46 +52,80 @@ module Astronoby
       private
 
       def compute
-        @transit_time = Util::Time.decimal_hour_to_time(@date, initial_transit)
+        @initial_transit = initial_transit
+        @transit_time = Util::Time.decimal_hour_to_time(@date, @initial_transit)
         @transit_altitude = local_horizontal_altitude_transit
 
         return if h0.nil?
 
-        delta_m_rising = (local_horizontal_altitude_rising - shift).degrees./(
-          Constants::DEGREES_PER_CIRCLE *
-            declination_rising.cos *
-            @observer.latitude.cos *
-            local_hour_angle_rising.sin
-        )
-        delta_m_transit = -local_hour_angle_transit.degrees / Constants::DEGREES_PER_CIRCLE
-        delta_m_setting = (local_horizontal_altitude_setting - shift).degrees./(
-          Constants::DEGREES_PER_CIRCLE *
-            declination_setting.cos *
-            @observer.latitude.cos *
-            local_hour_angle_setting.sin
+        initial_rising = rationalize_decimal_time(
+          @initial_transit - h0.degrees / Constants::DEGREES_PER_CIRCLE
         )
 
-        corrected_rising = rationalize_decimal_hours(
-          Constants::HOURS_PER_DAY * (initial_rising + delta_m_rising)
-        )
-        corrected_transit = rationalize_decimal_hours(
-          Constants::HOURS_PER_DAY * (initial_transit + delta_m_transit)
-        )
-        corrected_setting = rationalize_decimal_hours(
-          Constants::HOURS_PER_DAY * (initial_setting + delta_m_setting)
+        initial_setting = rationalize_decimal_time(
+          @initial_transit + h0.degrees / Constants::DEGREES_PER_CIRCLE
         )
 
-        @rising_time = Util::Time.decimal_hour_to_time(@date, corrected_rising)
+        @final_rising, @final_transit, @final_setting =
+          iterate(initial_rising, @initial_transit, initial_setting)
+
+        rationalized_corrected_rising = rationalize_decimal_hours(
+          Constants::HOURS_PER_DAY * @final_rising
+        )
+        rationalized_corrected_transit = rationalize_decimal_hours(
+          Constants::HOURS_PER_DAY * @final_transit
+        )
+        rationalized_corrected_setting = rationalize_decimal_hours(
+          Constants::HOURS_PER_DAY * @final_setting
+        )
+
+        @rising_time = Util::Time.decimal_hour_to_time(@date, rationalized_corrected_rising)
         @rising_azimuth = local_horizontal_azimuth_rising
-        @transit_time = Util::Time.decimal_hour_to_time(@date, corrected_transit)
-        @setting_time = Util::Time.decimal_hour_to_time(@date, corrected_setting)
+        @transit_time = Util::Time.decimal_hour_to_time(@date, rationalized_corrected_transit)
+        @transit_altitude = local_horizontal_altitude_transit
+        @setting_time = Util::Time.decimal_hour_to_time(@date, rationalized_corrected_setting)
         @setting_azimuth = local_horizontal_azimuth_setting
+      end
+
+      def iterate(initial_rising, initial_transit, initial_setting)
+        delta = 1
+        corrected_rising = initial_rising
+        corrected_transit = initial_transit
+        corrected_setting = initial_setting
+        until delta < ITERATION_PRECISION
+          iterate = RiseTransitSetIteration.new(
+            observer: @observer,
+            date: @date,
+            coordinates_of_the_next_day: @coordinates_of_the_next_day,
+            coordinates_of_the_day: @coordinates_of_the_day,
+            coordinates_of_the_previous_day: @coordinates_of_the_previous_day,
+            shift: shift,
+            initial_rising: corrected_rising,
+            initial_transit: corrected_transit,
+            initial_setting: corrected_setting
+          ).iterate
+          delta = iterate.sum
+          corrected_rising = rationalize_decimal_time corrected_rising + iterate[0]
+          corrected_transit = rationalize_decimal_time corrected_transit + iterate[1]
+          corrected_setting = rationalize_decimal_time corrected_setting + iterate[2]
+        end
+        [corrected_rising, corrected_transit, corrected_setting]
       end
 
       def observer_longitude
         # Longitude must be treated positively westwards from the meridian of
         # Greenwich, and negatively to the east
-        @observer_longitude ||= -@observer.longitude
+        -@observer.longitude
+      end
+
+      def initial_transit
+        rationalize_decimal_time(
+          (
+            @coordinates_of_the_day.right_ascension.degrees +
+              observer_longitude.degrees -
+              apparent_gst_at_midnight.degrees
+          ) / Constants::DEGREES_PER_CIRCLE
+        )
       end
 
       def h0
@@ -106,115 +141,46 @@ module Astronoby
       end
 
       def apparent_gst_at_midnight
-        @apparent_gst_at_midnight ||= Angle.from_hours(
+        Angle.from_hours(
           GreenwichSiderealTime.from_utc(
             Time.utc(@date.year, @date.month, @date.day)
           ).time
         )
       end
 
-      def initial_transit
-        @initial_transit ||= rationalize_decimal_time(
-          (
-            @coordinates_of_the_day.right_ascension.degrees +
-              observer_longitude.degrees -
-              apparent_gst_at_midnight.degrees
-          ) / Constants::DEGREES_PER_CIRCLE
-        )
-      end
-
-      def initial_rising
-        @initial_rising ||=
-          rationalize_decimal_time(
-            initial_transit - h0.degrees / Constants::DEGREES_PER_CIRCLE
-          )
-      end
-
-      def initial_setting
-        @initial_setting ||=
-          rationalize_decimal_time(
-            initial_transit + h0.degrees / Constants::DEGREES_PER_CIRCLE
-          )
-      end
-
-      def gst_rising
-        @gst_rising ||= Angle.from_degrees(
-          apparent_gst_at_midnight.degrees +
-            EARTH_SIDEREAL_ROTATION_RATE * initial_rising
-        )
-      end
-
       def gst_transit
-        @gst_transit ||= Angle.from_degrees(
+        Angle.from_degrees(
           apparent_gst_at_midnight.degrees +
-            EARTH_SIDEREAL_ROTATION_RATE * initial_transit
-        )
-      end
-
-      def gst_setting
-        @gst_setting ||= Angle.from_degrees(
-          apparent_gst_at_midnight.degrees +
-            EARTH_SIDEREAL_ROTATION_RATE * initial_setting
+            EARTH_SIDEREAL_ROTATION_RATE * (@final_transit || @initial_transit)
         )
       end
 
       def leap_day_portion
-        @leap_day_portion ||= begin
-          leap_seconds = Util::Time.terrestrial_universal_time_delta(@date)
-          leap_seconds / Constants::SECONDS_PER_DAY
-        end
-      end
-
-      def local_hour_angle_rising
-        @local_hour_angle_rising ||=
-          gst_rising - observer_longitude - right_ascension_rising
+        leap_seconds = Util::Time.terrestrial_universal_time_delta(@date)
+        leap_seconds / Constants::SECONDS_PER_DAY
       end
 
       def local_hour_angle_transit
-        @local_hour_angle_transit ||=
-          gst_transit - observer_longitude - right_ascension_transit
-      end
-
-      def local_hour_angle_setting
-        @local_hour_angle_setting ||=
-          gst_setting - observer_longitude - right_ascension_setting
-      end
-
-      def local_horizontal_altitude_rising
-        @local_horizontal_altitude_rising ||= Angle.asin(
-          @observer.latitude.sin * declination_rising.sin +
-            @observer.latitude.cos * declination_rising.cos * local_hour_angle_rising.cos
-        )
+        gst_transit - observer_longitude - right_ascension_transit
       end
 
       def local_horizontal_azimuth_rising
-        @local_horizontal_azimuth_rising ||= begin
-          shift = -@standard_altitude
-          term1 = declination_rising.sin + shift.sin * @observer.latitude.cos
-          term2 = shift.cos * @observer.latitude.cos
-          angle = term1 / term2
-          Angle.acos(angle)
-        end
+        term1 = declination_rising.sin + (-shift).sin * @observer.latitude.cos
+        term2 = (-shift).cos * @observer.latitude.cos
+        angle = term1 / term2
+        Angle.acos(angle)
       end
 
       def local_horizontal_altitude_transit
-        @local_horizontal_altitude_transit ||= Angle.asin(
+        Angle.asin(
           @observer.latitude.sin * declination_transit.sin +
             @observer.latitude.cos * declination_transit.cos * local_hour_angle_transit.cos
         )
       end
 
-      def local_horizontal_altitude_setting
-        @local_horizontal_altitude_setting ||= Angle.asin(
-          @observer.latitude.sin * declination_setting.sin +
-            @observer.latitude.cos * declination_setting.cos * local_hour_angle_setting.cos
-        )
-      end
-
       def local_horizontal_azimuth_setting
-        shift = -@standard_altitude
-        term1 = declination_setting.sin + shift.sin * @observer.latitude.cos
-        term2 = shift.cos * @observer.latitude.cos
+        term1 = declination_setting.sin + (-shift).sin * @observer.latitude.cos
+        term2 = (-shift).cos * @observer.latitude.cos
         angle = term1 / term2
         Angle.from_degrees(
           Constants::DEGREES_PER_CIRCLE - Angle.acos(angle).degrees
@@ -233,19 +199,6 @@ module Astronoby
         decimal_hours
       end
 
-      def right_ascension_rising
-        Angle.from_degrees(
-          Util::Maths.interpolate(
-            [
-              @coordinates_of_the_previous_day.right_ascension.degrees,
-              @coordinates_of_the_day.right_ascension.degrees,
-              @coordinates_of_the_next_day.right_ascension.degrees
-            ],
-            initial_rising + leap_day_portion
-          )
-        )
-      end
-
       def right_ascension_transit
         Angle.from_degrees(
           Util::Maths.interpolate(
@@ -254,20 +207,7 @@ module Astronoby
               @coordinates_of_the_day.right_ascension.degrees,
               @coordinates_of_the_next_day.right_ascension.degrees
             ],
-            initial_transit + leap_day_portion
-          )
-        )
-      end
-
-      def right_ascension_setting
-        Angle.from_degrees(
-          Util::Maths.interpolate(
-            [
-              @coordinates_of_the_previous_day.right_ascension.degrees,
-              @coordinates_of_the_day.right_ascension.degrees,
-              @coordinates_of_the_next_day.right_ascension.degrees
-            ],
-            initial_setting + leap_day_portion
+            (@final_transit || @initial_transit) + leap_day_portion
           )
         )
       end
@@ -280,7 +220,7 @@ module Astronoby
               @coordinates_of_the_day.declination.degrees,
               @coordinates_of_the_next_day.declination.degrees
             ],
-            initial_rising + leap_day_portion
+            @final_rising + leap_day_portion
           )
         )
       end
@@ -293,7 +233,7 @@ module Astronoby
               @coordinates_of_the_day.declination.degrees,
               @coordinates_of_the_next_day.declination.degrees
             ],
-            initial_transit + leap_day_portion
+            (@final_transit || @initial_transit) + leap_day_portion
           )
         )
       end
@@ -306,7 +246,7 @@ module Astronoby
               @coordinates_of_the_day.declination.degrees,
               @coordinates_of_the_next_day.declination.degrees
             ],
-            initial_setting + leap_day_portion
+            @final_setting + leap_day_portion
           )
         )
       end

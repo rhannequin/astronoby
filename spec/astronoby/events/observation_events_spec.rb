@@ -557,7 +557,7 @@ RSpec.describe Astronoby::Events::ObservationEvents do
         coordinates_of_the_next_day: coordinates_of_the_day
       ).transit_altitude
 
-      expect(transit_altitude.str(:dms)).to eq "+89° 4′ 6.548″"
+      expect(transit_altitude.str(:dms)).to eq "+89° 12′ 0.5961″"
       # Azimuth from SkySafari: +89° 12′ 1.4″
     end
 
