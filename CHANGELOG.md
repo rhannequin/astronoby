@@ -1,5 +1,65 @@
 # Changelog
 
+## 0.5.0 - 2024-06-11
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
+
+### Features
+
+* Make `Sun#mean_anomaly` public ([#72])
+* Moon ecliptic coordinates ([#73])
+* Moon apparent geocentric equatorial coordinates ([#75])
+* Moon horizontal coordinates ([#76])
+* Assume Moon's equatorial coordinates are geocentric ([#77])
+* Use observer object for geocentric parallax ([#79])
+* Moon's phase angle and illuminated fraction ([#80])
+* Monthly Moon phases ([#82])
+* Rationalize negative degree angles ([#83])
+* Factorize Moon phases periodic terms ([#85])
+* Introduce observation events for Moon ([#86])
+
+[#72]: https://github.com/rhannequin/astronoby/pull/72
+[#73]: https://github.com/rhannequin/astronoby/pull/73
+[#75]: https://github.com/rhannequin/astronoby/pull/75
+[#76]: https://github.com/rhannequin/astronoby/pull/76
+[#77]: https://github.com/rhannequin/astronoby/pull/77
+[#79]: https://github.com/rhannequin/astronoby/pull/79
+[#80]: https://github.com/rhannequin/astronoby/pull/80
+[#82]: https://github.com/rhannequin/astronoby/pull/82
+[#83]: https://github.com/rhannequin/astronoby/pull/83
+[#85]: https://github.com/rhannequin/astronoby/pull/85
+[#86]: https://github.com/rhannequin/astronoby/pull/86
+
+### Improvements
+
+* Create FUNDING.yml ([#70])
+* Bump standard from 1.35.1 to 1.36.0 ([#71])
+* Bump rexml from 3.2.6 to 3.2.8 ([#74])
+* Expand the number of tested Ruby versions ([#84])
+* Add Ruby 3.1.6 and 3.3.2 coverage ([#88])
+* Improve and update documentation ([#87])
+* Update UPGRADING.md ([#89])
+
+[#70]: https://github.com/rhannequin/astronoby/pull/70
+[#71]: https://github.com/rhannequin/astronoby/pull/71
+[#74]: https://github.com/rhannequin/astronoby/pull/74
+[#84]: https://github.com/rhannequin/astronoby/pull/84
+[#88]: https://github.com/rhannequin/astronoby/pull/88
+[#87]: https://github.com/rhannequin/astronoby/pull/87
+[#89]: https://github.com/rhannequin/astronoby/pull/89
+
+### Backward-incompatible changes
+
+* Use Observer in Horizontal coordinates ([#69])
+* Introduce `Astronoby::Distance` value object ([#78])
+
+[#69]: https://github.com/rhannequin/astronoby/pull/69
+[#78]: https://github.com/rhannequin/astronoby/pull/78
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.4.0...v0.5.0
+
 ## 0.4.0 - 2024-04-29
 
 _If you are upgrading: please see [UPGRADING.md]._
