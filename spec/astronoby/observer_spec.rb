@@ -9,6 +9,7 @@ RSpec.describe Astronoby::Observer do
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
@@ -16,6 +17,7 @@ RSpec.describe Astronoby::Observer do
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
@@ -28,6 +30,7 @@ RSpec.describe Astronoby::Observer do
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
@@ -35,6 +38,7 @@ RSpec.describe Astronoby::Observer do
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 15
       )
@@ -44,11 +48,12 @@ RSpec.describe Astronoby::Observer do
   end
 
   describe "hash equality" do
-    it "makes an angle foundable as a Hash key" do
+    it "makes an observer foundable as a Hash key" do
       observer1 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
@@ -56,6 +61,7 @@ RSpec.describe Astronoby::Observer do
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
@@ -64,11 +70,12 @@ RSpec.describe Astronoby::Observer do
       expect(map[observer2]).to eq :observer
     end
 
-    it "makes an angle foundable in a Set" do
+    it "makes an observer foundable in a Set" do
       observer1 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
@@ -76,6 +83,7 @@ RSpec.describe Astronoby::Observer do
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
+        utc_offset: "+01:00",
         temperature: 280,
         pressure: 10
       )
