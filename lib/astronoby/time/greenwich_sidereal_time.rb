@@ -65,7 +65,7 @@ module Astronoby
 
       utc = SIDEREAL_MINUTE_IN_UT_MINUTE * a
 
-      Util::Time.decimal_hour_to_time(date, utc)
+      Util::Time.decimal_hour_to_time(date, 0, utc)
     end
 
     def to_lst(longitude:)

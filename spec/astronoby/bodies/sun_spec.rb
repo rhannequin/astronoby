@@ -427,19 +427,36 @@ RSpec.describe Astronoby::Sun do
       end
 
       context "when the given time includes a time zone far from the Greenwich meridian" do
-        it "returns the sunrise time for the right date" do
-          time = Time.new(1991, 3, 14, 0, 0, 0, "-10:00")
+        it "returns the sunrise time for the right date when the offset is positive" do
+          time = Time.utc(1991, 3, 14)
           observer = Astronoby::Observer.new(
             latitude: Astronoby::Angle.from_degrees(-17.6509),
-            longitude: Astronoby::Angle.from_degrees(-149.4260)
+            longitude: Astronoby::Angle.from_degrees(-149.4260),
+            utc_offset: "+12:00"
           )
           sun = described_class.new(time: time)
           observation_events = sun.observation_events(observer: observer)
 
           rising_time = observation_events.rising_time
 
-          expect(rising_time).to eq Time.utc(1991, 3, 14, 16, 0, 16)
-          # Time from IMCCE: 1991-03-14T16:01:12
+          expect(rising_time.getlocal(observer.utc_offset).to_date)
+            .to eq time.to_date
+        end
+
+        it "returns the sunrise time for the right date when the offset is negative" do
+          time = Time.utc(1991, 3, 14)
+          observer = Astronoby::Observer.new(
+            latitude: Astronoby::Angle.from_degrees(-17.6509),
+            longitude: Astronoby::Angle.from_degrees(-149.4260),
+            utc_offset: "-12:00"
+          )
+          sun = described_class.new(time: time)
+          observation_events = sun.observation_events(observer: observer)
+
+          rising_time = observation_events.rising_time
+
+          expect(rising_time.getlocal(observer.utc_offset).to_date)
+            .to eq time.to_date
         end
       end
     end
@@ -563,19 +580,36 @@ RSpec.describe Astronoby::Sun do
     end
 
     context "when the given time includes a time zone far from the Greenwich meridian" do
-      it "returns the sunset time for the right date" do
-        time = Time.new(1991, 3, 14, 6, 0, 0, "+12:00")
+      it "returns the sunset time for the right date when the offset is positive" do
+        time = Time.utc(2024, 9, 11)
         observer = Astronoby::Observer.new(
-          latitude: Astronoby::Angle.from_degrees(-36.8509),
-          longitude: Astronoby::Angle.from_degrees(174.7645)
+          latitude: Astronoby::Angle.from_degrees(41.87),
+          longitude: Astronoby::Angle.from_degrees(-87.62),
+          utc_offset: "+12:00"
         )
-        sun = described_class.new(time: time)
+        sun = Astronoby::Sun.new(time: time)
         observation_events = sun.observation_events(observer: observer)
 
         setting_time = observation_events.setting_time
 
-        expect(setting_time).to eq Time.utc(1991, 3, 14, 6, 42, 40)
-        # Time from IMCCE: 1991-03-14T06:41:30
+        expect(setting_time.getlocal(observer.utc_offset).to_date)
+          .to eq time.to_date
+      end
+
+      it "returns the sunset time for the right date when the offset is negative" do
+        time = Time.utc(2024, 9, 11)
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(41.87),
+          longitude: Astronoby::Angle.from_degrees(-87.62),
+          utc_offset: "-12:00"
+        )
+        sun = Astronoby::Sun.new(time: time)
+        observation_events = sun.observation_events(observer: observer)
+
+        setting_time = observation_events.setting_time
+
+        expect(setting_time.getlocal(observer.utc_offset).to_date)
+          .to eq time.to_date
       end
     end
   end
