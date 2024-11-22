@@ -54,7 +54,11 @@ module Astronoby
 
       def compute
         @initial_transit = initial_transit
-        @transit_time = Util::Time.decimal_hour_to_time(@date, @initial_transit)
+        @transit_time = Util::Time.decimal_hour_to_time(
+          @date,
+          @observer.utc_offset,
+          @initial_transit
+        )
         @transit_altitude = local_horizontal_altitude_transit
 
         return if h0.nil?
@@ -80,11 +84,23 @@ module Astronoby
           Constants::HOURS_PER_DAY * @final_setting
         )
 
-        @rising_time = Util::Time.decimal_hour_to_time(@date, rationalized_corrected_rising)
+        @rising_time = Util::Time.decimal_hour_to_time(
+          @date,
+          @observer.utc_offset,
+          rationalized_corrected_rising
+        )
         @rising_azimuth = local_horizontal_azimuth_rising
-        @transit_time = Util::Time.decimal_hour_to_time(@date, rationalized_corrected_transit)
+        @transit_time = Util::Time.decimal_hour_to_time(
+          @date,
+          @observer.utc_offset,
+          rationalized_corrected_transit
+        )
         @transit_altitude = local_horizontal_altitude_transit
-        @setting_time = Util::Time.decimal_hour_to_time(@date, rationalized_corrected_setting)
+        @setting_time = Util::Time.decimal_hour_to_time(
+          @date,
+          @observer.utc_offset,
+          rationalized_corrected_setting
+        )
         @setting_azimuth = local_horizontal_azimuth_setting
       end
 

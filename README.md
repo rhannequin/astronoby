@@ -140,29 +140,34 @@ horizontal_coordinates.altitude.str(:dms)
 
 #### Sunrise and sunset times and azimuths
 
+Only date part of the time is relevant for the calculation. The offset must
+be provided to the observer.
+
 ```rb
-time = Time.new(2015, 2, 5)
+utc_offset = "-05:00"
+time = Time.new(2015, 2, 5, 0, 0, 0, utc_offset)
 observer = Astronoby::Observer.new(
   latitude: Astronoby::Angle.from_degrees(38),
-  longitude: Astronoby::Angle.from_degrees(-78)
+  longitude: Astronoby::Angle.from_degrees(-78),
+  utc_offset: utc_offset
 )
 sun = Astronoby::Sun.new(time: time)
 observation_events = sun.observation_events(observer: observer)
 
-observation_events.rising_time
-# => 2015-02-05 12:12:59 UTC
+observation_events.rising_time.getlocal(utc_offset)
+# => 2015-02-05 07:12:59 -0500
 
 observation_events.rising_azimuth.str(:dms)
 # => "+109° 29′ 34.3674″"
 
-observation_events.transit_time
-# => 2015-02-05 17:25:59 UTC
+observation_events.transit_time.getlocal(utc_offset)
+# => 2015-02-05 12:25:59 -0500
 
 observation_events.transit_altitude.str(:dms)
 # => "+36° 8′ 15.8197″"
 
-observation_events.setting_time
-# => 2015-02-05 22:39:27 UTC
+observation_events.setting_time.getlocal(utc_offset)
+# => 2015-02-05 17:39:27 -0500
 
 observation_events.setting_azimuth.str(:dms)
 # => "+250° 40′ 42.8609″"
@@ -268,29 +273,34 @@ june_phases.each { puts "#{_1.phase}: #{_1.time}" }
 
 #### Moonrise and moonset times and azimuths
 
+Only date part of the time is relevant for the calculation. The offset must
+be provided to the observer.
+
 ```rb
-time = Time.utc(2024, 6, 1, 10, 0, 0)
+utc_offset = "-10:00"
+time = Time.new(2024, 9, 1, 0, 0, 0, utc_offset)
 observer = Astronoby::Observer.new(
-  latitude: Astronoby::Angle.from_degrees(48.8566),
-  longitude: Astronoby::Angle.from_degrees(2.3522)
+  latitude: Astronoby::Angle.from_degrees(-17.5325),
+  longitude: Astronoby::Angle.from_degrees(-149.5677),
+  utc_offset: utc_offset
 )
 moon = Astronoby::Moon.new(time: time)
 observation_events = moon.observation_events(observer: observer)
 
-observation_events.rising_time
-# => 2024-06-01 00:35:36 UTC
+observation_events.rising_time.getlocal(utc_offset)
+# => 2024-09-01 05:24:57 -1000
 
 observation_events.rising_azimuth.str(:dms)
 # => "+93° 7′ 43.2347″"
 
-observation_events.transit_time
-# => 2024-06-01 02:42:43 UTC
+observation_events.transit_time.getlocal(utc_offset)
+# => 2024-09-01 11:12:34 -1000
 
 observation_events.transit_altitude.str(:dms)
 # => "+26° 59′ 30.9915″"
 
-observation_events.setting_time
-# => 2024-06-01 16:02:26 UTC
+observation_events.setting_time.getlocal(utc_offset)
+# => 2024-09-01 16:12:10 -1000
 
 observation_events.setting_azimuth.str(:dms)
 # => "+273° 29′ 30.0954″"
