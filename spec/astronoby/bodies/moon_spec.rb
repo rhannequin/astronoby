@@ -416,7 +416,7 @@ RSpec.describe Astronoby::Moon do
       end
     end
 
-    it "returns the sunrise time on 1991-03-14" do
+    it "returns the moonrise time on 1991-03-14" do
       time = Time.utc(1991, 3, 14)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(48.8566),
@@ -429,6 +429,20 @@ RSpec.describe Astronoby::Moon do
 
       expect(rising_time).to eq Time.utc(1991, 3, 14, 5, 6, 51)
       # Time from IMCCE: 1991-03-14T05:08:08
+    end
+
+    it "returns moonrise time on 2024-11-10" do
+      time = Time.utc(2024, 11, 10)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(41.02054),
+        longitude: Astronoby::Angle.from_degrees(-72.15608)
+      )
+      moon = described_class.new(time: time)
+      observation_events = moon.observation_events(observer: observer)
+
+      rising_time = observation_events.rising_time
+
+      expect(rising_time).to eq Time.utc(2024, 11, 10, 18, 49, 45)
     end
 
     describe "#rising_azimuth" do
