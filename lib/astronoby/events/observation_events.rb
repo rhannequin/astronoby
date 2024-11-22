@@ -7,6 +7,7 @@ module Astronoby
       RISING_SETTING_HOUR_ANGLE_RATIO_RANGE = (-1..1)
       EARTH_SIDEREAL_ROTATION_RATE = 360.98564736629
       ITERATION_PRECISION = 0.0001
+      ITERATION_LIMIT = 5
 
       attr_reader :rising_time,
         :rising_azimuth,
@@ -89,10 +90,11 @@ module Astronoby
 
       def iterate(initial_rising, initial_transit, initial_setting)
         delta = 1
+        iteration = 1
         corrected_rising = initial_rising
         corrected_transit = initial_transit
         corrected_setting = initial_setting
-        until delta < ITERATION_PRECISION
+        until delta < ITERATION_PRECISION || iteration > ITERATION_LIMIT
           iterate = RiseTransitSetIteration.new(
             observer: @observer,
             date: @date,
@@ -108,6 +110,7 @@ module Astronoby
           corrected_rising = rationalize_decimal_time corrected_rising + iterate[0]
           corrected_transit = rationalize_decimal_time corrected_transit + iterate[1]
           corrected_setting = rationalize_decimal_time corrected_setting + iterate[2]
+          iteration += 1
         end
         [corrected_rising, corrected_transit, corrected_setting]
       end
