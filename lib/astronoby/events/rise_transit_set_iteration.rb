@@ -112,13 +112,6 @@ module Astronoby
       )
     end
 
-    def leap_day_portion
-      @leap_day_portion ||= begin
-        leap_seconds = Util::Time.terrestrial_universal_time_delta(@date)
-        leap_seconds / Constants::SECONDS_PER_DAY
-      end
-    end
-
     def local_hour_angle_rising
       @local_hour_angle_rising ||=
         gst_rising - observer_longitude - right_ascension_rising
@@ -150,12 +143,14 @@ module Astronoby
     def right_ascension_rising
       Angle.from_degrees(
         Util::Maths.interpolate(
-          [
-            @coordinates_of_the_previous_day.right_ascension.degrees,
-            @coordinates_of_the_day.right_ascension.degrees,
-            @coordinates_of_the_next_day.right_ascension.degrees
-          ],
-          @initial_rising + leap_day_portion
+          Util::Maths.normalize_angles_for_interpolation(
+            [
+              @coordinates_of_the_previous_day.right_ascension.degrees,
+              @coordinates_of_the_day.right_ascension.degrees,
+              @coordinates_of_the_next_day.right_ascension.degrees
+            ]
+          ),
+          @initial_rising
         )
       )
     end
@@ -163,12 +158,14 @@ module Astronoby
     def right_ascension_transit
       Angle.from_degrees(
         Util::Maths.interpolate(
-          [
-            @coordinates_of_the_previous_day.right_ascension.degrees,
-            @coordinates_of_the_day.right_ascension.degrees,
-            @coordinates_of_the_next_day.right_ascension.degrees
-          ],
-          @initial_transit + leap_day_portion
+          Util::Maths.normalize_angles_for_interpolation(
+            [
+              @coordinates_of_the_previous_day.right_ascension.degrees,
+              @coordinates_of_the_day.right_ascension.degrees,
+              @coordinates_of_the_next_day.right_ascension.degrees
+            ]
+          ),
+          @initial_transit
         )
       )
     end
@@ -176,12 +173,14 @@ module Astronoby
     def right_ascension_setting
       Angle.from_degrees(
         Util::Maths.interpolate(
-          [
-            @coordinates_of_the_previous_day.right_ascension.degrees,
-            @coordinates_of_the_day.right_ascension.degrees,
-            @coordinates_of_the_next_day.right_ascension.degrees
-          ],
-          @initial_setting + leap_day_portion
+          Util::Maths.normalize_angles_for_interpolation(
+            [
+              @coordinates_of_the_previous_day.right_ascension.degrees,
+              @coordinates_of_the_day.right_ascension.degrees,
+              @coordinates_of_the_next_day.right_ascension.degrees
+            ]
+          ),
+          @initial_setting
         )
       )
     end
@@ -189,12 +188,14 @@ module Astronoby
     def declination_rising
       Angle.from_degrees(
         Util::Maths.interpolate(
-          [
-            @coordinates_of_the_previous_day.declination.degrees,
-            @coordinates_of_the_day.declination.degrees,
-            @coordinates_of_the_next_day.declination.degrees
-          ],
-          @initial_rising + leap_day_portion
+          Util::Maths.normalize_angles_for_interpolation(
+            [
+              @coordinates_of_the_previous_day.declination.degrees,
+              @coordinates_of_the_day.declination.degrees,
+              @coordinates_of_the_next_day.declination.degrees
+            ]
+          ),
+          @initial_rising
         )
       )
     end
@@ -202,12 +203,14 @@ module Astronoby
     def declination_setting
       Angle.from_degrees(
         Util::Maths.interpolate(
-          [
-            @coordinates_of_the_previous_day.declination.degrees,
-            @coordinates_of_the_day.declination.degrees,
-            @coordinates_of_the_next_day.declination.degrees
-          ],
-          @initial_setting + leap_day_portion
+          Util::Maths.normalize_angles_for_interpolation(
+            [
+              @coordinates_of_the_previous_day.declination.degrees,
+              @coordinates_of_the_day.declination.degrees,
+              @coordinates_of_the_next_day.declination.degrees
+            ]
+          ),
+          @initial_setting
         )
       )
     end
