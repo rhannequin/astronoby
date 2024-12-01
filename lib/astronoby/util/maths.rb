@@ -29,6 +29,28 @@ module Astronoby
             "Only 3 or 5 terms are supported for interpolation"
         end
 
+        # Fixes angles forced to be in range [0, 360] or other angle range, for
+        # interpolation use
+        # @param angles [Array<Integer|Float>] Angles values
+        # @param full_circle [Integer] Full circle value
+        # @return [Array<Interger|Float>] Normalized values
+        def normalize_angles_for_interpolation(angles, full_circle: 360)
+          normalized = angles.dup
+
+          (1...normalized.size).each do |i|
+            prev_angle = normalized[i - 1]
+
+            while normalized[i] - prev_angle > full_circle / 2
+              normalized[i] -= full_circle
+            end
+            while normalized[i] - prev_angle < -full_circle / 2
+              normalized[i] += full_circle
+            end
+          end
+
+          normalized
+        end
+
         private
 
         # @return [Float] Interpolated value

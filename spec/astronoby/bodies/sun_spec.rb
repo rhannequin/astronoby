@@ -574,7 +574,7 @@ RSpec.describe Astronoby::Sun do
 
         setting_time = observation_events.setting_time
 
-        expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 53, 26)
+        expect(setting_time).to eq Time.utc(1991, 3, 14, 17, 53, 25)
         # Time from IMCCE: 1991-03-14T17:52:00
       end
     end
@@ -632,7 +632,7 @@ RSpec.describe Astronoby::Sun do
 
         rising_azimuth = observation_events.rising_azimuth
 
-        expect(rising_azimuth.str(:dms)).to eq "+109° 29′ 34.3741″"
+        expect(rising_azimuth.str(:dms)).to eq "+109° 29′ 35.4732″"
         # Time from SkySafari: +109° 41′ 0.3″
         # Time from IMCCE: +109° 52′ 42″
       end
@@ -648,7 +648,7 @@ RSpec.describe Astronoby::Sun do
 
         rising_azimuth = observation_events.rising_azimuth
 
-        expect(rising_azimuth.str(:dms)).to eq "+94° 44′ 59.5603″"
+        expect(rising_azimuth.str(:dms)).to eq "+94° 45′ 0.7901″"
         # Time from IMCCE: +95° 01′ 55″
       end
 
@@ -663,7 +663,7 @@ RSpec.describe Astronoby::Sun do
 
         rising_azimuth = observation_events.rising_azimuth
 
-        expect(rising_azimuth.str(:dms)).to eq "+93° 17′ 28.5173″"
+        expect(rising_azimuth.str(:dms)).to eq "+93° 17′ 29.9686″"
         # Time from IMCCE: +93° 25′ 58″
       end
     end
@@ -685,7 +685,7 @@ RSpec.describe Astronoby::Sun do
 
         setting_azimuth = observation_events.setting_azimuth
 
-        expect(setting_azimuth.str(:dms)).to eq "+250° 40′ 42.8541″"
+        expect(setting_azimuth.str(:dms)).to eq "+250° 40′ 41.7466″"
         # Time from SkySafari: +250° 29′ 23.6″
         # Time from IMCCE: +250° 17′ 34″
       end
@@ -701,7 +701,7 @@ RSpec.describe Astronoby::Sun do
 
         setting_azimuth = observation_events.setting_azimuth
 
-        expect(setting_azimuth.str(:dms)).to eq "+265° 30′ 29.4064″"
+        expect(setting_azimuth.str(:dms)).to eq "+265° 30′ 28.1729″"
         # Time from IMCCE: +265° 13′ 32″
       end
 
@@ -716,7 +716,7 @@ RSpec.describe Astronoby::Sun do
 
         setting_azimuth = observation_events.setting_azimuth
 
-        expect(setting_azimuth.str(:dms)).to eq "+267° 0′ 10.1929″"
+        expect(setting_azimuth.str(:dms)).to eq "+267° 0′ 8.7372″"
         # Time from IMCCE: +266° 51′ 37″
       end
     end
@@ -748,7 +748,7 @@ RSpec.describe Astronoby::Sun do
 
       altitude = observation_events.transit_altitude
 
-      expect(altitude&.str(:dms)).to eq "+36° 8′ 15.8197″"
+      expect(altitude&.str(:dms)).to eq "+36° 8′ 14.9673″"
       # Time from SkySafari: +36° 9′ 32.5″
       # Time from IMCCE: +36° 8′ 0.3″
     end
@@ -764,7 +764,7 @@ RSpec.describe Astronoby::Sun do
 
       altitude = observation_events.transit_altitude
 
-      expect(altitude&.str(:dms)).to eq "+43° 35′ 59.0901″"
+      expect(altitude&.str(:dms)).to eq "+43° 35′ 58.181″"
       # Time from IMCCE: +45° 35′ 41″
     end
 
@@ -779,7 +779,7 @@ RSpec.describe Astronoby::Sun do
 
       altitude = observation_events.transit_altitude
 
-      expect(altitude&.str(:dms)).to eq "+38° 31′ 32.3232″"
+      expect(altitude&.str(:dms)).to eq "+38° 31′ 31.3674″"
       # Time from IMCCE: +38° 31′ 20″
     end
   end

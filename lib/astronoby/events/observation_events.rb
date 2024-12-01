@@ -174,11 +174,6 @@ module Astronoby
         )
       end
 
-      def leap_day_portion
-        leap_seconds = Util::Time.terrestrial_universal_time_delta(@date)
-        leap_seconds / Constants::SECONDS_PER_DAY
-      end
-
       def local_hour_angle_transit
         gst_transit - observer_longitude - right_ascension_transit
       end
@@ -187,6 +182,8 @@ module Astronoby
         term1 = declination_rising.sin + (-shift).sin * @observer.latitude.cos
         term2 = (-shift).cos * @observer.latitude.cos
         angle = term1 / term2
+        return nil if angle.abs > 1
+
         Angle.acos(angle)
       end
 
@@ -201,14 +198,16 @@ module Astronoby
         term1 = declination_setting.sin + (-shift).sin * @observer.latitude.cos
         term2 = (-shift).cos * @observer.latitude.cos
         angle = term1 / term2
+        return nil if angle.abs > 1
+
         Angle.from_degrees(
           Constants::DEGREES_PER_CIRCLE - Angle.acos(angle).degrees
         )
       end
 
       def rationalize_decimal_time(decimal_time)
-        decimal_time += 1 if decimal_time.negative?
-        decimal_time -= 1 if decimal_time > 1
+        decimal_time += 1 while decimal_time.negative?
+        decimal_time -= 1 while decimal_time > 1
         decimal_time
       end
 
@@ -221,12 +220,14 @@ module Astronoby
       def right_ascension_transit
         Angle.from_degrees(
           Util::Maths.interpolate(
-            [
-              @coordinates_of_the_previous_day.right_ascension.degrees,
-              @coordinates_of_the_day.right_ascension.degrees,
-              @coordinates_of_the_next_day.right_ascension.degrees
-            ],
-            (@final_transit || @initial_transit) + leap_day_portion
+            Util::Maths.normalize_angles_for_interpolation(
+              [
+                @coordinates_of_the_previous_day.right_ascension.degrees,
+                @coordinates_of_the_day.right_ascension.degrees,
+                @coordinates_of_the_next_day.right_ascension.degrees
+              ]
+            ),
+            @final_transit || @initial_transit
           )
         )
       end
@@ -234,12 +235,14 @@ module Astronoby
       def declination_rising
         Angle.from_degrees(
           Util::Maths.interpolate(
-            [
-              @coordinates_of_the_previous_day.declination.degrees,
-              @coordinates_of_the_day.declination.degrees,
-              @coordinates_of_the_next_day.declination.degrees
-            ],
-            @final_rising + leap_day_portion
+            Util::Maths.normalize_angles_for_interpolation(
+              [
+                @coordinates_of_the_previous_day.declination.degrees,
+                @coordinates_of_the_day.declination.degrees,
+                @coordinates_of_the_next_day.declination.degrees
+              ]
+            ),
+            @final_rising
           )
         )
       end
@@ -247,12 +250,14 @@ module Astronoby
       def declination_transit
         Angle.from_degrees(
           Util::Maths.interpolate(
-            [
-              @coordinates_of_the_previous_day.declination.degrees,
-              @coordinates_of_the_day.declination.degrees,
-              @coordinates_of_the_next_day.declination.degrees
-            ],
-            (@final_transit || @initial_transit) + leap_day_portion
+            Util::Maths.normalize_angles_for_interpolation(
+              [
+                @coordinates_of_the_previous_day.declination.degrees,
+                @coordinates_of_the_day.declination.degrees,
+                @coordinates_of_the_next_day.declination.degrees
+              ]
+            ),
+            @final_transit || @initial_transit
           )
         )
       end
@@ -260,12 +265,14 @@ module Astronoby
       def declination_setting
         Angle.from_degrees(
           Util::Maths.interpolate(
-            [
-              @coordinates_of_the_previous_day.declination.degrees,
-              @coordinates_of_the_day.declination.degrees,
-              @coordinates_of_the_next_day.declination.degrees
-            ],
-            @final_setting + leap_day_portion
+            Util::Maths.normalize_angles_for_interpolation(
+              [
+                @coordinates_of_the_previous_day.declination.degrees,
+                @coordinates_of_the_day.declination.degrees,
+                @coordinates_of_the_next_day.declination.degrees
+              ]
+            ),
+            @final_setting
           )
         )
       end

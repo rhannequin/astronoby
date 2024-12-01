@@ -158,19 +158,19 @@ observation_events.rising_time.getlocal(utc_offset)
 # => 2015-02-05 07:12:59 -0500
 
 observation_events.rising_azimuth.str(:dms)
-# => "+109° 29′ 34.3674″"
+# => "+109° 29′ 35.5069″"
 
 observation_events.transit_time.getlocal(utc_offset)
 # => 2015-02-05 12:25:59 -0500
 
 observation_events.transit_altitude.str(:dms)
-# => "+36° 8′ 15.8197″"
+# => "+36° 8′ 14.9673″"
 
 observation_events.setting_time.getlocal(utc_offset)
 # => 2015-02-05 17:39:27 -0500
 
 observation_events.setting_azimuth.str(:dms)
-# => "+250° 40′ 42.8609″"
+# => "+250° 40′ 41.7129″"
 ```
 
 #### Twilight times
@@ -288,22 +288,22 @@ moon = Astronoby::Moon.new(time: time)
 observation_events = moon.observation_events(observer: observer)
 
 observation_events.rising_time.getlocal(utc_offset)
-# => 2024-09-01 05:24:57 -1000
+# => 2024-09-01 05:24:55 -1000
 
 observation_events.rising_azimuth.str(:dms)
-# => "+93° 7′ 43.2347″"
+# => "+72° 15′ 19.1814″"
 
 observation_events.transit_time.getlocal(utc_offset)
-# => 2024-09-01 11:12:34 -1000
+# => 2024-09-01 11:12:32 -1000
 
 observation_events.transit_altitude.str(:dms)
-# => "+26° 59′ 30.9915″"
+# => "+56° 39′ 59.132″"
 
 observation_events.setting_time.getlocal(utc_offset)
-# => 2024-09-01 16:12:10 -1000
+# => 2024-09-01 16:12:08 -1000
 
 observation_events.setting_azimuth.str(:dms)
-# => "+273° 29′ 30.0954″"
+# => "+290° 25′ 42.5421″"
 ```
 
 ## Precision
