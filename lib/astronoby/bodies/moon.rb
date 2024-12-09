@@ -167,6 +167,11 @@ module Astronoby
       @illuminated_fraction ||= (1 + phase_angle.cos) / 2
     end
 
+    # @return [Float] Phase fraction, from 0 to 1
+    def current_phase_fraction
+      mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE
+    end
+
     # @param observer [Astronoby::Observer] Observer of the event
     # @return [Astronoby::Events::ObservationEvents] Moon's observation events
     def observation_events(observer:)

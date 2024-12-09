@@ -398,6 +398,26 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
+  describe "#current_phase_fraction" do
+    it "returns the mean elongation's fraction" do
+      moon = described_class.new(time: Time.new)
+      allow(moon).to receive(:mean_elongation)
+        .and_return(Astronoby::Angle.from_degrees(90))
+
+      phase_fraction = moon.current_phase_fraction
+
+      expect(phase_fraction).to eq 0.25
+    end
+
+    it "returns the mean elongation's fraction for 2024-01-01" do
+      moon = described_class.new(time: Time.utc(2024, 1, 1))
+
+      phase_fraction = moon.current_phase_fraction
+
+      expect(phase_fraction.round(2)).to eq 0.66
+    end
+  end
+
   describe "#observation_events" do
     describe "#rising_time" do
       it "returns the moonrise time on 1991-03-14" do

@@ -249,6 +249,9 @@ moon = Astronoby::Moon.new(time: time)
 moon.illuminated_fraction.round(2)
 # => 0.31
 
+moon.current_phase_fraction.round(2)
+# => 0.82
+
 moon.distance.km.round
 # => 368409
 
