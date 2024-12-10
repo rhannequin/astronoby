@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.6.0 - 2024-12-10
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
+
+### Bug fixes
+
+* Fix `ObservationEvents` infinite loop in ([#110])
+* Fix observation events times with local time dates in ([#105])
+* Fix `IncompatibleArgumentsError` on Moon's observation events in ([#111])
+
+### Features
+
+* Add `Astronoby::Moon#current_phase_fraction` in ([#115])
+* Add sources and results for comparison in ([#114])
+
+### Improvements
+
+* Bump standard from 1.36.0 to 1.39.2 by @dependabot in ([#95])
+* Bump standard from 1.39.2 to 1.40.0 by @dependabot in ([#96])
+* Bump dependencies in ([#100])
+* Move dependencies to development ones in ([#99])
+* Bump standard from 1.40.0 to 1.41.1 by @dependabot in ([#104])
+* Bump standard from 1.41.1 to 1.42.0 by @dependabot in ([#107])
+* Bump standard from 1.42.0 to 1.42.1 by @dependabot in ([#108])
+* Bump dependencies in ([#116])
+* Add supported Ruby versions in ([#117])
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.5.0...v0.6.0
+
+[#95]: https://github\.com/rhannequin/astronoby/pull/95
+[#96]: https://github\.com/rhannequin/astronoby/pull/96
+[#99]: https://github\.com/rhannequin/astronoby/pull/99
+[#100]: https://github\.com/rhannequin/astronoby/pull/100
+[#104]: https://github\.com/rhannequin/astronoby/pull/104
+[#105]: https://github\.com/rhannequin/astronoby/pull/105
+[#107]: https://github\.com/rhannequin/astronoby/pull/107
+[#108]: https://github\.com/rhannequin/astronoby/pull/108
+[#110]: https://github\.com/rhannequin/astronoby/pull/110
+[#111]: https://github\.com/rhannequin/astronoby/pull/111
+[#114]: https://github\.com/rhannequin/astronoby/pull/114
+[#115]: https://github\.com/rhannequin/astronoby/pull/115
+[#116]: https://github\.com/rhannequin/astronoby/pull/116
+[#117]: https://github\.com/rhannequin/astronoby/pull/117
+
 ## 0.5.0 - 2024-06-11
 
 _If you are upgrading: please see [UPGRADING.md]._
