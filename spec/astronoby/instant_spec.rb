@@ -54,6 +54,24 @@ RSpec.describe Astronoby::Instant do
     end
   end
 
+  describe ".from_utc_julian_date" do
+    it "creates an instance of Astronoby::Instant" do
+      instant = described_class.from_utc_julian_date(2451545.0)
+
+      expect(instant).to be_a(Astronoby::Instant)
+    end
+
+    it "handles the difference delta-t = TT - UT" do
+      time = Time.utc(2025, 1, 1)
+      julian_date = Astronoby::Epoch.from_time(time)
+
+      instant = described_class.from_utc_julian_date(julian_date)
+
+      expect(instant.terrestrial_time).to eq(70867483223/28800r)
+      # 2460676.500798611
+    end
+  end
+
   describe "#diff" do
     it "returns the difference between two instances" do
       instant1 = described_class.new(2451545.0)

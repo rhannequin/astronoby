@@ -44,6 +44,17 @@ module Astronoby
           Rational(delta_t, Constants::SECONDS_PER_DAY)
         from_terrestrial_time(terrestrial_time)
       end
+
+      # Creates a new Instant from a Julian Date in UTC
+      #
+      # @param julian_date [Numeric] the Julian Date in UTC
+      # @return [Astronoby::Instant] a new Instant object
+      def from_utc_julian_date(julian_date)
+        delta_t = Util::Time.terrestrial_universal_time_delta(julian_date)
+        terrestrial_time = julian_date +
+          Rational(delta_t, Constants::SECONDS_PER_DAY)
+        from_terrestrial_time(terrestrial_time)
+      end
     end
 
     attr_reader :terrestrial_time
