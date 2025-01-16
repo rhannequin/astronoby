@@ -7,6 +7,14 @@ RSpec.describe Astronoby::Moon do
 
       expect(moon_phases).to be_an(Array)
     end
+
+    it "returns correct phase events for 2025-08" do
+      moon_phases = described_class.monthly_phase_events(year: 2025, month: 8)
+      days_of_moon_phases = moon_phases.map { _1.time.day }
+
+      # Phases in August 2025 from IMCCE (days): 1, 9, 16, 23, 31
+      expect(days_of_moon_phases).to eq([1, 9, 16, 23, 31])
+    end
   end
 
   describe "#apparent_ecliptic_coordinates" do
