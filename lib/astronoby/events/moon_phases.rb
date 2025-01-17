@@ -23,7 +23,8 @@ module Astronoby
           MoonPhase.first_quarter(new(year, month, :first_quarter, 0.25).time),
           MoonPhase.full_moon(new(year, month, :full_moon, 0.5).time),
           MoonPhase.last_quarter(new(year, month, :last_quarter, 0.75).time),
-          MoonPhase.new_moon(new(year, month, :new_moon, 1).time)
+          MoonPhase.new_moon(new(year, month, :new_moon, 1).time),
+          MoonPhase.first_quarter(new(year, month, :first_quarter, 1.25).time)
         ].select { _1.time.month == month }
       end
 
