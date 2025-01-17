@@ -26,6 +26,14 @@ RSpec.describe Astronoby::Events::MoonPhases do
     # Result from IMCCE: 2024-01-25T17:54:01Z
   end
 
+  it "returns correct phase events for 2025-08" do
+    moon_phases = described_class.phases_for(year: 2025, month: 8)
+    days_of_moon_phases = moon_phases.map { _1.time.day }
+
+    # Phases in August 2025 from IMCCE (days): 1, 9, 16, 23, 31
+    expect(days_of_moon_phases).to eq([1, 9, 16, 23, 31])
+  end
+
   context "when there are more than 4 phases in a month" do
     it "returns all of them" do
       moon_phases = described_class.phases_for(year: 2024, month: 5)
