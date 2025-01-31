@@ -16,7 +16,7 @@ module Astronoby
     def self.download(name:, target:)
       response = ::Ephem::IO::Download.call(name: name, target: target)
 
-      !!response&.success?
+      !!response&.is_a?(Net::HTTPOK)
     end
 
     # Load an ephemeris file.

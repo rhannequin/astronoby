@@ -14,7 +14,7 @@ RSpec.describe Astronoby::Ephem do
 
     it "returns true if the download is successful" do
       allow(::Ephem::IO::Download)
-        .to receive(:call).and_return(double(success?: true))
+        .to receive(:call).and_return(double(is_a?: true))
 
       result = described_class.download(
         name: "de440t.bsp",
@@ -26,7 +26,7 @@ RSpec.describe Astronoby::Ephem do
 
     it "returns false if the download is not successful" do
       allow(::Ephem::IO::Download)
-        .to receive(:call).and_return(double(success?: false))
+        .to receive(:call).and_return(double(is_a?: false))
 
       result = described_class.download(
         name: "de440t.bsp",
