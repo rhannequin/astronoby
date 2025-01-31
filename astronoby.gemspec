@@ -6,10 +6,10 @@ Gem::Specification.new do |spec|
   spec.name = "astronoby"
   spec.version = Astronoby::VERSION
   spec.authors = ["Rémy Hannequin"]
-  spec.email = ["hello@rhannequ.in"]
+  spec.email = ["remy.hannequin@gmail.com"]
 
   spec.summary = "Astronomical calculations"
-  spec.description = "Ruby version of the calculations from various books like Celestial Calculations by J. L. Lawrence, Practical Astronomy with your Calculator or Spreadsheet by Peter Duffett-Smith and Jonathan Zwart, or Astronomical Algorithms by Jean Meeus"
+  spec.description = "Astronomy and astrometry Ruby library for astronomical data and events."
   spec.homepage = "https://github.com/rhannequin/astronoby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
