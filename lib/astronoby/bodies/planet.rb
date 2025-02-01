@@ -46,9 +46,20 @@ module Astronoby
         velocity = state1.velocity
       end
 
+      # TODO: Implement Velocity value object
+      # TODO: Convert velocity into a vector of Velocity
+
+      position_vector = Vector[
+        Distance.from_kilometers(position.x),
+        Distance.from_kilometers(position.y),
+        Distance.from_kilometers(position.z)
+      ]
+
+      velocity_vector = Vector[velocity.x, velocity.y, velocity.z]
+
       Position::Barycentric.new(
-        position: position,
-        velocity: velocity,
+        position: position_vector,
+        velocity: velocity_vector,
         instant: instant,
         target_body: self.class
       )

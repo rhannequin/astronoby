@@ -5,7 +5,10 @@ RSpec.describe Astronoby::Planet do
     it "returns a Barycentric position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
-      state = double(position: [1, 2, 3], velocity: [4, 5, 6])
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
       planet = build_planet.new(instant: instant, ephem: ephem)
@@ -18,21 +21,34 @@ RSpec.describe Astronoby::Planet do
     it "returns a Barycentric position with the correct position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
-      state = double(position: [1, 2, 3], velocity: [4, 5, 6])
+      state = double(
+        position: Astronoby::Vector[1, 2, 3],
+        velocity: Astronoby::Vector[4, 5, 6]
+      )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
       planet = build_planet.new(instant: instant, ephem: ephem)
 
       barycentric = planet.barycentric
 
-      expect(barycentric.position).to eq([1, 2, 3])
-      expect(barycentric.velocity).to eq([4, 5, 6])
+      expect(barycentric.position)
+        .to eq(
+          Astronoby::Vector[
+            Astronoby::Distance.from_kilometers(1),
+            Astronoby::Distance.from_kilometers(2),
+            Astronoby::Distance.from_kilometers(3)
+          ]
+        )
+      expect(barycentric.velocity).to eq(Astronoby::Vector[4, 5, 6])
     end
 
     it "returns a Barycentric position with the correct instant" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
-      state = double(position: [1, 2, 3], velocity: [4, 5, 6])
+      state = double(
+        position: Astronoby::Vector[1, 2, 3],
+        velocity: Astronoby::Vector[4, 5, 6]
+      )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
       planet = build_planet.new(instant: instant, ephem: ephem)
@@ -45,7 +61,10 @@ RSpec.describe Astronoby::Planet do
     it "returns a Barycentric position with the correct target_body" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
-      state = double(position: [1, 2, 3], velocity: [4, 5, 6])
+      state = double(
+        position: Astronoby::Vector[1, 2, 3],
+        velocity: Astronoby::Vector[4, 5, 6]
+      )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
       planet = build_planet.new(instant: instant, ephem: ephem)
@@ -59,8 +78,14 @@ RSpec.describe Astronoby::Planet do
       it "returns a Barycentric position with the correct position" do
         time = Time.utc(2025, 2, 7, 12)
         instant = Astronoby::Instant.from_time(time)
-        state1 = double(position: Vector[1, 2, 3], velocity: Vector[4, 5, 6])
-        state2 = double(position: Vector[7, 8, 9], velocity: Vector[10, 11, 12])
+        state1 = double(
+          position: Astronoby::Vector[1, 2, 3],
+          velocity: Astronoby::Vector[4, 5, 6]
+        )
+        state2 = double(
+          position: Astronoby::Vector[7, 8, 9],
+          velocity: Astronoby::Vector[10, 11, 12]
+        )
         segment1 = double(compute_and_differentiate: state1)
         segment2 = double(compute_and_differentiate: state2)
         ephem = double
@@ -71,8 +96,15 @@ RSpec.describe Astronoby::Planet do
 
         barycentric = planet.barycentric
 
-        expect(barycentric.position).to eq(Vector[8, 10, 12])
-        expect(barycentric.velocity).to eq(Vector[14, 16, 18])
+        expect(barycentric.position)
+          .to eq(
+            Astronoby::Vector[
+              Astronoby::Distance.from_kilometers(8),
+              Astronoby::Distance.from_kilometers(10),
+              Astronoby::Distance.from_kilometers(12)
+            ]
+          )
+        expect(barycentric.velocity).to eq(Astronoby::Vector[14, 16, 18])
       end
     end
 

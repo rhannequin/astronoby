@@ -10,9 +10,7 @@ module Astronoby
       LIGHT_SPEED_CORRECTION_MAXIMUM_ITERATIONS = 10
 
       # TODO: Move constants into Astronomy::Constants
-      # TODO: Create Velocity value object
       # TODO: Add Velocity.light_speed
-      # TODO: Wrap Ephem vectors into Distance and Velocity instances?
 
       def initialize(
         position:,
@@ -24,7 +22,7 @@ module Astronoby
           position: position,
           velocity: velocity,
           instant: instant,
-          center_identifier: 0, # TODO: replace with constant
+          center_identifier: Planet::SOLAR_SYSTEM_BARYCENTER,
           target_body: target_body
         )
       end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "matrix"
-
 module Astronoby
   class Precession
     def self.for_equatorial_coordinates(coordinates:, epoch:)
