@@ -20,6 +20,13 @@ module Astronoby
         from_meters_per_second(meters_per_second)
       end
       alias_method :from_kmps, :from_kilometers_per_second
+
+      def from_kilometers_per_day(kilometers_per_day)
+        meters_per_second = kilometers_per_day *
+          Constants::KILOMETER_IN_METERS / Constants::SECONDS_PER_DAY
+        from_meters_per_second(meters_per_second)
+      end
+      alias_method :from_kmpd, :from_kilometers_per_day
     end
 
     attr_reader :meters_per_second
@@ -34,6 +41,12 @@ module Astronoby
       @meters_per_second / Constants::KILOMETER_IN_METERS.to_f
     end
     alias_method :kmps, :kilometers_per_second
+
+    def kilometers_per_day
+      @meters_per_second * Constants::SECONDS_PER_DAY /
+        Constants::KILOMETER_IN_METERS
+    end
+    alias_method :kmpd, :kilometers_per_day
 
     def +(other)
       self.class.from_meters_per_second(

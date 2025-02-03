@@ -37,6 +37,19 @@ RSpec.describe Astronoby::Velocity do
     end
   end
 
+  describe "::from_kilometers_per_day" do
+    it "returns a Velocity object" do
+      expect(described_class.from_kilometers_per_day(1))
+        .to be_a(described_class)
+    end
+
+    it "converts kilometers per day to meters per second" do
+      velocity = described_class.from_kilometers_per_day(172800)
+
+      expect(velocity.meters_per_second).to eq 2_000
+    end
+  end
+
   describe "#meters" do
     it "returns the velocity value in meters per second" do
       meters_per_second = described_class.new(1).meters_per_second
@@ -69,6 +82,25 @@ RSpec.describe Astronoby::Velocity do
         kilometers_per_second = described_class.new(1_000).kilometers_per_second
 
         expect(kilometers_per_second).to eq 1
+      end
+    end
+  end
+
+  describe "#kilometers_per_day" do
+    it "returns the velocity value in kilometers per day" do
+      kilometers_per_day = described_class
+        .from_kilometers_per_day(1)
+        .kilometers_per_day
+
+      expect(kilometers_per_day).to eq 1
+    end
+
+    context "when the velocity is initialized from meters per seconds" do
+      it "returns the velocity value in kilometers per second" do
+        kilometers_per_day = described_class.from_kilometers_per_second(1)
+          .kilometers_per_day
+
+        expect(kilometers_per_day).to eq 86400
       end
     end
   end
