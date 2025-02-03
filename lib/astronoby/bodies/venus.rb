@@ -5,10 +5,7 @@ module Astronoby
     private
 
     def ephemeris_segments
-      [
-        [SOLAR_SYSTEM_BARYCENTER, VENUS_BARYCENTER],
-        [VENUS_BARYCENTER, VENUS]
-      ]
+      [[SOLAR_SYSTEM_BARYCENTER, VENUS_BARYCENTER]]
     end
   end
 end

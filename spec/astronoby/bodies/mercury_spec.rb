@@ -19,17 +19,17 @@ RSpec.describe Astronoby::Mercury do
       expect(barycentric.position)
         .to eq(
           Astronoby::Vector[
+            Astronoby::Distance.from_kilometers(1),
             Astronoby::Distance.from_kilometers(2),
-            Astronoby::Distance.from_kilometers(4),
-            Astronoby::Distance.from_kilometers(6)
+            Astronoby::Distance.from_kilometers(3)
           ]
         )
       expect(barycentric.velocity)
         .to eq(
           Astronoby::Vector[
-            Astronoby::Velocity.from_kilometers_per_day(8),
-            Astronoby::Velocity.from_kilometers_per_day(10),
-            Astronoby::Velocity.from_kilometers_per_day(12)
+            Astronoby::Velocity.from_kilometers_per_day(4),
+            Astronoby::Velocity.from_kilometers_per_day(5),
+            Astronoby::Velocity.from_kilometers_per_day(6)
           ]
         )
     end

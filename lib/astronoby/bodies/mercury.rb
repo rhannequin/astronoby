@@ -5,10 +5,7 @@ module Astronoby
     private
 
     def ephemeris_segments
-      [
-        [SOLAR_SYSTEM_BARYCENTER, MERCURY_BARYCENTER],
-        [MERCURY_BARYCENTER, MERCURY]
-      ]
+      [[SOLAR_SYSTEM_BARYCENTER, MERCURY_BARYCENTER]]
     end
   end
 end
