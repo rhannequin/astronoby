@@ -27,6 +27,10 @@ module Astronoby
         from_meters_per_second(meters_per_second)
       end
       alias_method :from_kmpd, :from_kilometers_per_day
+
+      def light_speed
+        from_meters_per_second(Constants::LIGHT_SPEED_M_PER_S)
+      end
     end
 
     attr_reader :meters_per_second

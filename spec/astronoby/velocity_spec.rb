@@ -50,6 +50,18 @@ RSpec.describe Astronoby::Velocity do
     end
   end
 
+  describe "::light_speed" do
+    it "returns a Velocity object" do
+      expect(described_class.light_speed).to be_a(described_class)
+    end
+
+    it "returns the speed of light" do
+      light_speed = described_class.light_speed
+
+      expect(light_speed.meters_per_second).to eq 299_792_458
+    end
+  end
+
   describe "#meters" do
     it "returns the velocity value in meters per second" do
       meters_per_second = described_class.new(1).meters_per_second
