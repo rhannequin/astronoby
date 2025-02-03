@@ -39,7 +39,14 @@ RSpec.describe Astronoby::Planet do
             Astronoby::Distance.from_kilometers(3)
           ]
         )
-      expect(barycentric.velocity).to eq(Astronoby::Vector[4, 5, 6])
+      expect(barycentric.velocity)
+        .to eq(
+          Astronoby::Vector[
+            Astronoby::Velocity.from_kilometers_per_day(4),
+            Astronoby::Velocity.from_kilometers_per_day(5),
+            Astronoby::Velocity.from_kilometers_per_day(6)
+          ]
+        )
     end
 
     it "returns a Barycentric position with the correct instant" do
@@ -104,7 +111,14 @@ RSpec.describe Astronoby::Planet do
               Astronoby::Distance.from_kilometers(12)
             ]
           )
-        expect(barycentric.velocity).to eq(Astronoby::Vector[14, 16, 18])
+        expect(barycentric.velocity)
+          .to eq(
+            Astronoby::Vector[
+              Astronoby::Velocity.from_kilometers_per_day(14),
+              Astronoby::Velocity.from_kilometers_per_day(16),
+              Astronoby::Velocity.from_kilometers_per_day(18)
+            ]
+          )
       end
     end
 

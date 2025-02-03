@@ -24,7 +24,14 @@ RSpec.describe Astronoby::Venus do
             Astronoby::Distance.from_kilometers(6)
           ]
         )
-      expect(barycentric.velocity).to eq(Astronoby::Vector[8, 10, 12])
+      expect(barycentric.velocity)
+        .to eq(
+          Astronoby::Vector[
+            Astronoby::Velocity.from_kilometers_per_day(8),
+            Astronoby::Velocity.from_kilometers_per_day(10),
+            Astronoby::Velocity.from_kilometers_per_day(12)
+          ]
+        )
     end
   end
 end

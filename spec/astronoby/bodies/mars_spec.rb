@@ -24,7 +24,14 @@ RSpec.describe Astronoby::Mars do
             Astronoby::Distance.from_kilometers(3)
           ]
         )
-      expect(barycentric.velocity).to eq(Astronoby::Vector[4, 5, 6])
+      expect(barycentric.velocity)
+        .to eq(
+          Astronoby::Vector[
+            Astronoby::Velocity.from_kilometers_per_day(4),
+            Astronoby::Velocity.from_kilometers_per_day(5),
+            Astronoby::Velocity.from_kilometers_per_day(6)
+          ]
+        )
     end
   end
 end
