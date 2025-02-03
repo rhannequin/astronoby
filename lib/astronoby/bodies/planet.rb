@@ -46,7 +46,6 @@ module Astronoby
         velocity = state1.velocity
       end
 
-      # TODO: Implement Velocity value object
       # TODO: Convert velocity into a vector of Velocity
 
       position_vector = Vector[
