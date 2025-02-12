@@ -2,9 +2,7 @@
 
 module Astronoby
   class Venus < Planet
-    private
-
-    def ephemeris_segments
+    def self.ephemeris_segments
       [[SOLAR_SYSTEM_BARYCENTER, VENUS_BARYCENTER]]
     end
   end

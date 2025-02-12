@@ -2,13 +2,31 @@
 
 module Astronoby
   class Earth < Planet
-    private
-
-    def ephemeris_segments
+    def self.ephemeris_segments
       [
         [SOLAR_SYSTEM_BARYCENTER, EARTH_MOON_BARYCENTER],
         [EARTH_MOON_BARYCENTER, EARTH]
       ]
+    end
+
+    private
+
+    def compute_astrometric(ephem)
+      Position::Astrometric.new(
+        position: Vector[
+          Distance.zero,
+          Distance.zero,
+          Distance.zero
+        ],
+        velocity: Vector[
+          Velocity.zero,
+          Velocity.zero,
+          Velocity.zero
+        ],
+        instant: @instant,
+        center_identifier: EARTH,
+        target_body: self.class
+      )
     end
   end
 end

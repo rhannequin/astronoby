@@ -179,6 +179,12 @@ RSpec.describe Astronoby::Distance do
     end
   end
 
+  describe "#abs2" do
+    it "returns the square of the distance value" do
+      expect(described_class.from_meters(3).abs2).to eq 9
+    end
+  end
+
   describe "equivalence (#==)" do
     it "returns true when the distances are equal" do
       distance1 = described_class.from_meters(1)

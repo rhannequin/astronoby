@@ -15,20 +15,13 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :barycentric, :instant
+    attr_reader :barycentric, :astrometric, :instant
 
-    def initialize(ephem:, instant:)
-      @instant = instant
-      @barycentric = compute_barycentric(ephem: ephem, instant: instant)
+    def self.barycentric(ephem:, instant:)
+      compute_barycentric(ephem: ephem, instant: instant)
     end
 
-    private
-
-    def ephemeris_segments
-      raise NotImplementedError
-    end
-
-    def compute_barycentric(ephem:, instant:)
+    def self.compute_barycentric(ephem:, instant:)
       segments = ephemeris_segments
       segment1 = segments[0]
       segment2 = segments[1] if segments.size == 2
@@ -62,8 +55,28 @@ module Astronoby
         position: position_vector,
         velocity: velocity_vector,
         instant: instant,
-        target_body: self.class
+        target_body: self
       )
+    end
+
+    def self.ephemeris_segments
+      raise NotImplementedError
+    end
+
+    def initialize(ephem:, instant:)
+      @instant = instant
+      @barycentric = compute_barycentric(ephem)
+      @astrometric = compute_astrometric(ephem)
+    end
+
+    private
+
+    def compute_barycentric(ephem)
+      self.class.compute_barycentric(ephem: ephem, instant: @instant)
+    end
+
+    def compute_astrometric(ephem)
+      @barycentric.to_astrometric(ephem: ephem)
     end
   end
 end

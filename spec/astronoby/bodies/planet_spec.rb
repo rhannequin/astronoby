@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Planet do
-  describe "#barycentric" do
+  describe "::barycentric" do
     it "returns a Barycentric position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
@@ -11,9 +11,8 @@ RSpec.describe Astronoby::Planet do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      planet = build_planet.new(instant: instant, ephem: ephem)
 
-      barycentric = planet.barycentric
+      barycentric = build_planet.barycentric(instant: instant, ephem: ephem)
 
       expect(barycentric).to be_a(Astronoby::Position::Barycentric)
     end
@@ -27,9 +26,8 @@ RSpec.describe Astronoby::Planet do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      planet = build_planet.new(instant: instant, ephem: ephem)
 
-      barycentric = planet.barycentric
+      barycentric = build_planet.barycentric(instant: instant, ephem: ephem)
 
       expect(barycentric.position)
         .to eq(
@@ -58,27 +56,10 @@ RSpec.describe Astronoby::Planet do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      planet = build_planet.new(instant: instant, ephem: ephem)
 
-      barycentric = planet.barycentric
+      barycentric = build_planet.barycentric(instant: instant, ephem: ephem)
 
       expect(barycentric.instant).to eq(instant)
-    end
-
-    it "returns a Barycentric position with the correct target_body" do
-      time = Time.utc(2025, 2, 7, 12)
-      instant = Astronoby::Instant.from_time(time)
-      state = double(
-        position: Astronoby::Vector[1, 2, 3],
-        velocity: Astronoby::Vector[4, 5, 6]
-      )
-      segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
-      planet = build_planet.new(instant: instant, ephem: ephem)
-
-      barycentric = planet.barycentric
-
-      expect(barycentric.target_body).to eq(planet.class)
     end
 
     context "when the planet has multiple segments" do
@@ -98,10 +79,11 @@ RSpec.describe Astronoby::Planet do
         ephem = double
         allow(ephem).to receive(:[]).with(0).and_return(segment1)
         allow(ephem).to receive(:[]).with(1).and_return(segment2)
-        planet = build_planet_with_multiple_segments
-          .new(instant: instant, ephem: ephem)
 
-        barycentric = planet.barycentric
+        barycentric = build_planet_with_multiple_segments.barycentric(
+          instant: instant,
+          ephem: ephem
+        )
 
         expect(barycentric.position)
           .to eq(
@@ -130,28 +112,24 @@ RSpec.describe Astronoby::Planet do
 
         expect do
           build_planet_with_no_segments
-            .new(instant: instant, ephem: ephem)
-            .barycentric
+            .barycentric(instant: instant, ephem: ephem)
         end.to raise_error(NotImplementedError)
       end
     end
   end
 
   def build_planet
-    Class.new(described_class) do
-      private
-
-      def ephemeris_segments
-        [0]
+    @planet ||=
+      Class.new(described_class) do
+        def self.ephemeris_segments
+          [0]
+        end
       end
-    end
   end
 
   def build_planet_with_multiple_segments
     Class.new(described_class) do
-      private
-
-      def ephemeris_segments
+      def self.ephemeris_segments
         [[0], [1]]
       end
     end
