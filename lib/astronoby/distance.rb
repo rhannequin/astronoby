@@ -69,6 +69,10 @@ module Astronoby
       meters.zero?
     end
 
+    def abs2
+      meters**2
+    end
+
     def hash
       [meters, self.class].hash
     end
