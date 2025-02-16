@@ -49,6 +49,20 @@ RSpec.describe Astronoby::Mars do
       # IMCCE:    -214596085 113040908 57662716
       # Skyfield: -214596105 113040905 57662716
     end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 4, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      barycentric = planet.barycentric
+
+      expect(barycentric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-11481.41012, -17158.09524, -7560.12399])
+      # IMCCE:    -11481.40954 -17158.09555 -7560.12413
+      # Skyfield: -11481.40978 -17158.09542 -7560.12408
+    end
   end
 
   describe "#astrometric" do
@@ -93,6 +107,20 @@ RSpec.describe Astronoby::Mars do
         .to eq(1.138989231808293)
       # IMCCE:    1.138989267589
       # Skyfield: 1.138989252092628
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 4, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = planet.astrometric
+
+      expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-16789.69787, 9770.68835, 4114.2449])
+      # IMCCE:    -16789.69917 9770.68769 4114.2446
+      # Skyfield: -16789.69861 9770.68797 4114.24472
     end
   end
 end

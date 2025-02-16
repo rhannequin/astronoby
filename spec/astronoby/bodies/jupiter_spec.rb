@@ -49,6 +49,20 @@ RSpec.describe Astronoby::Jupiter do
       # IMCCE:    21224544 703637661 301087121
       # Skyfield: 21224523 703637652 301087128
     end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 5, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      barycentric = planet.barycentric
+
+      expect(barycentric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-13211.65311, 787.23931, 659.07499])
+      # IMCCE:    -13211.65311 787.23931 659.07488
+      # Skyfield: -13211.65311 787.23928 659.07497
+    end
   end
 
   describe "#astrometric" do
@@ -93,6 +107,20 @@ RSpec.describe Astronoby::Jupiter do
         .to eq(5.847692982822113)
       # IMCCE:    5.847693029715
       # Skyfield: 5.847693005684235
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 5, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = planet.astrometric
+
+      expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-32111.86827, 21668.91437, 9711.35489])
+      # IMCCE:    -32111.86992 21668.91306 9711.35422
+      # Skyfield: -32111.8691  21668.91368 9711.35459
     end
   end
 end

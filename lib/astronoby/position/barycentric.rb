@@ -20,14 +20,15 @@ module Astronoby
 
       def to_astrometric(ephem:)
         earth_barycentric = Earth.barycentric(ephem: ephem, instant: @instant)
-        position_corrected = apply_light_time_delay_correction(
-          earth_barycentric,
-          self,
-          ephem
-        )
+        position_corrected, velocity_corrected =
+          apply_light_time_delay_correction(
+            earth_barycentric,
+            self,
+            ephem
+          )
         Astrometric.new(
           position: position_corrected - earth_barycentric.position,
-          velocity: @velocity - @velocity,
+          velocity: velocity_corrected - earth_barycentric.velocity,
           instant: @instant,
           center_identifier: Planet::EARTH,
           target_body: self.class
@@ -37,15 +38,14 @@ module Astronoby
       private
 
       def apply_light_time_delay_correction(center, target, ephem)
-        corrected_position = Correction::LightTimeDelay.compute(
-          center: center,
-          target: target,
-          ephem: ephem
-        )
+        corrected_position, corrected_velocity =
+          Correction::LightTimeDelay.compute(
+            center: center,
+            target: target,
+            ephem: ephem
+          )
 
-        Vector[
-          corrected_position[0], corrected_position[1], corrected_position[2]
-        ]
+        [Vector[*corrected_position], Vector[*corrected_velocity]]
       end
     end
   end

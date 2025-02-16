@@ -49,6 +49,20 @@ RSpec.describe Astronoby::Saturn do
       # IMCCE:    1425287177 -107081757 -105619619
       # Skyfield: 1425287156 -107081762 -105619617
     end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 6, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      barycentric = planet.barycentric
+
+      expect(barycentric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([410.67305, 8873.99334, 3647.70519])
+      # IMCCE:    410.67305 8873.99334 3647.70521
+      # Skyfield: 410.673037 8873.99334 3647.70519
+    end
   end
 
   describe "#astrometric" do
@@ -93,6 +107,20 @@ RSpec.describe Astronoby::Saturn do
         .to eq(9.878564650795877)
       # IMCCE:    9.878564573683
       # Skyfield: 9.878564617268683
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 6, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = planet.astrometric
+
+      expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-27194.09926, 18131.58422, 7660.22589])
+      # IMCCE:    -27194.10006 18131.58209 7660.22501
+      # Skyfield: -27194.09962 18131.5833  7660.22549
     end
   end
 end

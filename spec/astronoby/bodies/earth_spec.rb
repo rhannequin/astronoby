@@ -49,6 +49,20 @@ RSpec.describe Astronoby::Earth do
       # IMCCE:    -140346454 45128536 19591514
       # Skyfield: -140346474 45128533 19591514
     end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      barycentric = planet.barycentric
+
+      expect(barycentric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-10513.91311, -25850.11479, -11207.13966])
+      # IMCCE:    -10513.91157 -25850.1153 -11207.13986
+      # Skyfield: -10513.91205 -25850.11514 -11207.13981
+    end
   end
 
   describe "#astrometric" do
@@ -82,6 +96,18 @@ RSpec.describe Astronoby::Earth do
       expect(astrometric.right_ascension).to eq(Astronoby::Angle.zero)
       expect(astrometric.declination).to eq(Astronoby::Angle.zero)
       expect(astrometric.distance).to eq(Astronoby::Distance.zero)
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = planet.astrometric
+
+      expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([0, 0, 0])
     end
   end
 end

@@ -30,16 +30,22 @@ module Astronoby
             Distance.zero,
             Distance.zero
           ]
+          corrected_velocity = Vector[
+            Velocity.zero,
+            Velocity.zero,
+            Velocity.zero
+          ]
           @delay = initial_delta_in_seconds
 
           LIGHT_SPEED_CORRECTION_MAXIMUM_ITERATIONS.times do
             new_instant = Instant.from_terrestrial_time(
               instant.tt - @delay / Constants::SECONDS_PER_DAY
             )
-            corrected_position = @target
+            corrected = @target
               .target_body
               .barycentric(ephem: @ephem, instant: new_instant)
-              .position
+            corrected_position = corrected.position
+            corrected_velocity = corrected.velocity
 
             corrected_distance_in_km = Math.sqrt(
               (corrected_position.x.km - position.x.km)**2 +
@@ -54,7 +60,7 @@ module Astronoby
             @delay = new_delay
           end
 
-          corrected_position
+          [corrected_position, corrected_velocity]
         end
       end
 
