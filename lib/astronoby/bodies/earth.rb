@@ -12,7 +12,7 @@ module Astronoby
     private
 
     def compute_astrometric(ephem)
-      Position::Astrometric.new(
+      Astrometric.new(
         position: Vector[
           Distance.zero,
           Distance.zero,

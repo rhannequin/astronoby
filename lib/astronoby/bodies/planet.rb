@@ -51,7 +51,7 @@ module Astronoby
         Velocity.from_kilometers_per_day(velocity.z)
       ]
 
-      Position::Geometric.new(
+      Geometric.new(
         position: position_vector,
         velocity: velocity_vector,
         instant: instant,

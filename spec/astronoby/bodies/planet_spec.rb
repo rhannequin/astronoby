@@ -14,7 +14,7 @@ RSpec.describe Astronoby::Planet do
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
-      expect(geometric).to be_a(Astronoby::Position::Geometric)
+      expect(geometric).to be_a(Astronoby::Geometric)
     end
 
     it "returns a Geometric position with the correct position" do
