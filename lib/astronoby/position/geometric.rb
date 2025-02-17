@@ -2,7 +2,7 @@
 
 module Astronoby
   module Position
-    class Barycentric < ICRF
+    class Geometric < ICRF
       def initialize(
         position:,
         velocity:,
@@ -19,16 +19,16 @@ module Astronoby
       end
 
       def to_astrometric(ephem:)
-        earth_barycentric = Earth.barycentric(ephem: ephem, instant: @instant)
+        earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
         position_corrected, velocity_corrected =
           apply_light_time_delay_correction(
-            earth_barycentric,
+            earth_geometric,
             self,
             ephem
           )
         Astrometric.new(
-          position: position_corrected - earth_barycentric.position,
-          velocity: velocity_corrected - earth_barycentric.velocity,
+          position: position_corrected - earth_geometric.position,
+          velocity: velocity_corrected - earth_geometric.velocity,
           instant: @instant,
           center_identifier: Planet::EARTH,
           target_body: self.class

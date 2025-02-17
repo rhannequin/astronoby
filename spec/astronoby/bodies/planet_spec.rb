@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Planet do
-  describe "::barycentric" do
-    it "returns a Barycentric position" do
+  describe "::geometric" do
+    it "returns a Geometric position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
       state = double(
@@ -12,12 +12,12 @@ RSpec.describe Astronoby::Planet do
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
 
-      barycentric = build_planet.barycentric(instant: instant, ephem: ephem)
+      geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
-      expect(barycentric).to be_a(Astronoby::Position::Barycentric)
+      expect(geometric).to be_a(Astronoby::Position::Geometric)
     end
 
-    it "returns a Barycentric position with the correct position" do
+    it "returns a Geometric position with the correct position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
       state = double(
@@ -27,9 +27,9 @@ RSpec.describe Astronoby::Planet do
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
 
-      barycentric = build_planet.barycentric(instant: instant, ephem: ephem)
+      geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
-      expect(barycentric.position)
+      expect(geometric.position)
         .to eq(
           Astronoby::Vector[
             Astronoby::Distance.from_kilometers(1),
@@ -37,7 +37,7 @@ RSpec.describe Astronoby::Planet do
             Astronoby::Distance.from_kilometers(3)
           ]
         )
-      expect(barycentric.velocity)
+      expect(geometric.velocity)
         .to eq(
           Astronoby::Vector[
             Astronoby::Velocity.from_kilometers_per_day(4),
@@ -47,7 +47,7 @@ RSpec.describe Astronoby::Planet do
         )
     end
 
-    it "returns a Barycentric position with the correct instant" do
+    it "returns a Geometric position with the correct instant" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
       state = double(
@@ -57,13 +57,13 @@ RSpec.describe Astronoby::Planet do
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
 
-      barycentric = build_planet.barycentric(instant: instant, ephem: ephem)
+      geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
-      expect(barycentric.instant).to eq(instant)
+      expect(geometric.instant).to eq(instant)
     end
 
     context "when the planet has multiple segments" do
-      it "returns a Barycentric position with the correct position" do
+      it "returns a Geometric position with the correct position" do
         time = Time.utc(2025, 2, 7, 12)
         instant = Astronoby::Instant.from_time(time)
         state1 = double(
@@ -80,12 +80,12 @@ RSpec.describe Astronoby::Planet do
         allow(ephem).to receive(:[]).with(0).and_return(segment1)
         allow(ephem).to receive(:[]).with(1).and_return(segment2)
 
-        barycentric = build_planet_with_multiple_segments.barycentric(
+        geometric = build_planet_with_multiple_segments.geometric(
           instant: instant,
           ephem: ephem
         )
 
-        expect(barycentric.position)
+        expect(geometric.position)
           .to eq(
             Astronoby::Vector[
               Astronoby::Distance.from_kilometers(8),
@@ -93,7 +93,7 @@ RSpec.describe Astronoby::Planet do
               Astronoby::Distance.from_kilometers(12)
             ]
           )
-        expect(barycentric.velocity)
+        expect(geometric.velocity)
           .to eq(
             Astronoby::Vector[
               Astronoby::Velocity.from_kilometers_per_day(14),
@@ -112,7 +112,7 @@ RSpec.describe Astronoby::Planet do
 
         expect do
           build_planet_with_no_segments
-            .barycentric(instant: instant, ephem: ephem)
+            .geometric(instant: instant, ephem: ephem)
         end.to raise_error(NotImplementedError)
       end
     end
