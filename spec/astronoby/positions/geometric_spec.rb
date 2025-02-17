@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Position::Geometric do
+RSpec.describe Astronoby::Geometric do
   describe "#to_astrometric" do
     it "returns an Astrometric position" do
       time = Time.utc(2025, 2, 7, 12)
@@ -37,7 +37,7 @@ RSpec.describe Astronoby::Position::Geometric do
 
       astrometric = geometric.to_astrometric(ephem: ephem)
 
-      expect(astrometric).to be_a(Astronoby::Position::Astrometric)
+      expect(astrometric).to be_a(Astronoby::Astrometric)
     end
 
     it "returns an Astrometric position with the correct position" do

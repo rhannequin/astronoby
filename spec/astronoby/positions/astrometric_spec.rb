@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Position::Astrometric do
+RSpec.describe Astronoby::Astrometric do
   describe "#right_ascension" do
     it "extracts the right ascension from Cartesian coordinates" do
       position = Astronoby::Vector[

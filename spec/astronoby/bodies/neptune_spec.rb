@@ -17,7 +17,7 @@ RSpec.describe Astronoby::Neptune do
 
       geometric = planet.geometric
 
-      expect(geometric).to be_a(Astronoby::Position::Geometric)
+      expect(geometric).to be_a(Astronoby::Geometric)
       expect(geometric.position)
         .to eq(
           Astronoby::Vector[
@@ -79,7 +79,7 @@ RSpec.describe Astronoby::Neptune do
 
       astrometric = planet.astrometric
 
-      expect(astrometric).to be_a(Astronoby::Position::Astrometric)
+      expect(astrometric).to be_a(Astronoby::Astrometric)
       expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
       expect(astrometric.declination).to be_a(Astronoby::Angle)
       expect(astrometric.distance).to be_a(Astronoby::Distance)

@@ -5,7 +5,7 @@ RSpec.describe Astronoby::Correction::LightTimeDelay do
     it "returns the light time delay" do
       # Geometric position of Earth on date
       center = instance_double(
-        Astronoby::Position::Geometric,
+        Astronoby::Geometric,
         position: Astronoby::Vector[
           Astronoby::Distance.from_au(-0.745519104045),
           Astronoby::Distance.from_km(0.593567726886),
@@ -15,7 +15,7 @@ RSpec.describe Astronoby::Correction::LightTimeDelay do
       )
       # Geometric position of Neptune on date
       target = instance_double(
-        Astronoby::Position::Geometric,
+        Astronoby::Geometric,
         position: Astronoby::Vector[
           Astronoby::Distance.from_au(29.875700436001),
           Astronoby::Distance.from_au(-0.208123819479),
