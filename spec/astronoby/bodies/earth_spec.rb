@@ -3,8 +3,8 @@
 RSpec.describe Astronoby::Earth do
   include TestEphemHelper
 
-  describe "#barycentric" do
-    it "returns a Barycentric position" do
+  describe "#geometric" do
+    it "returns a Geometric position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
       state = double(
@@ -15,10 +15,10 @@ RSpec.describe Astronoby::Earth do
       ephem = double(:[] => segment)
       planet = described_class.new(instant: instant, ephem: ephem)
 
-      barycentric = planet.barycentric
+      geometric = planet.geometric
 
-      expect(barycentric).to be_a(Astronoby::Position::Barycentric)
-      expect(barycentric.position)
+      expect(geometric).to be_a(Astronoby::Position::Geometric)
+      expect(geometric.position)
         .to eq(
           Astronoby::Vector[
             Astronoby::Distance.from_kilometers(2),
@@ -26,7 +26,7 @@ RSpec.describe Astronoby::Earth do
             Astronoby::Distance.from_kilometers(6)
           ]
         )
-      expect(barycentric.velocity)
+      expect(geometric.velocity)
         .to eq(
           Astronoby::Vector[
             Astronoby::Velocity.from_kilometers_per_day(8),
@@ -42,9 +42,9 @@ RSpec.describe Astronoby::Earth do
       ephem = test_ephem
       planet = described_class.new(instant: instant, ephem: ephem)
 
-      barycentric = planet.barycentric
+      geometric = planet.geometric
 
-      expect(barycentric.position.to_a.map(&:km).map(&:round))
+      expect(geometric.position.to_a.map(&:km).map(&:round))
         .to eq([-140346472, 45128538, 19591516])
       # IMCCE:    -140346454 45128536 19591514
       # Skyfield: -140346474 45128533 19591514
@@ -56,9 +56,9 @@ RSpec.describe Astronoby::Earth do
       ephem = test_ephem
       planet = described_class.new(instant: instant, ephem: ephem)
 
-      barycentric = planet.barycentric
+      geometric = planet.geometric
 
-      expect(barycentric.velocity.to_a.map(&:mps).map { _1.round(5) })
+      expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
         .to eq([-10513.91311, -25850.11479, -11207.13966])
       # IMCCE:    -10513.91157 -25850.1153 -11207.13986
       # Skyfield: -10513.91205 -25850.11514 -11207.13981

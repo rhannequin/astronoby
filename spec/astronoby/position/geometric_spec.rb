@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Position::Barycentric do
+RSpec.describe Astronoby::Position::Geometric do
   describe "#to_astrometric" do
     it "returns an Astrometric position" do
       time = Time.utc(2025, 2, 7, 12)
@@ -11,7 +11,7 @@ RSpec.describe Astronoby::Position::Barycentric do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      barycentric = Astronoby::Jupiter.barycentric(
+      geometric = Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant
       )
@@ -29,13 +29,13 @@ RSpec.describe Astronoby::Position::Barycentric do
         ],
         instant: instant
       )
-      allow(Astronoby::Earth).to receive(:barycentric).and_return(earth_double)
+      allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
       allow(Astronoby::Correction::LightTimeDelay).to(
         receive(:compute)
-          .and_return([barycentric.position, barycentric.velocity])
+          .and_return([geometric.position, geometric.velocity])
       )
 
-      astrometric = barycentric.to_astrometric(ephem: ephem)
+      astrometric = geometric.to_astrometric(ephem: ephem)
 
       expect(astrometric).to be_a(Astronoby::Position::Astrometric)
     end
@@ -49,7 +49,7 @@ RSpec.describe Astronoby::Position::Barycentric do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      barycentric = Astronoby::Jupiter.barycentric(
+      geometric = Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant
       )
@@ -67,13 +67,13 @@ RSpec.describe Astronoby::Position::Barycentric do
         ],
         instant: instant
       )
-      allow(Astronoby::Earth).to receive(:barycentric).and_return(earth_double)
+      allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
       allow(Astronoby::Correction::LightTimeDelay).to(
         receive(:compute)
-          .and_return([barycentric.position, barycentric.velocity])
+          .and_return([geometric.position, geometric.velocity])
       )
 
-      astrometric = barycentric.to_astrometric(ephem: ephem)
+      astrometric = geometric.to_astrometric(ephem: ephem)
 
       expect(astrometric.position)
         .to eq(
@@ -102,7 +102,7 @@ RSpec.describe Astronoby::Position::Barycentric do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      barycentric = Astronoby::Jupiter.barycentric(
+      geometric = Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant
       )
@@ -120,7 +120,7 @@ RSpec.describe Astronoby::Position::Barycentric do
         ],
         instant: instant
       )
-      allow(Astronoby::Earth).to receive(:barycentric).and_return(earth_double)
+      allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
       allow(Astronoby::Correction::LightTimeDelay)
         .to receive(:compute).and_return(
           [
@@ -137,7 +137,7 @@ RSpec.describe Astronoby::Position::Barycentric do
           ]
         )
 
-      astrometric = barycentric.to_astrometric(ephem: ephem)
+      astrometric = geometric.to_astrometric(ephem: ephem)
 
       expect(astrometric.position)
         .to eq(

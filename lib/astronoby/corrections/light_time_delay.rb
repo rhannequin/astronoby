@@ -43,7 +43,7 @@ module Astronoby
             )
             corrected = @target
               .target_body
-              .barycentric(ephem: @ephem, instant: new_instant)
+              .geometric(ephem: @ephem, instant: new_instant)
             corrected_position = corrected.position
             corrected_velocity = corrected.velocity
 
