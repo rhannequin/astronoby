@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Mercury do
         .to eq([-58796391, -24211914, -6830870])
       # IMCCE:    -58796367 -24211916 -6830872
       # Skyfield: -58796389 -24211921 -6830874
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("13h 29m 31.5594s")
+      # IMCCE:    13h 29m 31.5617s
+      # Skyfield: 13h 29m 31.56s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("-6° 7′ 53.664″")
+      # IMCCE:    -6° 7′ 53.680″
+      # Skyfield: -6° 7′ 53.7″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Mercury do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,12 +102,12 @@ RSpec.describe Astronoby::Mercury do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension.str(:hms))
+      expect(astrometric.equatorial.right_ascension.str(:hms))
         .to eq("17h 14m 48.5473s")
       # IMCCE:    17h 14m 48.548s
       # Skyfield: 17h 14m 48.55s
 
-      expect(astrometric.declination.str(:dms))
+      expect(astrometric.equatorial.declination.str(:dms))
         .to eq("-21° 54′ 45.5553″")
       # IMCCE:    -21° 54′ 45.557″
       # Skyfield: -21° 54′ 45.6″

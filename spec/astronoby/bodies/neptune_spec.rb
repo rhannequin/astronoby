@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Neptune do
         .to eq([4469473874, 45168128, -92786635])
       # IMCCE:    4469474028 45168599 -92785689
       # Skyfield: 4469473874 45168128 -92786635
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("0h 2m 18.9615s")
+      # IMCCE:    0h 2m 18.96305s
+      # Skyfield: 0h 2m 18.96s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("-1° 11′ 21.2403″")
+      # IMCCE:    -1° 11′ 21.197″
+      # Skyfield: -1° 11′ 21.2″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Neptune do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,12 +102,12 @@ RSpec.describe Astronoby::Neptune do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension.str(:hms))
+      expect(astrometric.equatorial.right_ascension.str(:hms))
         .to eq("0h 8m 5.7504s")
       # IMCCE:    0h 8m 5.7519s
       # Skyfield: 0h 8m 5.75s
 
-      expect(astrometric.declination.str(:dms))
+      expect(astrometric.equatorial.declination.str(:dms))
         .to eq("-0° 35′ 37.2556″")
       # IMCCE:    -0° 35′ 37.211″
       # Skyfield: -0° 35′ 37.3″

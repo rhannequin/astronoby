@@ -17,6 +17,30 @@ module Astronoby
         @epoch = epoch
       end
 
+      def self.zero
+        new(declination: Angle.zero, right_ascension: Angle.zero)
+      end
+
+      def self.from_position_vector(position)
+        return zero if position.zero?
+
+        term1 = position.z.m
+        term2 = position.magnitude
+        declination = Angle.asin(term1 / term2)
+
+        term1 = position.y.m
+        term2 = position.x.m
+        angle = Angle.atan(term1 / term2)
+        right_ascension =
+          Astronoby::Util::Trigonometry.adjustement_for_arctangent(
+            term1,
+            term2,
+            angle
+          )
+
+        new(declination: declination, right_ascension: right_ascension)
+      end
+
       def compute_hour_angle(time:, longitude:)
         lst = GreenwichSiderealTime
           .from_utc(time.utc)

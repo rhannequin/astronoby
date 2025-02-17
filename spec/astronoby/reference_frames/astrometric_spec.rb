@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Geometric do
-  describe "#to_astrometric" do
+RSpec.describe Astronoby::Astrometric do
+  describe "::build_from_geometric" do
     it "returns an Astrometric position" do
       time = Time.utc(2025, 2, 7, 12)
       instant = Astronoby::Instant.from_time(time)
@@ -35,7 +35,12 @@ RSpec.describe Astronoby::Geometric do
           .and_return([geometric.position, geometric.velocity])
       )
 
-      astrometric = geometric.to_astrometric(ephem: ephem)
+      astrometric = described_class.build_from_geometric(
+        ephem: ephem,
+        instant: instant,
+        target_geometric: geometric,
+        target_body: Astronoby::Jupiter
+      )
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
     end
@@ -73,7 +78,12 @@ RSpec.describe Astronoby::Geometric do
           .and_return([geometric.position, geometric.velocity])
       )
 
-      astrometric = geometric.to_astrometric(ephem: ephem)
+      astrometric = described_class.build_from_geometric(
+        ephem: ephem,
+        instant: instant,
+        target_geometric: geometric,
+        target_body: Astronoby::Jupiter
+      )
 
       expect(astrometric.position)
         .to eq(
@@ -137,7 +147,12 @@ RSpec.describe Astronoby::Geometric do
           ]
         )
 
-      astrometric = geometric.to_astrometric(ephem: ephem)
+      astrometric = described_class.build_from_geometric(
+        ephem: ephem,
+        instant: instant,
+        target_geometric: geometric,
+        target_body: Astronoby::Jupiter
+      )
 
       expect(astrometric.position)
         .to eq(
@@ -156,6 +171,63 @@ RSpec.describe Astronoby::Geometric do
             Astronoby::Velocity.from_mps(6)
           ]
         )
+    end
+  end
+
+  describe "#equatorial" do
+    it "returns equatorial coordinates" do
+      position = Astronoby::Vector[
+        Astronoby::Distance.from_kilometers(1),
+        Astronoby::Distance.from_kilometers(1),
+        Astronoby::Distance.from_kilometers(1)
+      ]
+      astrometric = described_class.new(
+        position: position,
+        velocity: kind_of(Vector),
+        instant: kind_of(Astronoby::Instant),
+        center_identifier: Astronoby::Planet::EARTH,
+        target_body: Astronoby::Jupiter
+      )
+
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+    end
+  end
+
+  describe "#distance" do
+    it "extracts the distance from Cartesian coordinates" do
+      position = Astronoby::Vector[
+        Astronoby::Distance.from_kilometers(2),
+        Astronoby::Distance.from_kilometers(2),
+        Astronoby::Distance.from_kilometers(1)
+      ]
+      astrometric = described_class.new(
+        position: position,
+        velocity: kind_of(Vector),
+        instant: kind_of(Astronoby::Instant),
+        center_identifier: Astronoby::Planet::EARTH,
+        target_body: Astronoby::Jupiter
+      )
+
+      expect(astrometric.distance).to eq(Astronoby::Distance.from_kilometers(3))
+    end
+
+    context "when the distance is null" do
+      it "returns a null distance" do
+        position = Astronoby::Vector[
+          Astronoby::Distance.zero,
+          Astronoby::Distance.zero,
+          Astronoby::Distance.zero
+        ]
+        astrometric = described_class.new(
+          position: position,
+          velocity: kind_of(Vector),
+          instant: kind_of(Astronoby::Instant),
+          center_identifier: Astronoby::Planet::EARTH,
+          target_body: Astronoby::Jupiter
+        )
+
+        expect(astrometric.distance).to eq(Astronoby::Distance.zero)
+      end
     end
   end
 end

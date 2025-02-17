@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class Position
+  class ReferenceFrame
     attr_reader :position,
       :velocity,
       :instant,
@@ -20,6 +20,18 @@ module Astronoby
       @instant = instant
       @center_identifier = center_identifier
       @target_body = target_body
+    end
+
+    def equatorial
+      return Coordinates::Equatorial.zero if distance.zero?
+
+      Coordinates::Equatorial.from_position_vector(@position)
+    end
+
+    def distance
+      return Distance.zero if @position.zero?
+
+      Astronoby::Distance.from_meters(@position.magnitude)
     end
   end
 end
