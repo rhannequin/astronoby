@@ -76,7 +76,8 @@ RSpec.describe Astronoby::Moon do
     #  Edition: MIT Press
     #  Chapter: 7 - The Moon, p.185
     it "returns the apparent ecliptic coordinates for 2010-05-15" do
-      moon = described_class.new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
+      moon = described_class
+        .new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
 
       coordinates = moon.apparent_ecliptic_coordinates
 
@@ -143,11 +144,11 @@ RSpec.describe Astronoby::Moon do
 
       coordinates = moon.apparent_equatorial_coordinates
 
-      expect(coordinates.right_ascension.str(:hms)).to eq "8h 58m 45.21s"
+      expect(coordinates.right_ascension.str(:hms)).to eq "8h 58m 45.2095s"
       # Result from the book: 8h 58m 45.1s
       # Result from IMCCE: 8h 58m 45.0996s
 
-      expect(coordinates.declination.str(:dms)).to eq "+13° 46′ 6.1119″"
+      expect(coordinates.declination.str(:dms)).to eq "+13° 46′ 6.0818″"
       # Result from the book: +13° 46′ 6″
       # Result from IMCCE: +13° 46′ 6.424″
     end
@@ -162,11 +163,11 @@ RSpec.describe Astronoby::Moon do
 
       coordinates = moon.apparent_equatorial_coordinates
 
-      expect(coordinates.right_ascension.str(:hms)).to eq "4h 16m 35.1442s"
+      expect(coordinates.right_ascension.str(:hms)).to eq "4h 16m 35.1446s"
       # Result from the book: 4h 15m 27.7703s (4.257714h)
       # Result from IMCCE: 4h 16m 35.0164s
 
-      expect(coordinates.declination.str(:dms)).to eq "+17° 24′ 14.7897″"
+      expect(coordinates.declination.str(:dms)).to eq "+17° 24′ 14.7471″"
       # Result from the book: +17° 14′ 55.9679″ (17.24888°)
       # Result from IMCCE: +17° 24′ 13.492″
     end
@@ -181,11 +182,11 @@ RSpec.describe Astronoby::Moon do
 
       coordinates = moon.apparent_equatorial_coordinates
 
-      expect(coordinates.right_ascension.str(:hms)).to eq "17h 6m 3.1276s"
+      expect(coordinates.right_ascension.str(:hms)).to eq "17h 6m 3.1278s"
       # Result from the book: 17h 5m 41.2872s (17.094802h)
       # Result from IMCCE: 17h 6m 3.1064s
 
-      expect(coordinates.declination.str(:dms)).to eq "-19° 39′ 20.8685″"
+      expect(coordinates.declination.str(:dms)).to eq "-19° 39′ 20.8256″"
       # Result from the book: -19° 47′ 39.9372″ (-19.794427°)
       # Result from IMCCE: -19° 39′ 20.54″
     end
@@ -196,15 +197,16 @@ RSpec.describe Astronoby::Moon do
     #  Edition: MIT Press
     #  Chapter: 7 - The Moon, p.185
     it "returns the apparent geocentric equatorial coordinates for 2010-05-15" do
-      moon = described_class.new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
+      moon = described_class
+        .new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
 
       coordinates = moon.apparent_equatorial_coordinates
 
-      expect(coordinates.right_ascension.str(:hms)).to eq "5h 0m 44.3733s"
+      expect(coordinates.right_ascension.str(:hms)).to eq "5h 0m 44.3736s"
       # Result from the book: 4h 59m 54.1103s (4.998364h)
       # Result from IMCCE: 5h 0m 44.454s
 
-      expect(coordinates.declination.str(:dms)).to eq "+25° 1′ 18.2266″"
+      expect(coordinates.declination.str(:dms)).to eq "+25° 1′ 18.1818″"
       # Result from the book: +25° 9′ 2.6999″ (25.150750°)
       # Result from IMCCE: +25° 1′ 19.227″
     end
@@ -219,11 +221,11 @@ RSpec.describe Astronoby::Moon do
 
       coordinates = moon.apparent_equatorial_coordinates
 
-      expect(coordinates.right_ascension.str(:hms)).to eq "14h 12m 12.2352s"
+      expect(coordinates.right_ascension.str(:hms)).to eq "14h 12m 12.2358s"
       # Result from the book: 14h 12m 42s
       # Result from IMCCE: 14h 12m 12.2872s
 
-      expect(coordinates.declination.str(:dms)).to eq "-11° 35′ 7.9466″"
+      expect(coordinates.declination.str(:dms)).to eq "-11° 35′ 7.9222″"
       # Result from the book: -11° 31′ 38″
       # Result from IMCCE: -11° 35′ 7.994″
     end
@@ -241,10 +243,10 @@ RSpec.describe Astronoby::Moon do
       horizontal_coordinates =
         moon.horizontal_coordinates(observer: observer)
 
-      expect(horizontal_coordinates.azimuth.str(:dms)).to eq "+245° 7′ 32.2346″"
+      expect(horizontal_coordinates.azimuth.str(:dms)).to eq "+245° 7′ 32.1829″"
       # Result from IMCCE: +245° 7′ 30.36″
 
-      expect(horizontal_coordinates.altitude.str(:dms)).to eq "+48° 1′ 21.8373″"
+      expect(horizontal_coordinates.altitude.str(:dms)).to eq "+48° 1′ 21.8119″"
       # Result from IMCCE: +48° 1′ 21″
     end
 
@@ -262,11 +264,11 @@ RSpec.describe Astronoby::Moon do
 
       coordinates = moon.horizontal_coordinates(observer: observer)
 
-      expect(coordinates.altitude.str(:dms)).to eq "-51° 19′ 13.9407″"
+      expect(coordinates.altitude.str(:dms)).to eq "-51° 19′ 13.9268″"
       # Result from the book: -50° 44′
       # Result from IMCCE: -51° 19′ 22.44″
 
-      expect(coordinates.azimuth.str(:dms)).to eq "+84° 40′ 12.0274″"
+      expect(coordinates.azimuth.str(:dms)).to eq "+84° 40′ 11.9631″"
       # Result from the book: +84° 56′
       # Result from IMCCE: +84° 40′ 5.52″
     end
@@ -281,15 +283,16 @@ RSpec.describe Astronoby::Moon do
         latitude: Astronoby::Angle.from_degrees(-20),
         longitude: Astronoby::Angle.from_degrees(-30)
       )
-      moon = described_class.new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
+      moon = described_class
+        .new(time: Time.new(2010, 5, 15, 14, 30, 0, "-04:00"))
 
       coordinates = moon.horizontal_coordinates(observer: observer)
 
-      expect(coordinates.altitude.str(:dms)).to eq "+25° 52′ 49.8989″"
+      expect(coordinates.altitude.str(:dms)).to eq "+25° 52′ 49.9323″"
       # Result from the book: 26° 32′
       # Result from IMCCE: 25° 52′ 40.8″
 
-      expect(coordinates.azimuth.str(:dms)).to eq "+313° 26′ 5.3866″"
+      expect(coordinates.azimuth.str(:dms)).to eq "+313° 26′ 5.3526″"
       # Result from the book: +313° 24′
       # Result from IMCCE: +313° 25′ 58.08″
     end
@@ -560,7 +563,7 @@ RSpec.describe Astronoby::Moon do
 
         rising_azimuth = observation_events.rising_azimuth
 
-        expect(rising_azimuth.str(:dms)).to eq "+98° 47′ 39.3589″"
+        expect(rising_azimuth.str(:dms)).to eq "+98° 47′ 39.3473″"
         # Time from IMCCE: +98° 37′ 50″
       end
     end
@@ -609,7 +612,7 @@ RSpec.describe Astronoby::Moon do
 
         transit_altitude = observation_events.transit_altitude
 
-        expect(transit_altitude.str(:dms)).to eq "+83° 1′ 50.327″"
+        expect(transit_altitude.str(:dms)).to eq "+83° 1′ 50.3358″"
         # Time from IMCCE: +82° 55′ 41″
       end
     end
@@ -658,7 +661,7 @@ RSpec.describe Astronoby::Moon do
 
         setting_azimuth = observation_events.setting_azimuth
 
-        expect(setting_azimuth.str(:dms)).to eq "+264° 34′ 51.1561″"
+        expect(setting_azimuth.str(:dms)).to eq "+264° 34′ 51.1622″"
         # Time from IMCCE: +264° 45′ 18″
       end
     end
