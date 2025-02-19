@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class Earth < Planet
+  class Earth < SolarSystemBody
     def self.ephemeris_segments
       [
         [SOLAR_SYSTEM_BARYCENTER, EARTH_MOON_BARYCENTER],
