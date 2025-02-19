@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Jupiter do
         .to eq([21224526, 703637652, 301087128])
       # IMCCE:    21224544 703637661 301087121
       # Skyfield: 21224523 703637652 301087128
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("5h 53m 5.3409s")
+      # IMCCE:    5h 53m 5.3406s
+      # Skyfield: 5h 53m 5.34s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("+23° 9′ 24.1204″")
+      # IMCCE:    +23° 9′ 24.118″
+      # Skyfield: +23° 9′ 24.1″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Jupiter do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,12 +102,12 @@ RSpec.describe Astronoby::Jupiter do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension.str(:hms))
+      expect(astrometric.equatorial.right_ascension.str(:hms))
         .to eq("5h 20m 58.7873s")
       # IMCCE:    5h 20m 58.7876s
       # Skyfield: 5h 20m 58.79s
 
-      expect(astrometric.declination.str(:dms))
+      expect(astrometric.equatorial.declination.str(:dms))
         .to eq("+22° 53′ 40.755″")
       # IMCCE:    +22° 53′ 40.753″
       # Skyfield: +22° 53′ 40.8″

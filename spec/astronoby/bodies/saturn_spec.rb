@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Saturn do
         .to eq([1425287156, -107081764, -105619618])
       # IMCCE:    1425287177 -107081757 -105619619
       # Skyfield: 1425287156 -107081762 -105619617
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("23h 42m 48.8261s")
+      # IMCCE:    23h 42m 48.8263s
+      # Skyfield: 23h 42m 48.83s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("-4° 13′ 34.4575″")
+      # IMCCE:    -4° 13′ 34.458″
+      # Skyfield: -4° 13′ 34.5″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Saturn do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,12 +102,12 @@ RSpec.describe Astronoby::Saturn do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension.str(:hms))
+      expect(astrometric.equatorial.right_ascension.str(:hms))
         .to eq("0h 3m 50.3691s")
       # IMCCE:    0h 3m 50.3693s
       # Skyfield: 0h 3m 50.37s
 
-      expect(astrometric.declination.str(:dms))
+      expect(astrometric.equatorial.declination.str(:dms))
         .to eq("-1° 52′ 50.7217″")
       # IMCCE:    -1° 52′ 50.722″
       # Skyfield: -1° 52′ 50.7″

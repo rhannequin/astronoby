@@ -76,7 +76,12 @@ module Astronoby
     end
 
     def compute_astrometric(ephem)
-      @geometric.to_astrometric(ephem: ephem)
+      Astrometric.build_from_geometric(
+        ephem: ephem,
+        instant: @instant,
+        target_geometric: @geometric,
+        target_body: self
+      )
     end
   end
 end

@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Uranus do
         .to eq([1570711514, 2262283646, 968602638])
       # IMCCE:    1570712997 2262283390 968602438
       # Skyfield: 1570711513 2262283647 968602638
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("3h 40m 54.6278s")
+      # IMCCE:    3h 40m 54.6210s
+      # Skyfield: 3h 40m 54.63s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("+19° 22′ 35.4493″")
+      # IMCCE:    +19° 22′ 35.421″
+      # Skyfield: +19° 22′ 35.4″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Uranus do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,12 +102,12 @@ RSpec.describe Astronoby::Uranus do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension.str(:hms))
+      expect(astrometric.equatorial.right_ascension.str(:hms))
         .to eq("3h 48m 47.1234s")
       # IMCCE:    3h 48m 47.1169s
       # Skyfield: 3h 48m 47.12s
 
-      expect(astrometric.declination.str(:dms))
+      expect(astrometric.equatorial.declination.str(:dms))
         .to eq("+19° 48′ 18.8202″")
       # IMCCE:    +19° 48′ 18.795″
       # Skyfield: +19° 48′ 18.8″

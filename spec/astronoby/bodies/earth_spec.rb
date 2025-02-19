@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Earth do
         .to eq([-140346472, 45128538, 19591516])
       # IMCCE:    -140346454 45128536 19591514
       # Skyfield: -140346474 45128533 19591514
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("10h 48m 41.9417s")
+      # IMCCE:    10h 48m 41.9414s
+      # Skyfield: 10h 48m 41.94s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("+7° 34′ 11.406″")
+      # IMCCE:    +7° 34′ 11.407″
+      # Skyfield: +7° 34′ 11.4″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Earth do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,8 +102,9 @@ RSpec.describe Astronoby::Earth do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension).to eq(Astronoby::Angle.zero)
-      expect(astrometric.declination).to eq(Astronoby::Angle.zero)
+      expect(astrometric.equatorial.right_ascension)
+        .to eq(Astronoby::Angle.zero)
+      expect(astrometric.equatorial.declination).to eq(Astronoby::Angle.zero)
       expect(astrometric.distance).to eq(Astronoby::Distance.zero)
     end
 

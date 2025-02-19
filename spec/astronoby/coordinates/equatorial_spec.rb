@@ -1,6 +1,45 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Coordinates::Equatorial do
+  describe "::zero" do
+    it "returns a new instance with zero angles" do
+      coordinates = described_class.zero
+
+      expect(coordinates.right_ascension).to eq(Astronoby::Angle.zero)
+      expect(coordinates.declination).to eq(Astronoby::Angle.zero)
+    end
+  end
+
+  describe "::from_position_vector" do
+    it "returns a new instance with the right ascension and declination" do
+      position = Astronoby::Vector[
+        Astronoby::Distance.from_kilometers(1),
+        Astronoby::Distance.from_kilometers(1),
+        Astronoby::Distance.from_kilometers(1)
+      ]
+
+      coordinates = described_class.from_position_vector(position)
+
+      expect(coordinates.right_ascension.str(:hms)).to eq("3h 0m 0.0s")
+      expect(coordinates.declination.str(:dms)).to eq("+35° 15′ 51.8028″")
+    end
+
+    context "when the distance is null" do
+      it "returns a new instance with zero angles" do
+        position = Astronoby::Vector[
+          Astronoby::Distance.zero,
+          Astronoby::Distance.zero,
+          Astronoby::Distance.zero
+        ]
+
+        coordinates = described_class.from_position_vector(position)
+
+        expect(coordinates.right_ascension).to eq(Astronoby::Angle.zero)
+        expect(coordinates.declination).to eq(Astronoby::Angle.zero)
+      end
+    end
+  end
+
   describe "#compute_hour_angle" do
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet

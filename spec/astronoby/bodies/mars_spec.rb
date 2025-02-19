@@ -48,6 +48,16 @@ RSpec.describe Astronoby::Mars do
         .to eq([-214596103, 113040908, 57662718])
       # IMCCE:    -214596085 113040908 57662716
       # Skyfield: -214596105 113040905 57662716
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("10h 8m 53.1545s")
+      # IMCCE:    10h 8m 53.1541s
+      # Skyfield: 10h 8m 53.15s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("+13° 22′ 23.046″")
+      # IMCCE:    +13° 22′ 23.048″
+      # Skyfield: +13° 22′ 23.0″
     end
 
     it "computes the correct velocity" do
@@ -80,8 +90,7 @@ RSpec.describe Astronoby::Mars do
       astrometric = planet.astrometric
 
       expect(astrometric).to be_a(Astronoby::Astrometric)
-      expect(astrometric.right_ascension).to be_a(Astronoby::Angle)
-      expect(astrometric.declination).to be_a(Astronoby::Angle)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
       expect(astrometric.distance).to be_a(Astronoby::Distance)
     end
 
@@ -93,12 +102,12 @@ RSpec.describe Astronoby::Mars do
 
       astrometric = planet.astrometric
 
-      expect(astrometric.right_ascension.str(:hms))
+      expect(astrometric.equatorial.right_ascension.str(:hms))
         .to eq("7h 42m 19.2644s")
       # IMCCE:    7h 42m 19.2648s
       # Skyfield: 7h 42m 19.26s
 
-      expect(astrometric.declination.str(:dms))
+      expect(astrometric.equatorial.declination.str(:dms))
         .to eq("+24° 3′ 35.8686″")
       # IMCCE:    +24° 3′ 35.868″
       # Skyfield: +24° 3′ 35.9″
