@@ -23,7 +23,7 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
           # Result from the book: 12h 18m 47.5s
         )
         expect(equatorial_coordinates.declination.str(:dms)).to(
-          eq("-0° 43′ 35.5098″")
+          eq("-0° 43′ 35.5062″")
           # Result from the book: -0° 43′ 35.5″
         )
       end
@@ -46,11 +46,11 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
         ).to_true_equatorial(epoch: epoch)
 
         expect(equatorial_coordinates.right_ascension.str(:hms)).to(
-          eq("8h 10m 50.4188s")
+          eq("8h 10m 50.4182s")
           # Result from the book: 8h 10m 50s
         )
         expect(equatorial_coordinates.declination.str(:dms)).to(
-          eq("+20° 2′ 30.795″")
+          eq("+20° 2′ 30.758″")
           # Result from the book: +20° 2′ 31″
         )
       end
@@ -73,11 +73,11 @@ RSpec.describe Astronoby::Coordinates::Ecliptic do
         ).to_true_equatorial(epoch: epoch)
 
         expect(equatorial_coordinates.right_ascension.str(:hms)).to(
-          eq("9h 34m 53.3214s")
+          eq("9h 34m 53.3205s")
           # Result from the book: 9h 34m 53.32s
         )
         expect(equatorial_coordinates.declination.str(:dms)).to(
-          eq("+19° 32′ 6.0105″")
+          eq("+19° 32′ 5.9833″")
           # Result from the book: +19° 32′ 6.01″
         )
       end
