@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Uranus do
         .to eq("+19° 22′ 35.4493″")
       # IMCCE:    +19° 22′ 35.421″
       # Skyfield: +19° 22′ 35.4″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("-0° 13′ 11.9158″")
+      # IMCCE:    -0° 13′ 11.922″
+      # Skyfield: -0° 13′ 1.3″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+57° 27′ 4.2182″")
+      # IMCCE:    +57° 27′ 4.118″
+      # Skyfield: +57° 48′ 29.4″
+
+      expect(geometric.distance.au)
+        .to eq(19.515391974096183)
+      # IMCCE:    19.51539553769
+      # Skyfield: 19.51539197373322
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Uranus do
         .to eq("+19° 48′ 18.8202″")
       # IMCCE:    +19° 48′ 18.795″
       # Skyfield: +19° 48′ 18.8″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("-0° 12′ 43.8064″")
+      # IMCCE:    -0° 12′ 43.812″
+      # Skyfield: -0° 12′ 33.0″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+59° 21′ 17.3489″")
+      # IMCCE:    +59° 21′ 17.253″
+      # Skyfield: +59° 42′ 42.6″
 
       expect(astrometric.distance.au)
         .to eq(20.293374076651755)

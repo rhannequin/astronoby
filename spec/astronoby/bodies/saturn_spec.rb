@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Saturn do
         .to eq("-4° 13′ 34.4575″")
       # IMCCE:    -4° 13′ 34.458″
       # Skyfield: -4° 13′ 34.5″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("-2° 10′ 18.0315″")
+      # IMCCE:    -2° 10′ 18.032″
+      # Skyfield: -2° 10′ 18.1″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+354° 22′ 47.1815″")
+      # IMCCE:    +354° 22′ 47.182″
+      # Skyfield: +354° 44′ 7.3″
+
+      expect(geometric.distance.au)
+        .to eq(9.580357829890923)
+      # IMCCE:    9.580357970998
+      # Skyfield: 9.580357829243903
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Saturn do
         .to eq("-1° 52′ 50.7217″")
       # IMCCE:    -1° 52′ 50.722″
       # Skyfield: -1° 52′ 50.7″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("-2° 6′ 26.3397″")
+      # IMCCE:    -2° 6′ 26.340″
+      # Skyfield: -2° 6′ 25.3″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+0° 7′ 56.1071″")
+      # IMCCE:    +0° 7′ 56.108″
+      # Skyfield: +0° 29′ 16.2″
 
       expect(astrometric.distance.au)
         .to eq(9.878564650795877)

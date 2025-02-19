@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Venus do
         .to eq("+24° 21′ 26.4794″")
       # IMCCE:    +24° 21′ 26.481″
       # Skyfield: +24° 21′ 26.5″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("+1° 25′ 43.096″")
+      # IMCCE:    +1° 25′ 43.095″
+      # Skyfield: +1° 25′ 54.4″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+101° 35′ 6.7601″")
+      # IMCCE:    +101° 35′ 6.733″
+      # Skyfield: +101° 56′ 10.0″
+
+      expect(geometric.distance.au)
+        .to eq(0.7152904564103618)
+      # IMCCE:    0.715290459923
+      # Skyfield: 0.7152904566396294
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Venus do
         .to eq("+0° 37′ 33.7021″")
       # IMCCE:    +0° 37′ 33.706″
       # Skyfield: +0° 37′ 33.7″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("+1° 56′ 23.8202″")
+      # IMCCE:    +1° 56′ 23.821″
+      # Skyfield: +1° 56′ 24.3″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+357° 5′ 49.9018″")
+      # IMCCE:    +357° 5′ 49.909″
+      # Skyfield: +357° 26′ 52.6″
 
       expect(astrometric.distance.au)
         .to eq(0.5226080600832164)

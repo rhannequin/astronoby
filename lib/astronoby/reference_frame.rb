@@ -28,6 +28,12 @@ module Astronoby
       Coordinates::Equatorial.from_position_vector(@position)
     end
 
+    def ecliptic
+      return Coordinates::Ecliptic.zero if distance.zero?
+
+      equatorial.to_ecliptic(epoch: Epoch::J2000)
+    end
+
     def distance
       return Distance.zero if @position.zero?
 
