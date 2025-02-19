@@ -10,6 +10,10 @@ module Astronoby
         @longitude = longitude
       end
 
+      def self.zero
+        new(latitude: Angle.zero, longitude: Angle.zero)
+      end
+
       # Source:
       #  Title: Celestial Calculations
       #  Author: J. L. Lawrence

@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Mercury do
         .to eq("-6° 7′ 53.664″")
       # IMCCE:    -6° 7′ 53.680″
       # Skyfield: -6° 7′ 53.7″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("+3° 0′ 54.0574″")
+      # IMCCE:    +3° 0′ 54.055″
+      # Skyfield: +3° 0′ 48.5″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+202° 58′ 41.4354″")
+      # IMCCE:    +202° 58′ 41.473″
+      # Skyfield: +202° 58′ 39.5″
+
+      expect(geometric.distance.au)
+        .to eq(0.4274945347661314)
+      # IMCCE:    0.427494398892
+      # Skyfield: 0.4274945451749377
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Mercury do
         .to eq("-21° 54′ 45.5553″")
       # IMCCE:    -21° 54′ 45.557″
       # Skyfield: -21° 54′ 45.6″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("+1° 7′ 0.4406″")
+      # IMCCE:    +1° 7′ 0.440″
+      # Skyfield: +1° 6′ 48.8″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+259° 31′ 33.854″")
+      # IMCCE:    +259° 31′ 33.864″
+      # Skyfield: +259° 52′ 31.4″
 
       expect(astrometric.distance.au)
         .to eq(1.1479011885933859)

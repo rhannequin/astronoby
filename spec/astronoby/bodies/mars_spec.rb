@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Mars do
         .to eq("+13° 22′ 23.046″")
       # IMCCE:    +13° 22′ 23.048″
       # Skyfield: +13° 22′ 23.0″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("+1° 49′ 29.7913″")
+      # IMCCE:    +1° 49′ 29.791″
+      # Skyfield: +1° 49′ 34.9″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+149° 27′ 6.5779″")
+      # IMCCE:    +149° 27′ 6.571″
+      # Skyfield: +149° 27′ 17.0″
+
+      expect(geometric.distance.au)
+        .to eq(1.6665243265178227)
+      # IMCCE:    1.666524219608
+      # Skyfield: 1.66652432695766
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Mars do
         .to eq("+24° 3′ 35.8686″")
       # IMCCE:    +24° 3′ 35.868″
       # Skyfield: +24° 3′ 35.9″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("+2° 39′ 41.3343″")
+      # IMCCE:    +2° 39′ 41.334″
+      # Skyfield: +2° 39′ 51.8″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+113° 14′ 47.4513″")
+      # IMCCE:    +113° 14′ 47.455″
+      # Skyfield: +113° 35′ 57.8″
 
       expect(astrometric.distance.au)
         .to eq(1.138989231808293)

@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Neptune do
         .to eq("-1° 11′ 21.2403″")
       # IMCCE:    -1° 11′ 21.197″
       # Skyfield: -1° 11′ 21.2″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("-1° 19′ 17.0443″")
+      # IMCCE:    -1° 19′ 17.013″
+      # Skyfield: -1° 19′ 16.0″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+0° 3′ 29.1763″")
+      # IMCCE:    +0° 3′ 29.214″
+      # Skyfield: +0° 24′ 59.8″
+
+      expect(geometric.distance.au)
+        .to eq(29.884550201759172)
+      # IMCCE:    29.884551127591
+      # Skyfield: 29.88455020171849
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Neptune do
         .to eq("-0° 35′ 37.2556″")
       # IMCCE:    -0° 35′ 37.211″
       # Skyfield: -0° 35′ 37.3″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("-1° 20′ 58.8551″")
+      # IMCCE:    -1° 20′ 58.823″
+      # Skyfield: -1° 20′ 57.5″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+1° 37′ 15.5232″")
+      # IMCCE:    +1° 37′ 15.560″
+      # Skyfield: +1° 58′ 46.1″
 
       expect(astrometric.distance.au)
         .to eq(29.266429831403105)

@@ -58,6 +58,21 @@ RSpec.describe Astronoby::Jupiter do
         .to eq("+23° 9′ 24.1204″")
       # IMCCE:    +23° 9′ 24.118″
       # Skyfield: +23° 9′ 24.1″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("-0° 16′ 22.9896″")
+      # IMCCE:    -0° 16′ 22.992″
+      # Skyfield: -0° 16′ 11.1″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+88° 24′ 41.3024″")
+      # IMCCE:    +88° 24′ 41.297″
+      # Skyfield: +88° 24′ 55.4″
+
+      expect(geometric.distance.au)
+        .to eq(5.118010310588575)
+      # IMCCE:    5.11801034937
+      # Skyfield: 5.118010311352852
     end
 
     it "computes the correct velocity" do
@@ -111,6 +126,16 @@ RSpec.describe Astronoby::Jupiter do
         .to eq("+22° 53′ 40.755″")
       # IMCCE:    +22° 53′ 40.753″
       # Skyfield: +22° 53′ 40.8″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("-0° 14′ 27.7664″")
+      # IMCCE:    -0° 14′ 27.769″
+      # Skyfield: -0° 14′ 15.9″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+81° 1′ 11.959″")
+      # IMCCE:    +81° 1′ 11.962″
+      # Skyfield: +81° 22′ 26.1″
 
       expect(astrometric.distance.au)
         .to eq(5.847692982822113)
