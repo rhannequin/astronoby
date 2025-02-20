@@ -12,7 +12,7 @@ module Astronoby
         position: position,
         velocity: velocity,
         instant: instant,
-        center_identifier: Planet::SOLAR_SYSTEM_BARYCENTER,
+        center_identifier: SolarSystemBody::SOLAR_SYSTEM_BARYCENTER,
         target_body: target_body
       )
     end

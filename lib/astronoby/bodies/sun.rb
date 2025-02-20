@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class Sun
+  class Sun < SolarSystemBody
     SEMI_MAJOR_AXIS_IN_METERS = 149_598_500_000
     ANGULAR_DIAMETER = Angle.from_degrees(0.533128)
     INTERPOLATION_FACTOR = 24.07
@@ -24,6 +24,10 @@ module Astronoby
     ].freeze
 
     attr_reader :time
+
+    def self.ephemeris_segments
+      [[SOLAR_SYSTEM_BARYCENTER, SUN]]
+    end
 
     # Source:
     #  Title: Astronomical Algorithms
@@ -70,8 +74,13 @@ module Astronoby
     #  Chapter: 6 - The Sun
 
     # @param time [Time] Considered time
-    def initialize(time:)
+    def initialize(time: nil, instant: nil, ephem: nil)
       @time = time
+      @instant = instant
+      @ephem = ephem
+      unless @instant.nil? || @ephem.nil?
+        super(instant: instant, ephem: ephem)
+      end
     end
 
     def epoch

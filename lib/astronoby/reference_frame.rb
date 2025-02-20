@@ -23,21 +23,27 @@ module Astronoby
     end
 
     def equatorial
-      return Coordinates::Equatorial.zero if distance.zero?
+      @equatorial ||= begin
+        return Coordinates::Equatorial.zero if distance.zero?
 
-      Coordinates::Equatorial.from_position_vector(@position)
+        Coordinates::Equatorial.from_position_vector(@position)
+      end
     end
 
     def ecliptic
-      return Coordinates::Ecliptic.zero if distance.zero?
+      @ecliptic ||= begin
+        return Coordinates::Ecliptic.zero if distance.zero?
 
-      equatorial.to_ecliptic(epoch: Epoch::J2000)
+        equatorial.to_ecliptic(epoch: Epoch::J2000)
+      end
     end
 
     def distance
-      return Distance.zero if @position.zero?
+      @distance ||= begin
+        return Distance.zero if @position.zero?
 
-      Astronoby::Distance.from_meters(@position.magnitude)
+        Astronoby::Distance.from_meters(@position.magnitude)
+      end
     end
   end
 end

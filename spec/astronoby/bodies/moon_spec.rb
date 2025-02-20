@@ -1,6 +1,163 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Moon do
+  include TestEphemHelper
+
+  describe "#geometric" do
+    it "returns a Geometric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      body = described_class.new(instant: instant, ephem: ephem)
+
+      geometric = body.geometric
+
+      expect(geometric).to be_a(Astronoby::Geometric)
+      expect(geometric.position)
+        .to eq(
+          Astronoby::Vector[
+            Astronoby::Distance.from_kilometers(2),
+            Astronoby::Distance.from_kilometers(4),
+            Astronoby::Distance.from_kilometers(6)
+          ]
+        )
+      expect(geometric.velocity)
+        .to eq(
+          Astronoby::Vector[
+            Astronoby::Velocity.from_kilometers_per_day(8),
+            Astronoby::Velocity.from_kilometers_per_day(10),
+            Astronoby::Velocity.from_kilometers_per_day(12)
+          ]
+        )
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      body = described_class.new(instant: instant, ephem: ephem)
+
+      geometric = body.geometric
+
+      expect(geometric.position.to_a.map(&:km).map(&:round))
+        .to eq([-139986171, 45092089, 19573501])
+      # IMCCE:    -139986152 45092088 19573500
+      # Skyfield: -139986173 45092085 19573500
+
+      expect(geometric.equatorial.right_ascension.str(:hms))
+        .to eq("10h 48m 34.8736s")
+      # IMCCE:    10h 48m 34.8733s
+      # Skyfield: 10h 48m 34.87s
+
+      expect(geometric.equatorial.declination.str(:dms))
+        .to eq("+7° 34′ 51.4383″")
+      # IMCCE:    +7° 34′ 51.439″
+      # Skyfield: +7° 34′ 51.4″
+
+      expect(geometric.ecliptic.latitude.str(:dms))
+        .to eq("+0° 0′ 30.2285″")
+      # IMCCE:    +0° 0′ 30.227″
+      # Skyfield: +0° 0′ 33.1″
+
+      expect(geometric.ecliptic.longitude.str(:dms))
+        .to eq("+160° 39′ 3.37″")
+      # IMCCE:    +160° 39′ 3.365″
+      # Skyfield: +161° 0′ 10.3″
+
+      expect(geometric.distance.au)
+        .to eq(0.9917671780230503)
+      # IMCCE:    0.991767054173
+      # Skyfield: 0.9917671790668138
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      body = described_class.new(instant: instant, ephem: ephem)
+
+      geometric = body.geometric
+
+      expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([-10408.41307, -24901.72774, -10687.38588])
+      # IMCCE:    -10408.41236 -24901.72816 -10687.38603
+      # Skyfield: -10408.41257 -24901.72803 -10687.38600
+    end
+  end
+
+  describe "#astrometric" do
+    it "returns an Astrometric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      body = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = body.astrometric
+
+      expect(astrometric).to be_a(Astronoby::Astrometric)
+      expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(astrometric.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      body = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = body.astrometric
+
+      expect(astrometric.equatorial.right_ascension.str(:hms))
+        .to eq("23h 36m 54.8281s")
+      # IMCCE:    23h 36m 54.8384s
+      # Skyfield: 23h 36m 54.83s
+
+      expect(astrometric.equatorial.declination.str(:dms))
+        .to eq("-2° 50′ 44.532″")
+      # IMCCE:    -2° 50′ 44.459″
+      # Skyfield: -2° 50′ 44.5″
+
+      expect(astrometric.ecliptic.latitude.str(:dms))
+        .to eq("-0° 19′ 14.6203″")
+      # IMCCE:    -0° 19′ 14.614″
+      # Skyfield: -0° 19′ 14.9″
+
+      expect(astrometric.ecliptic.longitude.str(:dms))
+        .to eq("+353° 34′ 30.4661″")
+      # IMCCE:    +353° 34′ 30.636″
+      # Skyfield: +353° 55′ 37.5″
+
+      expect(astrometric.distance.au)
+        .to eq(0.002423811076386272)
+      # IMCCE:    0.002423811046
+      # Skyfield: 0.002423811056514585
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      body = described_class.new(instant: instant, ephem: ephem)
+
+      astrometric = body.astrometric
+
+      expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([105.49678, 948.38896, 519.75459])
+      # IMCCE:    105.49594 948.38904 519.75463
+      # Skyfield: 105.49622 948.38902 519.75462
+    end
+  end
+
   describe "::monthly_phase_events" do
     it "returns an array" do
       moon_phases = described_class.monthly_phase_events(year: 2024, month: 1)

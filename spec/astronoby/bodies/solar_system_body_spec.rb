@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Planet do
+RSpec.describe Astronoby::SolarSystemBody do
   describe "::geometric" do
     it "returns a Geometric position" do
       time = Time.utc(2025, 2, 7, 12)
