@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class Moon
+  class Moon < SolarSystemBody
     SEMIDIAMETER_VARIATION = 0.7275
     MEAN_GEOCENTRIC_DISTANCE = Astronoby::Distance.from_meters(385_000_560)
+
+    def self.ephemeris_segments
+      [
+        [SOLAR_SYSTEM_BARYCENTER, EARTH_MOON_BARYCENTER],
+        [EARTH_MOON_BARYCENTER, MOON]
+      ]
+    end
 
     # Source:
     #  Title: Astronomical Algorithms
@@ -18,8 +25,13 @@ module Astronoby
       Events::MoonPhases.phases_for(year: year, month: month)
     end
 
-    def initialize(time:)
+    def initialize(time: nil, instant: nil, ephem: nil)
       @time = time
+      @instant = instant
+      @ephem = ephem
+      unless @instant.nil? || @ephem.nil?
+        super(instant: instant, ephem: ephem)
+      end
     end
 
     # @return [Astronoby::Coordinates::Ecliptic] Apparent ecliptic coordinates

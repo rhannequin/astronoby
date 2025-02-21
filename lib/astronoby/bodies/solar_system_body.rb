@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class Planet
+  class SolarSystemBody
     SOLAR_SYSTEM_BARYCENTER = 0
+    SUN = 10
     MERCURY_BARYCENTER = 1
     MERCURY = 199
     VENUS_BARYCENTER = 2
     VENUS = 299
     EARTH_MOON_BARYCENTER = 3
     EARTH = 399
+    MOON = 301
     MARS_BARYCENTER = 4
     JUPITER_BARYCENTER = 5
     SATURN_BARYCENTER = 6
