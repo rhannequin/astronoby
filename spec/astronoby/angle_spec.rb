@@ -50,6 +50,26 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "::from_degree_arcseconds" do
+    it "returns an Angle object" do
+      expect(described_class.from_degree_arcseconds(3600))
+        .to be_a(described_class)
+    end
+
+    it "normalizes the angle" do
+      expect(described_class.from_degree_arcseconds(3600).degrees.round(10))
+        .to eq 1
+      expect(described_class.from_degree_arcseconds(36).degrees.round(10))
+        .to eq 0.01
+      expect(described_class.from_degree_arcseconds(-3600).degrees.round(10))
+        .to eq(-1)
+      expect(described_class.from_degree_arcseconds(1299600).degrees.round(10))
+        .to eq(1)
+      expect(described_class.from_degree_arcseconds(-1299600).degrees.round(10))
+        .to eq(-1)
+    end
+  end
+
   describe "::from_hours" do
     it "returns an Angle object" do
       expect(described_class.from_hours(23)).to be_a(described_class)

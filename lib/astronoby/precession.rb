@@ -2,13 +2,69 @@
 
 module Astronoby
   class Precession
-    def self.for_equatorial_coordinates(coordinates:, epoch:)
-      new(coordinates, epoch).precess
+    def initialize(instant)
+      @instant = instant
     end
 
-    def initialize(coordinates, epoch)
-      @coordinates = coordinates
-      @epoch = epoch
+    def matrix
+      # Source:
+      #  IAU resolution in 2006 in favor of the P03 astronomical model
+      #  https://syrte.obspm.fr/iau2006/aa03_412_P03.pdf
+      # P(t) = R3(χA) R1(−ωA) R3(−ψA) R1(ϵ0)
+
+      # Precession in right ascension
+      psi_a = ((((
+          -0.0000000951 * t +
+          +0.000132851) * t +
+          -0.00114045) * t +
+          -1.0790069) * t +
+          +5038.481507) * t
+
+      # Precession in declination
+      omega_a = ((((
+        +0.0000003337 * t +
+        -0.000000467) * t +
+        -0.00772503) * t +
+        +0.0512623) * t +
+        -0.025754) * t +
+        eps0
+
+      # Precession of the ecliptic
+      chi_a = ((((
+        -0.0000000560 * t +
+        +0.000170663) * t +
+        -0.00121197) * t +
+        -2.3814292) * t +
+        +10.556403) * t
+
+      psi_a = Angle.from_degree_arcseconds(psi_a)
+      omega_a = Angle.from_degree_arcseconds(omega_a)
+      chi_a = Angle.from_degree_arcseconds(chi_a)
+
+      r3_psi = rotation_z(-psi_a)
+      r1_omega = rotation_x(-omega_a)
+      r3_chi = rotation_z(chi_a)
+      r1_eps0 = rotation_x(MeanObliquity.obliquity_of_reference)
+
+      r3_chi * r1_omega * r3_psi * r1_eps0
+    end
+
+    def rotation_x(angle)
+      c, s = angle.cos, angle.sin
+      Matrix[
+        [1, 0, 0],
+        [0, c, s],
+        [0, -s, c]
+      ]
+    end
+
+    def rotation_z(angle)
+      c, s = angle.cos, angle.sin
+      Matrix[
+        [c, s, 0],
+        [-s, c, 0],
+        [0, 0, 1]
+      ]
     end
 
     # Source:
@@ -16,14 +72,19 @@ module Astronoby
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 34 - Precession
-    def precess
-      matrix_a = matrix_for_epoch(@coordinates.epoch)
-      matrix_b = matrix_for_epoch(@epoch).transpose
+
+    def self.for_equatorial_coordinates(coordinates:, epoch:)
+      precess(coordinates, epoch)
+    end
+
+    def self.precess(coordinates, epoch)
+      matrix_a = matrix_for_epoch(coordinates.epoch)
+      matrix_b = matrix_for_epoch(epoch).transpose
 
       vector = Vector[
-        @coordinates.right_ascension.cos * @coordinates.declination.cos,
-        @coordinates.right_ascension.sin * @coordinates.declination.cos,
-        @coordinates.declination.sin
+        coordinates.right_ascension.cos * coordinates.declination.cos,
+        coordinates.right_ascension.sin * coordinates.declination.cos,
+        coordinates.declination.sin
       ]
 
       s = matrix_a * vector
@@ -36,13 +97,11 @@ module Astronoby
           Angle.atan(w[1] / w[0])
         ),
         declination: Angle.asin(w[2]),
-        epoch: @epoch
+        epoch: epoch
       )
     end
 
-    private
-
-    def matrix_for_epoch(epoch)
+    def self.matrix_for_epoch(epoch)
       t = (epoch - Epoch::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
 
       zeta = Angle.from_degrees(
@@ -79,6 +138,19 @@ module Astronoby
           ct
         ]
       ]
+    end
+
+    private
+
+    def t
+      @t ||= Rational(
+        @instant.tdb - Epoch::DEFAULT_EPOCH,
+        Constants::DAYS_PER_JULIAN_CENTURY
+      )
+    end
+
+    def eps0
+      @eps0 ||= MeanObliquity.obliquity_of_reference_in_milliarcseconds
     end
   end
 end

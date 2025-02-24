@@ -22,6 +22,10 @@ module Astronoby
         from_radians(radians)
       end
 
+      def from_degree_arcseconds(arcseconds)
+        from_dms(0, 0, arcseconds)
+      end
+
       def from_hours(hours)
         radians = hours * Constants::RADIAN_PER_HOUR
         from_radians(radians)
