@@ -28,6 +28,12 @@ module Astronoby
       end
       alias_method :from_kmpd, :from_kilometers_per_day
 
+      def from_astronomical_units_per_day(astronomical_units_per_day)
+        meters_per_second = astronomical_units_per_day *
+          Constants::ASTRONOMICAL_UNIT_IN_METERS / Constants::SECONDS_PER_DAY
+        from_meters_per_second(meters_per_second)
+      end
+
       def light_speed
         from_meters_per_second(Constants::LIGHT_SPEED_M_PER_S)
       end
@@ -51,6 +57,12 @@ module Astronoby
         Constants::KILOMETER_IN_METERS
     end
     alias_method :kmpd, :kilometers_per_day
+
+    def astronomical_units_per_day
+      @meters_per_second * Constants::SECONDS_PER_DAY /
+        Constants::ASTRONOMICAL_UNIT_IN_METERS
+    end
+    alias_method :aupd, :astronomical_units_per_day
 
     def +(other)
       self.class.from_meters_per_second(
