@@ -157,4 +157,67 @@ RSpec.describe Astronoby::Mercury do
       # Skyfield: 38473.18754 -32529.64572 -18788.09165
     end
   end
+
+  describe "#mean_of_date" do
+    it "returns a MeanOfDate position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date).to be_a(Astronoby::MeanOfDate)
+      expect(mean_of_date.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(mean_of_date.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(mean_of_date.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 1, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.equatorial.right_ascension.str(:hms))
+        .to eq("17h 16m 19.4051s")
+      # IMCCE:  17h 16m 19.4064s
+
+      expect(mean_of_date.equatorial.declination.str(:dms))
+        .to eq("-21° 56′ 26.4339″")
+      # IMCCE:  -21° 56′ 26.426″
+
+      expect(mean_of_date.ecliptic.latitude.str(:dms))
+        .to eq("+1° 6′ 45.242″")
+      # IMCCE:  +1° 6′ 45.252″
+
+      expect(mean_of_date.ecliptic.longitude.str(:dms))
+        .to eq("+259° 52′ 42.4276″")
+      # IMCCE:  +259° 52′ 42.445″
+
+      expect(mean_of_date.distance.au)
+        .to eq(1.1480561241626033)
+      # IMCCE: 1.148056160668
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 1, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([38717.64165, -32306.63286, -18692.31286])
+      # IMCCE:  38717.64791  -32306.62736  -18692.31383
+    end
+  end
 end

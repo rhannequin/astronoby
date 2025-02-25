@@ -15,7 +15,7 @@ module Astronoby
           target: target_geometric,
           ephem: ephem
         )
-      Astrometric.new(
+      new(
         position: corrected_position - earth_geometric.position,
         velocity: corrected_velocity - earth_geometric.velocity,
         instant: instant,
