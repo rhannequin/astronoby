@@ -158,6 +158,69 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
+  describe "#mean_of_date" do
+    it "returns a MeanOfDate position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date).to be_a(Astronoby::MeanOfDate)
+      expect(mean_of_date.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(mean_of_date.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(mean_of_date.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.equatorial.right_ascension.str(:hms))
+        .to eq("23h 38m 11.1758s")
+      # IMCCE:  23h 38m 11.1872s
+
+      expect(mean_of_date.equatorial.declination.str(:dms))
+        .to eq("-2° 42′ 30.2921″")
+      # IMCCE:  -2° 42′ 30.235″
+
+      expect(mean_of_date.ecliptic.latitude.str(:dms))
+        .to eq("-0° 19′ 14.8364″")
+      # IMCCE:  -0° 19′ 14.850″
+
+      expect(mean_of_date.ecliptic.longitude.str(:dms))
+        .to eq("+353° 55′ 16.6299″")
+      # IMCCE:  +353° 55′ 16.808″
+
+      expect(mean_of_date.distance.au)
+        .to eq(0.0024237519764390646)
+      # IMCCE: 0.002423751946
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([98.89104, 948.96211, 520.0036])
+      # IMCCE:  98.89017  948.96221  520.0036
+    end
+  end
+
   describe "::monthly_phase_events" do
     it "returns an array" do
       moon_phases = described_class.monthly_phase_events(year: 2024, month: 1)

@@ -158,6 +158,69 @@ RSpec.describe Astronoby::Sun do
     end
   end
 
+  describe "#mean_of_date" do
+    it "returns a MeanOfDate position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date).to be_a(Astronoby::MeanOfDate)
+      expect(mean_of_date.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(mean_of_date.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(mean_of_date.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.equatorial.right_ascension.str(:hms))
+        .to eq("12h 29m 41.9491s")
+      # IMCCE:  12h 29m 41.9518s
+
+      expect(mean_of_date.equatorial.declination.str(:dms))
+        .to eq("-3° 12′ 22.7338″")
+      # IMCCE:  -3° 12′ 22.726″
+
+      expect(mean_of_date.ecliptic.latitude.str(:dms))
+        .to eq("-0° 0′ 0.4762″")
+      # IMCCE:  -0° 0′ 0.454″
+
+      expect(mean_of_date.ecliptic.longitude.str(:dms))
+        .to eq("+188° 5′ 2.2344″")
+      # IMCCE:  +188° 5′ 2.267″
+
+      expect(mean_of_date.distance.au)
+        .to eq(1.001261201879304)
+      # IMCCE: 1.001261199767
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([4681.88376, -26950.28239, -11681.78326])
+      # IMCCE:  4681.88845  -26950.28194  -11681.78252
+    end
+  end
+
   describe "#true_ecliptic_coordinates" do
     it "returns ecliptic coordinates" do
       time = Time.new
