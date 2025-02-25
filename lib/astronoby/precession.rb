@@ -2,7 +2,11 @@
 
 module Astronoby
   class Precession
-    def initialize(instant)
+    def self.matrix_for(instant)
+      new(instant: instant).matrix
+    end
+
+    def initialize(instant:)
       @instant = instant
     end
 

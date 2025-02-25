@@ -137,4 +137,53 @@ RSpec.describe Astronoby::Earth do
         .to eq([0, 0, 0])
     end
   end
+
+  describe "#mean_of_date" do
+    it "returns a MeanOfDate position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date).to be_a(Astronoby::MeanOfDate)
+      expect(mean_of_date.equatorial)
+        .to be_a(Astronoby::Coordinates::Equatorial)
+      expect(mean_of_date.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 4, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.equatorial.right_ascension)
+        .to eq(Astronoby::Angle.zero)
+      expect(mean_of_date.equatorial.declination).to eq(Astronoby::Angle.zero)
+      expect(mean_of_date.ecliptic.latitude).to eq(Astronoby::Angle.zero)
+      expect(mean_of_date.ecliptic.longitude).to eq(Astronoby::Angle.zero)
+      expect(mean_of_date.distance).to eq(Astronoby::Distance.zero)
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      mean_of_date = planet.mean_of_date
+
+      expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([0, 0, 0])
+    end
+  end
 end

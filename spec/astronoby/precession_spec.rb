@@ -108,12 +108,12 @@ RSpec.describe Astronoby::Precession do
     end
   end
 
-  describe "#matrix" do
+  describe "::matrix_for" do
     it "returns the right matrix for 2025-08-01" do
       time = Time.utc(2025, 8, 1)
       instant = Astronoby::Instant.from_time(time)
 
-      matrix = described_class.new(instant).matrix
+      matrix = described_class.matrix_for(instant)
 
       expect(matrix).to eq(
         Matrix[
@@ -132,7 +132,7 @@ RSpec.describe Astronoby::Precession do
       time = Time.utc(2050, 1, 1)
       instant = Astronoby::Instant.from_time(time)
 
-      matrix = described_class.new(instant).matrix
+      matrix = described_class.matrix_for(instant)
 
       expect(matrix).to eq(
         Matrix[
