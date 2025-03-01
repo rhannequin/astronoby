@@ -48,9 +48,8 @@ module Astronoby
     private
 
     def aberration_angle_cos
-      dot_product = position_au.zip(velocity_aupd).sum { |p, v| p * v }
       denominator = [@distance_au * @observer_speed, 1e-20].max
-      dot_product / denominator
+      Util::Maths.dot_product(position_au, velocity_aupd) / denominator
     end
 
     def position_au

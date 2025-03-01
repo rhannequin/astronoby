@@ -51,6 +51,10 @@ module Astronoby
           normalized
         end
 
+        def dot_product(a, b)
+          a.zip(b).sum { |x, y| x * y }
+        end
+
         private
 
         # @return [Float] Interpolated value

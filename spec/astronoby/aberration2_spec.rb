@@ -4,7 +4,7 @@ RSpec.describe Astronoby::Aberration2 do
   include TestEphemHelper
 
   describe "#corrected_position" do
-    it "returns the corrected position for Mars on 2025-03-01" do
+    it "returns the corrected position for Mars on 2025-04-01" do
       time = Time.utc(2025, 4, 1)
       instant = Astronoby::Instant.from_time(time)
       ephem = test_ephem
