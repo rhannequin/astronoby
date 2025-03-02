@@ -51,7 +51,7 @@ module Astronoby
         arg_coef = term[0..4]
 
         # Calculate the argument
-        arg = dot_product(arg_coef, a.map(&:radians))
+        arg = Util::Maths.dot_product(arg_coef, a.map(&:radians))
 
         sin_arg = Math.sin(arg)
         cos_arg = Math.cos(arg)
@@ -158,10 +158,6 @@ module Astronoby
       Angle.from_degree_arcseconds(
         450160.398036 - 6962890.5431 * julian_centuries
       )
-    end
-
-    def dot_product(a, b)
-      a.zip(b).sum { |x, y| x * y }
     end
 
     def fundamental_arguments
