@@ -17,7 +17,7 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :geometric, :astrometric, :mean_of_date, :instant
+    attr_reader :geometric, :astrometric, :mean_of_date, :apparent, :instant
 
     def self.geometric(ephem:, instant:)
       compute_geometric(ephem: ephem, instant: instant)
@@ -71,6 +71,7 @@ module Astronoby
       @geometric = compute_geometric(ephem)
       @astrometric = compute_astrometric(ephem)
       @mean_of_date = compute_mean_of_date(ephem)
+      @apparent = compute_apparent(ephem)
     end
 
     private
@@ -93,6 +94,15 @@ module Astronoby
         ephem: ephem,
         instant: @instant,
         target_geometric: @geometric,
+        target_body: self
+      )
+    end
+
+    def compute_apparent(ephem)
+      Apparent.build_from_astrometric(
+        ephem: ephem,
+        instant: @instant,
+        target_astrometric: @astrometric,
         target_body: self
       )
     end
