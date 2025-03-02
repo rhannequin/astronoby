@@ -202,6 +202,8 @@ RSpec.describe Astronoby::Jupiter do
         .to eq("+81° 22′ 34.8729″")
       # IMCCE:  +81° 22′ 34.883″
 
+      # Note: mean of date distance doesn't really make sense
+      # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
         .to eq(5.847671713145707)
       # IMCCE: 5.847671760041
@@ -218,6 +220,76 @@ RSpec.describe Astronoby::Jupiter do
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
         .to eq([-32257.90536, 21486.0083, 9631.88754])
       # IMCCE:  -32257.90781  21486.0049  9631.88872
+    end
+  end
+
+  describe "#apparent" do
+    it "returns an Apparent position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent).to be_a(Astronoby::Apparent)
+      expect(apparent.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(apparent.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(apparent.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 5, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent.equatorial.right_ascension.str(:hms))
+        .to eq("5h 22m 29.6585s")
+      # IMCCE:    5h 22m 29.6539s
+      # Skyfield: 5h 22m 29.65s
+
+      expect(apparent.equatorial.declination.str(:dms))
+        .to eq("+22° 55′ 12.9743″")
+      # IMCCE:    +22° 55′ 12.966″
+      # Skyfield: +22° 55′ 13.0″
+
+      expect(apparent.ecliptic.latitude.str(:dms))
+        .to eq("-0° 14′ 7.0163″")
+      # IMCCE:    -0° 14′ 7.020″
+      # Skyfield: -0° 14′ 16.0″
+
+      expect(apparent.ecliptic.longitude.str(:dms))
+        .to eq("+81° 22′ 10.8961″")
+      # IMCCE:    +81° 22′ 10.8961″
+      # Skyfield: +81° 22′ 10.8″
+
+      # Note: apparent distance doesn't really make sense
+      # Prefer astrometric.distance
+      expect(apparent.distance.au)
+        .to eq(5.847692982822112)
+      # IMCCE:    5.847693029715
+      # Skyfield: 5.847693005684232
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 5, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent.velocity.to_a.map(&:mps).map(&:round))
+        .to eq([-32258, 21486, 9633])
+      # IMCCE:  -32260, 21488, 9634
     end
   end
 end
