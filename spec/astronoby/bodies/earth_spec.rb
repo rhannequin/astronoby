@@ -186,4 +186,53 @@ RSpec.describe Astronoby::Earth do
         .to eq([0, 0, 0])
     end
   end
+
+  describe "#apparent" do
+    it "returns an Apparent position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent).to be_a(Astronoby::Apparent)
+      expect(apparent.equatorial)
+        .to be_a(Astronoby::Coordinates::Equatorial)
+      expect(apparent.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 4, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent.equatorial.right_ascension)
+        .to eq(Astronoby::Angle.zero)
+      expect(apparent.equatorial.declination).to eq(Astronoby::Angle.zero)
+      expect(apparent.ecliptic.latitude).to eq(Astronoby::Angle.zero)
+      expect(apparent.ecliptic.longitude).to eq(Astronoby::Angle.zero)
+      expect(apparent.distance).to eq(Astronoby::Distance.zero)
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent.velocity.to_a.map(&:mps).map { _1.round(5) })
+        .to eq([0, 0, 0])
+    end
+  end
 end
