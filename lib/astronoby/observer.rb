@@ -42,6 +42,55 @@ module Astronoby
       @pressure = pressure || compute_pressure
     end
 
+    def geocentric_position
+      n = earth_prime_vertical_radius_of_curvature
+      x = (n + @elevation.km) * @latitude.cos * @longitude.cos
+      y = (n + @elevation.km) * @latitude.cos * @longitude.sin
+      z = (n * (1 - Constants::WGS84_ECCENTICITY_SQUARED) + @elevation.km) *
+        @latitude.sin
+      # TODO: This is getting annoying, we need a class method on Vector
+      Vector.elements([x, y, z].map { Distance.from_km(_1) })
+    end
+
+    def geocentric_velocity
+      r = projected_radius
+      vx = -Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.sin
+      vy = Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.cos
+      vz = 0.0
+      # TODO: This is getting annoying, we need a class method on Vector
+      Vector.elements([vx, vy, vz].map { Velocity.from_kmps(_1) })
+    end
+
+    def earth_fixed_rotation_matrix_for(instant)
+      gmst = Astronoby::GreenwichSiderealTime
+        .from_utc(instant.to_time)
+        .time
+
+      dpsi = Astronoby::Nutation2.new(instant: instant).nutation_in_longitude
+
+      mean_obliquity = Astronoby::MeanObliquity.for_epoch(instant.tt)
+
+      gast = Astronoby::Angle.from_radians(
+        Astronoby::Angle.from_hours(gmst).radians +
+          dpsi.radians * mean_obliquity.cos
+      )
+
+      earth_rotation_matrix = Matrix[
+        [gast.cos, -gast.sin, 0],
+        [gast.sin, gast.cos, 0],
+        [0, 0, 1]
+      ]
+
+      nutation_matrix = Astronoby::Nutation2.matrix_for(instant)
+      precession_matrix = Astronoby::Precession.matrix_for(instant)
+
+      earth_rotation_matrix * nutation_matrix * precession_matrix
+    end
+
+    def observe(celestial_body)
+      celestial_body.observed_by(self)
+    end
+
     def ==(other)
       return false unless other.is_a?(self.class)
 
@@ -83,6 +132,22 @@ module Astronoby
       term2 = UNIVERSAL_GAS_CONSTANT * @temperature
 
       Math.exp(-term1 / term2)
+    end
+
+    def earth_prime_vertical_radius_of_curvature
+      (Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS / 1000.0)./(
+        Math.sqrt(
+          1 -
+            Constants::WGS84_ECCENTICITY_SQUARED * @latitude.sin * @latitude.sin
+        )
+      )
+    end
+
+    def projected_radius
+      Math.sqrt(
+        geocentric_position.x.km * geocentric_position.x.km +
+          geocentric_position.y.km * geocentric_position.y.km
+      )
     end
   end
 end
