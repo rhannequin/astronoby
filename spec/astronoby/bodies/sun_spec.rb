@@ -330,33 +330,35 @@ RSpec.describe Astronoby::Sun do
 
       topocentric = planet.observed_by(observer)
 
-      expect(topocentric.equatorial.right_ascension.str(:hms))
-        .to eq("12h 29m 41.4475s")
-      # IMCCE:      12h 29m 41.4346s
-      # Horizons:   12h 29m 41.430649s
-      # Stellarium: 12h 29m 41.43s
-      # Skyfield:   12h 29m 41.43s
+      aggregate_failures do
+        expect(topocentric.equatorial.right_ascension.str(:hms))
+          .to eq("12h 29m 41.4263s")
+        # IMCCE:      12h 29m 41.4346s
+        # Horizons:   12h 29m 41.430649s
+        # Stellarium: 12h 29m 41.43s
+        # Skyfield:   12h 29m 41.43s
 
-      expect(topocentric.equatorial.declination.str(:dms))
-        .to eq("-3° 12′ 17.3951″")
-      # IMCCE:      -3° 12′ 17.508″
-      # Horizons:   -3° 12′ 17.50513″
-      # Stellarium: -3° 12′ 17.5″
-      # Skyfield:   -3° 12′ 17.5″
+        expect(topocentric.equatorial.declination.str(:dms))
+          .to eq("-3° 12′ 17.4766″")
+        # IMCCE:      -3° 12′ 17.508″
+        # Horizons:   -3° 12′ 17.50513″
+        # Stellarium: -3° 12′ 17.5″
+        # Skyfield:   -3° 12′ 17.5″
 
-      expect(topocentric.horizontal.azimuth.str(:dms))
-        .to eq("+93° 44′ 19.8917″")
-      # IMCCE:      +93° 44′ 20.040″
-      # Horizons:   +93° 44′ 20.1653″
-      # Stellarium: +93° 44′ 20.1″
-      # Skyfield:   +93° 44′ 20.2″
+        expect(topocentric.horizontal.azimuth.str(:dms))
+          .to eq("+93° 44′ 19.9902″")
+        # IMCCE:      +93° 44′ 20.040″
+        # Horizons:   +93° 44′ 20.1653″
+        # Stellarium: +93° 44′ 20.1″
+        # Skyfield:   +93° 44′ 20.2″
 
-      expect(topocentric.horizontal.altitude.str(:dms))
-        .to eq("+16° 16′ 15.101″")
-      # IMCCE:      +16° 16′ 18.120″
-      # Horizons:   +16° 16′ 18.804″
-      # Stellarium: +16° 16′ 18.3″
-      # Skyfield:   +16° 16′ 19.2″
+        expect(topocentric.horizontal.altitude.str(:dms))
+          .to eq("+16° 16′ 15.4136″")
+        # IMCCE:      +16° 16′ 18.120″
+        # Horizons:   +16° 16′ 18.804″
+        # Stellarium: +16° 16′ 18.3″
+        # Skyfield:   +16° 16′ 19.2″
+      end
     end
   end
 

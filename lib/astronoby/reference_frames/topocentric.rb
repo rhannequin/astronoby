@@ -8,14 +8,25 @@ module Astronoby
       instant:,
       target_body:
     )
-      position = apparent.position - observer.geocentric_position
-      velocity = apparent.velocity - observer.geocentric_velocity
+      matrix = observer.earth_fixed_rotation_matrix_for(instant)
+
+      observer_position = Astronoby::Vector.elements(
+        (matrix * observer.geocentric_position.map(&:km))
+          .map { Astronoby::Distance.from_km(_1) }
+      )
+      observer_velocity = Astronoby::Vector.elements(
+        (matrix * observer.geocentric_velocity.map(&:kmps))
+          .map { Astronoby::Velocity.from_kmps(_1) }
+      )
+
+      position = apparent.position - observer_position
+      velocity = apparent.velocity - observer_velocity
 
       new(
         position: position,
         velocity: velocity,
         instant: instant,
-        center_identifier: nil, # TODO: center_identifier really necessary?
+        center_identifier: [observer.longitude, observer.latitude],
         target_body: target_body,
         observer: observer
       )

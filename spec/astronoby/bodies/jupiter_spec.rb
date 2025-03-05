@@ -330,27 +330,35 @@ RSpec.describe Astronoby::Jupiter do
 
       topocentric = planet.observed_by(observer)
 
-      expect(topocentric.equatorial.right_ascension.str(:hms))
-        .to eq("5h 22m 29.7288s")
-      # IMCCE:    5h 22m 29.5968s
-      # Skyfield: 5h 22m 29.60s
+      aggregate_failures do
+        expect(topocentric.equatorial.right_ascension.str(:hms))
+          .to eq("5h 22m 29.6137s")
+        # IMCCE:      5h 22m 29.5968s
+        # Horizons:   5h 22m 29.591246s
+        # Stellarium: 5h 22m 29.61s
+        # Skyfield:   5h 22m 29.60s
 
-      expect(topocentric.equatorial.declination.str(:dms))
-        .to eq("+22° 55′ 12.0147″")
-      # IMCCE:    +22° 55′ 11.680″
-      # Skyfield: +22° 55′ 11.7″
+        expect(topocentric.equatorial.declination.str(:dms))
+          .to eq("+22° 55′ 11.6338″")
+        # IMCCE:      +22° 55′ 11.680″
+        # Horizons:   +22° 55′ 11.68271″
+        # Stellarium: +22° 55′ 11.6″
+        # Skyfield:   +22° 55′ 11.7″
 
-      expect(topocentric.horizontal.azimuth.str(:dms))
-        .to eq("+323° 49′ 57.8093″")
-      # IMCCE:    +323° 49′ 59.520″
-      # Horizons: +323° 50′ 0.3946″
-      # Skyfield: +323° 50′ 0.2″
+        expect(topocentric.horizontal.azimuth.str(:dms))
+          .to eq("+323° 49′ 59.1107″")
+        # IMCCE:      +323° 49′ 59.520″
+        # Skyfield:   +323° 50′ 0.2″
+        # Stellarium: +323° 49′ 59.2″
+        # Horizons:   +323° 50′ 0.3937″
 
-      expect(topocentric.horizontal.altitude.str(:dms))
-        .to eq("-10° 11′ 47.723″")
-      # IMCCE:    -10° 11′ 48.840″
-      # Horizons: -10° 11′ 49.272″
-      # Skyfield: -10° 11′ 49.2″
+        expect(topocentric.horizontal.altitude.str(:dms))
+          .to eq("-10° 11′ 48.7385″")
+        # IMCCE:      -10° 11′ 48.840″
+        # Skyfield:   -10° 11′ 49.2″
+        # Stellarium: -10° 11′ 48.8″
+        # Horizons:   -10° 11′ 49.2716″
+      end
     end
   end
 end
