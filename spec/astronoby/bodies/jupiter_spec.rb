@@ -292,4 +292,65 @@ RSpec.describe Astronoby::Jupiter do
       # IMCCE:  -32260, 21488, 9634
     end
   end
+
+  describe "#observed_by" do
+    it "returns a Topocentric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric).to be_a(Astronoby::Topocentric)
+      expect(topocentric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(topocentric.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(topocentric.horizontal).to be_a(Astronoby::Coordinates::Horizontal)
+      expect(topocentric.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 5, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric.equatorial.right_ascension.str(:hms))
+        .to eq("5h 22m 29.7288s")
+      # IMCCE:    5h 22m 29.5968s
+      # Skyfield: 5h 22m 29.60s
+
+      expect(topocentric.equatorial.declination.str(:dms))
+        .to eq("+22° 55′ 12.0147″")
+      # IMCCE:    +22° 55′ 11.680″
+      # Skyfield: +22° 55′ 11.7″
+
+      expect(topocentric.horizontal.azimuth.str(:dms))
+        .to eq("+323° 49′ 57.8093″")
+      # IMCCE:    +323° 49′ 59.520″
+      # Horizons: +323° 50′ 0.3946″
+      # Skyfield: +323° 50′ 0.2″
+
+      expect(topocentric.horizontal.altitude.str(:dms))
+        .to eq("-10° 11′ 47.723″")
+      # IMCCE:    -10° 11′ 48.840″
+      # Horizons: -10° 11′ 49.272″
+      # Skyfield: -10° 11′ 49.2″
+    end
+  end
 end

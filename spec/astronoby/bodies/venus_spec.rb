@@ -292,4 +292,71 @@ RSpec.describe Astronoby::Venus do
       # IMCCE:  -11951, 11243, 6941
     end
   end
+
+  describe "#observed_by" do
+    it "returns a Topocentric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric).to be_a(Astronoby::Topocentric)
+      expect(topocentric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(topocentric.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(topocentric.horizontal).to be_a(Astronoby::Coordinates::Horizontal)
+      expect(topocentric.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 2, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(1.364917),
+        longitude: Astronoby::Angle.from_degrees(103.822872)
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric.equatorial.right_ascension.str(:hms))
+        .to eq("23h 47m 30.9776s")
+      # IMCCE:      23h 47m 32.9892s
+      # Horizons:   23h 47m 32.985655s
+      # Stellarium: 23h 47m 33.0s
+      # Skyfield:   23h 47m 32.99s
+
+      expect(topocentric.equatorial.declination.str(:dms))
+        .to eq("+0° 45′ 49.9272″")
+      # IMCCE:      +0° 45′ 49.871″
+      # Horizons:   +0° 45′ 49.87128″
+      # Stellarium: +0° 45′ 49.9″
+      # Skyfield:   +0° 45′ 49.9″
+
+      expect(topocentric.horizontal.azimuth.str(:dms))
+        .to eq("+88° 15′ 51.1054″")
+      # IMCCE:      +88° 16′ 13.440″
+      # Horizons:   +88° 15′ 49.9797″
+      # Stellarium: +88° 15′ 49.9″
+      # Skyfield:   +88° 15′ 50.0″
+
+      expect(topocentric.horizontal.altitude.str(:dms))
+        .to eq("-31° 34′ 1.4825″")
+      # IMCCE:      -31° 25′ 13.440″
+      # Horizons:   -31° 34′ 29.5386″
+      # Stellarium: -31° 34′ 30.5″
+      # Skyfield:   -31° 34′ 29.6″
+    end
+  end
 end

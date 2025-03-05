@@ -293,6 +293,73 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
+  describe "#observed_by" do
+    it "returns a Topocentric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric).to be_a(Astronoby::Topocentric)
+      expect(topocentric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(topocentric.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(topocentric.horizontal).to be_a(Astronoby::Coordinates::Horizontal)
+      expect(topocentric.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(1.364917),
+        longitude: Astronoby::Angle.from_degrees(103.822872)
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric.equatorial.right_ascension.str(:hms))
+        .to eq("23h 34m 24.084s")
+      # IMCCE:      23h 42m 13.1008s
+      # Horizons:   23h 42m 13.093946s
+      # Stellarium: 23h 42m 13.16s
+      # Skyfield:   23h 42m 13.10s
+
+      expect(topocentric.equatorial.declination.str(:dms))
+        .to eq("-2° 42′ 58.6943″")
+      # IMCCE:      -2° 43′ 50.110″
+      # Horizons:   -2° 43′ 50.12197″
+      # Stellarium: -2° 43′ 49.9″
+      # Skyfield:   -2° 43′ 50.1″
+
+      expect(topocentric.horizontal.azimuth.str(:dms))
+        .to eq("+92° 41′ 54.6939″")
+      # IMCCE:      +92° 40′ 8.760″
+      # Horizons:   +92° 40′ 8.7334″
+      # Stellarium: +92° 40′ 8.7″
+      # Skyfield:   +92° 40′ 8.5″
+
+      expect(topocentric.horizontal.altitude.str(:dms))
+        .to eq("-0° 47′ 18.1789″")
+      # IMCCE:      -2° 44′ 23.640″
+      # Horizons:   -2° 44′ 22.8363″
+      # Stellarium: -2° 44′ 24.6″
+      # Skyfield:   -2° 44′ 22.9″
+    end
+  end
+
   describe "::monthly_phase_events" do
     it "returns an array" do
       moon_phases = described_class.monthly_phase_events(year: 2024, month: 1)

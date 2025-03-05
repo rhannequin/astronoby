@@ -293,6 +293,73 @@ RSpec.describe Astronoby::Sun do
     end
   end
 
+  describe "#observed_by" do
+    it "returns a Topocentric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric).to be_a(Astronoby::Topocentric)
+      expect(topocentric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(topocentric.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(topocentric.horizontal).to be_a(Astronoby::Coordinates::Horizontal)
+      expect(topocentric.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(1.364917),
+        longitude: Astronoby::Angle.from_degrees(103.822872)
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric.equatorial.right_ascension.str(:hms))
+        .to eq("12h 29m 41.4475s")
+      # IMCCE:      12h 29m 41.4346s
+      # Horizons:   12h 29m 41.430649s
+      # Stellarium: 12h 29m 41.43s
+      # Skyfield:   12h 29m 41.43s
+
+      expect(topocentric.equatorial.declination.str(:dms))
+        .to eq("-3° 12′ 17.3951″")
+      # IMCCE:      -3° 12′ 17.508″
+      # Horizons:   -3° 12′ 17.50513″
+      # Stellarium: -3° 12′ 17.5″
+      # Skyfield:   -3° 12′ 17.5″
+
+      expect(topocentric.horizontal.azimuth.str(:dms))
+        .to eq("+93° 44′ 19.8917″")
+      # IMCCE:      +93° 44′ 20.040″
+      # Horizons:   +93° 44′ 20.1653″
+      # Stellarium: +93° 44′ 20.1″
+      # Skyfield:   +93° 44′ 20.2″
+
+      expect(topocentric.horizontal.altitude.str(:dms))
+        .to eq("+16° 16′ 15.101″")
+      # IMCCE:      +16° 16′ 18.120″
+      # Horizons:   +16° 16′ 18.804″
+      # Stellarium: +16° 16′ 18.3″
+      # Skyfield:   +16° 16′ 19.2″
+    end
+  end
+
   describe "#true_ecliptic_coordinates" do
     it "returns ecliptic coordinates" do
       time = Time.new
