@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Uranus do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(20.29337407665176)
+        .to eq(20.293374076651755)
       # IMCCE:    20.293377161363
       # Skyfield: 20.29337405352995
     end

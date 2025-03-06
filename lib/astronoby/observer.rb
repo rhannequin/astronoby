@@ -44,12 +44,11 @@ module Astronoby
 
     def geocentric_position
       n = earth_prime_vertical_radius_of_curvature
-      x = (n + @elevation.km) * @latitude.cos * @longitude.cos
-      y = (n + @elevation.km) * @latitude.cos * @longitude.sin
-      z = (n * (1 - Constants::WGS84_ECCENTICITY_SQUARED) + @elevation.km) *
+      x = (n + @elevation.m) * @latitude.cos * @longitude.cos
+      y = (n + @elevation.m) * @latitude.cos * @longitude.sin
+      z = (n * (1 - Constants::WGS84_ECCENTICITY_SQUARED) + @elevation.m) *
         @latitude.sin
-      # TODO: This is getting annoying, we need a class method on Vector
-      Vector.elements([x, y, z].map { Distance.from_km(_1) })
+      Distance.vector_from_meters([x, y, z])
     end
 
     def geocentric_velocity
@@ -57,8 +56,7 @@ module Astronoby
       vx = -Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.sin
       vy = Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.cos
       vz = 0.0
-      # TODO: This is getting annoying, we need a class method on Vector
-      Vector.elements([vx, vy, vz].map { Velocity.from_kmps(_1) })
+      Velocity.vector_from_mps([vx, vy, vz])
     end
 
     def earth_fixed_rotation_matrix_for(instant)
@@ -135,7 +133,7 @@ module Astronoby
     end
 
     def earth_prime_vertical_radius_of_curvature
-      (Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS / 1000.0)./(
+      Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS./(
         Math.sqrt(
           1 -
             Constants::WGS84_ECCENTICITY_SQUARED * @latitude.sin * @latitude.sin
@@ -145,8 +143,8 @@ module Astronoby
 
     def projected_radius
       Math.sqrt(
-        geocentric_position.x.km * geocentric_position.x.km +
-          geocentric_position.y.km * geocentric_position.y.km
+        geocentric_position.x.m * geocentric_position.x.m +
+          geocentric_position.y.m * geocentric_position.y.m
       )
     end
   end

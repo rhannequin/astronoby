@@ -25,7 +25,7 @@ module Astronoby
         return zero if position.zero?
 
         term1 = position.z.m
-        term2 = position.magnitude
+        term2 = position.magnitude.m
         declination = Angle.asin(term1 / term2)
 
         term1 = position.y.m

@@ -64,12 +64,44 @@ RSpec.describe Astronoby::Vector do
   end
 
   describe "#magnitude" do
-    it "calculates the magnitude correctly" do
-      vector = described_class[3, 4, 0]
+    context "when all elements are distances" do
+      it "returns the magnitude as a Distance object" do
+        vector = described_class[
+          Astronoby::Distance.from_meters(3),
+          Astronoby::Distance.from_meters(4),
+          Astronoby::Distance.zero
+        ]
 
-      result = vector.magnitude
+        result = vector.magnitude
 
-      expect(result).to eq(5)
+        expect(result).to be_a(Astronoby::Distance)
+        expect(result.meters).to eq(5)
+      end
+    end
+
+    context "when all elements are velocities" do
+      it "returns the magnitude as a Velocity object" do
+        vector = described_class[
+          Astronoby::Velocity.from_mps(3),
+          Astronoby::Velocity.from_mps(4),
+          Astronoby::Velocity.zero
+        ]
+
+        result = vector.magnitude
+
+        expect(result).to be_a(Astronoby::Velocity)
+        expect(result.meters_per_second).to eq(5)
+      end
+    end
+
+    context "when elements are not all distances or velocities" do
+      it "returns the magnitude of the vector's numerical values" do
+        vector = described_class[3, 4, 0]
+
+        result = vector.magnitude
+
+        expect(result).to eq(5)
+      end
     end
   end
 

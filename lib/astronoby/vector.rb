@@ -20,5 +20,17 @@ module Astronoby
     def z
       self[2]
     end
+
+    def magnitude
+      if all? { _1.is_a?(Astronoby::Distance) }
+        Astronoby::Distance.new(super)
+      elsif all? { _1.is_a?(Astronoby::Velocity) }
+        Astronoby::Velocity.new(super)
+      else
+        super
+      end
+    end
+    alias_method :norm, :magnitude
+    alias_method :r, :magnitude
   end
 end

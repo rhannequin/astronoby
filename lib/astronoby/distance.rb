@@ -25,6 +25,11 @@ module Astronoby
         from_meters(meters)
       end
       alias_method :from_au, :from_astronomical_units
+
+      def vector_from_meters(array)
+        Vector.elements(array.map { from_meters(_1) })
+      end
+      alias_method :vector_from_m, :vector_from_meters
     end
 
     attr_reader :meters
