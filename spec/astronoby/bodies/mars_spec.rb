@@ -292,4 +292,73 @@ RSpec.describe Astronoby::Mars do
       # IMCCE:  -16856, 9676, 4074
     end
   end
+
+  describe "#observed_by" do
+    it "returns a Topocentric position" do
+      time = Time.utc(2025, 2, 7, 12)
+      instant = Astronoby::Instant.from_time(time)
+      state = double(
+        position: Ephem::Core::Vector[1, 2, 3],
+        velocity: Ephem::Core::Vector[4, 5, 6]
+      )
+      segment = double(compute_and_differentiate: state)
+      ephem = double(:[] => segment)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      expect(topocentric).to be_a(Astronoby::Topocentric)
+      expect(topocentric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(topocentric.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(topocentric.horizontal).to be_a(Astronoby::Coordinates::Horizontal)
+      expect(topocentric.distance).to be_a(Astronoby::Distance)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 4, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
+      )
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      topocentric = planet.observed_by(observer)
+
+      aggregate_failures do
+        expect(topocentric.equatorial.right_ascension.str(:hms))
+          .to eq("7h 43m 50.5857s")
+        # IMCCE:      7h 43m 50.5809s
+        # Horizons:   7h 43m 50.577366s
+        # Stellarium: 7h 43m 50.57s
+        # Skyfield:   7h 43m 50.58s
+
+        expect(topocentric.equatorial.declination.str(:dms))
+          .to eq("+23° 59′ 59.7701″")
+        # IMCCE:      +23° 59′ 59.875″
+        # Horizons:   +23° 59′ 59.87576″
+        # Stellarium: +23° 59′ 59.8″
+        # Skyfield:   +23° 59′ 59.9″
+
+        expect(topocentric.horizontal.azimuth.str(:dms))
+          .to eq("+276° 30′ 36.6292″")
+        # IMCCE:      +276° 30′ 37.080″
+        # Horizons:   +276° 30′ 37.6815″
+        # Stellarium: +276° 30′ 36.9″
+        # Skyfield:   +276° 30′ 37.5″
+
+        expect(topocentric.horizontal.altitude.str(:dms))
+          .to eq("+26° 51′ 16.1767″")
+        # IMCCE:      +26° 51′ 15.840″
+        # Horizons:   +26° 51′ 15.3662″
+        # Stellarium: +26° 51′ 15.9″
+        # Skyfield:   +26° 51′ 15.6″
+      end
+    end
+  end
 end

@@ -76,9 +76,7 @@ module Astronoby
     # @param time [Time] Considered time
     def initialize(time: nil, instant: nil, ephem: nil)
       @time = time
-      @instant = instant
-      @ephem = ephem
-      unless @instant.nil? || @ephem.nil?
+      unless instant.nil? || ephem.nil?
         super(instant: instant, ephem: ephem)
       end
     end
