@@ -11,7 +11,7 @@ module Astronoby
     #  Edition: University Science Books
     #  Chapter: 7.2.3 - Aberration
 
-    LIGHT_SPEED = Astronoby::Velocity.light_speed.aupd
+    LIGHT_SPEED = Astronoby::Velocity.light_speed.mps
 
     # Initializes the aberration correction with position and observer velocity.
     #
@@ -22,8 +22,8 @@ module Astronoby
     def initialize(astrometric_position:, observer_velocity:)
       @position = astrometric_position
       @velocity = observer_velocity
-      @distance_au = @position.map(&:au).norm
-      @observer_speed = @velocity.map(&:aupd).norm
+      @distance_meters = @position.norm.m
+      @observer_speed = @velocity.norm.mps
     end
 
     # Computes the aberration-corrected position.
@@ -36,11 +36,11 @@ module Astronoby
       lorentz_factor_inv = lorentz_factor_inverse(beta)
 
       velocity_correction =
-        velocity_correction_factor(projected_velocity) * velocity_aupd
+        velocity_correction_factor(projected_velocity) * velocity_mps
       normalization_factor = 1.0 + projected_velocity
-      position_scaled = position_au * lorentz_factor_inv
+      position_scaled = position_meters * lorentz_factor_inv
 
-      to_position_vector(
+      Distance.vector_from_meters(
         (position_scaled + velocity_correction) / normalization_factor
       )
     end
@@ -48,16 +48,16 @@ module Astronoby
     private
 
     def aberration_angle_cos
-      denominator = [@distance_au * @observer_speed, 1e-20].max
-      Util::Maths.dot_product(position_au, velocity_aupd) / denominator
+      denominator = [@distance_meters * @observer_speed, 1e-20].max
+      Util::Maths.dot_product(position_meters, velocity_mps) / denominator
     end
 
-    def position_au
-      @position.map(&:au)
+    def position_meters
+      @position.map(&:meters)
     end
 
-    def velocity_aupd
-      @velocity.map(&:aupd)
+    def velocity_mps
+      @velocity.map(&:mps)
     end
 
     def lorentz_factor_inverse(beta)
@@ -66,11 +66,7 @@ module Astronoby
 
     def velocity_correction_factor(projected_velocity)
       lorentz_inv = lorentz_factor_inverse(projected_velocity)
-      (1.0 + projected_velocity / (1.0 + lorentz_inv)) * (@distance_au / LIGHT_SPEED)
-    end
-
-    def to_position_vector(vector)
-      Astronoby::Vector[*vector.map { |v| Astronoby::Distance.from_au(v) }]
+      (1.0 + projected_velocity / (1.0 + lorentz_inv)) * (@distance_meters / LIGHT_SPEED)
     end
   end
 end

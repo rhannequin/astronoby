@@ -63,6 +63,15 @@ RSpec.describe Astronoby::Velocity do
     end
   end
 
+  describe "::vector_from_meters_per_second" do
+    it "returns a Vector of Velocity objects" do
+      vector = described_class.vector_from_meters_per_second([1, 2, 3])
+
+      expect(vector).to be_a(Astronoby::Vector)
+      expect(vector).to all(be_a(described_class))
+    end
+  end
+
   describe "::light_speed" do
     it "returns a Velocity object" do
       expect(described_class.light_speed).to be_a(described_class)
@@ -217,6 +226,12 @@ RSpec.describe Astronoby::Velocity do
 
     it "returns false when the velocity has a non-zero value" do
       expect(described_class.from_meters_per_second(1).zero?).to be false
+    end
+  end
+
+  describe "#abs2" do
+    it "returns the square of the velocity value" do
+      expect(described_class.from_mps(3).abs2).to eq 9
     end
   end
 

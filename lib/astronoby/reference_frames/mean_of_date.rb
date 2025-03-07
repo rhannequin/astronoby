@@ -12,11 +12,12 @@ module Astronoby
       position = target_geometric.position - earth_geometric.position
       velocity = target_geometric.velocity - earth_geometric.velocity
       precession_matrix = Precession.matrix_for(instant)
-      corrected_position = Vector
-        .elements(precession_matrix * position.map(&:m))
-        .map { Distance.from_meters(_1) }
-      corrected_velocity = Vector[*precession_matrix * velocity
-        .map(&:aupd)].map { Velocity.from_astronomical_units_per_day(_1) }
+      corrected_position = Distance.vector_from_m(
+        precession_matrix * position.map(&:m)
+      )
+      corrected_velocity = Velocity.vector_from_mps(
+        precession_matrix * velocity.map(&:mps)
+      )
 
       new(
         position: corrected_position,

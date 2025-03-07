@@ -33,6 +33,12 @@ module Astronoby
           Constants::ASTRONOMICAL_UNIT_IN_METERS / Constants::SECONDS_PER_DAY
         from_meters_per_second(meters_per_second)
       end
+      alias_method :from_aupd, :from_astronomical_units_per_day
+
+      def vector_from_meters_per_second(array)
+        Vector.elements(array.map { from_mps(_1) })
+      end
+      alias_method :vector_from_mps, :vector_from_meters_per_second
 
       def light_speed
         from_meters_per_second(Constants::LIGHT_SPEED_M_PER_S)
@@ -90,6 +96,10 @@ module Astronoby
 
     def zero?
       @meters_per_second.zero?
+    end
+
+    def abs2
+      @meters_per_second**2
     end
 
     def hash

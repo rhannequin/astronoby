@@ -42,7 +42,7 @@ module Astronoby
       @distance ||= begin
         return Distance.zero if @position.zero?
 
-        Astronoby::Distance.from_meters(@position.magnitude)
+        @position.magnitude
       end
     end
   end

@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Moon do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(0.0024238110763862715)
+        .to eq(0.002423811076386272)
       # IMCCE:    0.002423811046
       # Skyfield: 0.002423811056514584
     end

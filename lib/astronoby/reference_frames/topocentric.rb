@@ -10,13 +10,11 @@ module Astronoby
     )
       matrix = observer.earth_fixed_rotation_matrix_for(instant)
 
-      observer_position = Astronoby::Vector.elements(
-        (matrix * observer.geocentric_position.map(&:km))
-          .map { Astronoby::Distance.from_km(_1) }
+      observer_position = Distance.vector_from_meters(
+        matrix * observer.geocentric_position.map(&:m)
       )
-      observer_velocity = Astronoby::Vector.elements(
-        (matrix * observer.geocentric_velocity.map(&:kmps))
-          .map { Astronoby::Velocity.from_kmps(_1) }
+      observer_velocity = Velocity.vector_from_mps(
+        matrix * observer.geocentric_velocity.map(&:kmps)
       )
 
       position = apparent.position - observer_position

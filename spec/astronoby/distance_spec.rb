@@ -50,6 +50,15 @@ RSpec.describe Astronoby::Distance do
     end
   end
 
+  describe "::vector_from_meters" do
+    it "returns a Vector of Distance objects" do
+      vector = described_class.vector_from_meters([1, 2, 3])
+
+      expect(vector).to be_a(Astronoby::Vector)
+      expect(vector).to all(be_a(described_class))
+    end
+  end
+
   describe "#meters" do
     it "returns the distance value in meters" do
       meters = described_class.new(1).meters
