@@ -360,6 +360,36 @@ RSpec.describe Astronoby::Moon do
         # Skyfield:   -2° 44′ 22.9″
       end
     end
+
+    context "with refraction" do
+      it "computes the correct position" do
+        time = Time.utc(2025, 3, 1, 12)
+        instant = Astronoby::Instant.from_time(time)
+        ephem = test_ephem
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(1.364917),
+          longitude: Astronoby::Angle.from_degrees(103.822872)
+        )
+        planet = described_class.new(instant: instant, ephem: ephem)
+
+        topocentric = planet.observed_by(observer)
+        horizontal = topocentric.horizontal(refraction: true)
+
+        aggregate_failures do
+          expect(horizontal.azimuth.str(:dms))
+            .to eq("+270° 40′ 43.3759″")
+          # Horizons:   +270° 40′ 41.7498″
+          # Stellarium: +270° 40′ 42.5″
+          # Skyfield:   +270° 40′ 41.7″
+
+          expect(horizontal.altitude.str(:dms))
+            .to eq("+6° 50′ 17.8399″")
+          # Horizons:   +6° 50′ 19.33″
+          # Stellarium: +6° 50′ 0.2″
+          # Skyfield:   +6° 50′ 15.7″
+        end
+      end
+    end
   end
 
   describe "::monthly_phase_events" do

@@ -360,6 +360,36 @@ RSpec.describe Astronoby::Sun do
         # Skyfield:   +16° 16′ 19.2″
       end
     end
+
+    context "with refraction" do
+      it "computes the correct position" do
+        time = Time.utc(2025, 10, 1)
+        instant = Astronoby::Instant.from_time(time)
+        ephem = test_ephem
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(1.364917),
+          longitude: Astronoby::Angle.from_degrees(103.822872)
+        )
+        planet = described_class.new(instant: instant, ephem: ephem)
+
+        topocentric = planet.observed_by(observer)
+        horizontal = topocentric.horizontal(refraction: true)
+
+        aggregate_failures do
+          expect(horizontal.azimuth.str(:dms))
+            .to eq("+93° 44′ 19.9902″")
+          # Horizons:   +93° 44′ 20.1644″
+          # Stellarium: +93° 44′ 20.2″
+          # Skyfield:   +93° 44′ 20.2″
+
+          expect(horizontal.altitude.str(:dms))
+            .to eq("+16° 19′ 34.9175″")
+          # Horizons:   +16° 19′ 42.1874″
+          # Stellarium: +16° 19′ 39.8″
+          # Skyfield:   +16° 19′ 39.3″
+        end
+      end
+    end
   end
 
   describe "#true_ecliptic_coordinates" do
