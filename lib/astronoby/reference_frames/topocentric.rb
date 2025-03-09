@@ -56,11 +56,17 @@ module Astronoby
       end
     end
 
-    def horizontal
-      @horizontal ||= equatorial.to_horizontal(
+    def horizontal(refraction: false)
+      horizontal = equatorial.to_horizontal(
         time: @instant.to_time,
         observer: @observer
       )
+
+      if refraction
+        Refraction.correct_horizontal_coordinates(coordinates: horizontal)
+      else
+        horizontal
+      end
     end
   end
 end
