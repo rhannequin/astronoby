@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Uranus do
         # Horizons:   +51° 34′ 45.1039″
         # Stellarium: +51° 34′ 46.0″
         # Skyfield:   +51° 34′ 45.4″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 3.4731″")
+        # IMCCE:      +0° 0′ 3.4731″
+        # Horizons:   +0° 0′ 3.4731″
+        # Stellarium: +0° 0′ 3.47″
+        # Skyfield:   +0° 0′ 3.5″
       end
     end
   end

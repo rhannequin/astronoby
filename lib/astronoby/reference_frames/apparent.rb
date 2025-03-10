@@ -47,5 +47,15 @@ module Astronoby
         equatorial.to_ecliptic(epoch: @instant.tdb)
       end
     end
+
+    def angular_diameter
+      @angular_radius ||= begin
+        return Angle.zero if @position.zero?
+
+        Angle.from_radians(
+          Math.atan(@target_body.class::EQUATORIAL_RADIUS.m / distance.m) * 2
+        )
+      end
+    end
   end
 end

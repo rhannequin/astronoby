@@ -387,6 +387,13 @@ RSpec.describe Astronoby::Sun do
           # Horizons:   +16° 19′ 42.1874″
           # Stellarium: +16° 19′ 39.8″
           # Skyfield:   +16° 19′ 39.3″
+
+          expect(topocentric.angular_diameter.str(:dms))
+            .to eq("+0° 31′ 56.0484″")
+          # IMCCE:      +0° 31′ 56.0686″
+          # Horizons:   +0° 31′ 56.0689″
+          # Stellarium: +0° 31′ 56.04″
+          # Skyfield:   +0° 31′ 56.1″
         end
       end
     end

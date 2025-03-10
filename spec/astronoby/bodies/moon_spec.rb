@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Moon do
         # Horizons:   -2° 44′ 22.8363″
         # Stellarium: -2° 44′ 24.6″
         # Skyfield:   -2° 44′ 22.9″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 32′ 55.4816″")
+        # IMCCE:      +0° 32′ 55.3033″
+        # Horizons:   +0° 32′ 55.303″
+        # Stellarium: +0° 32′ 55.33″
+        # Skyfield:   +0° 32′ 55″
       end
     end
 

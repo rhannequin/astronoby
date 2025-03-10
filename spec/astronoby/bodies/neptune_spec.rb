@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Neptune do
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″
         # Skyfield:   +24° 33′ 48.3″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 2.3333″")
+        # IMCCE:      +0° 0′ 2.3333″
+        # Horizons:   +0° 0′ 2.3333″
+        # Stellarium: +0° 0′ 2.33″
+        # Skyfield:   +0° 0′ 2.3″
       end
     end
   end
