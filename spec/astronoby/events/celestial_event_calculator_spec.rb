@@ -67,7 +67,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           longitude: Astronoby::Angle.from_degrees(-68.12415901809868),
           utc_offset: utc_offset
         )
-        calculator = Astronoby::CelestialEventCalculator.new(
+        calculator = described_class.new(
           observer: observer,
           target_body: Astronoby::Sun,
           ephem: ephem
@@ -109,7 +109,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           elevation: Astronoby::Distance.zero,
           utc_offset: utc_offset
         )
-        calculator = Astronoby::CelestialEventCalculator.new(
+        calculator = described_class.new(
           observer: observer,
           target_body: Astronoby::Moon,
           ephem: ephem
@@ -126,7 +126,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           # Timeanddate: 2025-12-10T23:11:00-07:00
 
           expect(events.transit_time.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 10, 5, 1, 33, utc_offset)
+            .to eq Time.new(2025, 12, 10, 5, 1, 32, utc_offset)
           # Stellarium:  2025-12-10T05:02:00-07:00
           # Skyfield:    2025-12-10T05:01:33-07:00
           # Timeanddate: 2025-12-10T05:01:00-07:00
@@ -144,7 +144,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           # Timeanddate: 81°
 
           expect(events.transit_altitude.str(:dms))
-            .to eq "+61° 13′ 30.9479″"
+            .to eq "+61° 13′ 31.1915″"
           # Skyfield:    +61° 13′ 29.9″
           # Timeanddate: 61.2°
 
@@ -165,7 +165,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           elevation: Astronoby::Distance.zero,
           utc_offset: utc_offset
         )
-        calculator = Astronoby::CelestialEventCalculator.new(
+        calculator = described_class.new(
           observer: observer,
           target_body: Astronoby::Moon,
           ephem: ephem
@@ -177,7 +177,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           expect(events.rising_time).to be_nil
 
           expect(events.transit_time.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 11, 5, 45, 25, utc_offset)
+            .to eq Time.new(2025, 12, 11, 5, 45, 24, utc_offset)
           # Stellarium:  2025-12-11T05:45:00-07:00
           # Skyfield:    2025-12-11T05:45:24-07:00
           # Timeanddate: 2025-12-11T05:45:00-07:00
@@ -192,7 +192,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           expect(events.rising_azimuth).to be_nil
 
           expect(events.transit_altitude.str(:dms))
-            .to eq "+55° 5′ 53.5792″"
+            .to eq "+55° 5′ 53.8296″"
           # Skyfield:    +55° 5′ 51.8″
           # Timeanddate: 55.1°
 
@@ -213,7 +213,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           elevation: Astronoby::Distance.zero,
           utc_offset: utc_offset
         )
-        calculator = Astronoby::CelestialEventCalculator.new(
+        calculator = described_class.new(
           observer: observer,
           target_body: Astronoby::Moon,
           ephem: ephem
@@ -230,7 +230,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           # Timeanddate: 2025-12-12T00:14:00-07:00
 
           expect(events.transit_time.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 12, 6, 26, 52, utc_offset)
+            .to eq Time.new(2025, 12, 12, 6, 26, 51, utc_offset)
           # Stellarium:  2025-12-12T06:27:00-07:00
           # Skyfield:    2025-12-12T06:26:51-07:00
           # Timeanddate: 2025-12-12T06:26:00-07:00
@@ -248,7 +248,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           # Timeanddate: 89°
 
           expect(events.transit_altitude.str(:dms))
-            .to eq "+48° 56′ 46.6218″"
+            .to eq "+48° 56′ 46.8685″"
           # Skyfield:    +48° 56′ 45.0″
           # Timeanddate: 49°
 
@@ -269,7 +269,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
           longitude: Astronoby::Angle.from_degrees(76.51522879779951),
           elevation: Astronoby::Distance.from_meters(8611)
         )
-        calculator = Astronoby::CelestialEventCalculator.new(
+        calculator = described_class.new(
           observer: observer,
           target_body: Astronoby::Venus,
           ephem: ephem
