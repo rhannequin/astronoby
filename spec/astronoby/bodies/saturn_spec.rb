@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Saturn do
         # Horizons:   -13° 50′ 7.7396″
         # Stellarium: -13° 50′ 8.6″
         # Skyfield:   -13° 50′ 7.9″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 16.8237″")
+        # IMCCE:      +0° 0′ 16.8237″
+        # Horizons:   +0° 0′ 16.8237″
+        # Stellarium: +0° 0′ 16.82″
+        # Skyfield:   +0° 0′ 16.8″
       end
     end
   end

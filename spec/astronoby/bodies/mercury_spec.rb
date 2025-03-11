@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Mercury do
         # Horizons:   -56° 56′ 38.8135″
         # Stellarium: -56° 56′ 39.5″
         # Skyfield:   -56° 56′ 39.1″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 5.8606″")
+        # IMCCE:      +0° 0′ 5.8626″
+        # Horizons:   +0° 0′ 5.8627″
+        # Stellarium: +0° 0′ 5.8686″
+        # Skyfield:   +0° 0′ 5.9″
       end
     end
   end

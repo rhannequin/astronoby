@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Venus do
         # Horizons:   -31° 34′ 29.5386″
         # Stellarium: -31° 34′ 30.5″
         # Skyfield:   -31° 34′ 29.6″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 31.9315″")
+        # IMCCE:      +0° 0′ 31.9315″
+        # Horizons:   +0° 0′ 31.9315″
+        # Stellarium: +0° 0′ 31.93″
+        # Skyfield:   +0° 0′ 31.9″
       end
     end
   end

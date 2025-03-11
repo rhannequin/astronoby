@@ -4,6 +4,7 @@ module Astronoby
   class Moon < SolarSystemBody
     SEMIDIAMETER_VARIATION = 0.7275
     MEAN_GEOCENTRIC_DISTANCE = Astronoby::Distance.from_meters(385_000_560)
+    EQUATORIAL_RADIUS = Distance.from_meters(1_737_400)
 
     def self.ephemeris_segments
       [

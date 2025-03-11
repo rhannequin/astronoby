@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Mars do
         # Horizons:   +26° 51′ 15.3662″
         # Stellarium: +26° 51′ 15.9″
         # Skyfield:   +26° 51′ 15.6″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 8.2226″")
+        # IMCCE:      +0° 0′ 8.2226″
+        # Horizons:   +0° 0′ 8.2223″
+        # Stellarium: +0° 0′ 8.22″
+        # Skyfield:   +0° 0′ 8.2″
       end
     end
   end

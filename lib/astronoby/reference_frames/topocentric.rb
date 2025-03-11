@@ -48,6 +48,16 @@ module Astronoby
       @observer = observer
     end
 
+    def angular_diameter
+      @angular_radius ||= begin
+        return Angle.zero if @position.zero?
+
+        Angle.from_radians(
+          Math.atan(@target_body.class::EQUATORIAL_RADIUS.m / distance.m) * 2
+        )
+      end
+    end
+
     def ecliptic
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?

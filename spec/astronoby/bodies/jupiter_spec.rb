@@ -358,6 +358,13 @@ RSpec.describe Astronoby::Jupiter do
         # Skyfield:   -10° 11′ 49.2″
         # Stellarium: -10° 11′ 48.8″
         # Horizons:   -10° 11′ 49.2716″
+
+        expect(topocentric.angular_diameter.str(:dms))
+          .to eq("+0° 0′ 33.7133″")
+        # IMCCE:      +0° 0′ 33.7133″
+        # Horizons:   +0° 0′ 33.7131″
+        # Stellarium: +0° 0′ 33.72″
+        # Skyfield:   +0° 0′ 33.7″
       end
     end
   end
