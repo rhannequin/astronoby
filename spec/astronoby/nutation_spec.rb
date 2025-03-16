@@ -1,49 +1,67 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Nutation do
-  describe "::for_ecliptic_longitude" do
-    it "returns an Angle object" do
-      nutation = described_class.for_ecliptic_longitude(
-        epoch: Astronoby::Epoch::J2000
-      )
+  describe "::matrix_for" do
+    it "returns a matrix of 3x3" do
+      time = Time.utc(2025, 8, 1)
+      instant = Astronoby::Instant.from_time(time)
 
-      expect(nutation).to be_a(Astronoby::Angle)
-    end
+      matrix = described_class.matrix_for(instant)
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 35 - Nutation
-    it "returns the nutation angle" do
-      nutation = described_class.for_ecliptic_longitude(
-        epoch: Astronoby::Epoch.from_time(Time.utc(1988, 9, 1, 0, 0, 0))
-      )
-
-      expect(nutation.str(:dms)).to eq "+0° 0′ 5.4929″"
+      expect(matrix.row_size).to eq(3)
+      expect(matrix.column_size).to eq(3)
     end
   end
 
-  describe "::for_obliquity_of_the_ecliptic" do
-    it "returns an Angle object" do
-      nutation = described_class.for_obliquity_of_the_ecliptic(
-        epoch: Astronoby::Epoch::J2000
-      )
+  describe "#nutation_in_longitude" do
+    it "returns the right value for 2025-08-01" do
+      time = Time.utc(2025, 8, 1)
+      instant = Astronoby::Instant.from_time(time)
+      nutation = described_class.new(instant: instant)
 
-      expect(nutation).to be_a(Astronoby::Angle)
+      nutation_in_longitude = nutation.nutation_in_longitude
+
+      expect(nutation_in_longitude.str(:dms))
+        .to eq("+0° 0′ 3.8211″")
+      # Skyfield: +0° 0′ 3.8213″
     end
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 35 - Nutation
-    it "returns the nutation angle" do
-      nutation = described_class.for_obliquity_of_the_ecliptic(
-        epoch: Astronoby::Epoch.from_time(Time.utc(1988, 9, 1, 0, 0, 0))
-      )
+    it "returns the right value for 2050-01-01" do
+      time = Time.utc(2050, 1, 1)
+      instant = Astronoby::Instant.from_time(time)
+      nutation = described_class.new(instant: instant)
 
-      expect(nutation.str(:dms)).to eq "+0° 0′ 9.2415″"
+      nutation_in_longitude = nutation.nutation_in_longitude
+
+      expect(nutation_in_longitude.str(:dms))
+        .to eq("+0° 0′ 15.1713″")
+      # Skyfield: +0° 0′ 15.1714″
+    end
+  end
+
+  describe "#nutation_in_obliquity" do
+    it "returns the right value for 2025-08-01" do
+      time = Time.utc(2025, 8, 1)
+      instant = Astronoby::Instant.from_time(time)
+      nutation = described_class.new(instant: instant)
+
+      nutation_in_obliquity = nutation.nutation_in_obliquity
+
+      expect(nutation_in_obliquity.str(:dms))
+        .to eq("+0° 0′ 8.9108″")
+      # Skyfield: +0° 0′ 8.9108″
+    end
+
+    it "returns the right value for 2050-01-01" do
+      time = Time.utc(2050, 1, 1)
+      instant = Astronoby::Instant.from_time(time)
+      nutation = described_class.new(instant: instant)
+
+      nutation_in_obliquity = nutation.nutation_in_obliquity
+
+      expect(nutation_in_obliquity.str(:dms))
+        .to eq("-0° 0′ 5.3301″")
+      # Skyfield: -0° 0′ 5.3297″
     end
   end
 end

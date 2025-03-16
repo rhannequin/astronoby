@@ -5,4 +5,9 @@ module TestEphemHelper
     path = File.path("#{__dir__}/data/de440s_2025_excerpt.bsp")
     Astronoby::Ephem.load(path)
   end
+
+  def larger_test_ephem
+    path = File.path("#{__dir__}/data/de440s_2000_2030_excerpt.bsp")
+    Astronoby::Ephem.load(path)
+  end
 end
