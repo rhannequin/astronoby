@@ -60,16 +60,16 @@ module Astronoby
     end
 
     def earth_fixed_rotation_matrix_for(instant)
-      gmst = Astronoby::GreenwichSiderealTime
+      gmst = GreenwichSiderealTime
         .from_utc(instant.to_time)
         .time
 
-      dpsi = Astronoby::Nutation2.new(instant: instant).nutation_in_longitude
+      dpsi = Nutation.new(instant: instant).nutation_in_longitude
 
-      mean_obliquity = Astronoby::MeanObliquity.for_epoch(instant.tt)
+      mean_obliquity = MeanObliquity.for_epoch(instant.tt)
 
-      gast = Astronoby::Angle.from_radians(
-        Astronoby::Angle.from_hours(gmst).radians +
+      gast = Angle.from_radians(
+        Angle.from_hours(gmst).radians +
           dpsi.radians * mean_obliquity.cos
       )
 
@@ -79,8 +79,8 @@ module Astronoby
         [0, 0, 1]
       ]
 
-      nutation_matrix = Astronoby::Nutation2.matrix_for(instant)
-      precession_matrix = Astronoby::Precession.matrix_for(instant)
+      nutation_matrix = Nutation.matrix_for(instant)
+      precession_matrix = Precession.matrix_for(instant)
 
       earth_rotation_matrix * nutation_matrix * precession_matrix
     end

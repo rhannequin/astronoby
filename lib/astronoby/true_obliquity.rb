@@ -3,8 +3,9 @@
 module Astronoby
   class TrueObliquity
     def self.for_epoch(epoch)
+      instant = Instant.from_utc_julian_date(epoch)
       mean_obliquity = MeanObliquity.for_epoch(epoch)
-      nutation = Nutation.for_obliquity_of_the_ecliptic(epoch: epoch)
+      nutation = Nutation.new(instant: instant).nutation_in_obliquity
 
       mean_obliquity + nutation
     end

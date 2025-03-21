@@ -27,9 +27,20 @@ module Astronoby
         :morning_astronomical_twilight_time,
         :evening_astronomical_twilight_time
 
-      def initialize(observer:, sun:)
+      def initialize(observer:, instant:, ephem:)
         @observer = observer
-        @sun = sun
+        @sun = Sun.new(instant: instant, ephem: ephem)
+        time = instant.to_time
+        midday = Instant.from_time(
+          Time.utc(time.year, time.month, time.day, 12)
+        )
+        @sun_at_midday = Sun.new(instant: midday, ephem: ephem)
+        @observation_events = Astronoby::CelestialEventCalculator.new(
+          observer: observer,
+          target_body: Sun,
+          ephem: ephem
+        ).calculate_events(instant.to_date)
+
         PERIODS_OF_THE_DAY.each do |period_of_the_day|
           TWILIGHT_ANGLES.each do |twilight, _|
             zenith_angle = TWILIGHT_ANGLES[twilight]
@@ -61,9 +72,9 @@ module Astronoby
       #  Chapter: 50 - Twilight
       def compute(period_of_the_day, zenith_angle)
         period_time = if period_of_the_day == MORNING
-          observation_events.rising_time
+          @observation_events.rising_time
         else
-          observation_events.setting_time
+          @observation_events.setting_time
         end
 
         hour_angle_at_period = equatorial_coordinates_at_midday
@@ -98,23 +109,10 @@ module Astronoby
         (period_time + twilight_in_seconds).round
       end
 
-      def observation_events
-        @observation_events ||= @sun.observation_events(observer: @observer)
-      end
-
-      def midday
-        date = @sun.time.to_date
-        Time.utc(date.year, date.month, date.day, 12)
-      end
-
-      def sun_at_midday
-        Sun.new(time: midday)
-      end
-
       def equatorial_coordinates_at_midday
-        @equatorial_coordinates_at_midday ||= sun_at_midday
-          .apparent_ecliptic_coordinates
-          .to_apparent_equatorial(epoch: Epoch.from_time(midday))
+        @equatorial_coordinates_at_midday ||= @sun_at_midday
+          .apparent
+          .equatorial
       end
     end
   end

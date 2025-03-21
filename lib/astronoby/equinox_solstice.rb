@@ -73,23 +73,23 @@ module Astronoby
       [8, 15.45, 16859.074]
     ].freeze
 
-    def self.march_equinox(year)
-      new(year, MARCH_EQUINOX).compute
+    def self.march_equinox(year, ephem)
+      new(year, MARCH_EQUINOX, ephem).time
     end
 
-    def self.june_solstice(year)
-      new(year, JUNE_SOLSTICE).compute
+    def self.june_solstice(year, ephem)
+      new(year, JUNE_SOLSTICE, ephem).time
     end
 
-    def self.september_equinox(year)
-      new(year, SEPTEMBER_EQUINOX).compute
+    def self.september_equinox(year, ephem)
+      new(year, SEPTEMBER_EQUINOX, ephem).time
     end
 
-    def self.december_solstice(year)
-      new(year, DECEMBER_SOLSTICE).compute
+    def self.december_solstice(year, ephem)
+      new(year, DECEMBER_SOLSTICE, ephem).time
     end
 
-    def initialize(year, event)
+    def initialize(year, event, ephem)
       unless EVENTS.include?(event)
         raise UnsupportedEventError.new(
           "Expected a format between #{EVENTS.join(", ")}, got #{event}"
@@ -98,7 +98,16 @@ module Astronoby
 
       @event = event
       @year = (year.to_i - 2000) / 1000.0
+      uncorrected_time = compute
+      @instant = Instant.from_time(uncorrected_time)
+      @sun = Sun.new(ephem: ephem, instant: @instant)
     end
+
+    def time
+      Instant.from_terrestrial_time(@instant.tt + corrected).to_time.round
+    end
+
+    private
 
     def compute
       t = (julian_day - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
@@ -113,12 +122,9 @@ module Astronoby
 
       delta_days = 0.00001 * s / delta
       epoch = julian_day + delta_days
-      epoch += correction(epoch)
 
-      Epoch.to_utc(epoch).round
+      Epoch.to_utc(epoch)
     end
-
-    private
 
     def julian_day
       component = JDE_COMPONENTS[@event]
@@ -129,11 +135,8 @@ module Astronoby
         component[4] * @year**4
     end
 
-    def correction(epoch)
-      time = Epoch.to_utc(epoch)
-      sun = Sun.new(time: time)
-      longitude = sun.apparent_ecliptic_coordinates.longitude
-
+    def corrected
+      longitude = @sun.apparent.ecliptic.longitude
       58 * Angle.from_degrees(@event * 90 - longitude.degrees).sin
     end
   end

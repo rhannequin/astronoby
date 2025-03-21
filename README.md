@@ -45,6 +45,14 @@ executing:
 
 ## Usage
 
+### Deprecated documentation notice
+
+The following documentation is meant for version 0.6.0 or below. Astronoby
+is currently in complete refactoring and its new documentation will live in the
+[Wiki](https://github.com/rhannequin/astronoby/wiki).
+
+### Expected breaking changes notice
+
 This library is still in heavy development. The public is not stable, please
 be aware new minor versions will probably lead to breaking changes until a
 major one is released.

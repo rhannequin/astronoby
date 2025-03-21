@@ -12,12 +12,12 @@ module Astronoby
       position = target_astrometric.position
       velocity = target_astrometric.velocity
       precession_matrix = Precession.matrix_for(instant)
-      nutation_matrix = Nutation2.matrix_for(instant)
+      nutation_matrix = Nutation.matrix_for(instant)
 
       corrected_position = Distance.vector_from_meters(
         precession_matrix * nutation_matrix * position.map(&:m)
       )
-      corrected_position = Aberration2.new(
+      corrected_position = Aberration.new(
         astrometric_position: corrected_position,
         observer_velocity: earth_geometric.velocity
       ).corrected_position

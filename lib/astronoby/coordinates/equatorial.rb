@@ -62,6 +62,7 @@ module Astronoby
 
         t1 = @declination.sin - latitude.sin * altitude.sin
         t2 = t1 / (latitude.cos * altitude.cos)
+        t2 = t2.clamp(-1, 1)
         azimuth = Angle.acos(t2)
 
         if ha.sin.positive?
@@ -100,13 +101,6 @@ module Astronoby
         Ecliptic.new(
           latitude: latitude,
           longitude: longitude
-        )
-      end
-
-      def to_epoch(epoch)
-        Precession.for_equatorial_coordinates(
-          coordinates: self,
-          epoch: epoch
         )
       end
     end
