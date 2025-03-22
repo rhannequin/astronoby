@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::CelestialEventCalculator do
+RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
   include TestEphemHelper
 
   describe "#calculate_rising_time" do
@@ -11,7 +11,7 @@ RSpec.describe Astronoby::CelestialEventCalculator do
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
       )
-      calculator = Astronoby::CelestialEventCalculator.new(
+      calculator = described_class.new(
         observer: observer,
         target_body: Astronoby::Sun,
         ephem: ephem
