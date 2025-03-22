@@ -124,10 +124,10 @@ module Astronoby
     end
     alias_method :eql?, :==
 
-    def str(format)
+    def str(format, precision: 4)
       case format
-      when :dms then to_dms(degrees).format
-      when :hms then to_hms(hours).format
+      when :dms then to_dms.format(precision: precision)
+      when :hms then to_hms.format(precision: precision)
       else
         raise UnsupportedFormatError.new(
           "Expected a format between #{FORMATS.join(", ")}, got #{format}"
@@ -135,36 +135,36 @@ module Astronoby
       end
     end
 
-    def to_dms(deg)
-      sign = deg.negative? ? "-" : "+"
-      absolute_degrees = deg.abs
-      degrees = absolute_degrees.floor
+    def to_dms
+      sign = degrees.negative? ? "-" : "+"
+      absolute_degrees = degrees.abs
+      deg = absolute_degrees.floor
       decimal_minutes = Constants::MINUTES_PER_DEGREE *
-        (absolute_degrees - degrees)
+        (absolute_degrees - deg)
       absolute_decimal_minutes = (
-        Constants::MINUTES_PER_DEGREE * (absolute_degrees - degrees)
+        Constants::MINUTES_PER_DEGREE * (absolute_degrees - deg)
       ).abs
       minutes = decimal_minutes.floor
       seconds = Constants::SECONDS_PER_MINUTE * (
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
-      Dms.new(sign, degrees, minutes, seconds.floor(4))
+      Dms.new(sign, deg, minutes, seconds)
     end
 
-    def to_hms(hrs)
-      absolute_hours = hrs.abs
-      hours = absolute_hours.floor
-      decimal_minutes = Constants::MINUTES_PER_HOUR * (absolute_hours - hours)
+    def to_hms
+      absolute_hours = hours.abs
+      hrs = absolute_hours.floor
+      decimal_minutes = Constants::MINUTES_PER_HOUR * (absolute_hours - hrs)
       absolute_decimal_minutes = (
-        Constants::MINUTES_PER_HOUR * (absolute_hours - hours)
+        Constants::MINUTES_PER_HOUR * (absolute_hours - hrs)
       ).abs
       minutes = decimal_minutes.floor
       seconds = Constants::SECONDS_PER_MINUTE * (
         absolute_decimal_minutes - absolute_decimal_minutes.floor
       )
 
-      Hms.new(hours, minutes, seconds.floor(4))
+      Hms.new(hrs, minutes, seconds)
     end
   end
 end

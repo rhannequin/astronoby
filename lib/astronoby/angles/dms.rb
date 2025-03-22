@@ -11,8 +11,8 @@ module Astronoby
       @seconds = seconds
     end
 
-    def format
-      "#{sign}#{degrees}° #{minutes}′ #{seconds}″"
+    def format(precision: 4)
+      "#{sign}#{degrees}° #{minutes}′ #{seconds.floor(precision)}″"
     end
   end
 end

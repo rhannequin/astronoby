@@ -10,8 +10,8 @@ module Astronoby
       @seconds = seconds
     end
 
-    def format
-      "#{hours}h #{minutes}m #{seconds}s"
+    def format(precision: 4)
+      "#{hours}h #{minutes}m #{seconds.floor(precision)}s"
     end
   end
 end
