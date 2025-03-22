@@ -24,7 +24,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns when the morning civil twilight starts" do
       time = Time.utc(2024, 3, 14)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -44,7 +44,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "returns nil" do
         time = Time.utc(2024, 6, 20)
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(65),
           longitude: Astronoby::Angle.zero
@@ -64,7 +64,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns a time" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -81,7 +81,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns when the evening civil twilight ends" do
       time = Time.utc(2024, 3, 14)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -101,7 +101,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "returns nil" do
         time = Time.utc(2024, 6, 20)
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(65),
           longitude: Astronoby::Angle.zero
@@ -121,7 +121,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns a time" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns when the morning nautical twilight starts" do
       time = Time.utc(2024, 3, 14)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -158,7 +158,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "returns nil" do
         time = Time.utc(2024, 6, 20)
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(55),
           longitude: Astronoby::Angle.zero
@@ -178,7 +178,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns a time" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -195,7 +195,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns when the evening nautical twilight ends" do
       time = Time.utc(2024, 3, 14)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -215,7 +215,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "returns nil" do
         time = Time.utc(2024, 6, 20)
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(55),
           longitude: Astronoby::Angle.zero
@@ -235,7 +235,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns a time" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -252,7 +252,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns when the morning astronomical twilight starts" do
       time = Time.utc(2024, 3, 14)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -272,7 +272,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "returns nil" do
         time = Time.utc(2024, 6, 20)
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(49),
           longitude: Astronoby::Angle.zero
@@ -292,7 +292,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns a time" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -309,7 +309,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns when the evening astronomical twilight ends" do
       time = Time.utc(2024, 3, 14)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_dms(-33, 52, 4),
         longitude: Astronoby::Angle.from_dms(151, 12, 26)
@@ -329,7 +329,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "returns nil" do
         time = Time.utc(2024, 6, 20)
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(49),
           longitude: Astronoby::Angle.zero
@@ -349,7 +349,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
     it "returns a time" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
@@ -373,7 +373,7 @@ RSpec.describe Astronoby::Events::TwilightEvents do
       it "raises an error" do
         time = Time.new
         instant = Astronoby::Instant.from_time(time)
-        ephem = larger_test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.zero,
           longitude: Astronoby::Angle.zero
