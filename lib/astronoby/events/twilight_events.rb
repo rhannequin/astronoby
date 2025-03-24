@@ -35,7 +35,7 @@ module Astronoby
           Time.utc(time.year, time.month, time.day, 12)
         )
         @sun_at_midday = Sun.new(instant: midday, ephem: ephem)
-        @observation_events = Astronoby::CelestialEventCalculator.new(
+        @observation_events = Astronoby::RisingTransitSettingEventsCalculator.new(
           observer: observer,
           target_body: Sun,
           ephem: ephem

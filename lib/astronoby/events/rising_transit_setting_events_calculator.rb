@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class CelestialEventCalculator
-    class CelestialEvents
+  class RisingTransitSettingEventsCalculator
+    class RisingTransitSettingEvents
       attr_accessor :rising_time,
         :rising_azimuth,
         :transit_time,
@@ -28,7 +28,7 @@ module Astronoby
     end
 
     # Encapsulates a time series of sky positions for a celestial body
-    class SkyPositionSeries
+    class PositionSeries
       attr_reader :times, :positions
 
       def initialize(times, positions)
@@ -71,51 +71,6 @@ module Astronoby
       end
     end
 
-    module MathUtils
-      module_function
-
-      # Normalize hour angle to the range [-π, π]
-      # @param hour_angle [Float] The hour angle in radians
-      # @return [Float] Normalized hour angle
-      def normalize_hour_angle(hour_angle)
-        ((hour_angle + Math::PI) % (2 * Math::PI)) - Math::PI
-      end
-
-      # Find maximum altitude using quadratic interpolation
-      # @param t1, t2, t3 [Time] Three consecutive times
-      # @param alt1, alt2, alt3 [Float] Corresponding altitudes
-      # @return [Time] Time of maximum altitude
-      def quadratic_maximum(t1, t2, t3, alt1, alt2, alt3)
-        # Convert to float seconds for arithmetic
-        x1, x2, x3 = t1.to_f, t2.to_f, t3.to_f
-        y1, y2, y3 = alt1, alt2, alt3
-
-        # Quadratic interpolation formula
-        denom = (x1 - x2) * (x1 - x3) * (x2 - x3)
-        a = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom
-        b = (x3 * x3 * (y1 - y2) +
-          x2 * x2 * (y3 - y1) +
-          x1 * x1 * (y2 - y3)) / denom
-
-        # Maximum is at -b/2a
-        max_t = -b / (2 * a)
-
-        Time.at(max_t)
-      end
-
-      # Linear interpolation between two points
-      # @param x1 [Float] First x value
-      # @param x2 [Float] Second x value
-      # @param y1 [Float] First y value
-      # @param y2 [Float] Second y value
-      # @param target_y [Float] Target y value
-      # @return [Float] Interpolated x value
-      def linear_interpolate(x1, x2, y1, y2, target_y = 0)
-        fraction = (target_y - y1) / (y2 - y1)
-        x1 + fraction * (x2 - x1)
-      end
-    end
-
     # Handles horizon calculations for different celestial bodies
     class HorizonCalculator
       STANDARD_REFRACTION_ANGLE = Angle.from_dms(0, -34, 0)
@@ -140,8 +95,8 @@ module Astronoby
       end
     end
 
-    # Handles sky position calculations
-    class SkyPositionCalculator
+    # Handles position calculations
+    class PositionCalculator
       # @param observer [Astronoby::Observer] The observer's location
       # @param target_body [Astronoby::SolarSystemBody] Celestial body
       # @param ephem [Ephem::SPK] The ephemeris data source
@@ -208,35 +163,34 @@ module Astronoby
       TRANSIT_REFINEMENT_WINDOW = 300  # seconds
       BINARY_SEARCH_ITERATIONS = 8
 
-      # @param sky_calculator [SkyPositionCalculator] Calculator for sky
-      #   positions
+      # @param position_calculator [PositionCalculator] Calculator for positions
       # @param observer [Astronoby::Observer] The observer's location
-      def initialize(sky_calculator:, observer:)
-        @sky_calculator = sky_calculator
+      def initialize(position_calculator:, observer:)
+        @position_calculator = position_calculator
         @observer = observer
       end
 
       # Find the transit time using multiple methods
-      # @param sky_series [SkyPositionSeries] Time series of sky positions
+      # @param position_series [PositionSeries] Time series of sky positions
       # @return [Time, nil] Transit time or nil if not found
-      def find_transit_time(sky_series)
+      def find_transit_time(position_series)
         # Try meridian crossing first
-        transit_candidate = find_meridian_crossings(sky_series)
+        transit_candidate = find_meridian_crossings(position_series)
 
         # Fall back to altitude maxima if needed
-        transit_candidate || find_altitude_maxima(sky_series)
+        transit_candidate || find_altitude_maxima(position_series)
       end
 
       private
 
       # Find times when the body crosses the meridian (hour angle = 0)
-      # @param sky_series [SkyPositionSeries] Time series of sky positions
+      # @param position_series [PositionSeries] Time series of sky positions
       # @return [Time, nil] Candidate transit time
-      def find_meridian_crossings(sky_series)
-        sky_series.each_consecutive_pair do |time1, data1, time2, data2|
+      def find_meridian_crossings(position_series)
+        position_series.each_consecutive_pair do |time1, data1, time2, data2|
           # Extract and normalize hour angles to [-π, π]
-          hour_angle1 = MathUtils.normalize_hour_angle(data1[:hour_angle])
-          hour_angle2 = MathUtils.normalize_hour_angle(data2[:hour_angle])
+          hour_angle1 = normalize_hour_angle(data1[:hour_angle])
+          hour_angle2 = normalize_hour_angle(data2[:hour_angle])
 
           # Check if it crosses zero (sign change) without wrapping around the
           # full circle
@@ -260,11 +214,11 @@ module Astronoby
       end
 
       # Find times of maximum altitude (potential transits)
-      # @param sky_series [SkyPositionSeries] Time series of sky positions
+      # @param position_series [PositionSeries] Time series of sky positions
       # @return [Time, nil] Candidate transit time based on altitude maxima
-      def find_altitude_maxima(sky_series)
+      def find_altitude_maxima(position_series)
         # Extract altitudes
-        altitudes = sky_series.altitudes
+        altitudes = position_series.altitudes
 
         # Look for local maxima
         (1...altitudes.length - 1).each do |i|
@@ -274,10 +228,10 @@ module Astronoby
           end
 
           # Local maximum found, refine it with quadratic interpolation
-          return MathUtils.quadratic_maximum(
-            sky_series.times[i - 1],
-            sky_series.times[i],
-            sky_series.times[i + 1],
+          return Util::Maths.quadratic_maximum(
+            position_series.times[i - 1],
+            position_series.times[i],
+            position_series.times[i + 1],
             altitudes[i - 1],
             altitudes[i],
             altitudes[i + 1]
@@ -294,8 +248,8 @@ module Astronoby
       def refine_transit_time(t_min, t_max)
         BINARY_SEARCH_ITERATIONS.times do
           t_mid = Time.at((t_min.to_f + t_max.to_f) / 2)
-          hour_angle = @sky_calculator.calculate(t_mid)[:hour_angle]
-          hour_angle = MathUtils.normalize_hour_angle(hour_angle)
+          hour_angle = @position_calculator.calculate(t_mid)[:hour_angle]
+          hour_angle = normalize_hour_angle(hour_angle)
 
           if hour_angle < 0
             # Hour angle negative, object hasn't reached meridian yet
@@ -307,17 +261,23 @@ module Astronoby
         end
 
         # Final interpolation
-        data_min = @sky_calculator.calculate(t_min)
-        data_max = @sky_calculator.calculate(t_max)
+        data_min = @position_calculator.calculate(t_min)
+        data_max = @position_calculator.calculate(t_max)
 
-        hour_angle_min = MathUtils.normalize_hour_angle(data_min[:hour_angle])
-        hour_angle_max = MathUtils.normalize_hour_angle(data_max[:hour_angle])
+        hour_angle_min = normalize_hour_angle(data_min[:hour_angle])
+        hour_angle_max = normalize_hour_angle(data_max[:hour_angle])
 
         # Linear interpolation for zero crossing
         fraction = hour_angle_min.abs / (
           hour_angle_min.abs + hour_angle_max.abs
         )
         Time.at(t_min.to_f + fraction * (t_max.to_f - t_min.to_f))
+      end
+
+      private
+
+      def normalize_hour_angle(hour_angle)
+        ((hour_angle + Math::PI) % Constants::RADIANS_PER_CIRCLE) - Math::PI
       end
     end
 
@@ -326,18 +286,18 @@ module Astronoby
       EVENT_DIRECTION_CHECK_OFFSET = 60  # seconds
       BINARY_SEARCH_ITERATIONS = 8
 
-      # @param sky_calculator [SkyPositionCalculator] Calculator for sky
+      # @param position_calculator [PositionCalculator] Calculator for sky
       #   positions
-      def initialize(sky_calculator:)
-        @sky_calculator = sky_calculator
+      def initialize(position_calculator:)
+        @position_calculator = position_calculator
       end
 
       # Find horizon crossings (rising or setting)
-      # @param sky_series [SkyPositionSeries] Time series of sky positions
+      # @param position_series [PositionSeries] Time series of sky positions
       # @param event_type [Symbol] :rising or :setting
       # @return [Time, nil] Event time
-      def find_crossing(sky_series, event_type)
-        sky_series.each_consecutive_pair do |time1, data1, time2, data2|
+      def find_crossing(position_series, event_type)
+        position_series.each_consecutive_pair do |time1, data1, time2, data2|
           first_above = data1[:altitude] > data1[:horizon]
           next_above = data2[:altitude] > data2[:horizon]
 
@@ -371,8 +331,8 @@ module Astronoby
       def binary_search_crossing(t_min, t_max, event_type)
         # Use iterative binary search for precision
         BINARY_SEARCH_ITERATIONS.times do
-          t_mid = Time.at((t_min.to_f + t_max.to_f) / 2)
-          position = @sky_calculator.calculate(t_mid)
+          t_mid = Time.at((t_min.to_f + t_max.to_f) / 2.0)
+          position = @position_calculator.calculate(t_mid)
 
           below_horizon = position[:altitude] < position[:horizon]
           if below_horizon == (event_type == :rising)
@@ -391,15 +351,15 @@ module Astronoby
       # @param t_max [Time] Time after crossing
       # @return [Time] Interpolated crossing time
       def interpolate_crossing(t_min, t_max)
-        pos_min = @sky_calculator.calculate(t_min)
-        pos_max = @sky_calculator.calculate(t_max)
+        pos_min = @position_calculator.calculate(t_min)
+        pos_max = @position_calculator.calculate(t_max)
 
         # Calculate altitude relative to horizon
         relative_min = pos_min[:altitude] - pos_min[:horizon]
         relative_max = pos_max[:altitude] - pos_max[:horizon]
 
         # Linear interpolation to find exact crossing
-        t_cross = MathUtils.linear_interpolate(
+        t_cross = Util::Maths.linear_interpolate(
           t_min.to_f, t_max.to_f,
           relative_min, relative_max
         )
@@ -417,8 +377,12 @@ module Astronoby
         t_after = Time.at(time.to_f + EVENT_DIRECTION_CHECK_OFFSET)
 
         # Calculate altitudes at before and after times
-        altitude_before = @sky_calculator.calculate_altitude(t_before).radians
-        altitude_after = @sky_calculator.calculate_altitude(t_after).radians
+        altitude_before = @position_calculator
+          .calculate_altitude(t_before)
+          .radians
+        altitude_after = @position_calculator
+          .calculate_altitude(t_after)
+          .radians
 
         # Calculate altitude rate (positive = rising, negative = setting)
         term1 = altitude_after - altitude_before
@@ -431,8 +395,6 @@ module Astronoby
 
     SAMPLE_COUNT = 10
 
-    class CalculationError < StandardError; end
-
     # @param observer [Astronoby::Observer] The observer's location
     # @param target_body [Astronoby::SolarSystemBody] Celestial body class
     # @param ephem [Ephem::SPK] The ephemeris data source
@@ -440,25 +402,26 @@ module Astronoby
       @observer = observer
       @target_body = target_body
 
-      @sky_calculator = SkyPositionCalculator.new(
+      @position_calculator = PositionCalculator.new(
         observer: observer,
         target_body: target_body,
         ephem: ephem
       )
 
       @transit_finder = TransitFinder.new(
-        sky_calculator: @sky_calculator,
+        position_calculator: @position_calculator,
         observer: observer
       )
 
       @horizon_finder = HorizonCrossingFinder.new(
-        sky_calculator: @sky_calculator
+        position_calculator: @position_calculator
       )
     end
 
     # Calculate all events (rising, transit, setting) for a given date
     # @param date [Date] The date to calculate events for
-    # @return [CelestialEvents] Object containing all calculated events
+    # @return [RisingTransitSettingEvents] Object containing all calculated
+    #   events
     def calculate_events(date)
       @date = date
       @time_range = compute_time_range(date)
@@ -467,10 +430,10 @@ module Astronoby
       sample_data = collect_sample_data(sample_times)
 
       # Create a sky position series instead of passing arrays separately
-      sky_series = SkyPositionSeries.new(sample_times, sample_data)
+      position_series = PositionSeries.new(sample_times, sample_data)
 
-      events = CelestialEvents.new
-      populate_event_times(events, sky_series)
+      events = RisingTransitSettingEvents.new
+      populate_event_times(events, position_series)
       calculate_additional_data(events)
 
       events
@@ -508,43 +471,43 @@ module Astronoby
     # @param sample_times [Array<Time>] The times to collect data for
     # @return [Array<Hash>] Position data for each time
     def collect_sample_data(sample_times)
-      sample_times.map { |time| @sky_calculator.calculate(time) }
+      sample_times.map { |time| @position_calculator.calculate(time) }
     end
 
     # Populates the rising, transit, and setting times
-    # @param events [CelestialEvents] The events object to populate
-    # @param sky_series [SkyPositionSeries] Time series of sky positions
-    def populate_event_times(events, sky_series)
+    # @param events [RisingTransitSettingEvents] The events object to populate
+    # @param position_series [PositionSeries] Time series of sky positions
+    def populate_event_times(events, position_series)
       events.rising_time = @horizon_finder.find_crossing(
-        sky_series, :rising
+        position_series, :rising
       )&.round
 
       events.transit_time = @transit_finder.find_transit_time(
-        sky_series
+        position_series
       )&.round
 
       events.setting_time = @horizon_finder.find_crossing(
-        sky_series, :setting
+        position_series, :setting
       )&.round
     end
 
     # Calculates additional data points (azimuths and altitudes) for found event
     # times
-    # @param events [CelestialEvents] The events object to populate
+    # @param events [RisingTransitSettingEvents] The events object to populate
     def calculate_additional_data(events)
       if events.rising_time
         events.rising_azimuth =
-          @sky_calculator.calculate_azimuth(events.rising_time)
+          @position_calculator.calculate_azimuth(events.rising_time)
       end
 
       if events.transit_time
         events.transit_altitude =
-          @sky_calculator.calculate_altitude(events.transit_time)
+          @position_calculator.calculate_altitude(events.transit_time)
       end
 
       if events.setting_time
         events.setting_azimuth =
-          @sky_calculator.calculate_azimuth(events.setting_time)
+          @position_calculator.calculate_azimuth(events.setting_time)
       end
     end
   end

@@ -4,4 +4,6 @@ module Astronoby
   class UnsupportedFormatError < ArgumentError; end
 
   class UnsupportedEventError < ArgumentError; end
+
+  class CalculationError < StandardError; end
 end
