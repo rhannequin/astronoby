@@ -17,7 +17,7 @@ RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
         ephem: ephem
       )
 
-      events = calculator.calculate_events(date)
+      events = calculator.events_on(date)
 
       aggregate_failures do
         expect(events.rising_time)
@@ -73,7 +73,7 @@ RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
           ephem: ephem
         )
 
-        events = calculator.calculate_events(date)
+        events = calculator.events_on(date)
 
         aggregate_failures do
           expect(events.rising_time).to be_nil
@@ -115,7 +115,7 @@ RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
           ephem: ephem
         )
 
-        events = calculator.calculate_events(date)
+        events = calculator.events_on(date)
 
         aggregate_failures do
           expect(events.rising_time.localtime(utc_offset))
@@ -171,7 +171,7 @@ RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
           ephem: ephem
         )
 
-        events = calculator.calculate_events(date)
+        events = calculator.events_on(date)
 
         aggregate_failures do
           expect(events.rising_time).to be_nil
@@ -219,7 +219,7 @@ RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
           ephem: ephem
         )
 
-        events = calculator.calculate_events(date)
+        events = calculator.events_on(date)
 
         aggregate_failures do
           expect(events.rising_time.localtime(utc_offset))
@@ -275,7 +275,7 @@ RSpec.describe Astronoby::RisingTransitSettingEventsCalculator do
           ephem: ephem
         )
 
-        events = calculator.calculate_events(date)
+        events = calculator.events_on(date)
 
         aggregate_failures do
           expect(events.rising_time)
