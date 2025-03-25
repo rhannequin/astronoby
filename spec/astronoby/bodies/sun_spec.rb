@@ -39,7 +39,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct position" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       body = described_class.new(instant: instant, ephem: ephem)
 
       geometric = body.geometric
@@ -78,7 +78,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct velocity" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       body = described_class.new(instant: instant, ephem: ephem)
 
       geometric = body.geometric
@@ -112,7 +112,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct position" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       body = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = body.astrometric
@@ -146,7 +146,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct velocity" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       body = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = body.astrometric
@@ -181,7 +181,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct position" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -212,7 +212,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct velocity" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -246,7 +246,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct position" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent
@@ -282,7 +282,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct velocity" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent
@@ -321,7 +321,7 @@ RSpec.describe Astronoby::Sun do
     it "computes the correct position" do
       time = Time.utc(2025, 10, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(1.364917),
         longitude: Astronoby::Angle.from_degrees(103.822872)
@@ -365,7 +365,7 @@ RSpec.describe Astronoby::Sun do
       it "computes the correct position" do
         time = Time.utc(2025, 10, 1)
         instant = Astronoby::Instant.from_time(time)
-        ephem = test_ephem
+        ephem = test_ephem_sun
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(1.364917),
           longitude: Astronoby::Angle.from_degrees(103.822872)
@@ -403,7 +403,7 @@ RSpec.describe Astronoby::Sun do
     it "returns an Angle" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       expect(sun.apparent.angular_diameter).to be_a Astronoby::Angle
@@ -417,7 +417,7 @@ RSpec.describe Astronoby::Sun do
     it "computes and return the Sun's apparent diameter for 2015-02-15" do
       time = Time.utc(2015, 2, 15)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       expect(sun.apparent.angular_diameter.str(:dms))
@@ -433,7 +433,7 @@ RSpec.describe Astronoby::Sun do
     it "computes and return the Sun's apparent diameter for 2015-08-09" do
       time = Time.utc(2015, 8, 9)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       expect(sun.apparent.angular_diameter.str(:dms))
@@ -449,7 +449,7 @@ RSpec.describe Astronoby::Sun do
     it "computes and return the Sun's apparent diameter for 2010-05-06" do
       time = Time.utc(2010, 5, 6)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       expect(sun.apparent.angular_diameter.str(:dms))
@@ -462,7 +462,7 @@ RSpec.describe Astronoby::Sun do
     it "returns an Integer" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       equation_of_time = sun.equation_of_time
@@ -478,7 +478,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2010-07-27" do
       time = Time.utc(2010, 7, 27)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       equation_of_time = sun.equation_of_time
@@ -495,7 +495,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2016-05-05" do
       time = Time.utc(2016, 5, 5)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       equation_of_time = sun.equation_of_time
@@ -512,7 +512,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2015-08-09" do
       time = Time.utc(2015, 8, 9)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       equation_of_time = sun.equation_of_time
@@ -529,7 +529,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2010-05-06" do
       time = Time.utc(2010, 5, 6)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       equation_of_time = sun.equation_of_time
@@ -546,7 +546,7 @@ RSpec.describe Astronoby::Sun do
     it "returns the right value of 2020-01-01" do
       time = Time.utc(2020, 1, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
       equation_of_time = sun.equation_of_time

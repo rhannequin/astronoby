@@ -24,7 +24,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
     #  Chapter: 6 - The Sun, p.143
     it "it returns the time for the 2004 March equinox" do
       year = 2004
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.march_equinox(year, ephem)
 
@@ -36,7 +36,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
     it "it returns the time for the 2024 March equinox" do
       year = 2024
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.march_equinox(year, ephem)
 
@@ -53,7 +53,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
     #  Chapter: 6 - The Sun, p.143
     it "it returns the time for the 2004 June solstice" do
       year = 2004
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.june_solstice(year, ephem)
 
@@ -65,7 +65,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
     it "it returns the time for the 2024 June solstice" do
       year = 2024
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.june_solstice(year, ephem)
 
@@ -82,7 +82,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
     #  Chapter: 6 - The Sun, p.143
     it "it returns the time for the 2004 September equinox" do
       year = 2004
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.september_equinox(year, ephem)
 
@@ -94,7 +94,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
     it "it returns the time for the 2024 September equinox" do
       year = 2024
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.september_equinox(year, ephem)
 
@@ -111,7 +111,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
     #  Chapter: 6 - The Sun, p.143
     it "it returns the time for the 2004 December solstice" do
       year = 2004
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.december_solstice(year, ephem)
 
@@ -123,7 +123,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
     it "it returns the time for the 2024 December solstice" do
       year = 2024
-      ephem = larger_test_ephem
+      ephem = test_ephem_sun
 
       equinox = described_class.december_solstice(year, ephem)
 

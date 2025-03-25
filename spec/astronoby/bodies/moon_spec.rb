@@ -39,7 +39,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct position" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       body = described_class.new(instant: instant, ephem: ephem)
 
       geometric = body.geometric
@@ -78,7 +78,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct velocity" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       body = described_class.new(instant: instant, ephem: ephem)
 
       geometric = body.geometric
@@ -112,7 +112,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct position" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       body = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = body.astrometric
@@ -146,7 +146,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct velocity" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       body = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = body.astrometric
@@ -181,7 +181,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct position" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -212,7 +212,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct velocity" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -246,7 +246,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct position" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent
@@ -282,7 +282,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct velocity" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent
@@ -321,7 +321,7 @@ RSpec.describe Astronoby::Moon do
     it "computes the correct position" do
       time = Time.utc(2025, 3, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(1.364917),
         longitude: Astronoby::Angle.from_degrees(103.822872)
@@ -372,7 +372,7 @@ RSpec.describe Astronoby::Moon do
       it "computes the correct position" do
         time = Time.utc(2025, 3, 1, 12)
         instant = Astronoby::Instant.from_time(time)
-        ephem = test_ephem
+        ephem = test_ephem_moon
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(1.364917),
           longitude: Astronoby::Angle.from_degrees(103.822872)
@@ -411,7 +411,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the phase angle for 2025-04-12" do
       time = Time.utc(2025, 4, 12)
       instant = Astronoby::Instant.from_time(time)
-      ephem = test_ephem
+      ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       phase_angle = moon.phase_angle
@@ -430,7 +430,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the illuminated fraction for 2015-01-01" do
       time = Time.utc(2015, 1, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       illuminated_fraction = moon.illuminated_fraction
@@ -448,7 +448,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent ecliptic coordinates for 2005-08-09" do
       time = Time.utc(2005, 8, 9)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       illuminated_fraction = moon.illuminated_fraction
@@ -466,7 +466,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent ecliptic coordinates for 2005-05-06" do
       time = Time.utc(2005, 5, 6, 14, 30)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       illuminated_fraction = moon.illuminated_fraction
@@ -486,7 +486,7 @@ RSpec.describe Astronoby::Moon do
       time = Time.utc(2003, 9, 1, 0, 0, 0)
       time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       illuminated_fraction = moon.illuminated_fraction
@@ -501,7 +501,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the mean elongation's fraction for 2024-01-01" do
       time = Time.utc(2024, 1, 1)
       instant = Astronoby::Instant.from_time(time)
-      ephem = larger_test_ephem
+      ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       phase_fraction = moon.current_phase_fraction
