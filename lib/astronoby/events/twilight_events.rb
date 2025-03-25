@@ -39,7 +39,7 @@ module Astronoby
           observer: observer,
           target_body: Sun,
           ephem: ephem
-        ).calculate_events(instant.to_date)
+        ).events_on(instant.to_date)
 
         PERIODS_OF_THE_DAY.each do |period_of_the_day|
           TWILIGHT_ANGLES.each do |twilight, _|
