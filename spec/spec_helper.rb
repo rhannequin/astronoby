@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "astronoby"
-
-require "support/test_ephem_helper"
-
 if ENV["COVERAGE"]
   require "simplecov"
   SimpleCov.start
 end
+
+require "astronoby"
+
+require "support/test_ephem_helper"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
