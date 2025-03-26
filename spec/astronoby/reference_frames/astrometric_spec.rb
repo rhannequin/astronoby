@@ -30,15 +30,12 @@ RSpec.describe Astronoby::Astrometric do
         instant: instant
       )
       allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
-      allow(Astronoby::Correction::LightTimeDelay).to(
-        receive(:compute)
-          .and_return([geometric.position, geometric.velocity])
-      )
 
       astrometric = described_class.build_from_geometric(
-        ephem: ephem,
         instant: instant,
-        target_geometric: geometric,
+        earth_geometric: earth_double,
+        light_time_corrected_position: geometric.position,
+        light_time_corrected_velocity: geometric.velocity,
         target_body: Astronoby::Jupiter
       )
 
@@ -73,15 +70,12 @@ RSpec.describe Astronoby::Astrometric do
         instant: instant
       )
       allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
-      allow(Astronoby::Correction::LightTimeDelay).to(
-        receive(:compute)
-          .and_return([geometric.position, geometric.velocity])
-      )
 
       astrometric = described_class.build_from_geometric(
-        ephem: ephem,
         instant: instant,
-        target_geometric: geometric,
+        earth_geometric: earth_double,
+        light_time_corrected_position: geometric.position,
+        light_time_corrected_velocity: geometric.velocity,
         target_body: Astronoby::Jupiter
       )
 
@@ -112,7 +106,7 @@ RSpec.describe Astronoby::Astrometric do
       )
       segment = double(compute_and_differentiate: state)
       ephem = double(:[] => segment)
-      geometric = Astronoby::Jupiter.geometric(
+      Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant
       )
@@ -130,27 +124,23 @@ RSpec.describe Astronoby::Astrometric do
         ],
         instant: instant
       )
+      light_time_corrected_position = Astronoby::Vector[
+        Astronoby::Distance.from_km(50),
+        Astronoby::Distance.from_km(100),
+        Astronoby::Distance.from_km(150)
+      ]
+      light_time_corrected_velocity = Astronoby::Vector[
+        Astronoby::Velocity.from_mps(3),
+        Astronoby::Velocity.from_mps(6),
+        Astronoby::Velocity.from_mps(9)
+      ]
       allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
-      allow(Astronoby::Correction::LightTimeDelay)
-        .to receive(:compute).and_return(
-          [
-            Astronoby::Vector[
-              Astronoby::Distance.from_km(50),
-              Astronoby::Distance.from_km(100),
-              Astronoby::Distance.from_km(150)
-            ],
-            Astronoby::Vector[
-              Astronoby::Velocity.from_mps(3),
-              Astronoby::Velocity.from_mps(6),
-              Astronoby::Velocity.from_mps(9)
-            ]
-          ]
-        )
 
       astrometric = described_class.build_from_geometric(
-        ephem: ephem,
         instant: instant,
-        target_geometric: geometric,
+        earth_geometric: earth_double,
+        light_time_corrected_position: light_time_corrected_position,
+        light_time_corrected_velocity: light_time_corrected_velocity,
         target_body: Astronoby::Jupiter
       )
 

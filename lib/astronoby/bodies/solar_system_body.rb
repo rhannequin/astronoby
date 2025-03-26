@@ -17,7 +17,7 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :geometric, :astrometric, :mean_of_date, :apparent, :instant
+    attr_reader :geometric, :instant
 
     def self.geometric(ephem:, instant:)
       compute_geometric(ephem: ephem, instant: instant)
@@ -67,11 +67,43 @@ module Astronoby
 
     def initialize(ephem:, instant:)
       @instant = instant
-      # TODO: Compute only values that depend on ephem and lazy load the rest
       @geometric = compute_geometric(ephem)
-      @astrometric = compute_astrometric(ephem)
-      @mean_of_date = compute_mean_of_date(ephem)
-      @apparent = compute_apparent(ephem)
+      @earth_geometric = Earth.geometric(ephem: ephem, instant: instant)
+      @light_time_corrected_position,
+        @light_time_corrected_velocity =
+        Correction::LightTimeDelay.compute(
+          center: @earth_geometric,
+          target: @geometric,
+          ephem: ephem
+        )
+    end
+
+    def astrometric
+      @astrometric ||= Astrometric.build_from_geometric(
+        instant: @instant,
+        earth_geometric: @earth_geometric,
+        light_time_corrected_position: @light_time_corrected_position,
+        light_time_corrected_velocity: @light_time_corrected_velocity,
+        target_body: self
+      )
+    end
+
+    def mean_of_date
+      @mean_of_date ||= MeanOfDate.build_from_geometric(
+        instant: @instant,
+        target_geometric: @geometric,
+        earth_geometric: @earth_geometric,
+        target_body: self
+      )
+    end
+
+    def apparent
+      @apparent ||= Apparent.build_from_astrometric(
+        instant: @instant,
+        target_astrometric: astrometric,
+        earth_geometric: @earth_geometric,
+        target_body: self
+      )
     end
 
     def observed_by(observer)
@@ -87,33 +119,6 @@ module Astronoby
 
     def compute_geometric(ephem)
       self.class.compute_geometric(ephem: ephem, instant: @instant)
-    end
-
-    def compute_astrometric(ephem)
-      Astrometric.build_from_geometric(
-        ephem: ephem,
-        instant: @instant,
-        target_geometric: @geometric,
-        target_body: self
-      )
-    end
-
-    def compute_mean_of_date(ephem)
-      MeanOfDate.build_from_geometric(
-        ephem: ephem,
-        instant: @instant,
-        target_geometric: @geometric,
-        target_body: self
-      )
-    end
-
-    def compute_apparent(ephem)
-      Apparent.build_from_astrometric(
-        ephem: ephem,
-        instant: @instant,
-        target_astrometric: @astrometric,
-        target_body: self
-      )
     end
   end
 end

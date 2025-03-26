@@ -16,7 +16,7 @@ module Astronoby
 
     # @return [Integer] Equation of time in seconds
     def equation_of_time
-      right_ascension = @apparent.equatorial.right_ascension
+      right_ascension = apparent.equatorial.right_ascension
       t = (@instant.julian_date - Epoch::J2000) / Constants::DAYS_PER_JULIAN_MILLENIA
       l0 = (280.4664567 +
         360_007.6982779 * t +

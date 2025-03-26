@@ -3,12 +3,11 @@
 module Astronoby
   class Apparent < ReferenceFrame
     def self.build_from_astrometric(
-      ephem:,
       instant:,
       target_astrometric:,
+      earth_geometric:,
       target_body:
     )
-      earth_geometric = Earth.geometric(ephem: ephem, instant: instant)
       position = target_astrometric.position
       velocity = target_astrometric.velocity
       precession_matrix = Precession.matrix_for(instant)
