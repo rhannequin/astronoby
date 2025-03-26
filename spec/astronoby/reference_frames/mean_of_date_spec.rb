@@ -29,12 +29,11 @@ RSpec.describe Astronoby::MeanOfDate do
         ],
         instant: instant
       )
-      allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
 
       mean_of_date = described_class.build_from_geometric(
-        ephem: ephem,
         instant: instant,
         target_geometric: geometric,
+        earth_geometric: earth_double,
         target_body: Astronoby::Jupiter
       )
 
@@ -68,15 +67,14 @@ RSpec.describe Astronoby::MeanOfDate do
         ],
         instant: instant
       )
-      allow(Astronoby::Earth).to receive(:geometric).and_return(earth_double)
       allow(Astronoby::Precession).to receive(:matrix_for).and_return(
         Matrix[[1, 0, 0], [0, 1, 0], [0, 0, 1]]
       )
 
       mean_of_date = described_class.build_from_geometric(
-        ephem: ephem,
         instant: instant,
         target_geometric: geometric,
+        earth_geometric: earth_double,
         target_body: Astronoby::Jupiter
       )
 

@@ -3,12 +3,11 @@
 module Astronoby
   class MeanOfDate < ReferenceFrame
     def self.build_from_geometric(
-      ephem:,
       instant:,
       target_geometric:,
+      earth_geometric:,
       target_body:
     )
-      earth_geometric = Earth.geometric(ephem: ephem, instant: instant)
       position = target_geometric.position - earth_geometric.position
       velocity = target_geometric.velocity - earth_geometric.velocity
       precession_matrix = Precession.matrix_for(instant)

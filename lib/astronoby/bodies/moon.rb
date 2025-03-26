@@ -56,17 +56,17 @@ module Astronoby
         sun = Sun.new(instant: @instant, ephem: ephem)
         geocentric_elongation = Angle.acos(
           sun.apparent.equatorial.declination.sin *
-            @apparent.equatorial.declination.sin +
+            apparent.equatorial.declination.sin +
             sun.apparent.equatorial.declination.cos *
-              @apparent.equatorial.declination.cos *
+              apparent.equatorial.declination.cos *
               (
                 sun.apparent.equatorial.right_ascension -
-                  @apparent.equatorial.right_ascension
+                  apparent.equatorial.right_ascension
               ).cos
         )
 
         term1 = sun.astrometric.distance.km * geocentric_elongation.sin
-        term2 = @astrometric.distance.km -
+        term2 = astrometric.distance.km -
           sun.astrometric.distance.km * geocentric_elongation.cos
         angle = Angle.atan(term1 / term2)
         Astronoby::Util::Trigonometry
