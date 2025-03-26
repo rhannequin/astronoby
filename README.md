@@ -15,6 +15,7 @@ The main reference is:
 ## Content
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Deprecated documentation notice](#deprecated-documentation-notice)
   - [Angle manipulation](#angle-manipulation)
   - [Coordinates conversion](#coordinates-conversion)
   - [Sun](#sun)
