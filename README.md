@@ -1,7 +1,6 @@
 # Astronoby
 
 [![Tests](https://github.com/rhannequin/astronoby/workflows/Ruby/badge.svg)](https://github.com/rhannequin/astronoby/actions?query=workflow%3ARuby)
-[![Coverage Status](https://codecov.io/gh/rhannequin/astronoby/branch/main/graph/badge.svg)](https://codecov.io/gh/rhannequin/astronoby)
 
 Ruby library to provide a useful API to compute astronomical calculations, based
 on astrometry books.
