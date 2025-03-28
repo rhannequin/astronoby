@@ -34,6 +34,7 @@ module Astronoby
     STANDARD_REFRACTION_ANGLE = -Angle.from_dms(0, 34, 0)
     SUN_REFRACTION_ANGLE = -Angle.from_dms(0, 50, 0)
     NORMALIZATION_EPSILON = 1e-10
+    CROSSING_PRECISION_THRESHOLD = 0.5
 
     def initialize(observer:, target_body:, ephem:)
       @observer = observer
@@ -146,21 +147,110 @@ module Astronoby
     end
 
     def find_precise_crossing(t_min, t_max, event_type)
-      BINARY_SEARCH_ITERATIONS.times do
-        t_mid = Time.at((t_min.to_f + t_max.to_f) / 2.0)
-        position = calculate_position(t_mid)
+      pos_min = calculate_position(t_min)
+      pos_max = calculate_position(t_max)
 
-        below_horizon = position[:altitude] < position[:horizon]
-        if below_horizon == (event_type == :rising)
-          t_min = t_mid
-        else
-          t_max = t_mid
-        end
+      relative_min = pos_min[:altitude].radians - pos_min[:horizon].radians
+      relative_max = pos_max[:altitude].radians - pos_max[:horizon].radians
+
+      # Check if there's a crossing in this window
+      if relative_min * relative_max >= 0
+        # No crossing if both values have the same sign
+        return nil
       end
 
-      crossing_time = interpolate_crossing(t_min, t_max)
+      # Determine if we're looking for the right type of crossing
+      is_rising = relative_min < 0 && relative_max > 0
+      is_setting = relative_min > 0 && relative_max < 0
 
-      crossing_time.round if confirm_event_direction(crossing_time, event_type)
+      if (event_type == :rising && !is_rising) || (event_type == :setting && !is_setting)
+        return nil
+      end
+
+      # Start with a better initial guess using linear interpolation
+      t_guess = Util::Maths.linear_interpolate(
+        t_min.to_f,
+        t_max.to_f,
+        relative_min,
+        relative_max,
+        0
+      )
+
+      t_mid = Time.at(t_guess)
+
+      # Refined binary search with adaptive convergence
+      safety_counter = 0
+      while (t_max.to_f - t_min.to_f) > CROSSING_PRECISION_THRESHOLD &&
+          safety_counter < BINARY_SEARCH_ITERATIONS
+        # Calculate position at our current guess
+        pos_mid = calculate_position(t_mid)
+        relative_mid = pos_mid[:altitude].radians - pos_mid[:horizon].radians
+
+        # Determine which half of the interval contains the crossing
+        if (relative_mid * relative_min) <= 0
+          # Crossing is between t_min and t_mid
+          t_max = t_mid
+          relative_max = relative_mid
+        else
+          # Crossing is between t_mid and t_max
+          t_min = t_mid
+          relative_min = relative_mid
+        end
+
+        # Generate a new guess with linear interpolation (faster convergence)
+        t_guess = Util::Maths.linear_interpolate(
+          t_min.to_f,
+          t_max.to_f,
+          relative_min,
+          relative_max,
+          0
+        )
+
+        # Create a Time object from the new guess
+        t_mid = Time.at(t_guess)
+
+        safety_counter += 1
+      end
+
+      if safety_counter < BINARY_SEARCH_ITERATIONS
+        # Perform high-precision interpolation one last time
+        pos_min = calculate_position(t_min)
+        pos_max = calculate_position(t_max)
+        relative_min = pos_min[:altitude].radians - pos_min[:horizon].radians
+        relative_max = pos_max[:altitude].radians - pos_max[:horizon].radians
+
+        t_guess = Util::Maths.linear_interpolate(
+          t_min.to_f,
+          t_max.to_f,
+          relative_min,
+          relative_max,
+          0
+        )
+        t_mid = Time.at(t_guess)
+      end
+
+      # Confirm the event has the correct direction (rising vs setting)
+      crossing_time = t_mid
+      if confirm_event_direction(crossing_time, event_type)
+        crossing_time.round
+      end
+    end
+
+    def confirm_event_direction(time, event_type)
+      t_before = Time.at(time.to_f - EVENT_DIRECTION_CHECK_OFFSET_SECONDS)
+      t_after = Time.at(time.to_f + EVENT_DIRECTION_CHECK_OFFSET_SECONDS)
+
+      # Calculate altitudes slightly before and after the crossing
+      position_before = calculate_position(t_before)
+      position_after = calculate_position(t_after)
+      altitude_before = position_before[:altitude]
+      altitude_after = position_after[:altitude]
+
+      # Calculate rate of change in altitude (radians per second)
+      altitude_rate = (altitude_after - altitude_before).radians /
+        (2 * EVENT_DIRECTION_CHECK_OFFSET_SECONDS)
+
+      (event_type == :rising) ? altitude_rate > 0 : altitude_rate < 0
     end
 
     def interpolate_crossing(t_min, t_max)
@@ -179,20 +269,6 @@ module Astronoby
       )
 
       Time.at(t_cross)
-    end
-
-    def confirm_event_direction(time, event_type)
-      t_before = Time.at(time.to_f - EVENT_DIRECTION_CHECK_OFFSET_SECONDS)
-      t_after = Time.at(time.to_f + EVENT_DIRECTION_CHECK_OFFSET_SECONDS)
-
-      altitude_before = calculate_altitude(t_before)
-      altitude_after = calculate_altitude(t_after)
-
-      altitude_rate = (altitude_after - altitude_before).radians./(
-        2 * EVENT_DIRECTION_CHECK_OFFSET_SECONDS
-      )
-
-      (event_type == :rising) ? altitude_rate > 0 : altitude_rate < 0
     end
 
     def find_transit(events, sample_times, sample_data)
