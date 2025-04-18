@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     astronoby (0.6.0)
-      ephem (~> 0.1)
+      ephem (~> 0.2)
       matrix (~> 0.4.2)
 
 GEM
