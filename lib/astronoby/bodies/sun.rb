@@ -4,7 +4,7 @@ module Astronoby
   class Sun < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(695_700_000)
 
-    def self.ephemeris_segments
+    def self.ephemeris_segments(_ephem_source)
       [[SOLAR_SYSTEM_BARYCENTER, SUN]]
     end
 

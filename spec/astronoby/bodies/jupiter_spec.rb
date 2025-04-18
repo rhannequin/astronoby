@@ -12,7 +12,7 @@ RSpec.describe Astronoby::Jupiter do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       geometric = planet.geometric
@@ -99,7 +99,7 @@ RSpec.describe Astronoby::Jupiter do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = planet.astrometric
@@ -167,7 +167,7 @@ RSpec.describe Astronoby::Jupiter do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -232,7 +232,7 @@ RSpec.describe Astronoby::Jupiter do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent
@@ -302,7 +302,7 @@ RSpec.describe Astronoby::Jupiter do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero

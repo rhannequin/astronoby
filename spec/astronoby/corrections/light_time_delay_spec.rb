@@ -23,7 +23,7 @@ RSpec.describe Astronoby::Correction::LightTimeDelay do
         ],
         target_body: Astronoby::Neptune
       )
-      ephem = double
+      ephem = double(type: ::Ephem::SPK::JPL_DE)
       # Data collected from Ephem
       allow(ephem).to receive(:[]).and_return(
         double(
