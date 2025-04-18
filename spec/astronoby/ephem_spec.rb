@@ -3,18 +3,17 @@
 RSpec.describe Astronoby::Ephem do
   describe ".download" do
     it "downloads the ephemeris using Ephem" do
-      allow(::Ephem::IO::Download).to receive(:call)
+      allow(::Ephem::Download).to receive(:call)
 
       described_class.download(name: "de440t.bsp", target: "tmp/de440t.bsp")
 
-      expect(::Ephem::IO::Download)
+      expect(::Ephem::Download)
         .to have_received(:call)
         .with(name: "de440t.bsp", target: "tmp/de440t.bsp")
     end
 
     it "returns true if the download is successful" do
-      allow(::Ephem::IO::Download)
-        .to receive(:call).and_return(double(is_a?: true))
+      allow(::Ephem::Download).to receive(:call).and_return(true)
 
       result = described_class.download(
         name: "de440t.bsp",
@@ -25,8 +24,7 @@ RSpec.describe Astronoby::Ephem do
     end
 
     it "returns false if the download is not successful" do
-      allow(::Ephem::IO::Download)
-        .to receive(:call).and_return(double(is_a?: false))
+      allow(::Ephem::Download).to receive(:call).and_return(false)
 
       result = described_class.download(
         name: "de440t.bsp",

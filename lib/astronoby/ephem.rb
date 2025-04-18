@@ -14,9 +14,7 @@ module Astronoby
     # @example Downloading de440t SPK from NASA JPL
     #   Astronoby::Ephem.download(name: "de440t.bsp", target: "tmp/de440t.bsp")
     def self.download(name:, target:)
-      response = ::Ephem::IO::Download.call(name: name, target: target)
-
-      !!response&.is_a?(Net::HTTPOK)
+      ::Ephem::Download.call(name: name, target: target)
     end
 
     # Load an ephemeris file.
