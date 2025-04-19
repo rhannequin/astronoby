@@ -24,7 +24,7 @@ module Astronoby
     end
 
     def self.compute_geometric(ephem:, instant:)
-      segments = ephemeris_segments
+      segments = ephemeris_segments(ephem.type)
       segment1 = segments[0]
       segment2 = segments[1] if segments.size == 2
 
@@ -61,7 +61,7 @@ module Astronoby
       )
     end
 
-    def self.ephemeris_segments
+    def self.ephemeris_segments(_ephem_source)
       raise NotImplementedError
     end
 

@@ -25,7 +25,15 @@ module Astronoby
     # @example Loading previously downloaded de440t SPK from NASA JPL
     #   Astronoby::Ephem.load("tmp/de440t.bsp")
     def self.load(target)
-      ::Ephem::SPK.open(target)
+      spk = ::Ephem::SPK.open(target)
+      unless ::Ephem::SPK::TYPES.include?(spk&.type)
+        raise(
+          EphemerisError,
+          "#{target} is not a valid type. Accepted: #{::Ephem::SPK::TYPES.join(", ")}"
+        )
+      end
+
+      spk
     end
   end
 end

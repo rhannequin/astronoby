@@ -5,11 +5,18 @@ module Astronoby
     SEMIDIAMETER_VARIATION = 0.7275
     EQUATORIAL_RADIUS = Distance.from_meters(1_737_400)
 
-    def self.ephemeris_segments
-      [
-        [SOLAR_SYSTEM_BARYCENTER, EARTH_MOON_BARYCENTER],
-        [EARTH_MOON_BARYCENTER, MOON]
-      ]
+    def self.ephemeris_segments(ephem_source)
+      if ephem_source == ::Ephem::SPK::JPL_DE
+        [
+          [SOLAR_SYSTEM_BARYCENTER, EARTH_MOON_BARYCENTER],
+          [EARTH_MOON_BARYCENTER, MOON]
+        ]
+      elsif ephem_source == ::Ephem::SPK::INPOP
+        [
+          [SOLAR_SYSTEM_BARYCENTER, EARTH],
+          [EARTH, MOON]
+        ]
+      end
     end
 
     # Source:

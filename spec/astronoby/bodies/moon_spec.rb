@@ -12,7 +12,7 @@ RSpec.describe Astronoby::Moon do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       body = described_class.new(instant: instant, ephem: ephem)
 
       geometric = body.geometric
@@ -88,6 +88,19 @@ RSpec.describe Astronoby::Moon do
       # IMCCE:    -10408.41236 -24901.72816 -10687.38603
       # Skyfield: -10408.41257 -24901.72803 -10687.38600
     end
+
+    context "with an INPOP ephemeris" do
+      it "returns a Geometric position" do
+        time = Time.utc(2025, 2, 7, 12)
+        instant = Astronoby::Instant.from_time(time)
+        ephem = test_ephem_inpop
+        planet = described_class.new(instant: instant, ephem: ephem)
+
+        geometric = planet.geometric
+
+        expect(geometric).to be_a(Astronoby::Geometric)
+      end
+    end
   end
 
   describe "#astrometric" do
@@ -99,7 +112,7 @@ RSpec.describe Astronoby::Moon do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       body = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = body.astrometric
@@ -167,7 +180,7 @@ RSpec.describe Astronoby::Moon do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -232,7 +245,7 @@ RSpec.describe Astronoby::Moon do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent
@@ -302,7 +315,7 @@ RSpec.describe Astronoby::Moon do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero

@@ -12,7 +12,7 @@ RSpec.describe Astronoby::Earth do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       geometric = planet.geometric
@@ -88,6 +88,19 @@ RSpec.describe Astronoby::Earth do
       # IMCCE:    -10513.91157 -25850.1153 -11207.13986
       # Skyfield: -10513.91205 -25850.11514 -11207.13981
     end
+
+    context "with an INPOP ephemeris" do
+      it "returns a Geometric position" do
+        time = Time.utc(2025, 2, 7, 12)
+        instant = Astronoby::Instant.from_time(time)
+        ephem = test_ephem_inpop
+        planet = described_class.new(instant: instant, ephem: ephem)
+
+        geometric = planet.geometric
+
+        expect(geometric).to be_a(Astronoby::Geometric)
+      end
+    end
   end
 
   describe "#astrometric" do
@@ -99,7 +112,7 @@ RSpec.describe Astronoby::Earth do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       astrometric = planet.astrometric
@@ -147,7 +160,7 @@ RSpec.describe Astronoby::Earth do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       mean_of_date = planet.mean_of_date
@@ -196,7 +209,7 @@ RSpec.describe Astronoby::Earth do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
       apparent = planet.apparent

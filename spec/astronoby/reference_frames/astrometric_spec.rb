@@ -10,7 +10,7 @@ RSpec.describe Astronoby::Astrometric do
         velocity: double(x: 4, y: 5, z: 6)
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       geometric = Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant
@@ -50,7 +50,7 @@ RSpec.describe Astronoby::Astrometric do
         velocity: double(x: 86.4, y: 172.8, z: 259.2)
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       geometric = Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant
@@ -105,7 +105,7 @@ RSpec.describe Astronoby::Astrometric do
         velocity: double(x: 1, y: 2, z: 3)
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       Astronoby::Jupiter.geometric(
         ephem: ephem,
         instant: instant

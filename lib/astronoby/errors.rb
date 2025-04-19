@@ -6,4 +6,6 @@ module Astronoby
   class UnsupportedEventError < ArgumentError; end
 
   class CalculationError < StandardError; end
+
+  class EphemerisError < StandardError; end
 end

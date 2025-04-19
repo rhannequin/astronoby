@@ -10,7 +10,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
@@ -25,7 +25,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         velocity: Astronoby::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
@@ -55,7 +55,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         velocity: Astronoby::Vector[4, 5, 6]
       )
       segment = double(compute_and_differentiate: state)
-      ephem = double(:[] => segment)
+      ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
 
@@ -79,6 +79,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         ephem = double
         allow(ephem).to receive(:[]).with(0).and_return(segment1)
         allow(ephem).to receive(:[]).with(1).and_return(segment2)
+        allow(ephem).to receive(:type).and_return(::Ephem::SPK::JPL_DE)
 
         geometric = build_planet_with_multiple_segments.geometric(
           instant: instant,
@@ -108,7 +109,7 @@ RSpec.describe Astronoby::SolarSystemBody do
       it "raises NotImplementedError" do
         time = Time.utc(2025, 2, 7, 12)
         instant = Astronoby::Instant.from_time(time)
-        ephem = double
+        ephem = double(type: ::Ephem::SPK::JPL_DE)
 
         expect do
           build_planet_with_no_segments
@@ -121,7 +122,7 @@ RSpec.describe Astronoby::SolarSystemBody do
   def build_planet
     @planet ||=
       Class.new(described_class) do
-        def self.ephemeris_segments
+        def self.ephemeris_segments(_ephem_source)
           [0]
         end
       end
@@ -129,7 +130,7 @@ RSpec.describe Astronoby::SolarSystemBody do
 
   def build_planet_with_multiple_segments
     Class.new(described_class) do
-      def self.ephemeris_segments
+      def self.ephemeris_segments(_ephem_source)
         [[0], [1]]
       end
     end
