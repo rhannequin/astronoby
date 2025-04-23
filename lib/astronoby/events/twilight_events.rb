@@ -35,11 +35,11 @@ module Astronoby
           Time.utc(time.year, time.month, time.day, 12)
         )
         @sun_at_midday = Sun.new(instant: midday, ephem: ephem)
-        @observation_events = Astronoby::RisingTransitSettingEventsCalculator.new(
+        @observation_events = Astronoby::RiseTransitSetCalculator.new(
+          body: Sun,
           observer: observer,
-          target_body: Sun,
           ephem: ephem
-        ).events_on(instant.to_date)
+        ).events_on(instant.to_date, utc_offset: observer.utc_offset || 0)
 
         PERIODS_OF_THE_DAY.each do |period_of_the_day|
           TWILIGHT_ANGLES.each do |twilight, _|
@@ -72,9 +72,9 @@ module Astronoby
       #  Chapter: 50 - Twilight
       def compute(period_of_the_day, zenith_angle)
         period_time = if period_of_the_day == MORNING
-          @observation_events.rising_time
+          @observation_events.rising_times.first
         else
-          @observation_events.setting_time
+          @observation_events.setting_times.first
         end
 
         hour_angle_at_period = equatorial_coordinates_at_midday

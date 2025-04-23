@@ -56,6 +56,23 @@ module Astronoby
         # Standard linear interpolation formula
         x1 + (target_y - y1) * (x2 - x1) / (y2 - y1)
       end
+
+      def linspace(start, stop, num = 50, endpoint = true)
+        return [start] if num == 1
+
+        step = endpoint ? (stop - start) / (num - 1) : (stop - start) / num
+
+        result = []
+        current = start
+
+        (num - 1).times do
+          result << current
+          current += step
+        end
+
+        result << (endpoint ? stop : current)
+        result
+      end
     end
   end
 end
