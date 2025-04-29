@@ -57,20 +57,33 @@ module Astronoby
         x1 + (target_y - y1) * (x2 - x1) / (y2 - y1)
       end
 
+      # Creates an array of evenly spaced values between start and stop.
+      # @param start [Numeric] The starting value of the sequence
+      # @param stop [Numeric] The end value of the sequence
+      # @param num [Integer] Number of samples to generate. Default is 50
+      # @param endpoint [Boolean] If true, stop is the last sample. Otherwise,
+      #   it is not included. Default is true
+      # @return [Array<Numeric>] Array of evenly spaced values
+      # @raise [ArgumentError] If num is less than 1
       def linspace(start, stop, num = 50, endpoint = true)
+        raise ArgumentError, "Number of samples must be at least 1" if num < 1
         return [start] if num == 1
 
-        step = endpoint ? (stop - start) / (num - 1) : (stop - start) / num
+        step = if endpoint
+          (stop - start) / (num - 1).to_f
+        else
+          (stop - start) / num.to_f
+        end
 
-        result = []
+        result = Array.new(num)
         current = start
 
-        (num - 1).times do
-          result << current
+        (num - 1).times do |i|
+          result[i] = current
           current += step
         end
 
-        result << (endpoint ? stop : current)
+        result[num - 1] = endpoint ? stop : current
         result
       end
     end
