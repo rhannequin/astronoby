@@ -352,13 +352,13 @@ RSpec.describe Astronoby::TwilightCalculator do
         latitude: Astronoby::Angle.zero,
         longitude: Astronoby::Angle.zero
       )
-      calulator = described_class.new(
+      calculator = described_class.new(
         observer: observer,
         ephem: ephem
       )
       zenith_angle = Astronoby::Angle.from_degrees(90 + 17)
 
-      time = calulator.time_for_zenith_angle(
+      time = calculator.time_for_zenith_angle(
         date: date,
         period_of_the_day: :morning,
         zenith_angle: zenith_angle
@@ -374,14 +374,14 @@ RSpec.describe Astronoby::TwilightCalculator do
           latitude: Astronoby::Angle.zero,
           longitude: Astronoby::Angle.zero
         )
-        calulator = described_class.new(
+        calculator = described_class.new(
           observer: observer,
           ephem: ephem
         )
         zenith_angle = Astronoby::Angle.zero
 
         expect {
-          calulator.time_for_zenith_angle(
+          calculator.time_for_zenith_angle(
             date: Date.new(2025, 1, 1),
             period_of_the_day: :afternoon,
             zenith_angle: zenith_angle
