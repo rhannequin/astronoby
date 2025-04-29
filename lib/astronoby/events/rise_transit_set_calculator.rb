@@ -29,6 +29,15 @@ module Astronoby
       @ephem = ephem
     end
 
+    def event_on(date, utc_offset: 0)
+      events = events_on(date, utc_offset: utc_offset)
+      RiseTransitSetEvent.new(
+        events.rising_times.first,
+        events.transit_times.first,
+        events.setting_times.first
+      )
+    end
+
     def events_on(date, utc_offset: 0)
       start_time = Time.new(
         date.year,

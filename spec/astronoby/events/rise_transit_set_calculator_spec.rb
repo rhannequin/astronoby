@@ -272,6 +272,30 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
     end
   end
 
+  describe "#event_on" do
+    it "returns the first rising, transit and setting times for a given date" do
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      date = Date.new(2025, 3, 14)
+      calculator = described_class.new(
+        body: Astronoby::Sun,
+        observer: observer,
+        ephem: ephem
+      )
+
+      event = calculator.event_on(date)
+
+      aggregate_failures do
+        expect(event.rising_time).to eq Time.utc(2025, 3, 14, 6, 5, 50)
+        expect(event.transit_time).to eq Time.utc(2025, 3, 14, 12, 9, 6)
+        expect(event.setting_time).to eq Time.utc(2025, 3, 14, 18, 12, 22)
+      end
+    end
+  end
+
   describe "#events_between" do
     it "computes lists of rising, transit and setting times" do
       ephem = test_ephem
