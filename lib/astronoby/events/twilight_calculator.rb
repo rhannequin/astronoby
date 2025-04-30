@@ -132,22 +132,17 @@ module Astronoby
       # twilight
       return nil unless period_time
 
-      # Calculate the hour angle at rise/set
       hour_angle_at_period = equatorial_coordinates
         .compute_hour_angle(time: period_time, longitude: @observer.longitude)
 
-      # Calculate the hour angle at the desired zenith angle
       term1 = zenith_angle.cos -
-        @observer.latitude.sin *
-          equatorial_coordinates.declination.sin
-      term2 = @observer.latitude.cos *
-        equatorial_coordinates.declination.cos
+        @observer.latitude.sin * equatorial_coordinates.declination.sin
+      term2 = @observer.latitude.cos * equatorial_coordinates.declination.cos
       hour_angle_ratio_at_twilight = term1 / term2
 
       # Check if twilight occurs at this location and date
       return nil unless hour_angle_ratio_at_twilight.between?(-1, 1)
 
-      # Calculate the hour angle difference
       hour_angle_at_twilight = Angle.acos(hour_angle_ratio_at_twilight)
       time_sign = -1
 
@@ -158,7 +153,6 @@ module Astronoby
         time_sign = 1
       end
 
-      # Convert the angle difference to time
       twilight_in_hours =
         time_sign * (hour_angle_at_twilight - hour_angle_at_period).hours *
         GreenwichSiderealTime::SIDEREAL_MINUTE_IN_UT_MINUTE
@@ -166,7 +160,6 @@ module Astronoby
         twilight_in_hours *
         Constants::SECONDS_PER_HOUR
 
-      # Calculate the final time
       (period_time + twilight_in_seconds).round
     end
   end
