@@ -238,4 +238,55 @@ RSpec.describe Astronoby::Util::Maths do
       }.not_to raise_error
     end
   end
+
+  describe ".linspace" do
+    it "generates 50 evenly spaced values by default" do
+      result = described_class.linspace(0, 1)
+
+      expect(result.length).to eq(50)
+      expect(result.first).to eq(0.0)
+      expect(result.last).to eq(1.0)
+    end
+
+    it "generates the specified number of evenly spaced values" do
+      result = described_class.linspace(0, 1, 5)
+
+      expect(result).to eq([0.0, 0.25, 0.5, 0.75, 1.0])
+    end
+
+    it "works with negative values" do
+      result = described_class.linspace(-1, -5, 5)
+
+      expect(result).to eq([-1.0, -2.0, -3.0, -4.0, -5.0])
+    end
+
+    it "handles floating point values correctly" do
+      result = described_class.linspace(0.5, 1.5, 3)
+
+      expect(result).to eq([0.5, 1.0, 1.5])
+    end
+
+    context "when the endpoint is specified" do
+      it "excludes it" do
+        result = described_class.linspace(0, 1, 8, false)
+
+        expect(result).to eq([0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875])
+      end
+    end
+
+    context "when num is 1" do
+      it "returns an array with only the start value" do
+        result = described_class.linspace(42, 100, 1)
+
+        expect(result).to eq([42])
+      end
+    end
+
+    context "when num is less than 1" do
+      it "raises an error" do
+        expect { described_class.linspace(0, 1, 0) }
+          .to raise_error(ArgumentError, "Number of samples must be at least 1")
+      end
+    end
+  end
 end
