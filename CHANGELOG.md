@@ -1,5 +1,121 @@
 # Changelog
 
+## 0.7.0 - 2025-05-12
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+### Bug fixes
+
+* Fix Moon monthly phase events calculation by @valeriy-sokoloff in ([#124])
+
+### Features
+
+* Add `Instant` value object ([#121])
+* Introduce barycentric position of Solar System major bodies ([#127])
+* Introduce Astrometric position for planets ([#129])
+* Rename Barycentric into Geometric ([#130])
+* Rename IRCF and remove module Position ([#131])
+* Geometric and Astrometric reference frames with coordinates ([#132])
+* Ecliptic coordinates for Geometric and Astrometric reference frames ([#134])
+* Add Geometric and Astrometric positions for `Sun` and `Moon` ([#135])
+* Implement new aberration correction ([#136])
+* Precession matrix for 2006 P03 model ([#137])
+* Introduce `MeanOfDate` reference frame ([#138])
+* New nutation model ([#141])
+* Light deflection correction ([#142])
+* Introduce `Apparent` reference frame ([#143])
+* Introduce `Topocentric` reference frame ([#145])
+* Improve Vector integration with value objects ([#146])
+* Handle refracted topocentric horizontal coordinates ([#147])
+* Add `#angular_diameter` to apparent and topocentric reference frames ([#149])
+* Introduce new calculator for rising, transit and setting times ([#148])
+* Clean code after Ephem refactoring ([#152])
+* Improve `RisingTransitSettingEventsCalculator` ([#155])
+* Simplify `RisingTransitSettingEventsCalculator` ([#156])
+* Lazy-load reference frames ([#157])
+* Overall performance improvements ([#163])
+* Add support for IMCCE INPOP by @JoelQ and @rhannequin ([#166])
+* Update INPOP excerpt in spec data ([#167])
+* Introduce a better rise/transit/set calculator ([#168])
+* Drop `Astronoby::Observer#observe` ([#174])
+
+### Improvements
+
+* Bump standard from 1.42.1 to 1.49.0 by @dependabot ([#123], [#128], [#150], [#165])
+* Bump rubyzip from 2.3.2 to 2.4.1 by @dependabot ([#120])
+* Add more tests for Julian Date conversion ([#122])
+* Upgrade main Ruby version and supported ones ([#125])
+* Update email address and gem description ([#126])
+* Increase precision of mean obliquity ([#133])
+* Add supported Rubies ([#139])
+* Set Ruby 3.4.2 as default version ([#140])
+* Fix dependency secutiry patch ([#151])
+* Improve HMS/DMS formats ([#153])
+* Use excerpts ephemerides for specs of Sun and Moon ([#154])
+* Add link to deprecated documentation ([#160])
+* Default Ruby 3.4.3 and support recent rubies ([#169])
+* Better Moon phases test coverage ([#172])
+* Optimize Observer with GMST from Instant ([#173])
+* Update README about documentation location ([#175])
+* Add GitHub Actions permissions ([#176])
+
+### New Contributors
+
+* @valeriy-sokoloff made their first contribution in https://github.com/rhannequin/astronoby/pull/124
+* @JoelQ made their first contribution in https://github.com/rhannequin/astronoby/pull/166
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.6.0...v0.7.0
+
+[#120]: https://github.com/rhannequin/astronoby/pull/120
+[#121]: https://github.com/rhannequin/astronoby/pull/121
+[#122]: https://github.com/rhannequin/astronoby/pull/122
+[#123]: https://github.com/rhannequin/astronoby/pull/123
+[#124]: https://github.com/rhannequin/astronoby/pull/124
+[#125]: https://github.com/rhannequin/astronoby/pull/125
+[#126]: https://github.com/rhannequin/astronoby/pull/126
+[#127]: https://github.com/rhannequin/astronoby/pull/127
+[#128]: https://github.com/rhannequin/astronoby/pull/128
+[#129]: https://github.com/rhannequin/astronoby/pull/129
+[#130]: https://github.com/rhannequin/astronoby/pull/130
+[#131]: https://github.com/rhannequin/astronoby/pull/131
+[#132]: https://github.com/rhannequin/astronoby/pull/132
+[#133]: https://github.com/rhannequin/astronoby/pull/133
+[#134]: https://github.com/rhannequin/astronoby/pull/134
+[#135]: https://github.com/rhannequin/astronoby/pull/135
+[#136]: https://github.com/rhannequin/astronoby/pull/136
+[#137]: https://github.com/rhannequin/astronoby/pull/137
+[#138]: https://github.com/rhannequin/astronoby/pull/138
+[#139]: https://github.com/rhannequin/astronoby/pull/139
+[#140]: https://github.com/rhannequin/astronoby/pull/140
+[#141]: https://github.com/rhannequin/astronoby/pull/141
+[#142]: https://github.com/rhannequin/astronoby/pull/142
+[#143]: https://github.com/rhannequin/astronoby/pull/143
+[#145]: https://github.com/rhannequin/astronoby/pull/145
+[#146]: https://github.com/rhannequin/astronoby/pull/146
+[#147]: https://github.com/rhannequin/astronoby/pull/147
+[#148]: https://github.com/rhannequin/astronoby/pull/148
+[#149]: https://github.com/rhannequin/astronoby/pull/149
+[#150]: https://github.com/rhannequin/astronoby/pull/150
+[#151]: https://github.com/rhannequin/astronoby/pull/151
+[#152]: https://github.com/rhannequin/astronoby/pull/152
+[#153]: https://github.com/rhannequin/astronoby/pull/153
+[#154]: https://github.com/rhannequin/astronoby/pull/154
+[#155]: https://github.com/rhannequin/astronoby/pull/155
+[#156]: https://github.com/rhannequin/astronoby/pull/156
+[#157]: https://github.com/rhannequin/astronoby/pull/157
+[#160]: https://github.com/rhannequin/astronoby/pull/160
+[#163]: https://github.com/rhannequin/astronoby/pull/163
+[#165]: https://github.com/rhannequin/astronoby/pull/165
+[#166]: https://github.com/rhannequin/astronoby/pull/166
+[#167]: https://github.com/rhannequin/astronoby/pull/167
+[#168]: https://github.com/rhannequin/astronoby/pull/168
+[#169]: https://github.com/rhannequin/astronoby/pull/169
+[#172]: https://github.com/rhannequin/astronoby/pull/172
+[#173]: https://github.com/rhannequin/astronoby/pull/173
+[#174]: https://github.com/rhannequin/astronoby/pull/174
+[#175]: https://github.com/rhannequin/astronoby/pull/175
+[#176]: https://github.com/rhannequin/astronoby/pull/176
+
 ## 0.6.0 - 2024-12-10
 
 _If you are upgrading: please see [UPGRADING.md]._
