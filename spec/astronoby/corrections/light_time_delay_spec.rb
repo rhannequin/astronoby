@@ -27,7 +27,7 @@ RSpec.describe Astronoby::Correction::LightTimeDelay do
       # Data collected from Ephem
       allow(ephem).to receive(:[]).and_return(
         double(
-          compute_and_differentiate: double(
+          state_at: double(
             position: double(
               x: 4469342279.707888,
               y: -31213424.580853883,
@@ -37,7 +37,7 @@ RSpec.describe Astronoby::Correction::LightTimeDelay do
           )
         ),
         double(
-          compute_and_differentiate: double(
+          state_at: double(
             position: double(
               x: 4469342279.707446,
               y: -31213424.61872705,
@@ -47,7 +47,7 @@ RSpec.describe Astronoby::Correction::LightTimeDelay do
           )
         ),
         double(
-          compute_and_differentiate: double(
+          state_at: double(
             position: double(
               x: 4469342279.707446,
               y: -31213424.61872705,

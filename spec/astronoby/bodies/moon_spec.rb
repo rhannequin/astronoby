@@ -11,7 +11,7 @@ RSpec.describe Astronoby::Moon do
         position: Ephem::Core::Vector[1, 2, 3],
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       body = described_class.new(instant: instant, ephem: ephem)
 
@@ -111,7 +111,7 @@ RSpec.describe Astronoby::Moon do
         position: Ephem::Core::Vector[1, 2, 3],
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       body = described_class.new(instant: instant, ephem: ephem)
 
@@ -179,7 +179,7 @@ RSpec.describe Astronoby::Moon do
         position: Ephem::Core::Vector[1, 2, 3],
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
@@ -244,7 +244,7 @@ RSpec.describe Astronoby::Moon do
         position: Ephem::Core::Vector[1, 2, 3],
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       planet = described_class.new(instant: instant, ephem: ephem)
 
@@ -314,7 +314,7 @@ RSpec.describe Astronoby::Moon do
         position: Ephem::Core::Vector[1, 2, 3],
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,
