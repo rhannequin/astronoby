@@ -28,12 +28,10 @@ module Astronoby
       segment1 = segments[0]
       segment2 = segments[1] if segments.size == 2
 
-      state1 = ephem[*segment1]
-        .compute_and_differentiate(instant.terrestrial_time)
+      state1 = ephem[*segment1].state_at(instant.terrestrial_time)
 
       if segment2
-        state2 = ephem[*segment2]
-          .compute_and_differentiate(instant.terrestrial_time)
+        state2 = ephem[*segment2].state_at(instant.terrestrial_time)
         position = state1.position + state2.position
         velocity = state1.velocity + state2.velocity
       else

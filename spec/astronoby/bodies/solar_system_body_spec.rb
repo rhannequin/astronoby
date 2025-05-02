@@ -9,7 +9,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         position: Ephem::Core::Vector[1, 2, 3],
         velocity: Ephem::Core::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
@@ -24,7 +24,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         position: Astronoby::Vector[1, 2, 3],
         velocity: Astronoby::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
@@ -54,7 +54,7 @@ RSpec.describe Astronoby::SolarSystemBody do
         position: Astronoby::Vector[1, 2, 3],
         velocity: Astronoby::Vector[4, 5, 6]
       )
-      segment = double(compute_and_differentiate: state)
+      segment = double(state_at: state)
       ephem = double(:[] => segment, :type => ::Ephem::SPK::JPL_DE)
 
       geometric = build_planet.geometric(instant: instant, ephem: ephem)
@@ -74,8 +74,8 @@ RSpec.describe Astronoby::SolarSystemBody do
           position: Astronoby::Vector[7, 8, 9],
           velocity: Astronoby::Vector[10, 11, 12]
         )
-        segment1 = double(compute_and_differentiate: state1)
-        segment2 = double(compute_and_differentiate: state2)
+        segment1 = double(state_at: state1)
+        segment2 = double(state_at: state2)
         ephem = double
         allow(ephem).to receive(:[]).with(0).and_return(segment1)
         allow(ephem).to receive(:[]).with(1).and_return(segment2)
