@@ -81,10 +81,6 @@ module Astronoby
       earth_rotation_matrix * nutation_matrix * precession_matrix
     end
 
-    def observe(celestial_body)
-      celestial_body.observed_by(self)
-    end
-
     def ==(other)
       return false unless other.is_a?(self.class)
 
