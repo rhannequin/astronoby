@@ -38,8 +38,25 @@ RSpec.describe Astronoby::Events::MoonPhases do
     it "returns all of them" do
       moon_phases = described_class.phases_for(year: 2024, month: 5)
 
-      expect(moon_phases.map(&:phase))
-        .to eq(%i[last_quarter new_moon first_quarter full_moon last_quarter])
+      expect(moon_phases[0].phase).to eq(:last_quarter)
+      expect(moon_phases[0].time).to eq(Time.utc(2024, 5, 1, 11, 27, 15))
+      # Result from IMCCE: 2024-05-01T11:27:17Z
+
+      expect(moon_phases[1].phase).to eq(:new_moon)
+      expect(moon_phases[1].time).to eq(Time.utc(2024, 5, 8, 3, 21, 56))
+      # Result from IMCCE: 2024-05-08T03:21:56Z
+
+      expect(moon_phases[2].phase).to eq(:first_quarter)
+      expect(moon_phases[2].time).to eq(Time.utc(2024, 5, 15, 11, 48, 2))
+      # Result from IMCCE: 2024-05-15T11:48:00Z
+
+      expect(moon_phases[3].phase).to eq(:full_moon)
+      expect(moon_phases[3].time).to eq(Time.utc(2024, 5, 23, 13, 53, 12))
+      # Result from IMCCE: 2024-05-23T13:53:09Z
+
+      expect(moon_phases[4].phase).to eq(:last_quarter)
+      expect(moon_phases[4].time).to eq(Time.utc(2024, 5, 30, 17, 12, 43))
+      # Result from IMCCE: 2024-05-30T17:12:40Z
     end
   end
 end
