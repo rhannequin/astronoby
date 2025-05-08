@@ -39,8 +39,6 @@ executing:
 
 ## Usage Documentation
 
-### Deprecated documentation notice
-
 Since version 0.7.0, the usage documentation resides in the [Wiki]. For
 previous versions, you can access the documentation in the README for each
 [release].
