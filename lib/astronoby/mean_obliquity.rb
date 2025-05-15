@@ -16,7 +16,7 @@ module Astronoby
       return obliquity_of_reference if epoch == EPOCH_OF_REFERENCE
 
       t = Rational(
-        (epoch - EPOCH_OF_REFERENCE),
+        epoch - EPOCH_OF_REFERENCE,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
 
