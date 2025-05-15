@@ -17,7 +17,7 @@ System bodies. `instant` is an instance of `Instant`, the new concept for
 representing an instant in time.
 
 ```rb
-Ephem::IO::Download.call(name: "de421.bsp", target: "tmp/de421.bsp")
+Astronoby::Ephem.download(name: "de421.bsp", target: "tmp/de421.bsp")
 ephem = Astronoby::Ephem.load("tmp/de421.bsp")
 
 time = Time.utc(2025, 6, 19, 12, 0, 0)
