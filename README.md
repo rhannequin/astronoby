@@ -88,6 +88,32 @@ git commits and the created tag, and push the `.gem` file to [rubygems.org].
 
 [rubygems.org]: https://rubygems.org
 
+### Performance
+
+The library is designed to be fast, but there is always room for improvement.
+When comparing the performance of two implementations, please use the
+performance benchmark in the console before and after your implementation.
+
+    $ bin/console
+
+```rb
+require_relative "benchmarks/performance"
+
+PerformanceBenchmark.new.run
+```
+
+For fast feedback, you can customise the parameters:
+
+```rb
+PerformanceBenchmark
+  .new(warmup_runs: 1, measure_runs: 3, iterations_per_run: 5)
+  .run
+```
+
+Performance is not absolute, this is why the results are not documented here.
+What is important is to compare the relative performance of two implementations
+and make sure new features do not degrade the performance.
+
 ## Contributing
 
 Please see [CONTRIBUTING.md].
