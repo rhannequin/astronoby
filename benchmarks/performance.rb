@@ -6,8 +6,7 @@ class PerformanceBenchmark
     :measure_runs,
     :iterations_per_run,
     :planets,
-    :ephem,
-    :observer
+    :ephem
 
   BENCHMARK_METRICS = [
     :rts_event_on,
@@ -22,10 +21,6 @@ class PerformanceBenchmark
     @iterations_per_run = iterations_per_run
     @ephem = Astronoby::Ephem
       .load("spec/support/data/inpop19a_2000_2050_excerpt.bsp")
-    @observer = Astronoby::Observer.new(
-      latitude: Astronoby::Angle.zero,
-      longitude: Astronoby::Angle.zero
-    )
     @planets = [
       Astronoby::Mercury,
       Astronoby::Venus,
@@ -88,6 +83,10 @@ class PerformanceBenchmark
     times = Hash.new(0)
     iterations_per_run.times do
       planets.each do |planet|
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(rand(-40..40)),
+          longitude: Astronoby::Angle.from_degrees(rand(-40..40))
+        )
         rts_calculator = Astronoby::RiseTransitSetCalculator.new(
           body: planet,
           observer: observer,

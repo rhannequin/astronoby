@@ -27,36 +27,40 @@ module Astronoby
       segments = ephemeris_segments(ephem.type)
       segment1 = segments[0]
       segment2 = segments[1] if segments.size == 2
+      terrestrial_time = instant.terrestrial_time.round(9)
+      cache = Cache.instance
 
-      state1 = ephem[*segment1].state_at(instant.terrestrial_time)
+      cache.fetch([:geometric, segment1, segment2, terrestrial_time]) do
+        state1 = ephem[*segment1].state_at(terrestrial_time)
 
-      if segment2
-        state2 = ephem[*segment2].state_at(instant.terrestrial_time)
-        position = state1.position + state2.position
-        velocity = state1.velocity + state2.velocity
-      else
-        position = state1.position
-        velocity = state1.velocity
+        if segment2
+          state2 = ephem[*segment2].state_at(terrestrial_time)
+          position = state1.position + state2.position
+          velocity = state1.velocity + state2.velocity
+        else
+          position = state1.position
+          velocity = state1.velocity
+        end
+
+        position_vector = Vector[
+          Distance.from_kilometers(position.x),
+          Distance.from_kilometers(position.y),
+          Distance.from_kilometers(position.z)
+        ]
+
+        velocity_vector = Vector[
+          Velocity.from_kilometers_per_day(velocity.x),
+          Velocity.from_kilometers_per_day(velocity.y),
+          Velocity.from_kilometers_per_day(velocity.z)
+        ]
+
+        Geometric.new(
+          position: position_vector,
+          velocity: velocity_vector,
+          instant: instant,
+          target_body: self
+        )
       end
-
-      position_vector = Vector[
-        Distance.from_kilometers(position.x),
-        Distance.from_kilometers(position.y),
-        Distance.from_kilometers(position.z)
-      ]
-
-      velocity_vector = Vector[
-        Velocity.from_kilometers_per_day(velocity.x),
-        Velocity.from_kilometers_per_day(velocity.y),
-        Velocity.from_kilometers_per_day(velocity.z)
-      ]
-
-      Geometric.new(
-        position: position_vector,
-        velocity: velocity_vector,
-        instant: instant,
-        target_body: self
-      )
     end
 
     def self.ephemeris_segments(_ephem_source)

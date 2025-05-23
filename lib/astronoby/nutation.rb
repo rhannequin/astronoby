@@ -125,6 +125,14 @@ module Astronoby
 
     private
 
+    def cache_key
+      @_cache_key ||= Instant.from_terrestrial_time(@instant.tt.round(2))
+    end
+
+    def cache
+      Cache.instance
+    end
+
     def iau2000a
       a = fundamental_arguments
 
@@ -172,7 +180,7 @@ module Astronoby
     end
 
     def iau2000b_angles
-      @iau2000b_angles ||= begin
+      cache.fetch([:iau2000b, cache_key]) do
         dpsi, deps = iau2000b
         dpsi = Angle.from_degree_arcseconds(dpsi / 1e7)
         deps = Angle.from_degree_arcseconds(deps / 1e7)
