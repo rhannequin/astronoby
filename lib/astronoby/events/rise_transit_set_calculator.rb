@@ -270,8 +270,9 @@ module Astronoby
     end
 
     def calculate_positions_at_instants(instants)
+      @positions_cache ||= {}
       instants.map do |instant|
-        @body
+        @positions_cache[instant] ||= @body
           .new(instant: instant, ephem: @ephem)
           .observed_by(@observer)
       end
@@ -349,6 +350,7 @@ module Astronoby
       @sample_instants = nil
       @start_instant = nil
       @end_instant = nil
+      @positions_cache = nil
     end
   end
 end
