@@ -237,13 +237,14 @@ module Astronoby
         )
 
         # Calculate time differences
-        time_differences = new_instants.each_with_index.map do |instant, i|
-          Instant.from_terrestrial_time(instant.tt - old_instants[i].tt)
+        time_differences_in_days = new_instants.each_with_index.map do |instant, i|
+          instant.tt - old_instants[i].tt
         end
 
         # Calculate hour angle rate (radians per day)
         hour_angle_rates = hour_angle_changes.each_with_index.map do |angle, i|
-          angle.radians / time_differences[i].tt
+          denominator = time_differences_in_days[i]
+          angle.radians / denominator
         end
 
         # Store current values for next iteration
@@ -255,7 +256,8 @@ module Astronoby
           .each_with_index
           .map do |angle, i|
             ratio = angle.radians / hour_angle_rates[i]
-            [ratio.nan? ? 0 : ratio, MIN_TIME_ADJUSTMENT].max
+            time_adjustment = (ratio.nan? || ratio.infinite?) ? 0 : ratio
+            [time_adjustment, MIN_TIME_ADJUSTMENT].max
           end
 
         # Apply time adjustments
