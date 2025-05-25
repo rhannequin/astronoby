@@ -57,14 +57,15 @@ module Astronoby
     # @yieldreturn [Object] Value to store if key is missing.
     # @return [Object] Cached or computed value.
     def fetch(key)
+      return self[key] if @mutex.synchronize { @hash.key?(key) }
+
+      value = yield
+
       @mutex.synchronize do
-        if @hash.key?(key)
-          self[key]
-        else
-          value = yield
-          self[key] = value
-        end
+        self[key] = value unless @hash.key?(key)
       end
+
+      value
     end
 
     # @return [void]

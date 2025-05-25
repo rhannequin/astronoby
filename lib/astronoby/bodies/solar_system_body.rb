@@ -29,8 +29,9 @@ module Astronoby
       segment2 = segments[1] if segments.size == 2
       terrestrial_time = instant.terrestrial_time.round(9)
       cache = Cache.instance
+      cache_key = [:geometric, segment1, segment2, terrestrial_time]
 
-      cache.fetch([:geometric, segment1, segment2, terrestrial_time]) do
+      cache.fetch(cache_key) do
         state1 = ephem[*segment1].state_at(terrestrial_time)
 
         if segment2
