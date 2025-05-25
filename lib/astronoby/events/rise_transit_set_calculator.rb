@@ -272,7 +272,7 @@ module Astronoby
     def calculate_positions_at_instants(instants)
       cache = Cache.instance
       instants.map do |instant|
-        instant = Instant.from_terrestrial_time(instant.tt.round(9))
+        instant = Instant.from_terrestrial_time(instant.tt.round(7))
         cache.fetch(
           [
             :observed_by,
