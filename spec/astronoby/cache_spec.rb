@@ -13,7 +13,6 @@ RSpec.describe Astronoby::Cache do
   describe "#[] and #[]=" do
     it "stores and retrieves values for the same key" do
       cache = described_class.instance
-      cache.clear
       cache["foo"] = "bar"
 
       expect(cache["foo"]).to eq "bar"
@@ -21,14 +20,12 @@ RSpec.describe Astronoby::Cache do
 
     it "returns nil for unknown keys" do
       cache = described_class.instance
-      cache.clear
 
       expect(cache["missing"]).to be_nil
     end
 
     it "overwrites an existing key" do
       cache = described_class.instance
-      cache.clear
       cache["a"] = 1
       cache["a"] = 2
 
@@ -37,7 +34,6 @@ RSpec.describe Astronoby::Cache do
 
     it "moves accessed keys to the head (most recently used)" do
       cache = described_class.instance
-      cache.clear
       cache["a"] = 1
       cache["b"] = 2
       cache["c"] = 3
@@ -50,7 +46,6 @@ RSpec.describe Astronoby::Cache do
   describe "#fetch" do
     it "returns the value for an existing key without yielding" do
       cache = described_class.instance
-      cache.clear
       cache["cat"] = "meow"
       block_called = false
 
@@ -65,7 +60,6 @@ RSpec.describe Astronoby::Cache do
 
     it "stores and returns the block value when the key is missing" do
       cache = described_class.instance
-      cache.clear
       block_run = false
 
       value = cache.fetch("newkey") do
@@ -82,7 +76,6 @@ RSpec.describe Astronoby::Cache do
   describe "LRU eviction" do
     it "evicts the least recently used item when full" do
       cache = described_class.instance
-      cache.clear
       original_max_size = cache.max_size
       cache.max_size = 3
 
@@ -102,12 +95,10 @@ RSpec.describe Astronoby::Cache do
       expect(cache.size).to eq 3
 
       cache.max_size = original_max_size
-      cache.clear
     end
 
     it "evicts multiple items if max_size is decreased" do
       cache = described_class.instance
-      cache.clear
       original_max_size = cache.max_size
       cache.max_size = 5
 
@@ -123,12 +114,10 @@ RSpec.describe Astronoby::Cache do
       expect(cache[0]).to be_nil
 
       cache.max_size = original_max_size
-      cache.clear
     end
 
     it "raises ArgumentError if max_size set to zero or negative" do
       cache = described_class.instance
-      cache.clear
 
       expect { cache.max_size = 0 }.to raise_error(ArgumentError)
       expect { cache.max_size = -5 }.to raise_error(ArgumentError)
@@ -154,7 +143,6 @@ RSpec.describe Astronoby::Cache do
   describe "#size" do
     it "returns the number of items in the cache" do
       cache = described_class.instance
-      cache.clear
       cache["x"] = 10
       cache["y"] = 20
 
