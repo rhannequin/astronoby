@@ -12,10 +12,10 @@ RSpec.describe Astronoby::Configuration do
     it "allows configuring precision" do
       Astronoby.reset_configuration!
       Astronoby.configure do |config|
-        config.cache_precision(:geometric, 0.001)
+        config.cache_precision(:geometric, 3)
       end
 
-      expect(Astronoby.configuration.cache_precision(:geometric)).to eq(0.001)
+      expect(Astronoby.configuration.cache_precision(:geometric)).to eq(3)
     end
 
     it "maintains different precisions for different calculation types" do

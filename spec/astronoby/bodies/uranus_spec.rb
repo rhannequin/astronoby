@@ -199,13 +199,13 @@ RSpec.describe Astronoby::Uranus do
       # IMCCE:  -0° 12′ 32.951″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+59° 42′ 44.1947″")
+        .to eq("+59° 42′ 44.1948″")
       # IMCCE:  +59° 42′ 44.106″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(20.29336916165562)
+        .to eq(20.293369161655622)
       # IMCCE: 20.293372246358
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Uranus do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-34730.01169, -1381.83804, -504.41466])
+        .to eq([-34730.01169, -1381.83806, -504.41467])
       # IMCCE:  -34730.00886  -1381.84071  -504.41308
     end
   end
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Uranus do
       # Skyfield: -0° 12′ 33.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+59° 42′ 26.9727″")
+        .to eq("+59° 42′ 26.9728″")
       # IMCCE:    +59° 42′ 26.954″
       # Skyfield: +59° 42′ 27.0″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(20.293374076651748)
+        .to eq(20.293374076651755)
       # IMCCE:    20.293377161363
       # Skyfield: 20.29337405352995
     end
@@ -346,14 +346,14 @@ RSpec.describe Astronoby::Uranus do
         # Skyfield:   +19° 52′ 58.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+58° 50′ 32.4807″")
+          .to eq("+58° 50′ 32.4808″")
         # IMCCE:      +58° 50′ 31.200″
         # Horizons:   +58° 50′ 30.7697″
         # Stellarium: +58° 50′ 30.6″
         # Skyfield:   +58° 50′ 30.6″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+51° 34′ 42.7215″")
+          .to eq("+51° 34′ 42.7214″")
         # IMCCE:      +51° 34′ 44.760″
         # Horizons:   +51° 34′ 45.1039″
         # Stellarium: +51° 34′ 46.0″

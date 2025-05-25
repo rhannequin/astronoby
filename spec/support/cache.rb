@@ -2,6 +2,9 @@
 
 RSpec.configure do |config|
   config.before(:each) do
-    Astronoby::Cache.instance.clear
+    Astronoby.reset_configuration!
+    Astronoby.configure do |config|
+      config.cache_enabled = false
+    end
   end
 end

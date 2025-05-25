@@ -16,6 +16,8 @@ RSpec.describe Astronoby::Cache do
       cache["foo"] = "bar"
 
       expect(cache["foo"]).to eq "bar"
+
+      cache.clear
     end
 
     it "returns nil for unknown keys" do
@@ -30,6 +32,8 @@ RSpec.describe Astronoby::Cache do
       cache["a"] = 2
 
       expect(cache["a"]).to eq 2
+
+      cache.clear
     end
 
     it "moves accessed keys to the head (most recently used)" do
@@ -40,6 +44,8 @@ RSpec.describe Astronoby::Cache do
 
       expect(cache["a"]).to eq 1
       expect(cache["b"]).to eq 2
+
+      cache.clear
     end
   end
 
@@ -56,6 +62,8 @@ RSpec.describe Astronoby::Cache do
 
       expect(result).to eq "meow"
       expect(block_called).to be false
+
+      cache.clear
     end
 
     it "stores and returns the block value when the key is missing" do
@@ -70,6 +78,8 @@ RSpec.describe Astronoby::Cache do
       expect(value).to eq "computed"
       expect(block_run).to be true
       expect(cache["newkey"]).to eq "computed"
+
+      cache.clear
     end
   end
 
@@ -95,6 +105,8 @@ RSpec.describe Astronoby::Cache do
       expect(cache.size).to eq 3
 
       cache.max_size = original_max_size
+
+      cache.clear
     end
 
     it "evicts multiple items if max_size is decreased" do
@@ -114,6 +126,8 @@ RSpec.describe Astronoby::Cache do
       expect(cache[0]).to be_nil
 
       cache.max_size = original_max_size
+
+      cache.clear
     end
 
     it "raises ArgumentError if max_size set to zero or negative" do
