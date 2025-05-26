@@ -18,6 +18,7 @@ RSpec.describe Astronoby::Configuration do
 
     it "maintains different precisions for different calculation types" do
       Astronoby.reset_configuration!
+      Astronoby.configuration.cache_enabled = true
       instant = Astronoby::Instant.from_time(Time.now)
       key1 = Astronoby::CacheKey.generate(:geometric, instant)
       key2 = Astronoby::CacheKey.generate(:nutation, instant)
