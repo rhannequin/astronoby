@@ -4,16 +4,14 @@ RSpec.describe Astronoby::Configuration do
   describe "cache configuration" do
     it "allows disabling cache" do
       Astronoby.reset_configuration!
-      Astronoby.configure { |c| c.cache_enabled = false }
+      Astronoby.configuration.cache_enabled = false
 
       expect(Astronoby.cache).to be_a(Astronoby::NullCache)
     end
 
     it "allows configuring precision" do
       Astronoby.reset_configuration!
-      Astronoby.configure do |config|
-        config.cache_precision(:geometric, 3)
-      end
+      Astronoby.configuration.cache_precision(:geometric, 3)
 
       expect(Astronoby.configuration.cache_precision(:geometric)).to eq(3)
     end

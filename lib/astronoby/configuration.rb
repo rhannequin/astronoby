@@ -13,7 +13,7 @@ module Astronoby
     attr_reader :cache_precisions
 
     def initialize
-      @cache_enabled = true
+      @cache_enabled = false
       @cache_precisions = DEFAULT_PRECISIONS.dup
       @cache_instance = nil
     end

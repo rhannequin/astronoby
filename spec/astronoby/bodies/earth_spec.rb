@@ -104,7 +104,7 @@ RSpec.describe Astronoby::Earth do
 
     context "with cache enabled" do
       it "returns the right geometric position with acceptable precision" do
-        Astronoby.configure { |config| config.cache_enabled = false }
+        Astronoby.configuration.cache_enabled = true
         ephem = test_ephem
         first_time = Time.utc(2025, 5, 26, 10, 46, 55)
         first_instant = Astronoby::Instant.from_time(first_time)
@@ -118,7 +118,7 @@ RSpec.describe Astronoby::Earth do
         second_geometric = described_class
           .new(instant: second_instant, ephem: ephem)
           .geometric
-        Astronoby.configure { |config| config.cache_enabled = true }
+        Astronoby.configuration.cache_enabled = true
         _first_geometric_with_cache = described_class
           .new(instant: first_instant, ephem: ephem)
           .geometric

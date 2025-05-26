@@ -297,7 +297,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
     context "when caching is enabled" do
       it "returns the right event with acceptable precision" do
-        Astronoby.configure { |config| config.cache_enabled = true }
+        Astronoby.configuration.cache_enabled = true
         ephem = test_ephem
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.zero,

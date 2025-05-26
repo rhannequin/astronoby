@@ -156,6 +156,7 @@ RSpec.describe Astronoby::Cache do
 
   describe "#size" do
     it "returns the number of items in the cache" do
+      Astronoby.configuration.cache_enabled = true
       cache = described_class.instance
       cache["x"] = 10
       cache["y"] = 20

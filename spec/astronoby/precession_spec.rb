@@ -150,7 +150,7 @@ RSpec.describe Astronoby::Precession do
 
     context "with cache enabled" do
       it "returns a matrix with acceptable precision" do
-        Astronoby.configure { |config| config.cache_enabled = false }
+        Astronoby.configuration.cache_enabled = true
         time = Time.utc(2025, 5, 26, 10, 0, 0)
         instant = Astronoby::Instant.from_time(time)
         rounding = Astronoby.configuration.cache_precision(:precession)

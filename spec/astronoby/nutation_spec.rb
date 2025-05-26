@@ -40,7 +40,7 @@ RSpec.describe Astronoby::Nutation do
 
     context "with cache enabled" do
       it "returns the right value for longitude with acceptable precision" do
-        Astronoby.configure { |config| config.cache_enabled = false }
+        Astronoby.configuration.cache_enabled = true
         time = Time.utc(2025, 5, 26, 10, 0, 0)
         instant = Astronoby::Instant.from_time(time)
         rounding = Astronoby.configuration.cache_precision(:nutation)
@@ -90,7 +90,7 @@ RSpec.describe Astronoby::Nutation do
 
     context "with cache enabled" do
       it "returns the right value for obliquity with acceptable precision" do
-        Astronoby.configure { |config| config.cache_enabled = false }
+        Astronoby.configuration.cache_enabled = true
         time = Time.utc(2025, 5, 26, 10, 0, 0)
         instant = Astronoby::Instant.from_time(time)
         rounding = Astronoby.configuration.cache_precision(:nutation)

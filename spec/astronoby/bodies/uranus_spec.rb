@@ -294,7 +294,7 @@ RSpec.describe Astronoby::Uranus do
 
     context "with cache enabled" do
       it "returns the right apparent position with acceptable precision" do
-        Astronoby.configure { |config| config.cache_enabled = false }
+        Astronoby.configuration.cache_enabled = false
         ephem = test_ephem
         first_time = Time.utc(2025, 5, 26, 10, 46, 55)
         first_instant = Astronoby::Instant.from_time(first_time)
@@ -308,7 +308,7 @@ RSpec.describe Astronoby::Uranus do
         second_apparent = described_class
           .new(instant: second_instant, ephem: ephem)
           .apparent
-        Astronoby.configure { |config| config.cache_enabled = true }
+        Astronoby.configuration.cache_enabled = true
         _first_apparent_with_cache = described_class
           .new(instant: first_instant, ephem: ephem)
           .apparent
