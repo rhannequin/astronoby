@@ -167,6 +167,8 @@ module Astronoby
       # @param components [Array] Additional components for the key
       # @return [Array] The complete cache key
       def generate(type, instant, *components)
+        return nil unless Astronoby.configuration.cache_enabled?
+
         precision = Astronoby.configuration.cache_precision(type)
         rounded_tt = round_terrestrial_time(instant.tt, precision)
         [type, rounded_tt, *components]

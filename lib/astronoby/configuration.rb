@@ -6,7 +6,7 @@ module Astronoby
       geometric: 9,        # 8.64e-5 seconds
       nutation: 2,         # 864 seconds
       precession: 2,       # 864 seconds
-      rise_transit_set: 7  # 8.64e-3 seconds
+      rise_transit_set: 5  # 0.1 seconds
     }.freeze
 
     attr_accessor :cache_enabled
@@ -41,18 +41,21 @@ module Astronoby
     # Get the cache instance (singleton or null cache)
     # @return [Astronoby::Cache, Astronoby::NullCache] the cache instance
     def cache
-      @cache_instance ||= if cache_enabled
+      if cache_enabled?
         Cache.instance
       else
         NullCache.instance
       end
     end
 
+    def cache_enabled?
+      @cache_enabled
+    end
+
     # Reset cache instance (useful for testing or configuration changes)
     # @return [void]
     def reset_cache!
-      @cache_instance = nil
-      Cache.instance.clear if cache_enabled
+      cache.clear
     end
   end
 
