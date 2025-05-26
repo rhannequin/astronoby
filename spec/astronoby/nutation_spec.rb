@@ -37,6 +37,30 @@ RSpec.describe Astronoby::Nutation do
         .to eq("+0° 0′ 15.1713″")
       # Skyfield: +0° 0′ 15.1714″
     end
+
+    context "with cache enabled" do
+      it "returns the right value for longitude with acceptable precision" do
+        Astronoby.configure { |config| config.cache_enabled = false }
+        time = Time.utc(2025, 5, 26, 10, 0, 0)
+        instant = Astronoby::Instant.from_time(time)
+        rounding = Astronoby.configuration.cache_precision(:nutation)
+        rounded_instant = Astronoby::Instant.from_terrestrial_time(
+          instant.tt.round(rounding)
+        )
+        precision = Astronoby::Angle.from_degree_arcseconds(0.001)
+
+        nutation = described_class.new(instant: instant)
+        rounded_nutation = described_class.new(instant: rounded_instant)
+
+        aggregate_failures do
+          expect(rounded_nutation.nutation_in_longitude.degrees).to(
+            be_within(precision.degrees).of(
+              nutation.nutation_in_longitude.degrees
+            )
+          )
+        end
+      end
+    end
   end
 
   describe "#nutation_in_obliquity" do
@@ -62,6 +86,32 @@ RSpec.describe Astronoby::Nutation do
       expect(nutation_in_obliquity.str(:dms))
         .to eq("-0° 0′ 5.3301″")
       # Skyfield: -0° 0′ 5.3297″
+    end
+
+    context "with cache enabled" do
+      it "returns the right value for obliquity with acceptable precision" do
+        Astronoby.configure { |config| config.cache_enabled = false }
+        time = Time.utc(2025, 5, 26, 10, 0, 0)
+        instant = Astronoby::Instant.from_time(time)
+        rounding = Astronoby.configuration.cache_precision(:nutation)
+        rounded_instant = Astronoby::Instant.from_terrestrial_time(
+          instant.tt.round(rounding)
+        )
+        precision = Astronoby::Angle.from_degree_arcseconds(0.001)
+
+        nutation = described_class.new(instant: instant)
+        rounded_nutation = described_class.new(instant: rounded_instant)
+
+        aggregate_failures do
+          expect(rounded_nutation.nutation_in_obliquity.degrees).to(
+            be_within(precision.degrees).of(
+              nutation.nutation_in_obliquity.degrees
+            )
+          )
+        end
+
+        Astronoby.reset_configuration!
+      end
     end
   end
 end

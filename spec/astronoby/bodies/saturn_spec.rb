@@ -291,6 +291,42 @@ RSpec.describe Astronoby::Saturn do
         .to eq([-27316, 17976, 7594])
       # IMCCE:  -27313, 17975, 7593
     end
+
+    context "with cache enabled" do
+      it "returns the right apparent position with acceptable precision" do
+        Astronoby.configure { |config| config.cache_enabled = false }
+        ephem = test_ephem
+        first_time = Time.utc(2025, 5, 26, 10, 46, 55)
+        first_instant = Astronoby::Instant.from_time(first_time)
+        second_time = Time.utc(2025, 5, 26, 10, 46, 56)
+        second_instant = Astronoby::Instant.from_time(second_time)
+        precision = Astronoby::Angle.from_degree_arcseconds(0.0001)
+
+        _first_apparent = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .apparent
+        second_apparent = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .apparent
+        Astronoby.configure { |config| config.cache_enabled = true }
+        _first_apparent_with_cache = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .apparent
+        second_apparent_with_cache = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .apparent
+
+        aggregate_failures do
+          expect(second_apparent.equatorial.right_ascension.degrees).to(
+            be_within(precision.degrees).of(
+              second_apparent_with_cache.equatorial.right_ascension.degrees
+            )
+          )
+        end
+
+        Astronoby.reset_configuration!
+      end
+    end
   end
 
   describe "#observed_by" do

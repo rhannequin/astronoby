@@ -101,6 +101,42 @@ RSpec.describe Astronoby::Earth do
         expect(geometric).to be_a(Astronoby::Geometric)
       end
     end
+
+    context "with cache enabled" do
+      it "returns the right geometric position with acceptable precision" do
+        Astronoby.configure { |config| config.cache_enabled = false }
+        ephem = test_ephem
+        first_time = Time.utc(2025, 5, 26, 10, 46, 55)
+        first_instant = Astronoby::Instant.from_time(first_time)
+        second_time = Time.utc(2025, 5, 26, 10, 46, 56)
+        second_instant = Astronoby::Instant.from_time(second_time)
+        precision = Astronoby::Angle.from_degree_arcseconds(0.0001)
+
+        _first_geometric = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .geometric
+        second_geometric = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .geometric
+        Astronoby.configure { |config| config.cache_enabled = true }
+        _first_geometric_with_cache = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .geometric
+        second_geometric_with_cache = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .geometric
+
+        aggregate_failures do
+          expect(second_geometric.equatorial.right_ascension.degrees).to(
+            be_within(precision.degrees).of(
+              second_geometric_with_cache.equatorial.right_ascension.degrees
+            )
+          )
+        end
+
+        Astronoby.reset_configuration!
+      end
+    end
   end
 
   describe "#astrometric" do

@@ -147,5 +147,32 @@ RSpec.describe Astronoby::Precession do
       #   [ 0.00485765721 -2.72193264e-05  0.999988201]
       # ]
     end
+
+    context "with cache enabled" do
+      it "returns a matrix with acceptable precision" do
+        Astronoby.configure { |config| config.cache_enabled = false }
+        time = Time.utc(2025, 5, 26, 10, 0, 0)
+        instant = Astronoby::Instant.from_time(time)
+        rounding = Astronoby.configuration.cache_precision(:precession)
+        rounded_instant = Astronoby::Instant.from_terrestrial_time(
+          instant.tt.round(rounding)
+        )
+        precision = 0.00000001
+
+        matrix = described_class.matrix_for(instant)
+        rounded_matrix = described_class.matrix_for(rounded_instant)
+
+        aggregate_failures do
+          original_matrix = matrix.to_a
+          rounded_matrix.to_a.each_with_index do |row, i|
+            row.each_with_index do |value, j|
+              expect(value).to be_within(precision).of(original_matrix[i][j])
+            end
+          end
+        end
+
+        Astronoby.reset_configuration!
+      end
+    end
   end
 end
