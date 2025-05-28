@@ -270,11 +270,21 @@ module Astronoby
     end
 
     def calculate_positions_at_instants(instants)
-      @positions_cache ||= {}
+      cache = Cache.instance
       instants.map do |instant|
-        @positions_cache[instant] ||= @body
-          .new(instant: instant, ephem: @ephem)
-          .observed_by(@observer)
+        rounded_instant = Instant.from_terrestrial_time(instant.tt.round(7))
+        cache.fetch(
+          [
+            :observed_by,
+            @body.to_s,
+            @observer.hash,
+            rounded_instant.tt
+          ]
+        ) do
+          @body
+            .new(instant: rounded_instant, ephem: @ephem)
+            .observed_by(@observer)
+        end
       end
     end
 
@@ -350,7 +360,6 @@ module Astronoby
       @sample_instants = nil
       @start_instant = nil
       @end_instant = nil
-      @positions_cache = nil
     end
   end
 end

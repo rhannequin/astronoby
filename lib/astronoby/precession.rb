@@ -16,41 +16,43 @@ module Astronoby
       #  https://syrte.obspm.fr/iau2006/aa03_412_P03.pdf
       # P(t) = R3(χA) R1(−ωA) R3(−ψA) R1(ϵ0)
 
-      # Precession in right ascension
-      psi_a = ((((
-          -0.0000000951 * t +
-          +0.000132851) * t +
-          -0.00114045) * t +
-          -1.0790069) * t +
-          +5038.481507) * t
+      cache.fetch([:precession, cache_key]) do
+        # Precession in right ascension
+        psi_a = ((((
+            -0.0000000951 * t +
+            +0.000132851) * t +
+            -0.00114045) * t +
+            -1.0790069) * t +
+            +5038.481507) * t
 
-      # Precession in declination
-      omega_a = ((((
-        +0.0000003337 * t +
-        -0.000000467) * t +
-        -0.00772503) * t +
-        +0.0512623) * t +
-        -0.025754) * t +
-        eps0
+        # Precession in declination
+        omega_a = ((((
+          +0.0000003337 * t +
+          -0.000000467) * t +
+          -0.00772503) * t +
+          +0.0512623) * t +
+          -0.025754) * t +
+          eps0
 
-      # Precession of the ecliptic
-      chi_a = ((((
-        -0.0000000560 * t +
-        +0.000170663) * t +
-        -0.00121197) * t +
-        -2.3814292) * t +
-        +10.556403) * t
+        # Precession of the ecliptic
+        chi_a = ((((
+          -0.0000000560 * t +
+          +0.000170663) * t +
+          -0.00121197) * t +
+          -2.3814292) * t +
+          +10.556403) * t
 
-      psi_a = Angle.from_degree_arcseconds(psi_a)
-      omega_a = Angle.from_degree_arcseconds(omega_a)
-      chi_a = Angle.from_degree_arcseconds(chi_a)
+        psi_a = Angle.from_degree_arcseconds(psi_a)
+        omega_a = Angle.from_degree_arcseconds(omega_a)
+        chi_a = Angle.from_degree_arcseconds(chi_a)
 
-      r3_psi = rotation_z(-psi_a)
-      r1_omega = rotation_x(-omega_a)
-      r3_chi = rotation_z(chi_a)
-      r1_eps0 = rotation_x(MeanObliquity.obliquity_of_reference)
+        r3_psi = rotation_z(-psi_a)
+        r1_omega = rotation_x(-omega_a)
+        r3_chi = rotation_z(chi_a)
+        r1_eps0 = rotation_x(MeanObliquity.obliquity_of_reference)
 
-      r3_chi * r1_omega * r3_psi * r1_eps0
+        r3_chi * r1_omega * r3_psi * r1_eps0
+      end
     end
 
     def rotation_x(angle)
@@ -146,9 +148,17 @@ module Astronoby
 
     private
 
+    def cache_key
+      @_cache_key ||= Instant.from_terrestrial_time(@instant.tt.round(2))
+    end
+
+    def cache
+      Cache.instance
+    end
+
     def t
       @t ||= Rational(
-        @instant.tdb - Epoch::DEFAULT_EPOCH,
+        cache_key.tdb - Epoch::DEFAULT_EPOCH,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
     end

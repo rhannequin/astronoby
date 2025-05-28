@@ -8,6 +8,7 @@ end
 require "astronoby"
 
 require "support/test_ephem_helper"
+require "support/cache"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
