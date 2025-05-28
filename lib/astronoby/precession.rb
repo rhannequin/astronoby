@@ -16,7 +16,7 @@ module Astronoby
       #  https://syrte.obspm.fr/iau2006/aa03_412_P03.pdf
       # P(t) = R3(χA) R1(−ωA) R3(−ψA) R1(ϵ0)
 
-      cache.fetch([:precession, cache_key]) do
+      cache.fetch(cache_key) do
         # Precession in right ascension
         psi_a = ((((
             -0.0000000951 * t +
@@ -149,16 +149,16 @@ module Astronoby
     private
 
     def cache_key
-      @_cache_key ||= Instant.from_terrestrial_time(@instant.tt.round(2))
+      @_cache_key ||= CacheKey.generate(:precession, @instant)
     end
 
     def cache
-      Cache.instance
+      Astronoby.cache
     end
 
     def t
       @t ||= Rational(
-        cache_key.tdb - Epoch::DEFAULT_EPOCH,
+        @instant.tdb - Epoch::DEFAULT_EPOCH,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
     end

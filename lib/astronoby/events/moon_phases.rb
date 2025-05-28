@@ -15,7 +15,7 @@ module Astronoby
       # @param month [Integer] Requested month
       # @return [Array<Astronoby::MoonPhase>] List of Moon phases
       def self.phases_for(year:, month:)
-        Cache.instance.fetch([:moon_phases, year, month]) do
+        Astronoby.cache.fetch([:moon_phases, year, month]) do
           [
             MoonPhase.first_quarter(new(year, month, :first_quarter, -0.75).time),
             MoonPhase.full_moon(new(year, month, :full_moon, -0.5).time),
