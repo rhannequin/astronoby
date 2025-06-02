@@ -9,7 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.3)
-    benchmark (0.4.0)
+    benchmark (0.4.1)
     cgi (0.4.2)
     date (3.4.1)
     diff-lcs (1.6.2)
