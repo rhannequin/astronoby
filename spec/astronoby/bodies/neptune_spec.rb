@@ -191,7 +191,7 @@ RSpec.describe Astronoby::Neptune do
       # IMCCE:  0h 9m 24.6353s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("-0° 27′ 3.5374″")
+        .to eq("-0° 27′ 3.5373″")
       # IMCCE:  -0° 27′ 3.510″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
@@ -199,13 +199,13 @@ RSpec.describe Astronoby::Neptune do
       # IMCCE:  -1° 20′ 57.494″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 46.0607″")
+        .to eq("+1° 58′ 46.0608″")
       # IMCCE:  +1° 58′ 46.105″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(29.26644115946616)
+        .to eq(29.266441159466158)
       # IMCCE: 29.266442003616
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Neptune do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-22741.46665, -12050.39541, -5345.5377])
+        .to eq([-22741.46665, -12050.39542, -5345.5377])
       # IMCCE:  -22741.46431  -12050.39917  -5345.53618
     end
   end
@@ -257,7 +257,7 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: 0h 9m 25.38s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-0° 26′ 57.9391″")
+        .to eq("-0° 26′ 57.939″")
       # IMCCE:    -0° 26′ 57.822″
       # Skyfield: -0° 26′ 57.9″
 
@@ -267,7 +267,7 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: -1° 20′ 57.1″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 58.5172″")
+        .to eq("+1° 58′ 58.5173″")
       # IMCCE:    +1° 58′ 58.661″
       # Skyfield: +1° 58′ 57.9″
 
@@ -290,6 +290,42 @@ RSpec.describe Astronoby::Neptune do
       expect(apparent.velocity.to_a.map(&:mps).map(&:round))
         .to eq([-22741, -12051, -5346])
       # IMCCE:  -22739, -12050, -5346
+    end
+
+    context "with cache enabled" do
+      it "returns the right apparent position with acceptable precision" do
+        Astronoby.configuration.cache_enabled = false
+        ephem = test_ephem
+        first_time = Time.utc(2025, 5, 26, 10, 46, 55)
+        first_instant = Astronoby::Instant.from_time(first_time)
+        second_time = Time.utc(2025, 5, 26, 10, 46, 56)
+        second_instant = Astronoby::Instant.from_time(second_time)
+        precision = Astronoby::Angle.from_degree_arcseconds(0.0001)
+
+        _first_apparent = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .apparent
+        second_apparent = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .apparent
+        Astronoby.configuration.cache_enabled = true
+        _first_apparent_with_cache = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .apparent
+        second_apparent_with_cache = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .apparent
+
+        aggregate_failures do
+          expect(second_apparent.equatorial.right_ascension.degrees).to(
+            be_within(precision.degrees).of(
+              second_apparent_with_cache.equatorial.right_ascension.degrees
+            )
+          )
+        end
+
+        Astronoby.reset_configuration!
+      end
     end
   end
 
@@ -346,7 +382,7 @@ RSpec.describe Astronoby::Neptune do
         # Skyfield:   -0° 26′ 58.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+122° 25′ 44.6016″")
+          .to eq("+122° 25′ 44.6015″")
         # IMCCE:      +122° 25′ 47.640″
         # Horizons:   +122° 25′ 48.4763″
         # Stellarium: +122° 25′ 46.1″

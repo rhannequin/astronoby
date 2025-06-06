@@ -27,15 +27,13 @@ module Astronoby
       segments = ephemeris_segments(ephem.type)
       segment1 = segments[0]
       segment2 = segments[1] if segments.size == 2
-      terrestrial_time = instant.terrestrial_time.round(9)
-      cache = Cache.instance
-      cache_key = [:geometric, segment1, segment2, terrestrial_time]
+      cache_key = CacheKey.generate(:geometric, instant, segment1, segment2)
 
-      cache.fetch(cache_key) do
-        state1 = ephem[*segment1].state_at(terrestrial_time)
+      Astronoby.cache.fetch(cache_key) do
+        state1 = ephem[*segment1].state_at(instant.tt)
 
         if segment2
-          state2 = ephem[*segment2].state_at(terrestrial_time)
+          state2 = ephem[*segment2].state_at(instant.tt)
           position = state1.position + state2.position
           velocity = state1.velocity + state2.velocity
         else

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "astronoby/cache"
+require "astronoby/configuration"
 require "astronoby/constants"
 require "astronoby/angle"
 require "astronoby/angles/dms"

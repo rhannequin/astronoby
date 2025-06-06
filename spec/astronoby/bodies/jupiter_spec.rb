@@ -199,7 +199,7 @@ RSpec.describe Astronoby::Jupiter do
       # IMCCE:  -0° 14′ 15.705″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+81° 22′ 34.8728″")
+        .to eq("+81° 22′ 34.8729″")
       # IMCCE:  +81° 22′ 34.883″
 
       # Note: mean of date distance doesn't really make sense
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Jupiter do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-32257.90535, 21486.00832, 9631.88755])
+        .to eq([-32257.90536, 21486.0083, 9631.88754])
       # IMCCE:  -32257.90781  21486.0049  9631.88872
     end
   end
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Jupiter do
       # Skyfield: -0° 14′ 16.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+81° 22′ 10.896″")
+        .to eq("+81° 22′ 10.8961″")
       # IMCCE:    +81° 22′ 10.8961″
       # Skyfield: +81° 22′ 10.8″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(5.847692982822111)
+        .to eq(5.847692982822112)
       # IMCCE:    5.847693029715
       # Skyfield: 5.847693005684232
     end
@@ -290,6 +290,42 @@ RSpec.describe Astronoby::Jupiter do
       expect(apparent.velocity.to_a.map(&:mps).map(&:round))
         .to eq([-32258, 21486, 9633])
       # IMCCE:  -32260, 21488, 9634
+    end
+
+    context "with cache enabled" do
+      it "returns the right apparent position with acceptable precision" do
+        Astronoby.configuration.cache_enabled = true
+        ephem = test_ephem
+        first_time = Time.utc(2025, 5, 26, 10, 46, 55)
+        first_instant = Astronoby::Instant.from_time(first_time)
+        second_time = Time.utc(2025, 5, 26, 10, 46, 56)
+        second_instant = Astronoby::Instant.from_time(second_time)
+        precision = Astronoby::Angle.from_degree_arcseconds(0.0001)
+
+        _first_apparent = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .apparent
+        second_apparent = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .apparent
+        Astronoby.configuration.cache_enabled = true
+        _first_apparent_with_cache = described_class
+          .new(instant: first_instant, ephem: ephem)
+          .apparent
+        second_apparent_with_cache = described_class
+          .new(instant: second_instant, ephem: ephem)
+          .apparent
+
+        aggregate_failures do
+          expect(second_apparent.equatorial.right_ascension.degrees).to(
+            be_within(precision.degrees).of(
+              second_apparent_with_cache.equatorial.right_ascension.degrees
+            )
+          )
+        end
+
+        Astronoby.reset_configuration!
+      end
     end
   end
 
@@ -346,7 +382,7 @@ RSpec.describe Astronoby::Jupiter do
         # Skyfield:   +22° 55′ 11.7″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+323° 49′ 59.1108″")
+          .to eq("+323° 49′ 59.1107″")
         # IMCCE:      +323° 49′ 59.520″
         # Skyfield:   +323° 50′ 0.2″
         # Stellarium: +323° 49′ 59.2″

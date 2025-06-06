@@ -132,4 +132,57 @@ module Astronoby
       end
     end
   end
+
+  class NullCache
+    include Singleton
+
+    def [](key)
+      nil
+    end
+
+    def []=(key, value)
+      value
+    end
+
+    def fetch(key)
+      yield
+    end
+
+    def clear
+    end
+
+    def size
+      0
+    end
+
+    def max_size=(new_size)
+    end
+  end
+
+  class CacheKey
+    class << self
+      # Generate a cache key with appropriate precision
+      # @param type [Symbol] The calculation type (e.g., :geometric, :nutation)
+      # @param instant [Astronoby::Instant] The time instant
+      # @param components [Array] Additional components for the key
+      # @return [Array] The complete cache key
+      def generate(type, instant, *components)
+        return nil unless Astronoby.configuration.cache_enabled?
+
+        precision = Astronoby.configuration.cache_precision(type)
+        rounded_tt = round_terrestrial_time(instant.tt, precision)
+        [type, rounded_tt, *components]
+      end
+
+      # Round terrestrial time to specified precision
+      # @param tt [Numeric] Terrestrial time value
+      # @param precision [Numeric] Precision in seconds
+      # @return [Numeric] Rounded time value
+      def round_terrestrial_time(tt, precision)
+        return tt if precision <= 0
+
+        tt.round(precision)
+      end
+    end
+  end
 end
