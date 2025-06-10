@@ -1,5 +1,89 @@
 # Changelog
 
+## 0.8.0 - 2025-09-01
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+### Bug fixes
+
+* Fix UPGRADING documentation ([#178])
+* Fix possible division by zero in RTS ([#185])
+
+### Features
+
+* Introduce performance benchmark ([#183])
+* Cache positions in RTS calculator ([#182])
+* Internal global LRU cache ([#186])
+* Global configuration ([#187])
+* Compute the constellation a body is in ([#199])
+* Add `#phase_angle` and `#illuminated_fraction` to planets ([#200])
+* Apparent magnitude ([#201])
+* Add #events_between to TwilightCalculator with better accuracy ([#204])
+* `#angular_diameter` on Solar System bodies ([#207])
+* Fix constellation boundaries near 24h right ascension ([#209])
+
+### Improvements
+
+* Bump standard from 1.49.0 to 1.50.0 by @dependabot ([#177])
+* Bump ephem from 0.3.0 to 0.4.1 by @dependabot ([#181], [#191])
+* Bump irb from 1.14.3 to 1.15.2 by @dependabot ([#184])
+* Bump rspec from 3.13.0 to 3.13.1 by @dependabot ([#188])
+* Bump benchmark from 0.4.0 to 0.4.1 by @dependabot ([#189])
+* Bump rake from 13.2.1 to 13.3.0 by @dependabot ([#190])
+* Bump matrix from 0.4.2 to 0.4.3 by @dependabot ([#193])
+* Update rubyzip requirement from ~> 2.3 to ~> 3.0 by @dependabot ([#194])
+* Bump rubyzip from 3.0.0 to 3.0.2 by @dependabot ([#202], [#206])
+* Exclude benchmarks from release ([#196])
+* `Epoch` refactoring into `JulianDate` ([#197])
+* Support Ruby 3.4.4 ([#198])
+* Bump actions/checkout from 4 to 5 ([#203])
+* Internal documentation ([#205])
+
+### Backward-incompatible changes
+
+* `Epoch` refactoring into `JulianDate` ([#197])
+* `#angular_diameter` on Solar System bodies ([#207])
+* Rename "epoch" ([#208])
+
+### Closed issues
+
+* Consider adding typical usage/deployment info ([#179])
+* Performance degradation in v0.7 ([#180])
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.7.0...v0.8.0
+
+[#177]: https://github.com/rhannequin/astronoby/pull/177
+[#178]: https://github.com/rhannequin/astronoby/pull/178
+[#179]: https://github.com/rhannequin/astronoby/pull/179
+[#180]: https://github.com/rhannequin/astronoby/pull/180
+[#181]: https://github.com/rhannequin/astronoby/pull/181
+[#182]: https://github.com/rhannequin/astronoby/pull/182
+[#183]: https://github.com/rhannequin/astronoby/pull/183
+[#184]: https://github.com/rhannequin/astronoby/pull/184
+[#185]: https://github.com/rhannequin/astronoby/pull/185
+[#186]: https://github.com/rhannequin/astronoby/pull/186
+[#187]: https://github.com/rhannequin/astronoby/pull/187
+[#188]: https://github.com/rhannequin/astronoby/pull/188
+[#189]: https://github.com/rhannequin/astronoby/pull/189
+[#190]: https://github.com/rhannequin/astronoby/pull/190
+[#191]: https://github.com/rhannequin/astronoby/pull/191
+[#193]: https://github.com/rhannequin/astronoby/pull/193
+[#194]: https://github.com/rhannequin/astronoby/pull/194
+[#196]: https://github.com/rhannequin/astronoby/pull/196
+[#197]: https://github.com/rhannequin/astronoby/pull/197
+[#198]: https://github.com/rhannequin/astronoby/pull/198
+[#199]: https://github.com/rhannequin/astronoby/pull/199
+[#200]: https://github.com/rhannequin/astronoby/pull/200
+[#201]: https://github.com/rhannequin/astronoby/pull/201
+[#202]: https://github.com/rhannequin/astronoby/pull/202
+[#203]: https://github.com/rhannequin/astronoby/pull/203
+[#204]: https://github.com/rhannequin/astronoby/pull/204
+[#205]: https://github.com/rhannequin/astronoby/pull/205
+[#206]: https://github.com/rhannequin/astronoby/pull/206
+[#207]: https://github.com/rhannequin/astronoby/pull/207
+[#208]: https://github.com/rhannequin/astronoby/pull/208
+[#209]: https://github.com/rhannequin/astronoby/pull/209
+
 ## 0.7.0 - 2025-05-12
 
 _If you are upgrading: please see [UPGRADING.md]._
@@ -296,7 +380,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ## 0.3.0 - 2024-03-29
 
-_If you are upgrading: please see [`UPGRADING.md`]._
+_If you are upgrading: please see [UPGRADING.md]._
 
 ### Improvements
 
@@ -315,7 +399,7 @@ _If you are upgrading: please see [`UPGRADING.md`]._
 
 ## 0.2.0 - 2024-03-24
 
-_If you are upgrading: please see [`UPGRADING.md`]._
+_If you are upgrading: please see [UPGRADING.md]._
 
 ### Features
 
@@ -386,4 +470,4 @@ _If you are upgrading: please see [`UPGRADING.md`]._
 * Add `Astronoby::Angle`
 * Support angles in degrees and radians
 
-[`UPGRADING.md`]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
