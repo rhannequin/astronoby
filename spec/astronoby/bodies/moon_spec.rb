@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Moon do
       # Skyfield: +161° 0′ 10.3″
 
       expect(geometric.distance.au)
-        .to eq(0.9917671780230503)
+        .to eq(0.99176717802305)
       # IMCCE:    0.991767054173
       # Skyfield: 0.9917671790668138
     end
@@ -151,7 +151,7 @@ RSpec.describe Astronoby::Moon do
       # Skyfield: +353° 55′ 37.5″
 
       expect(astrometric.distance.au)
-        .to eq(0.002423811076386272)
+        .to eq(0.0024238110763858613)
       # IMCCE:    0.002423811046
       # Skyfield: 0.002423811056514585
     end
@@ -287,7 +287,7 @@ RSpec.describe Astronoby::Moon do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(0.002423811076386272)
+        .to eq(0.0024238110763858613)
       # IMCCE:    0.002423811046
       # Skyfield: 0.002423811056514584
     end

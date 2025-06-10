@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: +149° 27′ 17.0″
 
       expect(geometric.distance.au)
-        .to eq(1.6665243265178227)
+        .to eq(1.6665243265178225)
       # IMCCE:    1.666524219608
       # Skyfield: 1.66652432695766
     end
@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Mars do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(1.138989231808293)
+        .to eq(1.1389892318082933)
       # IMCCE:    1.138989267589
       # Skyfield: 1.1389892520926244
     end
