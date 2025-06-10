@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Venus do
       # Skyfield: +357° 26′ 52.6″
 
       expect(astrometric.distance.au)
-        .to eq(0.5226080600832164)
+        .to eq(0.5226080600832163)
       # IMCCE:    0.522608040526
       # Skyfield: 0.5226080446993883
     end
@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Venus do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(0.5226080600832161)
+        .to eq(0.522608060083216)
       # IMCCE:    0.522608040526
       # Skyfield: 0.522608044699388
     end

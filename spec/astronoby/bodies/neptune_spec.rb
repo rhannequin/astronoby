@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: +0° 24′ 59.8″
 
       expect(geometric.distance.au)
-        .to eq(29.884550201759172)
+        .to eq(29.88455020175918)
       # IMCCE:    29.884551127591
       # Skyfield: 29.88455020171849
     end
@@ -205,7 +205,7 @@ RSpec.describe Astronoby::Neptune do
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(29.266441159466158)
+        .to eq(29.266441159466165)
       # IMCCE: 29.266442003616
     end
 

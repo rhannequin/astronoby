@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Earth do
       # Skyfield: +160° 40′ 56.4″
 
       expect(geometric.distance.au)
-        .to eq(0.9941296922100833)
+        .to eq(0.9941296922100831)
       # IMCCE:    0.994129567869
       # Skyfield: 0.9941296929553649
     end

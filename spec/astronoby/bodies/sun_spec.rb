@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Sun do
       # Skyfield: +187° 5′ 5.6″
 
       expect(astrometric.distance.au)
-        .to eq(1.0012612435848636)
+        .to eq(1.0012612435848638)
       # IMCCE:    1.001261241473
       # Skyfield: 1.0012612429694374
     end
@@ -205,7 +205,7 @@ RSpec.describe Astronoby::Sun do
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(1.001261201879304)
+        .to eq(1.0012612018793043)
       # IMCCE: 1.001261199767
     end
 
@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Sun do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(1.0012612435848636)
+        .to eq(1.0012612435848638)
       # IMCCE:    1.001261241473
       # Skyfield:  1.0012612429694372
     end
