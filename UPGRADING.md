@@ -7,6 +7,12 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+# Upgrading from 0.7.0 to 0.8.0
+
+## Benchmark directory changed
+
+The precision benchmark has been moved to `benchmarks`.
+
 ## Upgrading from 0.6.0 to 0.7.0
 
 ## Signature change for `Sun` and `Moon`
