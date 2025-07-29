@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "irb", "~> 1.14"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rubyzip", "~> 2.3"
+  spec.add_development_dependency "rubyzip", "~> 3.0"
   spec.add_development_dependency "simplecov", "~> 0.22"
   spec.add_development_dependency "standard", "~> 1.3"
 end
