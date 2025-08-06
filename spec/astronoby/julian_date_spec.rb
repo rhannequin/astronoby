@@ -77,6 +77,70 @@ RSpec.describe Astronoby::JulianDate do
     end
   end
 
+  describe "::from_julian_year" do
+    it "returns the Julian date corresponding to a given Julian year" do
+      julian_year = 2000
+      expected_date = 2451545.0
+
+      expect(described_class.from_julian_year(julian_year)).to eq(expected_date)
+    end
+
+    it "returns the Julian date corresponding to a given Julian year" do
+      julian_year = 1950
+      expected_date = 2433282.5
+
+      expect(described_class.from_julian_year(julian_year)).to eq(expected_date)
+    end
+
+    it "returns the Julian date corresponding to a given Julian year" do
+      julian_year = 1999.9
+      expected_date = 2451508.475
+
+      expect(described_class.from_julian_year(julian_year)).to eq(expected_date)
+    end
+
+    it "returns the Julian date corresponding to a given Julian year" do
+      julian_year = 1987.5
+      expected_date = 2446979.375
+
+      expect(described_class.from_julian_year(julian_year)).to eq(expected_date)
+    end
+  end
+
+  describe "::from_besselian_year" do
+    it "returns the Julian date corresponding to a given Besselian year" do
+      besselian_year = 1900
+      expected_date = 2415020.3135
+
+      expect(described_class.from_besselian_year(besselian_year))
+        .to eq(expected_date)
+    end
+
+    it "returns the Julian date corresponding to a given Besselian year" do
+      besselian_year = 1950
+      expected_date = 2433282.42343905
+
+      expect(described_class.from_besselian_year(besselian_year))
+        .to eq(expected_date)
+    end
+
+    it "returns the Julian date corresponding to a given Besselian year" do
+      besselian_year = 1875
+      expected_date = 2405889.258530475
+
+      expect(described_class.from_besselian_year(besselian_year))
+        .to eq(expected_date)
+    end
+
+    it "returns the Julian date corresponding to a given Besselian year" do
+      besselian_year = 2000.1
+      expected_date = 2451581.057597978
+
+      expect(described_class.from_besselian_year(besselian_year))
+        .to eq(expected_date)
+    end
+  end
+
   describe "::to_utc" do
     # Source: https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
     it "returns the UTC Time object corresponding to a given Julian date" do
