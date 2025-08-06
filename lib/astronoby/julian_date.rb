@@ -12,6 +12,10 @@ module Astronoby
     # @return [Integer] 2000
     JULIAN_EPOCH_STARTING_YEAR = 2000
 
+    # Julian Date for Besselian epoch 1875.0
+    # @return [Float] 2405889.258550475
+    B1875 = 2405889.258550475
+
     # Julian Date for Besselian epoch 1900.0
     # @return [Float] 2415020.31352
     B1900 = 2415020.31352
