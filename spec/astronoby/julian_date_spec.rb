@@ -3,14 +3,14 @@
 RSpec.describe Astronoby::JulianDate do
   describe "::from_time" do
     # Source: https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
-    it "returns the Julian day number associated with the time" do
+    it "returns the Julian date associated with the time" do
       time = Time.utc(1582, 10, 15, 0, 0, 0)
 
       expect(described_class.from_time(time)).to eq(2299160.5)
     end
 
     # Source: https://github.com/observerly/polaris
-    it "returns the Julian day number associated with the time" do
+    it "returns the Julian date associated with the time" do
       time = Time.utc(2021, 5, 14, 0, 0, 0)
 
       expect(described_class.from_time(time)).to eq(2459348.5)
@@ -21,7 +21,7 @@ RSpec.describe Astronoby::JulianDate do
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
-    it "returns the Julian day number associated with the time" do
+    it "returns the Julian date associated with the time" do
       time = Time.utc(2010, 11, 1, 0, 0, 0)
 
       expect(described_class.from_time(time)).to eq(2455501.5)
@@ -32,7 +32,7 @@ RSpec.describe Astronoby::JulianDate do
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
-    it "returns the Julian day number associated with the time" do
+    it "returns the Julian date associated with the time" do
       time = Time.utc(2015, 5, 10, 6, 0, 0)
 
       expect(described_class.from_time(time)).to eq(2457152.75)
@@ -43,7 +43,7 @@ RSpec.describe Astronoby::JulianDate do
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
-    it "returns the Julian day number associated with the time" do
+    it "returns the Julian date associated with the time" do
       time = Time.utc(2015, 5, 10, 18, 0, 0)
 
       expect(described_class.from_time(time)).to eq(2457153.25)
@@ -71,7 +71,7 @@ RSpec.describe Astronoby::JulianDate do
       [DateTime.new(-1001, 8, 17, 21, 36), 1355671.4],
       [DateTime.new(-4712, 1, 1, 12), 0]
     ].each do |time_or_date, expected|
-      it "returns the Julian day number associated with the time" do
+      it "returns the Julian date associated with the time" do
         expect(described_class.from_time(time_or_date)).to eq(expected)
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe Astronoby::JulianDate do
 
   describe "::to_utc" do
     # Source: https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
-    it "returns the UTC Time object corresponding to a given Julian day number" do
+    it "returns the UTC Time object corresponding to a given Julian date" do
       epoch = 2299160.5
 
       time = described_class.to_utc(epoch)
@@ -88,7 +88,7 @@ RSpec.describe Astronoby::JulianDate do
     end
 
     # Source: https://github.com/observerly/polaris
-    it "returns the UTC Time object corresponding to a given Julian day number" do
+    it "returns the UTC Time object corresponding to a given Julian date" do
       epoch = 2459348.5
 
       time = described_class.to_utc(epoch)
@@ -101,7 +101,7 @@ RSpec.describe Astronoby::JulianDate do
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
-    it "returns the UTC Time object corresponding to a given Julian day number" do
+    it "returns the UTC Time object corresponding to a given Julian date" do
       epoch = 2369915.5
 
       time = described_class.to_utc(epoch)
@@ -114,7 +114,7 @@ RSpec.describe Astronoby::JulianDate do
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
-    it "returns the UTC Time object corresponding to a given Julian day number" do
+    it "returns the UTC Time object corresponding to a given Julian date" do
       epoch = 2455323
 
       time = described_class.to_utc(epoch)
@@ -127,7 +127,7 @@ RSpec.describe Astronoby::JulianDate do
     #  Author: J. L. Lawrence
     #  Edition: MIT Press
     #  Chapter: 3 - Time Conversions
-    it "returns the UTC Time object corresponding to a given Julian day number" do
+    it "returns the UTC Time object corresponding to a given Julian date" do
       epoch = 2456019.37
 
       time = described_class.to_utc(epoch).round
@@ -150,7 +150,7 @@ RSpec.describe Astronoby::JulianDate do
       [Time.utc(1600, 1, 1), 2305447.5],
       [Time.utc(1600, 12, 31), 2305812.5]
     ].each do |expected_time, epoch|
-      it "returns the Julian day number associated with the time" do
+      it "returns the UTC time corresponding to the Julian date" do
         expect(described_class.to_utc(epoch)).to eq(expected_time)
       end
     end
