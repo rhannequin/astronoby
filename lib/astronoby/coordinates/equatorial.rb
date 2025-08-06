@@ -9,7 +9,7 @@ module Astronoby
         declination:,
         right_ascension:,
         hour_angle: nil,
-        epoch: Epoch::DEFAULT_EPOCH
+        epoch: JulianDate::DEFAULT_EPOCH
       )
         @right_ascension = right_ascension
         @declination = declination

@@ -108,7 +108,7 @@ module Astronoby
     end
 
     def self.matrix_for_epoch(epoch)
-      t = (epoch - Epoch::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
+      t = (epoch - JulianDate::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
 
       zeta = Angle.from_degrees(
         0.6406161 * t + 0.0000839 * t * t + 0.000005 * t * t * t
@@ -158,7 +158,7 @@ module Astronoby
 
     def t
       @t ||= Rational(
-        @instant.tdb - Epoch::DEFAULT_EPOCH,
+        @instant.tdb - JulianDate::DEFAULT_EPOCH,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
     end

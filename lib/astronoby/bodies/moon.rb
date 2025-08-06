@@ -94,7 +94,7 @@ module Astronoby
     end
 
     def elapsed_centuries
-      (@instant.tt - Epoch::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
+      (@instant.tt - JulianDate::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
     end
   end
 end

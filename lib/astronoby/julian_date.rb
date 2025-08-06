@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class Epoch
+  class JulianDate
     B1900 = 2415020.3135
     J1900 = 2415020.0
     B1950 = 2433282.4235

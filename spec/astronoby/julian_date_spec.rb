@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::Epoch do
+RSpec.describe Astronoby::JulianDate do
   describe "::from_time" do
     # Source: https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
     it "returns the Julian day number associated with the time" do

@@ -45,7 +45,7 @@ module Astronoby
       def time
         correction = moon_phases_periodic_terms
           .public_send(:"#{@phase}_correction")
-        terrestrial_time = Epoch.to_utc(
+        terrestrial_time = JulianDate.to_utc(
           julian_ephemeris_day +
             correction +
             moon_phases_periodic_terms.additional_corrections
