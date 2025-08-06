@@ -74,17 +74,5 @@ module Astronoby
       B1900 + Constants::TROPICAL_YEAR_AT_B1900 *
         (besselian_year - BESSELIAN_EPOCH_STARTING_YEAR)
     end
-
-    # Converts a Julian Date to UTC Time
-    #
-    # @param epoch [Float] the Julian Date
-    # @return [Time] the corresponding UTC time
-    #
-    # @example
-    #   JulianDate.to_utc(2451545.0)
-    #   # => 2000-01-01 12:00:00 UTC
-    def self.to_utc(epoch)
-      DateTime.jd(epoch + JULIAN_DAY_NUMBER_OFFSET).to_time.utc
-    end
   end
 end

@@ -123,7 +123,7 @@ module Astronoby
       delta_days = 0.00001 * s / delta
       epoch = julian_day + delta_days
 
-      JulianDate.to_utc(epoch)
+      Instant.from_terrestrial_time(epoch).to_time
     end
 
     def julian_day
