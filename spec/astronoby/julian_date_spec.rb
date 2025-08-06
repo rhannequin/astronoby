@@ -110,7 +110,7 @@ RSpec.describe Astronoby::JulianDate do
   describe "::from_besselian_year" do
     it "returns the Julian date corresponding to a given Besselian year" do
       besselian_year = 1900
-      expected_date = 2415020.3135
+      expected_date = 2415020.31352
 
       expect(described_class.from_besselian_year(besselian_year))
         .to eq(expected_date)
@@ -118,7 +118,7 @@ RSpec.describe Astronoby::JulianDate do
 
     it "returns the Julian date corresponding to a given Besselian year" do
       besselian_year = 1950
-      expected_date = 2433282.42343905
+      expected_date = 2433282.42345905
 
       expect(described_class.from_besselian_year(besselian_year))
         .to eq(expected_date)
@@ -126,7 +126,7 @@ RSpec.describe Astronoby::JulianDate do
 
     it "returns the Julian date corresponding to a given Besselian year" do
       besselian_year = 1875
-      expected_date = 2405889.258530475
+      expected_date = 2405889.258550475
 
       expect(described_class.from_besselian_year(besselian_year))
         .to eq(expected_date)
@@ -134,7 +134,7 @@ RSpec.describe Astronoby::JulianDate do
 
     it "returns the Julian date corresponding to a given Besselian year" do
       besselian_year = 2000.1
-      expected_date = 2451581.057597978
+      expected_date = 2451581.0576179777
 
       expect(described_class.from_besselian_year(besselian_year))
         .to eq(expected_date)
