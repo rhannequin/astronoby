@@ -63,7 +63,7 @@ RSpec.describe Astronoby::Instant do
 
     it "handles the difference delta-t = TT - UT" do
       time = Time.utc(2025, 1, 1)
-      julian_date = Astronoby::Epoch.from_time(time)
+      julian_date = Astronoby::JulianDate.from_time(time)
 
       instant = described_class.from_utc_julian_date(julian_date)
 

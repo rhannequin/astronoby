@@ -496,7 +496,7 @@ module Astronoby
         when Numeric
           instant
         when ::Time, ::Date, ::DateTime
-          Epoch.from_time(instant)
+          JulianDate.from_time(instant)
         else
           raise IncompatibleArgumentsError,
             "Expected a Numeric, Time, Date or DateTime object, got #{instant.class}"

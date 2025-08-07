@@ -9,7 +9,7 @@ module Astronoby
     #  IAU resolution in 2006 in favor of the P03 astronomical model
     #  https://syrte.obspm.fr/iau2006/aa03_412_P03.pdf
 
-    EPOCH_OF_REFERENCE = Epoch::DEFAULT_EPOCH
+    EPOCH_OF_REFERENCE = JulianDate::DEFAULT_EPOCH
     OBLIQUITY_OF_REFERENCE = 23.4392794
 
     def self.for_epoch(epoch)

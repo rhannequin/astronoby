@@ -21,7 +21,12 @@ module Astronoby
   class Instant
     include Comparable
 
-    JULIAN_DAY_NUMBER_OFFSET = 0.5
+    # The adjustment value to align our noon-based Julian Date with the
+    # midnight-based epoch required by Ruby's `DateTime.jd` constructor.
+    # Our internal time values are standard astronomical Julian Dates, which
+    # start at noon. `DateTime.jd` expects a day that starts at the preceding
+    # midnight. This constant adds 0.5 days (12 hours) to make the conversion.
+    DATETIME_JD_EPOCH_ADJUSTMENT = 0.5
 
     class << self
       # Creates a new Instant from a Terrestrial Time value
@@ -90,7 +95,7 @@ module Astronoby
       DateTime.jd(
         @terrestrial_time -
           Rational(delta_t / Constants::SECONDS_PER_DAY) +
-          JULIAN_DAY_NUMBER_OFFSET
+          DATETIME_JD_EPOCH_ADJUSTMENT
       )
     end
 

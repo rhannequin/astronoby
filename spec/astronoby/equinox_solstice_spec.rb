@@ -57,7 +57,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.june_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2004, 6, 21, 0, 56, 55)
+      expect(equinox).to eq Time.utc(2004, 6, 21, 0, 56, 53)
       # Time from Celestial Calculations: 2004-03-21T00:49:41
       # Time from Astronomical Algorithms: 2004-03-21T00:57:57
       # Time from IMCCE: 2004-06-21T00:56:52
@@ -69,7 +69,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.june_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2024, 6, 20, 20, 51, 2)
+      expect(equinox).to eq Time.utc(2024, 6, 20, 20, 51, 0)
       # Time from IMCCE: 2024-06-20T20:51:00
     end
   end
@@ -98,7 +98,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.september_equinox(year, ephem)
 
-      expect(equinox).to eq Time.utc(2024, 9, 22, 12, 43, 41)
+      expect(equinox).to eq Time.utc(2024, 9, 22, 12, 43, 40)
       # Time from IMCCE: 2024-09-22T12:43:40
     end
   end
@@ -115,7 +115,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.december_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2004, 12, 21, 12, 41, 34)
+      expect(equinox).to eq Time.utc(2004, 12, 21, 12, 41, 36)
       # Time from Celestial Calculations: 2004-12-21T12:44:22
       # Time from Astronomical Algorithms: 2004-12-21T12:42:40
       # Time from IMCCE: 2004-12-21T12:41:36
@@ -127,7 +127,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.december_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2024, 12, 21, 9, 20, 33)
+      expect(equinox).to eq Time.utc(2024, 12, 21, 9, 20, 35)
       # Time from IMCCE: 2024-12-21T09:20:34
     end
   end

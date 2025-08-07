@@ -20,7 +20,7 @@ module Astronoby
     def self.from_utc(utc)
       date = utc.to_date
       julian_day = utc.to_date.ajd
-      t = (julian_day - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
+      t = (julian_day - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
       t0 = (
         (JULIAN_CENTURIES_EXPONENTS[0] +
           (JULIAN_CENTURIES_EXPONENTS[1] * t) +
@@ -51,7 +51,7 @@ module Astronoby
     def to_utc
       date = @date
       julian_day = @date.ajd
-      t = (julian_day - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
+      t = (julian_day - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
 
       t0 = (
         (JULIAN_CENTURIES_EXPONENTS[0] +

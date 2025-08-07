@@ -214,7 +214,7 @@ module Astronoby
 
     def julian_centuries
       @julian_centuries ||=
-        (@instant.tt - Epoch::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
+        (@instant.tt - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
     end
 
     # IAU 2006/2000A formula for the mean anomaly of the Moon

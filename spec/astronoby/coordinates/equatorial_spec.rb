@@ -55,7 +55,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       coordinates = described_class.new(
         right_ascension: right_ascension,
         declination: declination,
-        epoch: Astronoby::Epoch.from_time(time)
+        epoch: Astronoby::JulianDate.from_time(time)
       )
       hour_angle = coordinates.compute_hour_angle(
         time: time,
@@ -202,7 +202,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.from_hms(11, 10, 13)
         declination = Astronoby::Angle.from_dms(30, 5, 40)
-        epoch = Astronoby::Epoch::J2000
+        epoch = Astronoby::JulianDate::J2000
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,
@@ -227,7 +227,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.from_hms(7, 45, 18.946)
         declination = Astronoby::Angle.from_dms(28, 1, 34.26)
-        epoch = Astronoby::Epoch::J2000
+        epoch = Astronoby::JulianDate::J2000
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,
@@ -252,7 +252,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.from_hms(9, 34, 53.32)
         declination = Astronoby::Angle.from_dms(19, 32, 6.01)
-        epoch = Astronoby::Epoch.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
+        epoch = Astronoby::JulianDate.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,

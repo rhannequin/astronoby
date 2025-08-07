@@ -45,13 +45,12 @@ module Astronoby
       def time
         correction = moon_phases_periodic_terms
           .public_send(:"#{@phase}_correction")
-        terrestrial_time = Epoch.to_utc(
+        terrestrial_time = Instant.from_terrestrial_time(
           julian_ephemeris_day +
             correction +
             moon_phases_periodic_terms.additional_corrections
         )
-        delta = Util::Time.terrestrial_universal_time_delta(terrestrial_time)
-        (terrestrial_time - delta).round
+        terrestrial_time.to_time.round
       end
 
       private

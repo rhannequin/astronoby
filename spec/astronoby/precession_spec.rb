@@ -13,9 +13,9 @@ RSpec.describe Astronoby::Precession do
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
-        epoch: Astronoby::Epoch::J1950
+        epoch: Astronoby::JulianDate::J1950
       )
-      new_epoch = Astronoby::Epoch.from_time(Time.utc(1979, 6, 1, 0, 0, 0))
+      new_epoch = Astronoby::JulianDate.from_time(Time.utc(1979, 6, 1, 0, 0, 0))
 
       precessed_coordinates = described_class.for_equatorial_coordinates(
         coordinates: coordinates,
@@ -37,12 +37,12 @@ RSpec.describe Astronoby::Precession do
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
-        epoch: Astronoby::Epoch::J1950
+        epoch: Astronoby::JulianDate::J1950
       )
 
       precessed_coordinates = described_class.for_equatorial_coordinates(
         coordinates: coordinates,
-        epoch: Astronoby::Epoch.from_time(Time.utc(1979, 6, 1, 0, 0, 0))
+        epoch: Astronoby::JulianDate.from_time(Time.utc(1979, 6, 1, 0, 0, 0))
       )
 
       expect(precessed_coordinates.right_ascension.str(:hms)).to(
@@ -64,12 +64,12 @@ RSpec.describe Astronoby::Precession do
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
-        epoch: Astronoby::Epoch::J1950
+        epoch: Astronoby::JulianDate::J1950
       )
 
       precessed_coordinates = described_class.for_equatorial_coordinates(
         coordinates: coordinates,
-        epoch: Astronoby::Epoch::J2000
+        epoch: Astronoby::JulianDate::J2000
       )
 
       expect(precessed_coordinates.right_ascension.str(:hms)).to(
@@ -91,12 +91,12 @@ RSpec.describe Astronoby::Precession do
       coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: right_ascension,
         declination: declination,
-        epoch: Astronoby::Epoch::J2000
+        epoch: Astronoby::JulianDate::J2000
       )
 
       precessed_coordinates = described_class.for_equatorial_coordinates(
         coordinates: coordinates,
-        epoch: Astronoby::Epoch.from_time(Time.utc(2015, 1, 1, 0, 0, 0))
+        epoch: Astronoby::JulianDate.from_time(Time.utc(2015, 1, 1, 0, 0, 0))
       )
 
       expect(precessed_coordinates.right_ascension.str(:hms)).to(
