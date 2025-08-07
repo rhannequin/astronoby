@@ -116,6 +116,17 @@ module Astronoby
       )
     end
 
+    # Returns the constellation of the body
+    # @return [Astronoby::Constellation, nil]
+    def constellation
+      @constellation ||= Constellations::Finder.find(
+        Precession.for_equatorial_coordinates(
+          coordinates: astrometric.equatorial,
+          epoch: JulianDate::B1875
+        )
+      )
+    end
+
     private
 
     def compute_geometric(ephem)
