@@ -28,10 +28,6 @@ module Astronoby
     # @return [Float] 2451545.0
     DEFAULT_EPOCH = J2000
 
-    # Offset to convert between Julian Date and Julian Date
-    # @return [Float] 0.5
-    JULIAN_DAY_NUMBER_OFFSET = 0.5
-
     # Converts a Time object to Julian Date
     #
     # @param time [Time] the time to convert
