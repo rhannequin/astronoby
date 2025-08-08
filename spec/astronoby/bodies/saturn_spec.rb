@@ -404,4 +404,34 @@ RSpec.describe Astronoby::Saturn do
       end
     end
   end
+
+  describe "#phase_angle" do
+    it "returns the phase angle for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      phase_angle = planet.phase_angle
+
+      expect(phase_angle.str(:dms)).to eq "+5° 43′ 54.2226″"
+      # IMCCE:    +5° 43′ 59.8799″
+      # Horizons: +5° 43′ 59.52″
+      # Skyfield: +5° 43′ 53.3″
+    end
+  end
+
+  describe "#illuminated_fraction" do
+    it "returns the illuminated fraction for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      illuminated_fraction = planet.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.9975
+      # Skyfield: 0.9975
+    end
+  end
 end

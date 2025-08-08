@@ -32,18 +32,6 @@ module Astronoby
       Events::MoonPhases.phases_for(year: year, month: month)
     end
 
-    attr_reader :phase_angle
-
-    def initialize(instant:, ephem:)
-      super
-      @phase_angle = compute_phase_angle(ephem)
-    end
-
-    # @return [Float] Moon's illuminated fraction
-    def illuminated_fraction
-      @illuminated_fraction ||= (1 + phase_angle.cos) / 2.0
-    end
-
     # @return [Float] Phase fraction, from 0 to 1
     def current_phase_fraction
       mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE
@@ -56,31 +44,6 @@ module Astronoby
     #  Author: Jean Meeus
     #  Edition: 2nd edition
     #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
-
-    # @return [Angle] Moon's phase angle
-    def compute_phase_angle(ephem)
-      @phase_angle ||= begin
-        sun = Sun.new(instant: @instant, ephem: ephem)
-        geocentric_elongation = Angle.acos(
-          sun.apparent.equatorial.declination.sin *
-            apparent.equatorial.declination.sin +
-            sun.apparent.equatorial.declination.cos *
-              apparent.equatorial.declination.cos *
-              (
-                sun.apparent.equatorial.right_ascension -
-                  apparent.equatorial.right_ascension
-              ).cos
-        )
-
-        term1 = sun.astrometric.distance.km * geocentric_elongation.sin
-        term2 = astrometric.distance.km -
-          sun.astrometric.distance.km * geocentric_elongation.cos
-        angle = Angle.atan(term1 / term2)
-        Astronoby::Util::Trigonometry
-          .adjustement_for_arctangent(term1, term2, angle)
-      end
-    end
-
     def mean_elongation
       @mean_elongation ||= Angle.from_degrees(
         (

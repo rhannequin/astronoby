@@ -15,9 +15,17 @@ module Astronoby
       end
     end
 
+    def phase_angle
+      nil
+    end
+
     private
 
-    def compute_astrometric(ephem)
+    def compute_phase_angle?
+      false
+    end
+
+    def compute_astrometric(_ephem)
       Astrometric.new(
         position: Vector[
           Distance.zero,
@@ -35,7 +43,7 @@ module Astronoby
       )
     end
 
-    def compute_mean_of_date(ephem)
+    def compute_mean_of_date(_ephem)
       MeanOfDate.new(
         position: Vector[
           Distance.zero,

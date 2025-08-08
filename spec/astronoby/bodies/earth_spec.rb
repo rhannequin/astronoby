@@ -284,4 +284,30 @@ RSpec.describe Astronoby::Earth do
         .to eq([0, 0, 0])
     end
   end
+
+  describe "#phase_angle" do
+    it "returns nil" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      phase_angle = planet.phase_angle
+
+      expect(phase_angle).to be_nil
+    end
+  end
+
+  describe "#illuminated_fraction" do
+    it "returns the illuminated fraction for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      illuminated_fraction = planet.illuminated_fraction
+
+      expect(illuminated_fraction).to be_nil
+    end
+  end
 end

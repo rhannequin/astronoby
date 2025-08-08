@@ -37,5 +37,11 @@ module Astronoby
           ).hours * Constants::SECONDS_PER_HOUR
       ).round
     end
+
+    private
+
+    def compute_phase_angle?
+      false
+    end
   end
 end

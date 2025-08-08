@@ -404,4 +404,34 @@ RSpec.describe Astronoby::Uranus do
       end
     end
   end
+
+  describe "#phase_angle" do
+    it "returns the phase angle for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      phase_angle = planet.phase_angle
+
+      expect(phase_angle.str(:dms)).to eq "+2° 20′ 13.0065″"
+      # IMCCE:    +2° 20′ 0.5999″
+      # Horizons: +2° 20′ 17.8799″
+      # Skyfield: +2° 20′ 13.6″
+    end
+  end
+
+  describe "#illuminated_fraction" do
+    it "returns the illuminated fraction for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      illuminated_fraction = planet.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.9996
+      # Skyfield: 0.9996
+    end
+  end
 end
