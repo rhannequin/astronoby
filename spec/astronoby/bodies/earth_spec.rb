@@ -310,4 +310,17 @@ RSpec.describe Astronoby::Earth do
       expect(illuminated_fraction).to be_nil
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns nil" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_sun
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude).to be_nil
+    end
+  end
 end

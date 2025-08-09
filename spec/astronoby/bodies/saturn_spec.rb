@@ -434,4 +434,36 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: 0.9975
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns the apparent magnitude for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(0.79)
+      # IMCCE:      0.79
+      # Horizons:   0.893
+      # Stellarium: 0.89
+      # Skyfield:   0.89
+    end
+
+    it "returns the apparent magnitude for 2025-06-19" do
+      time = Time.utc(2025, 6, 19)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(0.94)
+      # IMCCE:      0.89
+      # Horizons:   1.011
+      # Stellarium: 1.01
+      # Skyfield:   1.01
+    end
+  end
 end

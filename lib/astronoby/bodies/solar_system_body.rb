@@ -66,6 +66,10 @@ module Astronoby
       raise NotImplementedError
     end
 
+    def self.absolute_magnitude
+      nil
+    end
+
     def initialize(ephem:, instant:)
       @instant = instant
       @geometric = compute_geometric(ephem)
@@ -166,6 +170,25 @@ module Astronoby
       @illuminated_fraction ||= (1 + phase_angle.cos) / 2.0
     end
 
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
+    # Apparent magnitude of the body, as seen from Earth.
+    # @return [Float, nil] Apparent magnitude of the body.
+    def apparent_magnitude
+      return unless self.class.absolute_magnitude
+
+      @apparent_magnitude ||= begin
+        body_sun_distance =
+          (astrometric.position - @sun.astrometric.position).magnitude
+        self.class.absolute_magnitude +
+          5 * Math.log10(body_sun_distance.au * astrometric.distance.au) +
+          magnitude_correction_term
+      end
+    end
+
     private
 
     # By default, Solar System bodies expose attributes that are dependent on
@@ -182,6 +205,15 @@ module Astronoby
 
     def compute_sun(ephem)
       @sun ||= Sun.new(instant: @instant, ephem: ephem)
+    end
+
+    # Source:
+    #  Title: Explanatory Supplement to the Astronomical Almanac
+    #  Authors: Sean E. Urban and P. Kenneth Seidelmann
+    #  Edition: University Science Books
+    #  Chapter: 10.3 - Phases and Magnitudes
+    def magnitude_correction_term
+      -2.5 * Math.log10(illuminated_fraction)
     end
   end
 end
