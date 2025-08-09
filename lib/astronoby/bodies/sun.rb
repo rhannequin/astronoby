@@ -40,8 +40,7 @@ module Astronoby
 
     private
 
-    # Phase angle depends on sunlight, therefore not applicable for the Sun.
-    def compute_phase_angle?
+    def requires_sun_data?
       false
     end
   end
