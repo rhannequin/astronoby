@@ -3,9 +3,26 @@
 module Astronoby
   class Sun < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(695_700_000)
+    ABSOLUTE_MAGNITUDE = -26.74
 
     def self.ephemeris_segments(_ephem_source)
       [[SOLAR_SYSTEM_BARYCENTER, SUN]]
+    end
+
+    def self.absolute_magnitude
+      ABSOLUTE_MAGNITUDE
+    end
+
+    # Source:
+    #  Title: Explanatory Supplement to the Astronomical Almanac
+    #  Authors: Sean E. Urban and P. Kenneth Seidelmann
+    #  Edition: University Science Books
+    #  Chapter: 10.3 - Phases and Magnitudes
+    # Apparent magnitude of the body, as seen from Earth.
+    # @return [Float] Apparent magnitude of the body.
+    def apparent_magnitude
+      @apparent_magnitude ||=
+        self.class.absolute_magnitude + 5 * Math.log10(astrometric.distance.au)
     end
 
     # Source:
