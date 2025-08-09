@@ -128,7 +128,8 @@ module Astronoby
       )
     end
 
-    # @return [Float, nil] Moon's illuminated fraction
+    # Fraction between 0 and 1 of the body's disk that is illuminated.
+    # @return [Float, nil] Body's illuminated fraction, between 0 and 1.
     def illuminated_fraction
       return unless compute_phase_angle?
 
@@ -137,6 +138,8 @@ module Astronoby
 
     private
 
+    # By default, Solar System bodies have a phase angle.
+    # Override this method in subclasses when non-applicable.
     def compute_phase_angle?
       true
     end

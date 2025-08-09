@@ -21,6 +21,7 @@ module Astronoby
 
     private
 
+    # Phase angle is geocentric, therefore non-applicable for Earth.
     def compute_phase_angle?
       false
     end
