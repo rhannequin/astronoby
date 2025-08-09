@@ -17,7 +17,7 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :geometric, :instant
+    attr_reader :geometric, :instant, :phase_angle
 
     def self.geometric(ephem:, instant:)
       compute_geometric(ephem: ephem, instant: instant)
@@ -77,6 +77,7 @@ module Astronoby
           target: @geometric,
           ephem: ephem
         )
+      compute_phase_angle(ephem) if compute_phase_angle?
     end
 
     def astrometric
@@ -127,10 +128,52 @@ module Astronoby
       )
     end
 
+    # Fraction between 0 and 1 of the body's disk that is illuminated.
+    # @return [Float, nil] Body's illuminated fraction, between 0 and 1.
+    def illuminated_fraction
+      return unless compute_phase_angle?
+
+      @illuminated_fraction ||= (1 + phase_angle.cos) / 2.0
+    end
+
     private
+
+    # By default, Solar System bodies have a phase angle.
+    # Override this method in subclasses when non-applicable.
+    def compute_phase_angle?
+      true
+    end
 
     def compute_geometric(ephem)
       self.class.compute_geometric(ephem: ephem, instant: @instant)
+    end
+
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
+    def compute_phase_angle(ephem)
+      @phase_angle ||= begin
+        sun = Sun.new(instant: @instant, ephem: ephem)
+        geocentric_elongation = Angle.acos(
+          sun.apparent.equatorial.declination.sin *
+          apparent.equatorial.declination.sin +
+          sun.apparent.equatorial.declination.cos *
+          apparent.equatorial.declination.cos *
+          (
+            sun.apparent.equatorial.right_ascension -
+              apparent.equatorial.right_ascension
+          ).cos
+        )
+
+        term1 = sun.astrometric.distance.km * geocentric_elongation.sin
+        term2 = astrometric.distance.km -
+          sun.astrometric.distance.km * geocentric_elongation.cos
+        angle = Angle.atan(term1 / term2)
+        Astronoby::Util::Trigonometry
+          .adjustement_for_arctangent(term1, term2, angle)
+      end
     end
   end
 end

@@ -37,5 +37,12 @@ module Astronoby
           ).hours * Constants::SECONDS_PER_HOUR
       ).round
     end
+
+    private
+
+    # Phase angle depends on sunlight, therefore not applicable for the Sun.
+    def compute_phase_angle?
+      false
+    end
   end
 end

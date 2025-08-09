@@ -457,16 +457,18 @@ RSpec.describe Astronoby::Moon do
   end
 
   describe "#phase_angle" do
-    it "returns the phase angle for 2025-04-12" do
-      time = Time.utc(2025, 4, 12)
+    it "returns the phase angle for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
       instant = Astronoby::Instant.from_time(time)
       ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)
 
       phase_angle = moon.phase_angle
 
-      expect(phase_angle.degrees.round(4)).to eq 11.0746
-      # Result from IMCCE: 11.0802°
+      expect(phase_angle.str(:dms)).to eq "+38° 15′ 23.6455″"
+      # IMCCE:    +38° 15′ 3.9599″
+      # Horizons: +38° 15′ 8.64″
+      # Skyfield: +38° 15′ 3.7″
     end
   end
 

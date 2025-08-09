@@ -404,4 +404,34 @@ RSpec.describe Astronoby::Venus do
       end
     end
   end
+
+  describe "#phase_angle" do
+    it "returns the phase angle for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      phase_angle = planet.phase_angle
+
+      expect(phase_angle.str(:dms)).to eq "+67° 54′ 44.5645″"
+      # IMCCE:    +67° 54′ 27.36″
+      # Horizons: +67° 55′ 6.24″
+      # Skyfield: +67° 54′ 35.3″
+    end
+  end
+
+  describe "#illuminated_fraction" do
+    it "returns the illuminated fraction for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      illuminated_fraction = planet.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.688
+      # Skyfield: 0.688
+    end
+  end
 end

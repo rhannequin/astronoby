@@ -404,4 +404,34 @@ RSpec.describe Astronoby::Jupiter do
       end
     end
   end
+
+  describe "#phase_angle" do
+    it "returns the phase angle for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      phase_angle = planet.phase_angle
+
+      expect(phase_angle.str(:dms)).to eq "+2° 45′ 2.241″"
+      # IMCCE:    +2° 44′ 42.7199″
+      # Horizons: +2° 45′ 11.5199″
+      # Skyfield: +2° 45′ 6.0″
+    end
+  end
+
+  describe "#illuminated_fraction" do
+    it "returns the illuminated fraction for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      illuminated_fraction = planet.illuminated_fraction
+
+      expect(illuminated_fraction.round(4)).to eq 0.9994
+      # Skyfield: 0.9994
+    end
+  end
 end
