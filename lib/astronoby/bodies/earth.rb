@@ -15,14 +15,11 @@ module Astronoby
       end
     end
 
-    def phase_angle
-      nil
-    end
-
     private
 
-    # Phase angle is geocentric, therefore non-applicable for Earth.
-    def compute_phase_angle?
+    # Attributes that require Sun data like phase angle or magnitude are not
+    # applicable for Earth.
+    def requires_sun_data?
       false
     end
 

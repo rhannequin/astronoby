@@ -17,7 +17,7 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :geometric, :instant, :phase_angle
+    attr_reader :geometric, :instant
 
     def self.geometric(ephem:, instant:)
       compute_geometric(ephem: ephem, instant: instant)
@@ -66,6 +66,10 @@ module Astronoby
       raise NotImplementedError
     end
 
+    def self.absolute_magnitude
+      nil
+    end
+
     def initialize(ephem:, instant:)
       @instant = instant
       @geometric = compute_geometric(ephem)
@@ -77,7 +81,7 @@ module Astronoby
           target: @geometric,
           ephem: ephem
         )
-      compute_phase_angle(ephem) if compute_phase_angle?
+      compute_sun(ephem) if requires_sun_data?
     end
 
     def astrometric
@@ -128,24 +132,42 @@ module Astronoby
       )
     end
 
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
+    # @return [Astronoby::Angle, nil] Phase angle of the body
+    def phase_angle
+      return unless @sun
+
+      @phase_angle ||= begin
+        geocentric_elongation = Angle.acos(
+          @sun.apparent.equatorial.declination.sin *
+          apparent.equatorial.declination.sin +
+          @sun.apparent.equatorial.declination.cos *
+          apparent.equatorial.declination.cos *
+          (
+            @sun.apparent.equatorial.right_ascension -
+              apparent.equatorial.right_ascension
+          ).cos
+        )
+
+        term1 = @sun.astrometric.distance.km * geocentric_elongation.sin
+        term2 = astrometric.distance.km -
+          @sun.astrometric.distance.km * geocentric_elongation.cos
+        angle = Angle.atan(term1 / term2)
+        Astronoby::Util::Trigonometry
+          .adjustement_for_arctangent(term1, term2, angle)
+      end
+    end
+
     # Fraction between 0 and 1 of the body's disk that is illuminated.
     # @return [Float, nil] Body's illuminated fraction, between 0 and 1.
     def illuminated_fraction
-      return unless compute_phase_angle?
+      return unless phase_angle
 
       @illuminated_fraction ||= (1 + phase_angle.cos) / 2.0
-    end
-
-    private
-
-    # By default, Solar System bodies have a phase angle.
-    # Override this method in subclasses when non-applicable.
-    def compute_phase_angle?
-      true
-    end
-
-    def compute_geometric(ephem)
-      self.class.compute_geometric(ephem: ephem, instant: @instant)
     end
 
     # Source:
@@ -153,27 +175,45 @@ module Astronoby
     #  Author: Jean Meeus
     #  Edition: 2nd edition
     #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
-    def compute_phase_angle(ephem)
-      @phase_angle ||= begin
-        sun = Sun.new(instant: @instant, ephem: ephem)
-        geocentric_elongation = Angle.acos(
-          sun.apparent.equatorial.declination.sin *
-          apparent.equatorial.declination.sin +
-          sun.apparent.equatorial.declination.cos *
-          apparent.equatorial.declination.cos *
-          (
-            sun.apparent.equatorial.right_ascension -
-              apparent.equatorial.right_ascension
-          ).cos
-        )
+    # Apparent magnitude of the body, as seen from Earth.
+    # @return [Float, nil] Apparent magnitude of the body.
+    def apparent_magnitude
+      return unless self.class.absolute_magnitude
 
-        term1 = sun.astrometric.distance.km * geocentric_elongation.sin
-        term2 = astrometric.distance.km -
-          sun.astrometric.distance.km * geocentric_elongation.cos
-        angle = Angle.atan(term1 / term2)
-        Astronoby::Util::Trigonometry
-          .adjustement_for_arctangent(term1, term2, angle)
+      @apparent_magnitude ||= begin
+        body_sun_distance =
+          (astrometric.position - @sun.astrometric.position).magnitude
+        self.class.absolute_magnitude +
+          5 * Math.log10(body_sun_distance.au * astrometric.distance.au) +
+          magnitude_correction_term
       end
+    end
+
+    private
+
+    # By default, Solar System bodies expose attributes that are dependent on
+    # the Sun's position, such as phase angle and illuminated fraction.
+    # If a body does not require Sun data, it should override this method to
+    # return false.
+    def requires_sun_data?
+      true
+    end
+
+    def compute_geometric(ephem)
+      self.class.compute_geometric(ephem: ephem, instant: @instant)
+    end
+
+    def compute_sun(ephem)
+      @sun ||= Sun.new(instant: @instant, ephem: ephem)
+    end
+
+    # Source:
+    #  Title: Explanatory Supplement to the Astronomical Almanac
+    #  Authors: Sean E. Urban and P. Kenneth Seidelmann
+    #  Edition: University Science Books
+    #  Chapter: 10.3 - Phases and Magnitudes
+    def magnitude_correction_term
+      -2.5 * Math.log10(illuminated_fraction)
     end
   end
 end

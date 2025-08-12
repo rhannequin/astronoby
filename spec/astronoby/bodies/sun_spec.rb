@@ -617,4 +617,20 @@ RSpec.describe Astronoby::Sun do
       expect(illuminated_fraction).to be_nil
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns the apparent magnitude for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_sun
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(-26.7)
+      # IMCCE:      -26.7
+      # Horizons:   -26.707
+      # Stellarium: -26.71
+    end
+  end
 end

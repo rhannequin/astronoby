@@ -434,4 +434,36 @@ RSpec.describe Astronoby::Venus do
       # Skyfield: 0.688
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns the apparent magnitude for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(-4.07)
+      # IMCCE:      -4.07
+      # Horizons:   -4.065
+      # Stellarium: -4.07
+      # Skyfield:   -4.07
+    end
+
+    it "returns the apparent magnitude for 2025-03-22" do
+      time = Time.utc(2025, 3, 22)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(-4.22)
+      # IMCCE:      -4.22
+      # Horizons:   -4.220
+      # Stellarium: -4.22
+      # Skyfield:   -4.20
+    end
+  end
 end

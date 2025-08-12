@@ -434,4 +434,21 @@ RSpec.describe Astronoby::Uranus do
       # Skyfield: 0.9996
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns the apparent magnitude for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(5.86)
+      # IMCCE:      5.88
+      # Horizons:   5.803
+      # Stellarium: 5.82
+      # Skyfield:   5.80
+    end
+  end
 end

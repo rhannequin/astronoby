@@ -560,4 +560,48 @@ RSpec.describe Astronoby::Moon do
       expect(phase_fraction.round(2)).to eq 0.66
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns the apparent magnitude for 2025-07-01" do
+      time = Time.utc(2025, 7, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(-9.04)
+      # IMCCE:      -8.87
+      # Horizons:   -9.177
+      # Stellarium: -9.41
+    end
+
+    it "returns the apparent magnitude for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(-11.58)
+      # IMCCE:      -11.38
+      # Horizons:   -11.703
+      # Stellarium: -11.78
+    end
+
+    it "returns the apparent magnitude for 2025-07-26" do
+      time = Time.utc(2025, 7, 26)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(-8.3)
+      # IMCCE:      -3.56
+      # Horizons:   -5.497
+      # Stellarium: -4.57
+    end
+  end
 end

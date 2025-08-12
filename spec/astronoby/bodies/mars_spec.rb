@@ -434,4 +434,21 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: 0.9324
     end
   end
+
+  describe "#apparent_magnitude" do
+    it "returns the apparent magnitude for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent_magnitude = planet.apparent_magnitude
+
+      expect(apparent_magnitude.round(2)).to eq(1.54)
+      # IMCCE:      1.54
+      # Horizons:   1.507
+      # Stellarium: 1.51
+      # Skyfield:   1.55
+    end
+  end
 end
