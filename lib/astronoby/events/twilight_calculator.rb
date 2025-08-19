@@ -121,7 +121,7 @@ module Astronoby
         )
       end
 
-      within_range = ->(t) { t && t >= start_time && t <= end_time }
+      within_range = ->(time) { time && time >= start_time && time <= end_time }
 
       TwilightEvents.new(
         morning_civil.select(&within_range),
