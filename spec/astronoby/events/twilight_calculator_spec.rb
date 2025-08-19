@@ -36,7 +36,10 @@ RSpec.describe Astronoby::TwilightCalculator do
 
       expect(event.morning_civil_twilight_time)
         .to eq Time.utc(2024, 3, 14, 19, 29, 33)
-      # IMCCE: 19:29:29
+      # IMCCE:       19:29:29
+      # USNO:        19:30
+      # Skyfield:    19:29:16
+      # Timeanddate: 19:28
     end
 
     context "when the civil twilight doesn't start" do
@@ -93,7 +96,10 @@ RSpec.describe Astronoby::TwilightCalculator do
 
       expect(event.evening_civil_twilight_time)
         .to eq Time.utc(2024, 3, 14, 8, 39, 20)
-      # IMCCE: 08:39:23
+      # IMCCE:       08:39:23
+      # USNO:        08:39
+      # Skyfield:    08:39:41
+      # Timeanddate: 08:39
     end
 
     context "when the civil twilight doesn't start" do
@@ -150,7 +156,10 @@ RSpec.describe Astronoby::TwilightCalculator do
 
       expect(event.morning_nautical_twilight_time)
         .to eq Time.utc(2024, 3, 14, 19, 0, 23)
-      # IMCCE: 19:00:13
+      # IMCCE:       19:00:13
+      # USNO:        19:00
+      # Skyfield:    19:00:00
+      # Timeanddate: 18:59
     end
 
     context "when the nautical twilight doesn't start" do
@@ -207,7 +216,10 @@ RSpec.describe Astronoby::TwilightCalculator do
 
       expect(event.evening_nautical_twilight_time)
         .to eq Time.utc(2024, 3, 14, 9, 8, 32)
-      # IMCCE: 09:08:37
+      # IMCCE:       09:08:37
+      # USNO:        09:09
+      # Skyfield:    09:08:56
+      # Timeanddate: 09:08
     end
 
     context "when the nautical twilight doesn't start" do
@@ -264,7 +276,10 @@ RSpec.describe Astronoby::TwilightCalculator do
 
       expect(event.morning_astronomical_twilight_time)
         .to eq Time.utc(2024, 3, 14, 18, 30, 47)
-      # IMCCE: 18:30:31
+      # IMCCE:       18:30:31
+      # USNO:        18:31
+      # Skyfield:    18:30:17
+      # Timeanddate: 18:29
     end
 
     context "when the astronomical twilight doesn't start" do
@@ -321,7 +336,10 @@ RSpec.describe Astronoby::TwilightCalculator do
 
       expect(event.evening_astronomical_twilight_time)
         .to eq Time.utc(2024, 3, 14, 9, 38, 9)
-      # IMCCE: 09:38:17
+      # IMCCE:       09:38:17
+      # USNO:        09:38
+      # Skyfield:    09:38:37
+      # Timeanddate: 09:38
     end
 
     context "when the astronomical twilight doesn't start" do
@@ -361,10 +379,16 @@ RSpec.describe Astronoby::TwilightCalculator do
 
         expect(event.morning_civil_twilight_time.localtime(utc_offset))
           .to eq(Time.new(2025, 1, 1, 5, 3, 18, utc_offset))
-        # IMCCE: 2025-01-01T05:03:14-10:00
+        # IMCCE:       2025-01-01T05:03:14-10:00
+        # USNO:        2025-01-01T05:03   -10:00
+        # Skyfield:    2025-01-01T05:03:13-10:00
+        # Timeanddate: 2025-01-01T05:03   -10:00
         expect(event.evening_civil_twilight_time.localtime(utc_offset))
           .to eq(Time.new(2025, 1, 1, 19, 0, 14, utc_offset))
-        # IMCCE: 2025-01-01T19:00:17-10:00
+        # IMCCE:       2025-01-01T19:00:17-10:00
+        # USNO:        2025-01-01T19:00   -10:00
+        # Skyfield:    2025-01-01T19:00:17-10:00
+        # Timeanddate: 2025-01-01T19:00   -10:00
       end
     end
   end
