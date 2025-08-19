@@ -24,8 +24,8 @@ RSpec.describe Astronoby::TwilightCalculator do
       date = Date.new(2024, 3, 14)
       ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.from_dms(-33, 52, 4),
-        longitude: Astronoby::Angle.from_dms(151, 12, 26)
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
       )
       calculator = described_class.new(
         observer: observer,
@@ -35,11 +35,11 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.morning_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 19, 29, 33)
-      # IMCCE:       19:29:29
-      # USNO:        19:30
-      # Skyfield:    19:29:16
-      # Timeanddate: 19:28
+        .to eq Time.utc(2024, 3, 14, 5, 33, 56)
+      # IMCCE:       05:33:55
+      # USNO:        05:34
+      # Skyfield:    05:33:54
+      # Timeanddate: 05:33
     end
 
     context "when the civil twilight doesn't start" do
@@ -84,8 +84,8 @@ RSpec.describe Astronoby::TwilightCalculator do
       date = Date.new(2024, 3, 14)
       ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.from_dms(-33, 52, 4),
-        longitude: Astronoby::Angle.from_dms(151, 12, 26)
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
       )
       calculator = described_class.new(
         observer: observer,
@@ -95,11 +95,11 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.evening_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 8, 39, 20)
-      # IMCCE:       08:39:23
-      # USNO:        08:39
-      # Skyfield:    08:39:41
-      # Timeanddate: 08:39
+        .to eq Time.utc(2024, 3, 14, 18, 26, 14)
+      # IMCCE:       18:26:20
+      # USNO:        18:26
+      # Skyfield:    18:26:20
+      # Timeanddate: 18:26
     end
 
     context "when the civil twilight doesn't start" do
@@ -144,8 +144,8 @@ RSpec.describe Astronoby::TwilightCalculator do
       date = Date.new(2024, 3, 14)
       ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.from_dms(-33, 52, 4),
-        longitude: Astronoby::Angle.from_dms(151, 12, 26)
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
       )
       calculator = described_class.new(
         observer: observer,
@@ -155,11 +155,11 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.morning_nautical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 19, 0, 23)
-      # IMCCE:       19:00:13
-      # USNO:        19:00
-      # Skyfield:    19:00:00
-      # Timeanddate: 18:59
+        .to eq Time.utc(2024, 3, 14, 4, 57, 16)
+      # IMCCE:       04:57:12
+      # USNO:        04:57
+      # Skyfield:    04:57:12
+      # Timeanddate: 04:57
     end
 
     context "when the nautical twilight doesn't start" do
@@ -204,8 +204,8 @@ RSpec.describe Astronoby::TwilightCalculator do
       date = Date.new(2024, 3, 14)
       ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.from_dms(-33, 52, 4),
-        longitude: Astronoby::Angle.from_dms(151, 12, 26)
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
       )
       calculator = described_class.new(
         observer: observer,
@@ -215,11 +215,11 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.evening_nautical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 9, 8, 32)
-      # IMCCE:       09:08:37
-      # USNO:        09:09
-      # Skyfield:    09:08:56
-      # Timeanddate: 09:08
+        .to eq Time.utc(2024, 3, 14, 19, 2, 55)
+      # IMCCE:       19:03:10
+      # USNO:        19:03
+      # Skyfield:    19:03:09
+      # Timeanddate: 19:03
     end
 
     context "when the nautical twilight doesn't start" do
@@ -264,8 +264,8 @@ RSpec.describe Astronoby::TwilightCalculator do
       date = Date.new(2024, 3, 14)
       ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.from_dms(-33, 52, 4),
-        longitude: Astronoby::Angle.from_dms(151, 12, 26)
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
       )
       calculator = described_class.new(
         observer: observer,
@@ -275,11 +275,11 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.morning_astronomical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 18, 30, 47)
-      # IMCCE:       18:30:31
-      # USNO:        18:31
-      # Skyfield:    18:30:17
-      # Timeanddate: 18:29
+        .to eq Time.utc(2024, 3, 14, 4, 19, 44)
+      # IMCCE:       04:19:38
+      # USNO:        04:20
+      # Skyfield:    04:19:37
+      # Timeanddate: 04:19
     end
 
     context "when the astronomical twilight doesn't start" do
@@ -324,8 +324,8 @@ RSpec.describe Astronoby::TwilightCalculator do
       date = Date.new(2024, 3, 14)
       ephem = test_ephem_sun
       observer = Astronoby::Observer.new(
-        latitude: Astronoby::Angle.from_dms(-33, 52, 4),
-        longitude: Astronoby::Angle.from_dms(151, 12, 26)
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
       )
       calculator = described_class.new(
         observer: observer,
@@ -335,11 +335,11 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.evening_astronomical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 9, 38, 9)
-      # IMCCE:       09:38:17
-      # USNO:        09:38
-      # Skyfield:    09:38:37
-      # Timeanddate: 09:38
+        .to eq Time.utc(2024, 3, 14, 19, 40, 30)
+      # IMCCE:       19:40:54
+      # USNO:        19:41
+      # Skyfield:    19:40:54
+      # Timeanddate: 19:40
     end
 
     context "when the astronomical twilight doesn't start" do
