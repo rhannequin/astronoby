@@ -59,7 +59,8 @@ module Astronoby
       (rts_events.rising_times + rts_events.setting_times)
         .compact
         .each do |t|
-          rounded_time = t.round
+        .each do |event_time|
+          rounded_time = event_time.round
           next if equatorial_by_time.key?(rounded_time)
 
           instant = Instant.from_time(rounded_time)
