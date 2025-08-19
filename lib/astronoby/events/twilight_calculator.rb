@@ -74,50 +74,36 @@ module Astronoby
       morning_astronomical = []
       evening_astronomical = []
 
-      rts_events.rising_times.each do |rise_time|
-        next unless rise_time
-        eq = equatorial_by_time[rise_time.round]
-        morning_civil << compute_twilight_time_from(
-          MORNING,
-          TWILIGHT_ANGLES[CIVIL],
-          rise_time,
-          eq
-        )
-        morning_nautical << compute_twilight_time_from(
-          MORNING,
-          TWILIGHT_ANGLES[NAUTICAL],
-          rise_time,
-          eq
-        )
-        morning_astronomical << compute_twilight_time_from(
-          MORNING,
-          TWILIGHT_ANGLES[ASTRONOMICAL],
-          rise_time,
-          eq
-        )
-      end
+      arrays_by_period = {
+        MORNING => {
+          CIVIL => morning_civil,
+          NAUTICAL => morning_nautical,
+          ASTRONOMICAL => morning_astronomical
+        },
+        EVENING => {
+          CIVIL => evening_civil,
+          NAUTICAL => evening_nautical,
+          ASTRONOMICAL => evening_astronomical
+        }
+      }
 
-      rts_events.setting_times.each do |set_time|
-        next unless set_time
-        eq = equatorial_by_time[set_time.round]
-        evening_civil << compute_twilight_time_from(
-          EVENING,
-          TWILIGHT_ANGLES[CIVIL],
-          set_time,
-          eq
-        )
-        evening_nautical << compute_twilight_time_from(
-          EVENING,
-          TWILIGHT_ANGLES[NAUTICAL],
-          set_time,
-          eq
-        )
-        evening_astronomical << compute_twilight_time_from(
-          EVENING,
-          TWILIGHT_ANGLES[ASTRONOMICAL],
-          set_time,
-          eq
-        )
+      [
+        [rts_events.rising_times, MORNING],
+        [rts_events.setting_times, EVENING]
+      ].each do |times, period|
+        times.each do |event_time|
+          next unless event_time
+
+          equatorial_coordinates = equatorial_by_time[event_time.round]
+          TWILIGHT_ANGLES.each do |twilight, angle|
+            arrays_by_period[period][twilight] << compute_twilight_time_from(
+              period,
+              angle,
+              event_time,
+              equatorial_coordinates
+            )
+          end
+        end
       end
 
       within_range = ->(time) { time && time >= start_time && time <= end_time }
@@ -140,7 +126,8 @@ module Astronoby
     )
       unless PERIODS_OF_THE_DAY.include?(period_of_the_day)
         raise IncompatibleArgumentsError,
-          "Only #{PERIODS_OF_THE_DAY.join(" or ")} are allowed as period_of_the_day, got #{period_of_the_day}"
+          "Only #{PERIODS_OF_THE_DAY.join(" or ")} are allowed as " \
+          "period_of_the_day, got #{period_of_the_day}"
       end
 
       observation_events = get_observation_events(date, utc_offset: utc_offset)
