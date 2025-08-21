@@ -11,7 +11,7 @@ Ephem::IO::Download.call(name: "de421.bsp", target: "tmp/de421.bsp")
 
 Ephemerides can be large files, but Astronoby provides a tool to drastically
 reduce the size to your needs. You can learn more about ephemerides on the
-[Ephem page](https://github.com/rhannequin/astronoby/wiki/Ephem).
+[Ephem page].
 
 ## Load an ephemeris
 
@@ -26,8 +26,7 @@ time = Time.utc(2025, 6, 19, 12, 0, 0)
 instant = Astronoby::Instant.from_time(time)
 ```
 
-You can learn more about time scales on the
-[Instant page](https://github.com/rhannequin/astronoby/wiki/Instant).
+You can learn more about time scales on the [Instant page].
 
 ## Instantiate a Solar System body object
 
@@ -35,8 +34,7 @@ You can learn more about time scales on the
 jupiter = Astronoby::Jupiter.new(instant: instant, ephem: ephem)
 ```
 
-You can learn more about planets and bodies on the
-[Celestial Bodies page](https://github.com/rhannequin/astronoby/wiki/Celestial-Bodies).
+You can learn more about planets and bodies on the [Celestial Bodies page].
 
 ## Define an observer from geographic coordinates
 
@@ -48,9 +46,8 @@ observer = Astronoby::Observer.new(
 )
 ```
 
-You can learn more about angles on the [Angles page](angles.md), and about
-observers on the
-[Observer page](https://github.com/rhannequin/astronoby/wiki/Observer).
+You can learn more about angles on the [Angles page], and about observers on the
+[Observer page].
 
 ## Compute the topocentric position of the body as seen from the observer
 
@@ -59,7 +56,7 @@ topocentric = jupiter.observed_by(observer)
 ```
 
 You can learn more about reference frames and positions on the
-[Reference Frames page](https://github.com/rhannequin/astronoby/wiki/Reference-Frames).
+[Reference Frames page].
 
 ## Get the horizontal coordinates from the position
 
@@ -71,8 +68,7 @@ topocentric.horizontal.altitude.str(:dms)
 # => "+64° 22′ 58.1084″"
 ```
 
-You can learn more about coordinates on the
-[Coordinates page](https://github.com/rhannequin/astronoby/wiki/Coordinates).
+You can learn more about coordinates on the [Coordinates page].
 
 ## Get the rising, transit and setting times between two times
 
@@ -99,7 +95,7 @@ events.setting_times
 ```
 
 You can learn more about this calculator on the
-[Rise, transit and setting times page](https://github.com/rhannequin/astronoby/wiki/Rise,-transit-and-set-times).
+[Rise, transit and setting times page].
 
 ## Get the twilight times of the day
 
@@ -130,8 +126,7 @@ event.evening_astronomical_twilight_time
 # => 2025-05-01 21:18:01 UTC
 ```
 
-You can learn more about this calculator on the
-[Twilight times page](https://github.com/rhannequin/astronoby/wiki/Twilight-times).
+You can learn more about this calculator on the [Twilight times page].
 
 ## Moon phases
 
@@ -161,8 +156,7 @@ moon.current_phase_fraction.round(2)
 # => 0.11
 ```
 
-You can learn more about phases on the
-[Moon phases page](https://github.com/rhannequin/astronoby/wiki/Moon-phases).
+You can learn more about phases on the [Moon phases page].
 
 ## Equinox and solstice times
 
@@ -184,4 +178,14 @@ Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
 You can learn more about equinoxes and solstices on the
 [Equinoxes and solstices times page].
 
+[Ephem page]: ephem.md
+[Instant page]: instant.md
+[Celestial Bodies page]: celestial_bodies.md
+[Observer page]: observer.md
+[Reference Frames page]: reference_frames.md
+[Angles page]: angles.md
+[Coordinates page]: coordinates.md
+[Rise, transit and setting times page]: rise_transit_set_times.md
+[Twilight times page]: twilight_times.md
+[Moon phases page]: moon_phases.md
 [Equinoxes and solstices times page]: equinoxes_solstices_times.md
