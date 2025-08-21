@@ -1,4 +1,4 @@
-# Equinox and Solstice times
+# Equinoxes and Solstices Times
 
 The equinox and solstice are two precise events that each happen twice a year.
 

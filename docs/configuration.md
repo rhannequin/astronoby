@@ -60,7 +60,7 @@ a rounding of maximum 2.4 hours.
 
 ### Setting custom precision
 
-To set up your how precision, you can use:
+To set up your own precision, you can use:
 
 ```rb
 Astronoby.cache_precision(:geometric, 5)

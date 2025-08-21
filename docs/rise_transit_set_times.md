@@ -6,7 +6,7 @@ during a period of time: `Astronoby::RiseTransitSetCalculator`.
 
 ## Initialization
 
-Once instantiated, the calculator doesn't do any anything yet, it waits for your
+Once instantiated, the calculator doesn't do anything yet, it waits for your
 instruction.
 
 It takes as key arguments:

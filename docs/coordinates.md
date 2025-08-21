@@ -89,7 +89,7 @@ They have two main angular attributes:
 
 ### Latitude
 
-The ecliptic longitude measures the angular distance of an object along the
+The ecliptic latitude measures the angular distance of an object along the
 ecliptic from the primary direction.
 
 ```rb

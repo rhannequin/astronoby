@@ -21,7 +21,7 @@ Ephemerides are available for download from:
 * the INPOP releases page of the IMCCE: https://www.imcce.fr/inpop
 
 You can download any `.bsp` file. For the moment, Astronoby only supports the
-planets of the Solar System, and the Sun and and the Moon, so you need to
+planets of the Solar System, and the Sun and the Moon, so you need to
 download a _Development Ephemeris_, which starts with `de` (i.e. `de421.bsp`),
 or any of the INPOP ephemeris files (i.e. `inpop19a.bsp`).
 

@@ -2,7 +2,7 @@
 
 Time in astronomy is usually a slightly different concept than in everyday
 life. Today, the vast majority of people use the [Gregorian calendar] and a time
-ased on <abbr title="Coordinated Universal Time">UTC</abbr>. This timescale is
+based on <abbr title="Coordinated Universal Time">UTC</abbr>. This timescale is
 convenient for matching what we experience on Earth, but it is not static, it
 includes leap days, leap seconds.
 

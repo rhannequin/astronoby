@@ -1,6 +1,6 @@
 # Observer
 
-`Astonoby::Observer` is the representation of an observer on Earth. Most of the
+`Astronoby::Observer` is the representation of an observer on Earth. Most of the
 events computed by Astronoby are location and date based.
 
 ## Initialization

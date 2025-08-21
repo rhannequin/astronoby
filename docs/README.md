@@ -182,4 +182,6 @@ Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
 ```
 
 You can learn more about equinoxes and solstices on the
-[Equinoxe and solstice times page](https://github.com/rhannequin/astronoby/wiki/Equinoxe-and-solstice-times).
+[Equinoxes and solstices times page].
+
+[Equinoxes and solstices times page]: equinoxes_solstices_times.md

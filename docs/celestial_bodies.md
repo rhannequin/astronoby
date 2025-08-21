@@ -40,7 +40,7 @@ methods, while absolute values are accessible through class methods.
 
 ### `#constellation`
 
-Constallation where the body appears in the sky as seen from Earth. Returns
+Constellation where the body appears in the sky as seen from Earth. Returns
 a `Astronoby::Constellation` object.
 
 ```rb

@@ -15,7 +15,7 @@ All reference frames provide this common interface:
 
 * `#position`: Vector of position as x,y,z `Astronoby::Distance` objects
 * `#velocity`: Vector of velocity as x,y,z `Astronoby::Velocity` objects
-* `#distance`: Distance from the cent (`Astronoby::Distance`)
+* `#distance`: Distance from the centre (`Astronoby::Distance`)
 * `#equatorial`: Equatorial coordinates (`Astronoby::Coordinates::Equatorial`)
 * `#ecliptic`: Ecliptic coordinates (`Astronoby::Coordinates::Ecliptic`)
 

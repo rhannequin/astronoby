@@ -5,17 +5,17 @@ some of its light illuminates the atmosphere, making the sky brighter than
 during full night.
 
 We usually define 4 moments when talking about twilight:
-* sunrise/sunset: right when before the Sun goes above the horizon on rightafter it goes below the horizon. The Sun's horizon angle is 0°.
+* sunrise/sunset: right when the Sun goes above the horizon or right after it goes below the horizon. The Sun's horizon angle is 0°.
 * civil twilight: when the horizon angle is between 0° and -6°. Usually, during this time, artificial light is not needed yet.
-* nautical twilight: when the horizon angle is between 6° and -12°. When the nautical twilight starts, the difference between the horizon at sea and the sky cannot be seen clearly anymore.
-* astronomical twilight: when the horizon angle is between 12° and -18°. Some stars can been seen during this time.
+* nautical twilight: when the horizon angle is between -6° and -12°. When the nautical twilight starts, the difference between the horizon at sea and the sky cannot be seen clearly anymore.
+* astronomical twilight: when the horizon angle is between -12° and -18°. Some stars can be seen during this time.
 
 These moments change every day and depend on the observer's location. They can
 be computed using `Astronoby::TwilightCalculator`.
 
 ## Initialization
 
-Once instantiated, the calculator doesn't do any anything yet, it waits for your
+Once instantiated, the calculator doesn't do anything yet, it waits for your
 instruction.
 
 It takes as key arguments:
