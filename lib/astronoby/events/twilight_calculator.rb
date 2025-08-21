@@ -24,72 +24,114 @@ module Astronoby
       @ephem = ephem
     end
 
-    def event_on(date)
-      observation_events = get_observation_events(date)
-      midday_instant = create_midday_instant(date)
-      sun_at_midday = Sun.new(instant: midday_instant, ephem: @ephem)
-      equatorial_coordinates = sun_at_midday.apparent.equatorial
-
-      morning_civil = compute_twilight_time(
-        MORNING,
-        TWILIGHT_ANGLES[CIVIL],
-        observation_events,
-        equatorial_coordinates
-      )
-
-      evening_civil = compute_twilight_time(
-        EVENING,
-        TWILIGHT_ANGLES[CIVIL],
-        observation_events,
-        equatorial_coordinates
-      )
-
-      morning_nautical = compute_twilight_time(
-        MORNING,
-        TWILIGHT_ANGLES[NAUTICAL],
-        observation_events,
-        equatorial_coordinates
-      )
-
-      evening_nautical = compute_twilight_time(
-        EVENING,
-        TWILIGHT_ANGLES[NAUTICAL],
-        observation_events,
-        equatorial_coordinates
-      )
-
-      morning_astronomical = compute_twilight_time(
-        MORNING,
-        TWILIGHT_ANGLES[ASTRONOMICAL],
-        observation_events,
-        equatorial_coordinates
-      )
-
-      evening_astronomical = compute_twilight_time(
-        EVENING,
-        TWILIGHT_ANGLES[ASTRONOMICAL],
-        observation_events,
-        equatorial_coordinates
-      )
+    def event_on(date, utc_offset: 0)
+      start_time = Time
+        .new(date.year, date.month, date.day, 0, 0, 0, utc_offset)
+      end_time = Time
+        .new(date.year, date.month, date.day, 23, 59, 59, utc_offset)
+      events = events_between(start_time, end_time)
 
       TwilightEvent.new(
-        morning_civil_twilight_time: morning_civil,
-        evening_civil_twilight_time: evening_civil,
-        morning_nautical_twilight_time: morning_nautical,
-        evening_nautical_twilight_time: evening_nautical,
-        morning_astronomical_twilight_time: morning_astronomical,
-        evening_astronomical_twilight_time: evening_astronomical
+        morning_civil_twilight_time:
+          events.morning_civil_twilight_times.first,
+        evening_civil_twilight_time:
+          events.evening_civil_twilight_times.first,
+        morning_nautical_twilight_time:
+          events.morning_nautical_twilight_times.first,
+        evening_nautical_twilight_time:
+          events.evening_nautical_twilight_times.first,
+        morning_astronomical_twilight_time:
+          events.morning_astronomical_twilight_times.first,
+        evening_astronomical_twilight_time:
+          events.evening_astronomical_twilight_times.first
       )
     end
 
-    def time_for_zenith_angle(date:, period_of_the_day:, zenith_angle:)
-      unless PERIODS_OF_THE_DAY.include?(period_of_the_day)
-        raise IncompatibleArgumentsError,
-          "Only #{PERIODS_OF_THE_DAY.join(" or ")} are allowed as period_of_the_day, got #{period_of_the_day}"
+    def events_between(start_time, end_time)
+      rts_events = Astronoby::RiseTransitSetCalculator.new(
+        body: Sun,
+        observer: @observer,
+        ephem: @ephem
+      ).events_between(start_time, end_time)
+
+      equatorial_by_time = {}
+
+      (rts_events.rising_times + rts_events.setting_times)
+        .compact
+        .each do |event_time|
+          rounded_time = event_time.round
+          next if equatorial_by_time.key?(rounded_time)
+
+          instant = Instant.from_time(rounded_time)
+          sun_at_time = Sun.new(instant: instant, ephem: @ephem)
+          equatorial_by_time[rounded_time] = sun_at_time.apparent.equatorial
+        end
+
+      morning_civil = []
+      evening_civil = []
+      morning_nautical = []
+      evening_nautical = []
+      morning_astronomical = []
+      evening_astronomical = []
+
+      arrays_by_period = {
+        MORNING => {
+          CIVIL => morning_civil,
+          NAUTICAL => morning_nautical,
+          ASTRONOMICAL => morning_astronomical
+        },
+        EVENING => {
+          CIVIL => evening_civil,
+          NAUTICAL => evening_nautical,
+          ASTRONOMICAL => evening_astronomical
+        }
+      }
+
+      [
+        [rts_events.rising_times, MORNING],
+        [rts_events.setting_times, EVENING]
+      ].each do |times, period|
+        times.each do |event_time|
+          next unless event_time
+
+          equatorial_coordinates = equatorial_by_time[event_time.round]
+          TWILIGHT_ANGLES.each do |twilight, angle|
+            arrays_by_period[period][twilight] << compute_twilight_time_from(
+              period,
+              angle,
+              event_time,
+              equatorial_coordinates
+            )
+          end
+        end
       end
 
-      observation_events = get_observation_events(date)
-      midday_instant = create_midday_instant(date)
+      within_range = ->(time) { time && time >= start_time && time <= end_time }
+
+      TwilightEvents.new(
+        morning_civil.select(&within_range),
+        evening_civil.select(&within_range),
+        morning_nautical.select(&within_range),
+        evening_nautical.select(&within_range),
+        morning_astronomical.select(&within_range),
+        evening_astronomical.select(&within_range)
+      )
+    end
+
+    def time_for_zenith_angle(
+      date:,
+      period_of_the_day:,
+      zenith_angle:,
+      utc_offset: 0
+    )
+      unless PERIODS_OF_THE_DAY.include?(period_of_the_day)
+        raise IncompatibleArgumentsError,
+          "Only #{PERIODS_OF_THE_DAY.join(" or ")} are allowed as " \
+          "period_of_the_day, got #{period_of_the_day}"
+      end
+
+      observation_events = get_observation_events(date, utc_offset: utc_offset)
+      midday_instant = create_midday_instant(date, utc_offset: utc_offset)
       sun_at_midday = Sun.new(instant: midday_instant, ephem: @ephem)
       equatorial_coordinates = sun_at_midday.apparent.equatorial
 
@@ -103,17 +145,17 @@ module Astronoby
 
     private
 
-    def create_midday_instant(date)
-      time = Time.utc(date.year, date.month, date.day, 12)
+    def create_midday_instant(date, utc_offset: 0)
+      time = Time.new(date.year, date.month, date.day, 12, 0, 0, utc_offset)
       Instant.from_time(time)
     end
 
-    def get_observation_events(date)
+    def get_observation_events(date, utc_offset: 0)
       Astronoby::RiseTransitSetCalculator.new(
         body: Sun,
         observer: @observer,
         ephem: @ephem
-      ).event_on(date)
+      ).event_on(date, utc_offset: utc_offset)
     end
 
     def compute_twilight_time(
@@ -128,8 +170,21 @@ module Astronoby
         observation_events.setting_time
       end
 
-      # If the sun doesn't rise or set on this day, we can't calculate
-      # twilight
+      compute_twilight_time_from(
+        period_of_the_day,
+        zenith_angle,
+        period_time,
+        equatorial_coordinates
+      )
+    end
+
+    def compute_twilight_time_from(
+      period_of_the_day,
+      zenith_angle,
+      period_time,
+      equatorial_coordinates
+    )
+      # If the sun doesn't rise or set on this day, we can't calculate twilight
       return nil unless period_time
 
       hour_angle_at_period = equatorial_coordinates
