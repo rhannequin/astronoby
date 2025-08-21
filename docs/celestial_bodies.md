@@ -10,9 +10,7 @@ Given an ephemeris (`Astronoby::Ephem`) and an instant object
 (`Astronoby::Instant`), these classes enable to get instances which provides
 positions in different reference frames.
 
-You can learn more about
-[ephemerides](https://github.com/rhannequin/astronoby/wiki/Ephem) and
-[reference frames](https://github.com/rhannequin/astronoby/wiki/Reference-Frames).
+You can learn more about [ephemerides] and [reference frames].
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -89,3 +87,6 @@ Absolute brightness of the body. Returns a `Float`.
 Astronoby::Venus.absolute_magnitude
 # => -4.384
 ```
+
+[ephemerides]: ephem.md
+[reference frames]: reference_frames.md

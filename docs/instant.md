@@ -6,8 +6,6 @@ ased on <abbr title="Coordinated Universal Time">UTC</abbr>. This timescale is
 convenient for matching what we experience on Earth, but it is not static, it
 includes leap days, leap seconds.
 
-[Gregorian calendar]: https://en.wikipedia.org/wiki/Gregorian_calendar
-
 Also, most of us leave in areas where the local legal time is not UTC, so we
 have to deal with time zones that are arbitrary and constantly changing.
 
@@ -21,10 +19,6 @@ used in most calculations instead of `Time`.
 `Astronoby::Instant` is a value object that stores an instant in time on Earth
 in [Terrestrial Time], an astronomical time standard defined by the
 International Astronomical Union, as a [Julian Date].
-
-[Terrestrial Time]: https://en.wikipedia.org/wiki/Terrestrial_Time
-
-[Julian Date]: https://en.wikipedia.org/wiki/Julian_day
 
 From this instant in <abbr title="Terrestrial Time">TT</abbr>, other time
 standards can be expressed like the
@@ -133,3 +127,7 @@ instant1.diff(instant2)
 instant1 < instant2
 # => true
 ```
+
+[Gregorian calendar]: https://en.wikipedia.org/wiki/Gregorian_calendar
+[Terrestrial Time]: https://en.wikipedia.org/wiki/Terrestrial_Time
+[Julian Date]: https://en.wikipedia.org/wiki/Julian_day

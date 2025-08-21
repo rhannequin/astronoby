@@ -1,13 +1,11 @@
 # `Ephem`
 
-`Astronoby` depends on the gem
-[`ephem`](https://github.com/rhannequin/ruby-ephem) which provides a Ruby
-interface for <abbr title="Jet Propulsion Laboratory">JPL</abbr> SPICE binary
-kernels.
+`Astronoby` depends on the gem [`ephem`] which provides a Ruby interface for
+<abbr title="Jet Propulsion Laboratory">JPL</abbr> SPICE binary kernels.
 
 These kernels are extremely precise ephemerides produced by the JPL and are the
-foundation of the data provided by Astronoby. The [IMCCE](https://www.imcce.fr)
-also produces kernels in the same format for their
+foundation of the data provided by Astronoby. The [IMCCE] also produces
+kernels in the same format for their
 <abbr title="Intégrateur numérique planétaire de l'Observatoire de Paris">INPOP</abbr>
 model.
 
@@ -76,3 +74,6 @@ You may want to check how bodies are handled between JPL DE and IMCCE INPOP. For
 example, the excerpt file from a JPL DE kernel needs to include targets `3` and
 `399` for the Earth, while the excerpt file from a IMCCE INPOP kernel only needs
 the target `399`.
+
+[`ephem`]: https://github.com/rhannequin/ruby-ephem
+[IMCCE]: https://www.imcce.fr

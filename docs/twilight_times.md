@@ -22,8 +22,7 @@ It takes as key arguments:
 * `observer` (`Astronoby::Observer`): location on Earth of the observer
 * `ephem`: ephemeris to provide the initial raw data
 
-You can learn more about ephemerides on the
-[Ephem page](https://github.com/rhannequin/astronoby/wiki/Ephem).
+You can learn more about ephemerides on the [Ephem page].
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -40,8 +39,7 @@ calculator = Astronoby::TwilightCalculator.new(
 )
 ```
 
-You can learn more about observers on the
-[Observer page](https://github.com/rhannequin/astronoby/wiki/Observer).
+You can learn more about observers on the [Observer page].
 
 ## `events_between`
 
@@ -102,3 +100,6 @@ event.evening_nautical_twilight_time
 event.evening_astronomical_twilight_time
 # => 2025-05-01 18:45:38 UTC
 ```
+
+[Ephem page]: ephem.md
+[Observer page]: observer.md

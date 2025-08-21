@@ -1,20 +1,18 @@
 # Coordinates
 
-Astronoby provides 3 different types of coordinates:
+Astronoby provides three different types of coordinates:
 
 * Equatorial
 * Ecliptic
 * Horizontal
 
-Equatorial and ecliptic coordinates are available for each
-[reference frame](https://github.com/rhannequin/astronoby/wiki/Reference-Frames),
+Equatorial and ecliptic coordinates are available for each [reference frame],
 while horizontal coordinates are only available for a topocentric position.
 
 ## Equatorial
 
 In Astronoby, equatorial coordinates are geocentric spherical coordinates. As
-per [Wikipedia](https://en.wikipedia.org/wiki/Equatorial_coordinate_system)'s
-definition:
+per [Wikipedia]'s definition:
 
 > defined by an origin at the centre of Earth, fundamental plane consisting of
 > the projection of Earth's equator onto the celestial sphere (forming the
@@ -41,8 +39,7 @@ equatorial.right_ascension.str(:hms)
 # => "20h 45m 2.6702s"
 ```
 
-You can learn more about angles on the
-[Angle page](https://github.com/rhannequin/astronoby/wiki/Angle).
+You can learn more about angles on the [Angle page].
 
 ### Declination
 
@@ -86,9 +83,7 @@ As per Wikipedia's definition:
 > smaller motion of the ecliptic, and a small oscillation of the Earth's axis,
 > nutation.
 
-This primary direction depends on the
-[reference frame](https://github.com/rhannequin/astronoby/wiki/Reference-Frames)
-used.
+This primary direction depends on the [reference frame] used.
 
 They have two main angular attributes:
 
@@ -125,8 +120,7 @@ Horizontal coordinates are the most observer-centered and human intuitive
 coordinates, they measure where an object is in the sky as seen from an observer
 on Earth as "up and down" and "left and right".
 
-In Astronoby, they can only be computed from a
-[topocentric position](https://github.com/rhannequin/astronoby/wiki/Reference-Frames#topocentric).
+In Astronoby, they can only be computed from a [topocentric position].
 
 They have two main angular attributes:
 
@@ -160,3 +154,8 @@ eastward.
 horizontal.azimuth.str(:dms)
 # => "+171° 19′ 50.5798″"
 ```
+
+[reference frame]: reference_frames.md
+[Wikipedia]: https://en.wikipedia.org/wiki/Equatorial_coordinate_system
+[Angle page]: angles.md
+[topocentric position]: reference_frames.md#topocentric

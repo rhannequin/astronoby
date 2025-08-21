@@ -12,14 +12,12 @@ The two required key arguments to instantiate an observer are:
 * observer, from 180° to -180°, with positive angles eastward the Greenwich
 * meridian.
 
-Latitude and longitude are defined according to the
-[World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System). In
-other terms, they are the same as the ones used for the
-[GPS](https://en.wikipedia.org/wiki/GPS).
+Latitude and longitude are defined according to the [World Geodetic System].
+In other terms, they are the same as the ones used for the [GPS].
 
 It is also possible to give the following optional key arguments:
 * `elevation` (`Astronoby::Distance`): the distance above or below the average sea level
-* `utc_offset`: local time difference with UTC. Check the [timezone specifiers](https://ruby-doc.org/3.4.1/Time.html#class-Time-label-Timezone+Specifiers) for the format.
+* `utc_offset`: local time difference with UTC. Check the [timezone specifiers] for the format.
 
 ```rb
 # Location: Alhambra, Spain
@@ -31,8 +29,7 @@ observer = Astronoby::Observer.new(
 )
 ```
 
-You can learn more about angles on the
-[Angle page](https://github.com/rhannequin/astronoby/wiki/Angle).
+You can learn more about angles on the [Angles page].
 
 ## Value equality
 
@@ -53,3 +50,8 @@ observer2 = Astronoby::Observer.new(
 observer1 == observer2
 # => true
 ```
+
+[World Geodetic System]: https://en.wikipedia.org/wiki/World_Geodetic_System
+[GPS]: https://en.wikipedia.org/wiki/GPS
+[timezone specifiers]: https://ruby-doc.org/3.4.1/Time.html#class-Time-label-Timezone+Specifiers
+[Angles page]: angles.md

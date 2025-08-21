@@ -14,9 +14,7 @@ It takes as key arguments:
 * `observer` (`Astronoby::Observer`): location on Earth of the observer
 * `ephem`: ephemeris to provide the initial raw data
 
-You can learn more about
-[celestial bodies](https://github.com/rhannequin/astronoby/wiki/Celestial-Bodies)
-and [ephemerides](https://github.com/rhannequin/astronoby/wiki/Ephem).
+You can learn more about [celestial bodies] and [ephemerides].
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -109,3 +107,6 @@ event.transit_time.localtime(utc_offset)
 event.setting_time.localtime(utc_offset)
 # => 2025-05-01 16:14:24 +0300
 ```
+
+[celestial bodies]: celestial_bodies.md
+[ephemerides]: ephem.md

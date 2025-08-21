@@ -20,9 +20,9 @@ Astronoby.configuration.cache_enabled = true
 
 Once caching is enabled, it will be used for the following parts of the library
 with default precision values:
-* [Geometric positions](https://github.com/rhannequin/astronoby/wiki/Reference-Frames#geometric)
-* [Topocentric positions](https://github.com/rhannequin/astronoby/wiki/Reference-Frames#topocentric) when computing rising/transit/setting times
-* [Moon phases](https://github.com/rhannequin/astronoby/wiki/Moon-phases)
+* [Geometric positions]
+* [Topocentric positions] when computing rising/transit/setting times
+* [Moon phases]
 * Nutation
 * Precession
 
@@ -43,8 +43,7 @@ It is possible to change the precision value for the following:
 ### Precision value
 
 The precision value is how much rounded instants are. Because instants are
-stored as a [Julian Day](https://en.wikipedia.org/wiki/Julian_day), rounding may
-not seem very natural.
+stored as a [Julian Day], rounding may not seem very natural.
 
 Let's take the example of `1`. Rounding a Julian Day with only one digit means
 that all times within 8640 seconds will rounded to the same instant, which means
@@ -86,3 +85,8 @@ Astronoby.cache.max_size = 1000000
 Astronoby.cache.max_size
 # => 1000000
 ```
+
+[Geometric positions]: reference_frames.md#geometric
+[Topocentric positions]: reference_frames.md#topocentric
+[Moon phases]: moon_phases.md
+[Julian Day]: https://en.wikipedia.org/wiki/Julian_day

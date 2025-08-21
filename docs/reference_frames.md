@@ -127,5 +127,6 @@ topocentric.horizontal.azimuth.str(:dms, precision: 0)
 # => "+90° 14′ 19″"
 ```
 
-You can learn more about observers on the
-[Observer page](https://github.com/rhannequin/astronoby/wiki/Observer).
+You can learn more about observers on the [Observer page].
+
+[Observer page]: observer.md
