@@ -178,6 +178,11 @@ Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
 You can learn more about equinoxes and solstices on the
 [Equinoxes and solstices times page].
 
+## See also
+- [Glossary](glossary.md) - for astronomical and technical terms
+- [Configuration](configuration.md) - for performance tuning
+- [Performance Benchmarks](../benchmarks/README.md) - for testing improvements
+
 [Ephem page]: ephem.md
 [Instant page]: instant.md
 [Celestial Bodies page]: celestial_bodies.md

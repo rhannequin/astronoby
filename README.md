@@ -39,6 +39,13 @@ Since version 0.7.0, the usage documentation resides in [`docs/`]. For
 previous versions, you can access the documentation in the README for each
 [release].
 
+### See also
+- [Quick Start Guide](docs/README.md) - for getting started examples
+- [Celestial Bodies](docs/celestial_bodies.md) - for understanding planets and objects
+- [Reference Frames](docs/reference_frames.md) - for coordinate systems
+- [Observer Setup](docs/observer.md) - for location configuration
+- [Glossary](docs/glossary.md) - for astronomical and technical terms
+
 ### Expected breaking changes notice
 
 This library is still in heavy development. The public API is not stable, so

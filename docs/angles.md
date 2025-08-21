@@ -129,3 +129,9 @@ angle5.degrees   # => -180.0
 angle1.positive? # => true
 angle1.negative? # => false
 ```
+
+## See also
+- [Coordinates](coordinates.md) - for using angles in coordinate systems
+- [Observer](observer.md) - for latitude and longitude
+- [Reference Frames](reference_frames.md) - for position calculations
+- [Celestial Bodies](celestial_bodies.md) - for object positions

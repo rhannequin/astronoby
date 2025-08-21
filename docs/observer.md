@@ -57,3 +57,9 @@ observer1 == observer2
 [GPS]: https://en.wikipedia.org/wiki/GPS
 [timezone specifiers]: https://ruby-doc.org/3.4.1/Time.html#class-Time-label-Timezone+Specifiers
 [Angles page]: angles.md
+
+## See also
+- [Angles](angles.md) - for working with latitude and longitude
+- [Coordinates](coordinates.md) - for understanding position systems
+- [Reference Frames](reference_frames.md) - for topocentric calculations
+- [Celestial Bodies](celestial_bodies.md) - for observing objects

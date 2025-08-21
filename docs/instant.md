@@ -131,3 +131,9 @@ instant1 < instant2
 [Gregorian calendar]: https://en.wikipedia.org/wiki/Gregorian_calendar
 [Terrestrial Time]: https://en.wikipedia.org/wiki/Terrestrial_Time
 [Julian Date]: https://en.wikipedia.org/wiki/Julian_day
+
+## See also
+- [Ephemerides](ephem.md) - for time-based calculations
+- [Celestial Bodies](celestial_bodies.md) - for object positions
+- [Reference Frames](reference_frames.md) - for coordinate systems
+- [Configuration](configuration.md) - for performance settings

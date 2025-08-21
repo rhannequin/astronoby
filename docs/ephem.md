@@ -77,3 +77,9 @@ the target `399`.
 
 [`ephem`]: https://github.com/rhannequin/ruby-ephem
 [IMCCE]: https://www.imcce.fr
+
+## See also
+- [Celestial Bodies](celestial_bodies.md) - for using ephemeris data
+- [Reference Frames](reference_frames.md) - for coordinate calculations
+- [Observer](observer.md) - for location-based calculations
+- [Configuration](configuration.md) - for performance tuning

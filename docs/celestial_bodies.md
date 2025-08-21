@@ -90,3 +90,9 @@ Astronoby::Venus.absolute_magnitude
 
 [ephemerides]: ephem.md
 [reference frames]: reference_frames.md
+
+## See also
+- [Ephemerides](ephem.md) - for understanding data sources
+- [Reference Frames](reference_frames.md) - for coordinate systems
+- [Observer](observer.md) - for setting up observation locations
+- [Angles](angles.md) - for working with angular measurements

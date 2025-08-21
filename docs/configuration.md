@@ -90,3 +90,9 @@ Astronoby.cache.max_size
 [Topocentric positions]: reference_frames.md#topocentric
 [Moon phases]: moon_phases.md
 [Julian Day]: https://en.wikipedia.org/wiki/Julian_day
+
+## See also
+- [Reference Frames](reference_frames.md) - for understanding position calculations
+- [Ephemerides](ephem.md) - for data sources
+- [Performance Benchmarks](benchmarks/README.md) - for testing improvements
+- [Cache System](cache.md) - for detailed caching information
