@@ -5,7 +5,7 @@ performance and precision of computed data.
 
 ## Cache
 
-Some calculations are expensive but also repetitive in the intermediary computed
+Some calculations are expensive but also repetitive in the intermediate computed
 data. To improve performance, an internal cache system has been developed.
 
 ➡️ **Please note caching is disabled by default.**
@@ -31,7 +31,7 @@ with default precision values:
 When cache is enabled, some data is cached following a default precision
 threshold so that precision doesn't noticeably decrease.
 
-However, users may want to improve even more the performance at the cost of some
+However, users may want to improve performance even more at the cost of some
 precision.
 
 It is possible to change the precision value for the following:
@@ -46,8 +46,8 @@ The precision value is how much rounded instants are. Because instants are
 stored as a [Julian Day], rounding may not seem very natural.
 
 Let's take the example of `1`. Rounding a Julian Day with only one digit means
-that all times within 8640 seconds will rounded to the same instant, which means
-a rounding of maximum 2.4 hours.
+that all times within 8640 seconds will be rounded to the same instant, which
+means a maximum rounding of 2.4 hours.
 
 * `1`: 2.4 hours
 * `2`: 14.4 minutes
@@ -66,7 +66,7 @@ To set up your own precision, you can use:
 Astronoby.cache_precision(:geometric, 5)
 ```
 
-All geometric positions of the same celestial body withing 0.86 seconds will be
+All geometric positions of the same celestial body within 0.86 seconds will be
 rounded and cached.
 
 ## Cache size

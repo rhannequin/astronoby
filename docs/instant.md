@@ -6,7 +6,7 @@ based on <abbr title="Coordinated Universal Time">UTC</abbr>. This timescale is
 convenient for matching what we experience on Earth, but it is not static, it
 includes leap days, leap seconds.
 
-Also, most of us leave in areas where the local legal time is not UTC, so we
+Also, most of us live in areas where the local legal time is not UTC, so we
 have to deal with time zones that are arbitrary and constantly changing.
 
 Astronomical calculations need a stable, uniform and linear time scale, free
@@ -21,7 +21,7 @@ in [Terrestrial Time], an astronomical time standard defined by the
 International Astronomical Union, as a [Julian Date].
 
 From this instant in <abbr title="Terrestrial Time">TT</abbr>, other time
-standards can be expressed like the
+standards can be expressed, such as the
 <abbr title="International Atomic Time">TAI</abbr> or the
 <abbr title="Barycentric Dynamic Time">TDB</abbr>.
 

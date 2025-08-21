@@ -1,14 +1,19 @@
 # Twilight times
 
-In astronomy, twilight is a period of time when the Sun is still/already set but
-some of its light illuminates the atmosphere, making the sky brighter than
+In astronomy, twilight is a period of time when the Sun is already set but
+some of its light still illuminates the atmosphere, making the sky brighter than
 during full night.
 
 We usually define 4 moments when talking about twilight:
-* sunrise/sunset: right when the Sun goes above the horizon or right after it goes below the horizon. The Sun's horizon angle is 0°.
-* civil twilight: when the horizon angle is between 0° and -6°. Usually, during this time, artificial light is not needed yet.
-* nautical twilight: when the horizon angle is between -6° and -12°. When the nautical twilight starts, the difference between the horizon at sea and the sky cannot be seen clearly anymore.
-* astronomical twilight: when the horizon angle is between -12° and -18°. Some stars can be seen during this time.
+* sunrise/sunset: right when the Sun goes above the horizon or right after it
+  goes below the horizon. The Sun's horizon angle is 0°.
+* civil twilight: when the horizon angle is between 0° and -6°. Usually, during
+  this time, artificial light is not needed yet.
+* nautical twilight: when the horizon angle is between -6° and -12°. When the
+  nautical twilight starts, the difference between the horizon at sea and the
+  sky cannot be seen clearly anymore.
+* astronomical twilight: when the horizon angle is between -12° and -18°. Some
+  stars can be seen during this time.
 
 These moments change every day and depend on the observer's location. They can
 be computed using `Astronoby::TwilightCalculator`.
@@ -43,16 +48,23 @@ You can learn more about observers on the [Observer page].
 
 ## `events_between`
 
-This is the main method of the calculator, it provides all the twilight times
-that will happen between two times.
+This is the main method of the calculator. It provides all the twilight times
+that will happen between two dates.
 
-It returns a `Astronoby::TwilightEvents` object which exposes the 6 following instance methods:
-* `#morning_astronomical_twilight_times`: when the rising Sun reaches 18° below the horizon
-* `#morning_nautical_twilight_times`: when the rising Sun reaches 12° below the horizon
-* `#morning_civil_twilight_times`: when the rising Sun reaches 6° below the horizon
-* `#evening_civil_twilight_times`: when the setting Sun reaches 6° below the horizon
-* `#evening_nautical_twilight_times`: when the setting Sun reaches 12° below the horizon
-* `#evening_astronomical_twilight_times`: when the setting Sun reaches 18° below the horizon
+It returns a `Astronoby::TwilightEvents` object which exposes the 6 following
+instance methods:
+* `#morning_astronomical_twilight_times`: when the rising Sun reaches 18° below
+  the horizon
+* `#morning_nautical_twilight_times`: when the rising Sun reaches 12° below the
+  horizon
+* `#morning_civil_twilight_times`: when the rising Sun reaches 6° below the
+  horizon
+* `#evening_civil_twilight_times`: when the setting Sun reaches 6° below the
+  horizon
+* `#evening_nautical_twilight_times`: when the setting Sun reaches 12° below the
+  horizon
+* `#evening_astronomical_twilight_times`: when the setting Sun reaches 18° below
+  the horizon
 
 ```rb
 events = calculator.events_between(

@@ -7,7 +7,7 @@ System:
 * the Moon (`Astronoby::Moon`)
 
 Given an ephemeris (`Astronoby::Ephem`) and an instant object
-(`Astronoby::Instant`), these classes enable to get instances which provides
+(`Astronoby::Instant`), these classes enable you to get instances which provide
 positions in different reference frames.
 
 You can learn more about [ephemerides] and [reference frames].
@@ -24,7 +24,7 @@ apparent_position.x.km.round
 # => -148794622
 ```
 
-Each of these bodies also provide their own equatorial radius
+Each of these bodies also provides its own equatorial radius
 (`Astronoby::Distance`).
 
 ```rb
@@ -35,8 +35,8 @@ Astronoby::Venus::EQUATORIAL_RADIUS.meters
 ## Attributes of planets
 
 For all Solar System bodies, except the Sun and the Earth, the following
-attributes are available. Note that dynamic values accessible through instance
-methods, while absolute values are accessible through class methods.
+attributes are available. Note that dynamic values are accessible through
+instance methods, while absolute values are accessible through class methods.
 
 ### `#constellation`
 

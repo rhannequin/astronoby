@@ -7,17 +7,19 @@ events computed by Astronoby are location and date based.
 
 The two required key arguments to instantiate an observer are:
 * `latitude` (`Astronoby::Angle`): the angle from the equator to the observer,
-* from 90° to -90°, with positive angles for the Northern Hemisphere.
+  from 90° to -90°, with positive angles for the Northern Hemisphere.
 * `longitude` (`Astronoby::Angle`): the angle from the Greenwich meridian to the
-* observer, from 180° to -180°, with positive angles eastward the Greenwich
-* meridian.
+  observer, from 180° to -180°, with positive angles eastward of the Greenwich
+  meridian.
 
 Latitude and longitude are defined according to the [World Geodetic System].
-In other terms, they are the same as the ones used for the [GPS].
+In other words, they are the same as those used for the [GPS].
 
 It is also possible to give the following optional key arguments:
-* `elevation` (`Astronoby::Distance`): the distance above or below the average sea level
-* `utc_offset`: local time difference with UTC. Check the [timezone specifiers] for the format.
+* `elevation` (`Astronoby::Distance`): the distance above or below the average
+  sea level
+* `utc_offset`: local time difference with UTC. Check the [timezone specifiers]
+  for the format.
 
 ```rb
 # Location: Alhambra, Spain

@@ -55,9 +55,9 @@ equatorial.declination.str(:dms)
 ### Hour angle
 
 Sometimes convenient for astronomers, a third attribute can be derived from
-equatorial coordinates: the hour angle. It is angle between the meridian plane
-and the hour circle, meaning it depends on the observer's longitude and time. By
-convention, the hour angle is usually displayed in hours.
+equatorial coordinates: the hour angle. It is the angle between the meridian
+plane and the hour circle, meaning it depends on the observer's longitude and
+time. By convention, the hour angle is usually displayed in hours.
 
 ```rb
 longitude = Astronoby::Angle.from_degrees(2)
@@ -116,8 +116,8 @@ ecliptic.longitude.str(:dms)
 
 ## Horizontal
 
-Horizontal coordinates are the most observer-centered and human intuitive
-coordinates, they measure where an object is in the sky as seen from an observer
+Horizontal coordinates are the most observer-centred and human-intuitive
+coordinates. They measure where an object is in the sky as seen from an observer
 on Earth as "up and down" and "left and right".
 
 In Astronoby, they can only be computed from a [topocentric position].

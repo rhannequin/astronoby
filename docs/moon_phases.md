@@ -5,13 +5,13 @@ happen.
 
 ## Current Moon phase
 
-`Astronoby::Moon` provides two information about the current Moon phase: the
+`Astronoby::Moon` provides two pieces of information about the current Moon phase: the
 illuminated fraction and the phase fraction.
 
 ### `#illuminated_fraction`
 
 As mentioned in the name, this method provides the illuminated fraction of the
-Moon. It will not give a precise information about the "age" of the Moon as the
+Moon. It will not give precise information about the "age" of the Moon as the
 same illumination happens twice in the same lunar month.
 
 ```rb
@@ -28,7 +28,7 @@ moon.illuminated_fraction.round(2)
 
 ### `#current_phase_fraction`
 
-This method is more convenient for a user interested in how far we are in the
+This method is more convenient for a user interested in how far we are into the
 lunar month as it returns a fraction from 0 to 1 between two new Moons.
 
 ```rb

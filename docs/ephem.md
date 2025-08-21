@@ -12,7 +12,7 @@ model.
 ## Download an ephemeris
 
 To download an ephemeris, you can either do it manually or use `ephem` by
-providing the name of the file.
+providing the filename.
 
 ### Manually
 
@@ -37,7 +37,7 @@ Astronoby::Ephem.download(name: "de421.bsp", target: "tmp/de421.bsp")
 ## Load an ephemeris
 
 To compute the position of a Solar System body, you need to provide an ephemeris
-to extract the data from. You can use `Astronoby::Ephem` and load the file you
+to extract the data from. You can use `Astronoby::Ephem` to load the file you
 downloaded.
 
 ```rb
@@ -47,7 +47,7 @@ ephem = Astronoby::Ephem.load("tmp/de421.bsp")
 ## How to choose the right ephemeris?
 
 JPL produces many different kernels over the years, with different accuracy and
-ranges of supported years. Here are some that we would recommend to begin with:
+ranges of supported years. Here are some that we recommend to begin with:
 - `de421.bsp`: from 1900 to 2050, 17 MB
 - `de440s.bsp`: from 1849 to 2150, 32 MB
 - `inpop19a.bsp`: from 1900 to 2100, 22 MB

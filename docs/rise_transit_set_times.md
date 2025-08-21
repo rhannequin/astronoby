@@ -1,8 +1,8 @@
 # Rise, Transit and Set Times
 
-Astronoby provides a calculator to compute all the times of all the rise, 
-transit and set that will happen to a celestial body from an observer on Earth
-during a period of time: `Astronoby::RiseTransitSetCalculator`.
+Astronoby provides a calculator to compute all the rise, transit and set times
+that will happen for a celestial body as observed from Earth during a period
+of time: `Astronoby::RiseTransitSetCalculator`.
 
 ## Initialization
 
@@ -10,7 +10,8 @@ Once instantiated, the calculator doesn't do anything yet, it waits for your
 instruction.
 
 It takes as key arguments:
-* `body` (`Astronoby::SolarSystemBody`): any supported celestial body, e.g. `Astronoby::Sun`
+* `body` (`Astronoby::SolarSystemBody`): any supported celestial body,
+  e.g. `Astronoby::Sun`
 * `observer` (`Astronoby::Observer`): location on Earth of the observer
 * `ephem`: ephemeris to provide the initial raw data
 
@@ -37,10 +38,10 @@ You can learn more about observers on the
 
 ## `#events_between`
 
-This is the main method of the calculator, it provides all the rising, transit
-and setting times that will happen between two times. It returns a
+This is the main method of the calculator. It provides all the rising, transit
+and setting times that will happen between two dates. It returns a
 `Astronoby::RiseTransitSetEvents` object which exposes the methods
-`#rising_times`, `transit_times` and `#setting_times`.
+`#rising_times`, `#transit_times` and `#setting_times`.
 
 ```rb
 events = calculator.events_between(
@@ -84,11 +85,11 @@ events.setting_times
 
 ## `#event_on`
 
-For convenience, `Astronoby::RiseTransitSetCalculator.new` also exposes a
-`#event_on` method that behaves the same way as `#events_on` but will return the
-first time of rising, transit and setting for the civil date, as they only
-happen once in most cases. It returns a `Astronoby::RiseTransitSetEvent` which
-exposes the instance methods `#rising_time`, `#transit_time` and
+For convenience, `Astronoby::RiseTransitSetCalculator` also exposes a
+`#event_on` method that behaves the same way as `#events_on` but returns the
+first time of rising, transit and setting for the civil date, as these events
+only happen once in most cases. It returns a `Astronoby::RiseTransitSetEvent`
+which exposes the instance methods `#rising_time`, `#transit_time` and
 `#setting_time`.
 
 ```rb

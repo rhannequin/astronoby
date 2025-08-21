@@ -1,7 +1,7 @@
 # Reference Frames
 
 A given body at a given time can be perceived at different positions, depending
-on the referential and the corrections applied.
+on the reference frame and the corrections applied.
 
 Astronoby provides five reference frames for each celestial body:
 
@@ -21,10 +21,10 @@ All reference frames provide this common interface:
 
 ## Geometric
 
-Also called "mean J2000", this referential is related to the mean ecliptic or
-terrestrial equator and the mean equinox of the reference date (J2000). It is
-the strict position computed from the ephemeris file in a referential centered
-on the Solar System barycenter, no corrections are applied.
+Also called "mean J2000", this reference frame is related to the mean ecliptic
+or terrestrial equator and the mean equinox of the reference date (J2000). It is
+the strict position computed from the ephemeris file in a reference frame
+centered on the Solar System barycentre, with no corrections applied.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -44,11 +44,11 @@ geometric.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Astrometric
 
-Also called "astrometric J2000", this referential is related to the ecliptic or
-the mean terrestrial equator and the mean equinox of the reference date (J2000).
-It applies light-time correction between the celestial body and the observer.
-The frame is centered on the Earth center, as all the following reference
-frames.
+Also called "astrometric J2000", this reference frame is related to the ecliptic
+or the mean terrestrial equator and the mean equinox of the reference date
+(J2000). It applies light-time correction between the celestial body and the
+observer. The frame is centred on the Earth's centre, as are all the following
+reference frames.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -67,7 +67,7 @@ astrometric.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Mean of date
 
-This referential is related to the ecliptic or the mean equator and the mean
+This reference frame is related to the ecliptic or the mean equator and the mean
 equinox of the date. It provides the geometric position corrected for the
 precessional motion of the Earth's rotation axis (precession and nutation).
 
@@ -86,10 +86,10 @@ mean_of_date.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Apparent
 
-This referential is related to the true ecliptic or equator and the true equinox
-of the date. It is the actual position in the sky of a celestial object as seen
-from the centre of the Earth. It applies to the astrometric position several
-other corrections: the deflection of light, the aberration, the precession and
+This reference frame is related to the true ecliptic or equator and the true
+equinox of the date. It is the actual position in the sky of a celestial object
+as seen from the centre of the Earth. It applies several corrections to the
+astrometric position:the deflection of light, the aberration, the precession and
 the nutation.
 
 ```rb
@@ -106,7 +106,7 @@ apparent.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Topocentric
 
-This referential is the final transformation of a position, it provides the
+This reference frame is the final transformation of a position. It provides the
 apparent position of a celestial body as seen from a location on Earth. It can
 only be produced given an observer (`Astronoby::Observer`). It provides another
 set of coordinates: horizontal (`Astronoby::Coordinates::Horizontal`).

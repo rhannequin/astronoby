@@ -29,7 +29,7 @@ instant = Astronoby::Instant.from_time(time)
 You can learn more about time scales on the
 [Instant page](https://github.com/rhannequin/astronoby/wiki/Instant).
 
-## Instantiate a Solar System body's object
+## Instantiate a Solar System body object
 
 ```rb
 jupiter = Astronoby::Jupiter.new(instant: instant, ephem: ephem)
