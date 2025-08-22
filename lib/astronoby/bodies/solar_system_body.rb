@@ -189,6 +189,19 @@ module Astronoby
       end
     end
 
+    # Angular diameter of the body, as seen from Earth. Based on the apparent
+    #   position of the body.
+    # @return [Astronoby::Angle] Angular diameter of the body
+    def angular_diameter
+      @angular_radius ||= begin
+        return if apparent.position.zero?
+
+        Angle.from_radians(
+          Math.asin(self.class::EQUATORIAL_RADIUS.m / apparent.distance.m) * 2
+        )
+      end
+    end
+
     private
 
     # By default, Solar System bodies expose attributes that are dependent on

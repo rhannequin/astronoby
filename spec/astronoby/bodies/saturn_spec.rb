@@ -394,13 +394,6 @@ RSpec.describe Astronoby::Saturn do
         # Horizons:   -13° 50′ 7.7396″
         # Stellarium: -13° 50′ 8.6″
         # Skyfield:   -13° 50′ 7.9″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 0′ 16.8237″")
-        # IMCCE:      +0° 0′ 16.8237″
-        # Horizons:   +0° 0′ 16.8237″
-        # Stellarium: +0° 0′ 16.82″
-        # Skyfield:   +0° 0′ 16.8″
       end
     end
   end
@@ -464,6 +457,23 @@ RSpec.describe Astronoby::Saturn do
       # Horizons:   1.011
       # Stellarium: 1.01
       # Skyfield:   1.01
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-06-01" do
+      time = Time.utc(2025, 6, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 0′ 16.8237″")
+      # IMCCE:    +0° 0′ 16.8237″
+      # Horizons: +0° 0′ 16.8237″
+      # Skyfield: +0° 0′ 16.8237″
     end
   end
 end

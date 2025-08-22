@@ -323,4 +323,17 @@ RSpec.describe Astronoby::Earth do
       expect(apparent_magnitude).to be_nil
     end
   end
+
+  describe "#angular_diameter" do
+    it "returns nil" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter).to be_nil
+    end
+  end
 end

@@ -394,13 +394,6 @@ RSpec.describe Astronoby::Mercury do
         # Horizons:   -56° 56′ 38.8135″
         # Stellarium: -56° 56′ 39.5″
         # Skyfield:   -56° 56′ 39.1″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 0′ 5.8606″")
-        # IMCCE:      +0° 0′ 5.8626″
-        # Horizons:   +0° 0′ 5.8627″
-        # Stellarium: +0° 0′ 5.8686″
-        # Skyfield:   +0° 0′ 5.9″
       end
     end
   end
@@ -449,6 +442,23 @@ RSpec.describe Astronoby::Mercury do
       # Horizons:   1.131
       # Stellarium: 1.13
       # Skyfield:   1.14
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-01-01" do
+      time = Time.utc(2025, 1, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 0′ 5.8608″")
+      # IMCCE:    +0° 0′ 5.8628″
+      # Horizons: +0° 0′ 5.8628″
+      # Skyfield: +0° 0′ 5.8608″
     end
   end
 end

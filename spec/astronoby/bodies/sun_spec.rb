@@ -423,13 +423,6 @@ RSpec.describe Astronoby::Sun do
           # Horizons:   +16° 19′ 42.1874″
           # Stellarium: +16° 19′ 39.8″
           # Skyfield:   +16° 19′ 39.3″
-
-          expect(topocentric.angular_diameter.str(:dms))
-            .to eq("+0° 31′ 56.0484″")
-          # IMCCE:      +0° 31′ 56.0686″
-          # Horizons:   +0° 31′ 56.0689″
-          # Stellarium: +0° 31′ 56.04″
-          # Skyfield:   +0° 31′ 56.1″
         end
       end
     end
@@ -442,7 +435,7 @@ RSpec.describe Astronoby::Sun do
       ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
-      expect(sun.apparent.angular_diameter).to be_a Astronoby::Angle
+      expect(sun.angular_diameter).to be_a Astronoby::Angle
     end
 
     # Source:
@@ -456,8 +449,8 @@ RSpec.describe Astronoby::Sun do
       ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
-      expect(sun.apparent.angular_diameter.str(:dms))
-        .to eq "+0° 32′ 22.4775″"
+      expect(sun.angular_diameter.str(:dms))
+        .to eq "+0° 32′ 22.499″"
       # Result from the book: 0° 32′″
     end
 
@@ -472,8 +465,8 @@ RSpec.describe Astronoby::Sun do
       ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
-      expect(sun.apparent.angular_diameter.str(:dms))
-        .to eq "+0° 31′ 32.0555″"
+      expect(sun.angular_diameter.str(:dms))
+        .to eq "+0° 31′ 32.0754″"
       # Result from the book: 0° 32′″
     end
 
@@ -488,9 +481,24 @@ RSpec.describe Astronoby::Sun do
       ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
 
-      expect(sun.apparent.angular_diameter.str(:dms))
-        .to eq "+0° 31′ 41.9013″"
+      expect(sun.angular_diameter.str(:dms))
+        .to eq "+0° 31′ 41.9215″"
       # Result from the book: 0° 32′″
+    end
+
+    it "returns the angular diameter for 2025-10-01" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_sun
+      sun = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = sun.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 31′ 56.0457″")
+      # IMCCE:    +0° 31′ 56.0457″
+      # Horizons: +0° 31′ 56.046″
+      # Skyfield: +0° 31′ 56.8719″
     end
   end
 
