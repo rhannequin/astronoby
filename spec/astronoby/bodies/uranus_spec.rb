@@ -394,13 +394,6 @@ RSpec.describe Astronoby::Uranus do
         # Horizons:   +51° 34′ 45.1039″
         # Stellarium: +51° 34′ 46.0″
         # Skyfield:   +51° 34′ 45.4″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 0′ 3.4731″")
-        # IMCCE:      +0° 0′ 3.4731″
-        # Horizons:   +0° 0′ 3.4731″
-        # Stellarium: +0° 0′ 3.47″
-        # Skyfield:   +0° 0′ 3.5″
       end
     end
   end
@@ -449,6 +442,23 @@ RSpec.describe Astronoby::Uranus do
       # Horizons:   5.803
       # Stellarium: 5.82
       # Skyfield:   5.80
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-07-01" do
+      time = Time.utc(2025, 7, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 0′ 3.4731″")
+      # IMCCE:    +0° 0′ 3.4731″
+      # Horizons: +0° 0′ 3.4731″
+      # Skyfield: +0° 0′ 3.4731″
     end
   end
 end

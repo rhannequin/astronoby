@@ -394,13 +394,6 @@ RSpec.describe Astronoby::Mars do
         # Horizons:   +26° 51′ 15.3662″
         # Stellarium: +26° 51′ 15.9″
         # Skyfield:   +26° 51′ 15.6″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 0′ 8.2226″")
-        # IMCCE:      +0° 0′ 8.2226″
-        # Horizons:   +0° 0′ 8.2223″
-        # Stellarium: +0° 0′ 8.22″
-        # Skyfield:   +0° 0′ 8.2″
       end
     end
   end
@@ -449,6 +442,23 @@ RSpec.describe Astronoby::Mars do
       # Horizons:   1.507
       # Stellarium: 1.51
       # Skyfield:   1.55
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-04-01" do
+      time = Time.utc(2025, 4, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 0′ 8.2224″")
+      # IMCCE:    +0° 0′ 8.2224″
+      # Horizons: +0° 0′ 8.2224″
+      # Skyfield: +0° 0′ 8.2224″
     end
   end
 end

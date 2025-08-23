@@ -38,6 +38,15 @@ For all Solar System bodies, except the Sun and the Earth, the following
 attributes are available. Note that dynamic values are accessible through
 instance methods, while absolute values are accessible through class methods.
 
+### `#angular_diameter`
+
+Size of the body in the sky. Returns a `Astronoby::Angle` object.
+
+```rb
+venus.angular_diameter.str(:dms)
+# => "+0° 0′ 11.4587″"
+```
+
 ### `#constellation`
 
 Constellation where the body appears in the sky as seen from Earth. Returns

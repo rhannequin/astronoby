@@ -407,13 +407,6 @@ RSpec.describe Astronoby::Moon do
         # Horizons:   -2° 44′ 22.8363″
         # Stellarium: -2° 44′ 24.6″
         # Skyfield:   -2° 44′ 22.9″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 32′ 55.4816″")
-        # IMCCE:      +0° 32′ 55.3033″
-        # Horizons:   +0° 32′ 55.303″
-        # Stellarium: +0° 32′ 55.33″
-        # Skyfield:   +0° 32′ 55″
       end
     end
 
@@ -602,6 +595,23 @@ RSpec.describe Astronoby::Moon do
       # IMCCE:      -3.56
       # Horizons:   -5.497
       # Stellarium: -4.57
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-03-01" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 32′ 56.662″")
+      # IMCCE:    +0° 32′ 56.662″
+      # Horizons: +0° 32′ 56.662″
+      # Skyfield: +0° 32′ 56.662″
     end
   end
 end

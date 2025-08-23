@@ -394,13 +394,6 @@ RSpec.describe Astronoby::Neptune do
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″
         # Skyfield:   +24° 33′ 48.3″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 0′ 2.3333″")
-        # IMCCE:      +0° 0′ 2.3333″
-        # Horizons:   +0° 0′ 2.3333″
-        # Stellarium: +0° 0′ 2.33″
-        # Skyfield:   +0° 0′ 2.3″
       end
     end
   end
@@ -449,6 +442,23 @@ RSpec.describe Astronoby::Neptune do
       # Horizons:   7.729
       # Stellarium: 7.74
       # Skyfield:   7.73
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-08-01" do
+      time = Time.utc(2025, 8, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 0′ 2.3333″")
+      # IMCCE:    +0° 0′ 2.3333″
+      # Horizons: +0° 0′ 2.3333″
+      # Skyfield: +0° 0′ 2.3333″
     end
   end
 end

@@ -394,13 +394,6 @@ RSpec.describe Astronoby::Jupiter do
         # Skyfield:   -10° 11′ 49.2″
         # Stellarium: -10° 11′ 48.8″
         # Horizons:   -10° 11′ 49.2716″
-
-        expect(topocentric.angular_diameter.str(:dms))
-          .to eq("+0° 0′ 33.7133″")
-        # IMCCE:      +0° 0′ 33.7133″
-        # Horizons:   +0° 0′ 33.7131″
-        # Stellarium: +0° 0′ 33.72″
-        # Skyfield:   +0° 0′ 33.7″
       end
     end
   end
@@ -449,6 +442,23 @@ RSpec.describe Astronoby::Jupiter do
       # Horizons:   -1.895
       # Stellarium: -1.90
       # Skyfield:   -1.90
+    end
+  end
+
+  describe "#angular_diameter" do
+    it "returns the angular diameter for 2025-05-01" do
+      time = Time.utc(2025, 5, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      angular_diameter = planet.angular_diameter
+
+      expect(angular_diameter.str(:dms))
+        .to eq("+0° 0′ 33.7134″")
+      # IMCCE:    +0° 0′ 33.7133″
+      # Horizons: +0° 0′ 33.7134″
+      # Skyfield: +0° 0′ 33.7134″
     end
   end
 end
