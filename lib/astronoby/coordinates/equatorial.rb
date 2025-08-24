@@ -82,8 +82,8 @@ module Astronoby
       #  Author: J. L. Lawrence
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
-      def to_ecliptic(epoch:)
-        mean_obliquity = MeanObliquity.for_epoch(epoch)
+      def to_ecliptic(instant:)
+        mean_obliquity = MeanObliquity.at(instant)
 
         y = Angle.from_radians(
           @right_ascension.sin * mean_obliquity.cos +

@@ -12,11 +12,11 @@ module Astronoby
     EPOCH_OF_REFERENCE = JulianDate::DEFAULT_EPOCH
     OBLIQUITY_OF_REFERENCE = 23.4392794
 
-    def self.for_epoch(epoch)
-      return obliquity_of_reference if epoch == EPOCH_OF_REFERENCE
+    def self.at(instant)
+      return obliquity_of_reference if instant.julian_date == EPOCH_OF_REFERENCE
 
       t = Rational(
-        epoch - EPOCH_OF_REFERENCE,
+        instant.julian_date - EPOCH_OF_REFERENCE,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
 

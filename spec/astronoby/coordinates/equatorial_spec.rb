@@ -202,12 +202,13 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.from_hms(11, 10, 13)
         declination = Astronoby::Angle.from_dms(30, 5, 40)
-        epoch = Astronoby::JulianDate::J2000
+        instant = Astronoby::Instant
+          .from_terrestrial_time(Astronoby::JulianDate::J2000)
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,
           declination: declination
-        ).to_ecliptic(epoch: epoch)
+        ).to_ecliptic(instant: instant)
 
         expect(ecliptic_coordinates.latitude.str(:dms)).to(
           eq("+22° 41′ 53.8929″")
@@ -227,12 +228,13 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.from_hms(7, 45, 18.946)
         declination = Astronoby::Angle.from_dms(28, 1, 34.26)
-        epoch = Astronoby::JulianDate::J2000
+        instant = Astronoby::Instant
+          .from_terrestrial_time(Astronoby::JulianDate::J2000)
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,
           declination: declination
-        ).to_ecliptic(epoch: epoch)
+        ).to_ecliptic(instant: instant)
 
         expect(ecliptic_coordinates.latitude.str(:dms)).to(
           eq("+6° 41′ 3.0508″")
@@ -252,12 +254,12 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
       it "computes properly" do
         right_ascension = Astronoby::Angle.from_hms(9, 34, 53.32)
         declination = Astronoby::Angle.from_dms(19, 32, 6.01)
-        epoch = Astronoby::JulianDate.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
+        instant = Astronoby::Instant.from_time(Time.utc(2009, 7, 6, 0, 0, 0))
 
         ecliptic_coordinates = described_class.new(
           right_ascension: right_ascension,
           declination: declination
-        ).to_ecliptic(epoch: epoch)
+        ).to_ecliptic(instant: instant)
 
         expect(ecliptic_coordinates.latitude.str(:dms)).to(
           eq("+4° 52′ 31.0228″")
