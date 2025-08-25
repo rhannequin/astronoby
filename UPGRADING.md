@@ -7,9 +7,38 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.7.0 to 0.8.0
+
+### Benchmark directory changed
+
+The precision benchmark has been moved to `benchmarks`.
+
+### `Epoch` refactored into `JulianDate`
+
+The `Epoch` class has been removed and replaced by `JulianDate`. This change is
+meant to clarify the purpose of the class, which is to represent a Julian date
+and not an epoch.
+
+* Method `#to_utc` has been dropped in favor as is was ambiguous regarding the
+  timescale used.
+* Therefore, constant `JULIAN_DAY_NUMBER_OFFSET` has also been dropped.
+* `MeanObliquity::for_epoch` was renamed to `::at` and now takes an `instant` as
+  parameter
+* `MeanObliquity::obliquity_of_reference_in_milliarcseconds` was renamed to
+  `::obliquity_of_reference_in_arcseconds`
+* `TrueObliquity::for_epoch` was renamed to to `::at` and now takes an
+  `instant` as parameter
+* `Coordinates::Equatorial#to_ecliptic` method now takes an `instant` as
+  parameter
+
+### `#angular_diameter` moved from topocentric position to body
+
+Previously accessible from the topocentric reference frame, the angular diameter
+of a Solar System body is now accessible from the body itself.
+
 ## Upgrading from 0.6.0 to 0.7.0
 
-## Signature change for `Sun` and `Moon`
+### Signature change for `Sun` and `Moon`
 
 Both classes are now initialized with the key arguments `ephem` and `instant`.
 `ephem` comes from `Ephem.load` which provides the raw geometric data for Solar
@@ -30,7 +59,7 @@ Learn more on [ephem].
 
 [ephem]: https://github.com/rhannequin/astronoby/wiki/Ephem
 
-## Drop of methods for `Sun`
+### Drop of methods for `Sun`
 
 `Sun` doesn't expose the following class and instance methods anymore:
 * `::equation_of_time` (replaced with `#equation_of_time`)
@@ -51,7 +80,7 @@ Learn more on [reference frames].
 
 [reference frames]: https://github.com/rhannequin/astronoby/wiki/Reference-Frames
 
-## Drop of instance methods for `Moon`
+### Drop of instance methods for `Moon`
 
 `Moon` doesn't expose the following nstance methods anymore:
 * `#apparent_ecliptic_coordinates` (replaced with `#ecliptic` on reference frames)
@@ -65,7 +94,7 @@ Learn more on [reference frames].
 * `#phase_angle`
 * `#observation_events`
 
-## Signature change for `Aberration`
+### Signature change for `Aberration`
 
 `Aberration` is now initialized with the key arguments `astrometric_position`
 and `observer_velocity`. `astrometric_position` is a position vector
@@ -92,7 +121,7 @@ aberration = Astronoby::Aberration.new(
 )
 ```
 
-## Signature change for `Angle#to_dms` and `Angle#to_hms`
+### Signature change for `Angle#to_dms` and `Angle#to_hms`
 
 `Angle#to_dms` and `Angle#to_hms` don't have arguments anymore. The angle value
 is now taken from the object itself. This was a misbehavior in the previous
@@ -106,49 +135,49 @@ dms.format
 # => "+45° 0′ 0.0″"
 ```
 
-## Signature change for `EquinoxSolstice`
+### Signature change for `EquinoxSolstice`
 
 `EquinoxSolstice.new` now takes an additional argument expected to be an ephem
 (`Astronoby::Ephem`).
 
-## Signature change for `Nutation`
+### Signature change for `Nutation`
 
 The expected `epoch` (`Astronoby::Epoch`) argument has been replaced by an
 `instant` (`Astronoby::Instant`) key argument.
 
-## Drop of `Nutation::for_ecliptic_longitude` and `Nutation::for_obliquity_of_the_ecliptic`
+### Drop of `Nutation::for_ecliptic_longitude` and `Nutation::for_obliquity_of_the_ecliptic`
 
 `Nutation::for_ecliptic_longitude` and `Nutation::for_obliquity_of_the_ecliptic`
 methods have been removed. The `Nutation` class now exposes the
 `#nutation_in_longitude` and `#nutation_in_obliquity` instance methods which 
 both return an angle (`Astronoby::Angle`).
 
-## Signature change for `Precession`
+### Signature change for `Precession`
 
 The expected `coordinates` and `epoch` (`Astronoby::Epoch`) key arguments have
 been replaced by an `instant` (`Astronoby::Instant`) key argument.
 
-## Drop of `Precession#for_equatorial_coordinates` and `Precession#precess`
+### Drop of `Precession#for_equatorial_coordinates` and `Precession#precess`
 
 `Precession#for_equatorial_coordinates` and `Precession#precess` methods have
 been refactoed into class methods.
 
-## Drop of `Coordinates::Horizontal#to_equatorial`
+### Drop of `Coordinates::Horizontal#to_equatorial`
 
 `Coordinates::Horizontal#to_equatorial` has been removed as equatorial
 coordinates are now available from the reference frames.
 
-## Drop of instance methods for `Coordinates::Ecliptic`
+### Drop of instance methods for `Coordinates::Ecliptic`
 
 `Coordinates::Ecliptic#to_true_equatorial` and
 `Coordinates::Ecliptic#to_apparent_equatorial` have been removed as
 equatorial coordinates are now available from the reference frames.
 
-## Drop of `Coordinates::Equatorial#to_epoch`
+### Drop of `Coordinates::Equatorial#to_epoch`
 
 `Coordinates::Equatorial#to_epoch` has been removed.
 
-## Drop of `Events::ObservationEvents`
+### Drop of `Events::ObservationEvents`
 
 `Events::ObservationEvents` has been removed. The rising, transit and setting 
 times can now be calculated using `RiseTransitSetCalculator`.
@@ -179,12 +208,12 @@ event.setting_time
 # => 2025-04-24 18:55:24 UTC
 ```
 
-## Drop of `RiseTransitSetIteration`
+### Drop of `RiseTransitSetIteration`
 
 `RiseTransitSetIteration` has been removed as it was only used by
 `Events::ObservationEvents`.
 
-## Drop of `Events::TwilightEvents`
+### Drop of `Events::TwilightEvents`
 
 `Events::TwilightEvents` has been removed. The twilight times can now be
 calculated using `TwilightCalculator`.
@@ -224,20 +253,20 @@ event.evening_astronomical_twilight_time
 # => 2025-04-24 20:56:34 UTC
 ```
 
-## Drop of `EphemerideLunaireParisienne`
+### Drop of `EphemerideLunaireParisienne`
 
 `EphemerideLunaireParisienne` has been removed.
 
-## Drop of `Util::Astrodynamics`
+### Drop of `Util::Astrodynamics`
 
 `Util::Astrodynamics` has been removed.
 
-## Drop of `Util::Maths.interpolate` and `Util::Maths.normalize_angles_for_interpolation`
+### Drop of `Util::Maths.interpolate` and `Util::Maths.normalize_angles_for_interpolation`
 
 `Util::Maths.interpolate` and `Util::Maths.normalize_angles_for_interpolation`
 have been removed.
 
-## Drop of `Constants::SECONDS_PER_DEGREE`
+### Drop of `Constants::SECONDS_PER_DEGREE`
 
 `Constants::SECONDS_PER_DEGREE` has been removed.
 
