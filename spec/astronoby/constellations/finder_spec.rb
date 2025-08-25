@@ -271,6 +271,8 @@ RSpec.describe Astronoby::Constellations::Finder do
         # Pisces (Psc)
         [[1, 31, 29.00], [15, 20, 45.1], "Psc"],    # Eta Piscium
         [[2, 2, 5.12], [2, 45, 49.5], "Psc"],       # Alrescha
+        # Test star near 24h RA (tests boundary fix)
+        [[23, 59, 59.99], [-2, 0, 0.0], "Psc"],
 
         # Puppis (Pup)
         [[8, 3, 35.05], [-40, 0, 11.4], "Pup"],     # Naos (ζ Pup)
