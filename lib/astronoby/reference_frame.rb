@@ -34,7 +34,8 @@ module Astronoby
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?
 
-        equatorial.to_ecliptic(epoch: JulianDate::J2000)
+        j2000 = Instant.from_terrestrial_time(JulianDate::J2000)
+        equatorial.to_ecliptic(instant: j2000)
       end
     end
 

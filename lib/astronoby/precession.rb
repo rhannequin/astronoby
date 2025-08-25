@@ -164,7 +164,7 @@ module Astronoby
     end
 
     def eps0
-      @eps0 ||= MeanObliquity.obliquity_of_reference_in_milliarcseconds
+      @eps0 ||= MeanObliquity.obliquity_of_reference_in_arcseconds
     end
   end
 end

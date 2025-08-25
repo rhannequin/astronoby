@@ -104,7 +104,7 @@ module Astronoby
 
     # @return [Matrix] The nutation matrix
     def matrix
-      mean_obliquity = MeanObliquity.for_epoch(@instant.tt)
+      mean_obliquity = MeanObliquity.at(@instant)
       true_obliquity = mean_obliquity + nutation_in_obliquity
       build_nutation_matrix(
         mean_obliquity: mean_obliquity,

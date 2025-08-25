@@ -62,7 +62,7 @@ module Astronoby
     def earth_fixed_rotation_matrix_for(instant)
       dpsi = Nutation.new(instant: instant).nutation_in_longitude
 
-      mean_obliquity = MeanObliquity.for_epoch(instant.tt)
+      mean_obliquity = MeanObliquity.at(instant)
 
       gast = Angle.from_radians(
         Angle.from_hours(instant.gmst).radians +
