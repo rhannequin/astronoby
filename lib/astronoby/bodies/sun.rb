@@ -42,7 +42,7 @@ module Astronoby
         t**4 / 15_300 -
         t**5 / 2_000_000) % Constants::DEGREES_PER_CIRCLE
       nutation = Nutation.new(instant: instant).nutation_in_longitude
-      obliquity = TrueObliquity.for_epoch(@instant.julian_date)
+      obliquity = TrueObliquity.at(@instant)
 
       (
         Angle

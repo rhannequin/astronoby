@@ -43,7 +43,7 @@ module Astronoby
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?
 
-        equatorial.to_ecliptic(epoch: @instant.tdb)
+        equatorial.to_ecliptic(instant: @instant)
       end
     end
 
