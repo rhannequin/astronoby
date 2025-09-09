@@ -202,6 +202,27 @@ module Astronoby
       end
     end
 
+    # @return [Boolean] True if the body is approaching the primary
+    #   body (Sun), false otherwise.
+    def approaching_primary?
+      relative_position = (geometric.position - @sun.geometric.position)
+        .map(&:m)
+      relative_velocity = (geometric.velocity - @sun.geometric.velocity)
+        .map(&:kmps)
+      radial_velocity_component = Astronoby::Util::Maths
+        .dot_product(relative_position, relative_velocity)
+      distance = Math.sqrt(
+        Astronoby::Util::Maths.dot_product(relative_position, relative_position)
+      )
+      radial_velocity_component / distance < 0
+    end
+
+    # @return [Boolean] True if the body is receding from the primary
+    #   body (Sun), false otherwise.
+    def receding_from_primary?
+      !approaching_primary?
+    end
+
     private
 
     # By default, Solar System bodies expose attributes that are dependent on

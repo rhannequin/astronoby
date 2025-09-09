@@ -336,4 +336,38 @@ RSpec.describe Astronoby::Earth do
       expect(angular_diameter).to be_nil
     end
   end
+
+  describe "#approaching_primary?" do
+    it "returns true if the moon is approaching the Sun" do
+      time = Time.utc(2025, 7, 2)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.approaching_primary?).to be false
+    end
+
+    it "returns false if the moon is receding from the Sun" do
+      time = Time.utc(2025, 7, 4)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.approaching_primary?).to be true
+    end
+  end
+
+  describe "#receding_from_primary?" do
+    it "returns the inverse of #approaching_primary?" do
+      time = Time.utc(2025, 7, 2)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.receding_from_primary?).to be true
+    end
+  end
 end

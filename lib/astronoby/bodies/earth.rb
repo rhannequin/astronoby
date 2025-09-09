@@ -15,12 +15,16 @@ module Astronoby
       end
     end
 
+    def phase_angle
+      nil
+    end
+
     private
 
     # Attributes that require Sun data like phase angle or magnitude are not
     # applicable for Earth.
     def requires_sun_data?
-      false
+      true
     end
 
     def compute_astrometric(_ephem)

@@ -614,4 +614,38 @@ RSpec.describe Astronoby::Moon do
       # Skyfield: +0° 32′ 56.662″
     end
   end
+
+  describe "#approaching_primary?" do
+    it "returns true if the moon is approaching the Earth" do
+      time = Time.utc(2025, 9, 9)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      expect(moon.approaching_primary?).to be true
+    end
+
+    it "returns false if the moon is receding from the Earth" do
+      time = Time.utc(2025, 9, 11)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      expect(moon.approaching_primary?).to be false
+    end
+  end
+
+  describe "#receding_from_primary?" do
+    it "returns the inverse of #approaching_primary?" do
+      time = Time.utc(2025, 9, 9)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      expect(moon.receding_from_primary?).to be false
+    end
+  end
 end
