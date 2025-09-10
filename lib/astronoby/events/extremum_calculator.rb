@@ -53,8 +53,8 @@ module Astronoby
     # @return [Array<Astronoby::ExtremumEvent>] Array of apoapsis events
     def apoapsis_events_between(start_time, end_time)
       find_extrema(
-        Astronoby::Instant.from_time(start_time).julian_date,
-        Astronoby::Instant.from_time(end_time).julian_date,
+        Astronoby::Instant.from_time(start_time).tt,
+        Astronoby::Instant.from_time(end_time).tt,
         type: :maximum
       )
     end
@@ -65,8 +65,8 @@ module Astronoby
     # @return [Array<Astronoby::ExtremumEvent>] Array of periapsis events
     def periapsis_events_between(start_time, end_time)
       find_extrema(
-        Astronoby::Instant.from_time(start_time).julian_date,
-        Astronoby::Instant.from_time(end_time).julian_date,
+        Astronoby::Instant.from_time(start_time).tt,
+        Astronoby::Instant.from_time(end_time).tt,
         type: :minimum
       )
     end
@@ -208,7 +208,7 @@ module Astronoby
 
         is_duplicate = cleaned.any? do |existing|
           time_diff = (
-            current.instant.julian_date - existing.instant.julian_date
+            current.instant.tt - existing.instant.tt
           ).abs
           time_diff < DUPLICATE_THRESHOLD_DAYS
         end
@@ -221,8 +221,8 @@ module Astronoby
 
     def filter_boundary_artifacts(extrema, start_jd, end_jd)
       extrema.reject do |extreme|
-        start_diff = (extreme.instant.julian_date - start_jd).abs
-        end_diff = (extreme.instant.julian_date - end_jd).abs
+        start_diff = (extreme.instant.tt - start_jd).abs
+        end_diff = (extreme.instant.tt - end_jd).abs
 
         too_close_to_start = start_diff < BOUNDARY_BUFFER_DAYS
         too_close_to_end = end_diff < BOUNDARY_BUFFER_DAYS
