@@ -271,15 +271,13 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       mercury_apoapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 3600
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil,
           "Expected Mercury aphelion at #{expected[:time]} not found"
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(50000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -306,15 +304,13 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       mercury_periapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 3600
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil,
           "Expected Mercury perihelion at #{expected[:time]} not found"
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(50000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -340,14 +336,12 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       venus_apoapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 3600
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(10000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -372,14 +366,12 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       venus_periapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 3600
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(10000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -405,14 +397,12 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       earth_apoapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 3600
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(10000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -436,14 +426,12 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       earth_periapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 3600
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(10000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -469,14 +457,12 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       mars_apoapsises_2025.each do |expected|
         matching_event = events.find do |event|
-          (event.instant.to_time - expected[:time]).abs < 7200
+          (event.instant.to_time - expected[:time]).abs < 60
         end
         expect(matching_event).not_to be_nil
         if matching_event
           actual_distance_km = matching_event.value.km
-          expect(actual_distance_km).to be_within(100000).of(
-            expected[:distance_km]
-          )
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
         end
       end
     end
@@ -516,6 +502,237 @@ RSpec.describe Astronoby::ExtremumCalculator do
     end
   end
 
+  describe "Jupiter calculations" do
+    it "finds expected Jupiter periapsis event in 2023" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Jupiter,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+      jupiter_periapsises = [
+        {time: Time.utc(2023, 1, 20, 11, 41, 26), distance_km: 740660679}
+      ]
+
+      events = calculator.periapsis_events_between(
+        Time.utc(2022, 1, 1),
+        Time.utc(2024, 1, 1)
+      )
+
+      jupiter_periapsises.each do |expected|
+        matching_event = events.find do |event|
+          (event.instant.to_time - expected[:time]).abs < 60
+        end
+        expect(matching_event).not_to be_nil
+        if matching_event
+          actual_distance_km = matching_event.value.km
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
+        end
+      end
+    end
+
+    it "finds expected Jupiter apoapsis event in 2028" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Jupiter,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+      jupiter_apoapsises = [
+        {time: Time.utc(2028, 12, 28, 2, 42, 14), distance_km: 815886050}
+      ]
+
+      events = calculator.apoapsis_events_between(
+        Time.utc(2028, 1, 1),
+        Time.utc(2029, 12, 31)
+      )
+
+      jupiter_apoapsises.each do |expected|
+        matching_event = events.find do |event|
+          (event.instant.to_time - expected[:time]).abs < 60
+        end
+        expect(matching_event).not_to be_nil
+        if matching_event
+          actual_distance_km = matching_event.value.km
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
+        end
+      end
+    end
+
+    it "handles Jupiter ~12 year orbital period correctly" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Jupiter,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+
+      events = calculator.apoapsis_events_between(
+        Time.utc(2025, 1, 1),
+        Time.utc(2026, 1, 1)
+      )
+
+      expect(events.length).to be_between(0, 1)
+    end
+  end
+
+  describe "Saturn calculations" do
+    it "finds expected Saturn apoapsis event in 2018" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Saturn,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+      saturn_apoapsises = [
+        {time: Time.utc(2018, 4, 17, 11, 26, 5), distance_km: 1505798987}
+      ]
+
+      events = calculator.apoapsis_events_between(
+        Time.utc(2017, 1, 1),
+        Time.utc(2019, 12, 31)
+      )
+
+      saturn_apoapsises.each do |expected|
+        matching_event = events.find do |event|
+          (event.instant.to_time - expected[:time]).abs < 60
+        end
+        expect(matching_event).not_to be_nil
+        if matching_event
+          actual_distance_km = matching_event.value.km
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
+        end
+      end
+    end
+
+    it "finds expected Saturn periapsis event in 2032" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Saturn,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+      saturn_periapsises = [
+        {time: Time.utc(2032, 11, 28, 15, 32, 51), distance_km: 1348612701}
+      ]
+
+      events = calculator.periapsis_events_between(
+        Time.utc(2031, 1, 1),
+        Time.utc(2034, 12, 31)
+      )
+
+      saturn_periapsises.each do |expected|
+        matching_event = events.find do |event|
+          (event.instant.to_time - expected[:time]).abs < 60
+        end
+        expect(matching_event).not_to be_nil
+        if matching_event
+          actual_distance_km = matching_event.value.km
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
+        end
+      end
+    end
+
+    it "handles Saturn ~29 year orbital period correctly" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Saturn,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+
+      events = calculator.apoapsis_events_between(
+        Time.utc(2025, 1, 1),
+        Time.utc(2026, 1, 1)
+      )
+
+      expect(events.length).to be_between(0, 1)
+    end
+  end
+
+  describe "Uranus calculations" do
+    it "finds expected Uranus periapsis event in 1966" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Uranus,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+      uranus_periapsises = [
+        {time: Time.utc(1966, 5, 22, 2, 26, 6), distance_km: 2735367425}
+      ]
+
+      events = calculator.periapsis_events_between(
+        Time.utc(1965, 1, 1),
+        Time.utc(1968, 12, 31)
+      )
+
+      uranus_periapsises.each do |expected|
+        matching_event = events.find do |event|
+          (event.instant.to_time - expected[:time]).abs < 60
+        end
+        expect(matching_event).not_to be_nil
+        if matching_event
+          actual_distance_km = matching_event.value.km
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
+        end
+      end
+    end
+
+    it "finds expected Uranus apoapsis event in 2009" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Uranus,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+      uranus_apoapsises = [
+        {time: Time.utc(2009, 2, 27, 0, 31, 46), distance_km: 3006743695}
+      ]
+
+      events = calculator.apoapsis_events_between(
+        Time.utc(2008, 1, 1),
+        Time.utc(2011, 12, 31)
+      )
+
+      uranus_apoapsises.each do |expected|
+        matching_event = events.find do |event|
+          (event.instant.to_time - expected[:time]).abs < 60
+        end
+        expect(matching_event).not_to be_nil
+        if matching_event
+          actual_distance_km = matching_event.value.km
+          expect(actual_distance_km).to be_within(1).of(expected[:distance_km])
+        end
+      end
+    end
+
+    it "handles Uranus ~84 year orbital period correctly" do
+      ephem = test_ephem_inpop_full
+      calculator = described_class.new(
+        body: Astronoby::Uranus,
+        primary_body: Astronoby::Sun,
+        ephem: ephem,
+        samples_per_period: 60
+      )
+
+      events = calculator.apoapsis_events_between(
+        Time.utc(2025, 1, 1),
+        Time.utc(2026, 1, 1)
+      )
+
+      expect(events.length).to eq(0)
+    end
+  end
+
   describe "multi-body consistency" do
     it "produces consistent results across all celestial bodies" do
       ephem = test_ephem_inpop
@@ -549,6 +766,30 @@ RSpec.describe Astronoby::ExtremumCalculator do
         ),
         mars: described_class.new(
           body: Astronoby::Mars,
+          primary_body: Astronoby::Sun,
+          ephem: ephem,
+          samples_per_period: 60
+        ),
+        jupiter: described_class.new(
+          body: Astronoby::Jupiter,
+          primary_body: Astronoby::Sun,
+          ephem: ephem,
+          samples_per_period: 60
+        ),
+        saturn: described_class.new(
+          body: Astronoby::Saturn,
+          primary_body: Astronoby::Sun,
+          ephem: ephem,
+          samples_per_period: 60
+        ),
+        uranus: described_class.new(
+          body: Astronoby::Uranus,
+          primary_body: Astronoby::Sun,
+          ephem: ephem,
+          samples_per_period: 60
+        ),
+        neptune: described_class.new(
+          body: Astronoby::Neptune,
           primary_body: Astronoby::Sun,
           ephem: ephem,
           samples_per_period: 60
@@ -642,7 +883,7 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
   describe "algorithm validation across different orbital periods" do
     it "handles different orbital periods correctly" do
-      ephem = test_ephem_inpop
+      ephem = test_ephem_inpop_full
       start_jd = Astronoby::Instant.from_time(Time.utc(2025, 1, 1)).tt
       end_jd = Astronoby::Instant.from_time(Time.utc(2025, 4, 1)).tt
 
@@ -676,6 +917,30 @@ RSpec.describe Astronoby::ExtremumCalculator do
           body: Astronoby::Mars,
           primary: Astronoby::Sun,
           period: 686.98
+        },
+        {
+          name: "Jupiter",
+          body: Astronoby::Jupiter,
+          primary: Astronoby::Sun,
+          period: 4332.59
+        },
+        {
+          name: "Saturn",
+          body: Astronoby::Saturn,
+          primary: Astronoby::Sun,
+          period: 10759.22
+        },
+        {
+          name: "Uranus",
+          body: Astronoby::Uranus,
+          primary: Astronoby::Sun,
+          period: 30688.5
+        },
+        {
+          name: "Neptune",
+          body: Astronoby::Neptune,
+          primary: Astronoby::Sun,
+          period: 60182.0
         }
       ]
 
@@ -711,7 +976,7 @@ RSpec.describe Astronoby::ExtremumCalculator do
 
       if matching_event
         actual_distance_km = matching_event.value.km
-        expect(actual_distance_km).to be_within(1.0).of(expected[:distance_km]),
+        expect(actual_distance_km).to be_within(1).of(expected[:distance_km]),
           "Distance mismatch in #{period_name} for event at #{expected[:time]}"
       end
     end
