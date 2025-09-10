@@ -205,10 +205,10 @@ module Astronoby
     # @return [Boolean] True if the body is approaching the primary
     #   body (Sun), false otherwise.
     def approaching_primary?
-      relative_position = (geometric.position - @sun.geometric.position)
-        .map(&:m)
-      relative_velocity = (geometric.velocity - @sun.geometric.velocity)
-        .map(&:kmps)
+      relative_position =
+        (geometric.position - @sun.geometric.position).map(&:m)
+      relative_velocity =
+        (geometric.velocity - @sun.geometric.velocity).map(&:mps)
       radial_velocity_component = Astronoby::Util::Maths
         .dot_product(relative_position, relative_velocity)
       distance = Math.sqrt(
