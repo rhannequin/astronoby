@@ -85,6 +85,7 @@ module Astronoby
     # @return [void]
     def max_size=(new_size)
       raise ArgumentError, "max_size must be positive" unless new_size > 0
+
       @mutex.synchronize do
         @max_size = new_size
         while @hash.size > @max_size
