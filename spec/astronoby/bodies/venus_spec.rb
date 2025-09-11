@@ -476,4 +476,38 @@ RSpec.describe Astronoby::Venus do
       # Skyfield: +0° 0′ 31.9328″
     end
   end
+
+  describe "#approaching_primary?" do
+    it "returns true if the moon is approaching the Sun" do
+      time = Time.utc(2025, 2, 18)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.approaching_primary?).to be true
+    end
+
+    it "returns false if the moon is receding from the Sun" do
+      time = Time.utc(2025, 2, 20)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.approaching_primary?).to be false
+    end
+  end
+
+  describe "#receding_from_primary?" do
+    it "returns the inverse of #approaching_primary?" do
+      time = Time.utc(2025, 2, 18)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.receding_from_primary?).to be false
+    end
+  end
 end

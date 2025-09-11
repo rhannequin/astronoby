@@ -42,6 +42,27 @@ module Astronoby
       mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE
     end
 
+    # @return [Boolean] True if the body is approaching the primary
+    #   body (Earth), false otherwise.
+    def approaching_primary?
+      relative_position =
+        (geometric.position - @earth_geometric.position).map(&:m)
+      relative_velocity =
+        (geometric.velocity - @earth_geometric.velocity).map(&:mps)
+      radial_velocity_component = Astronoby::Util::Maths
+        .dot_product(relative_position, relative_velocity)
+      distance = Math.sqrt(
+        Astronoby::Util::Maths.dot_product(relative_position, relative_position)
+      )
+      radial_velocity_component / distance < 0
+    end
+
+    # @return [Boolean] True if the body is receding from the primary
+    #   body (Earth), false otherwise.
+    def receding_from_primary?
+      !approaching_primary?
+    end
+
     private
 
     # Source:
