@@ -160,11 +160,21 @@ module Astronoby
     end
 
     def sample_instants
-      @sample_instants ||= Util::Maths.linspace(
-        @start_instant.tt,
-        @end_instant.tt,
-        sample_count
-      ).map { |tt| Instant.from_terrestrial_time(tt) }
+      @sample_instants ||= begin
+        count = sample_count
+        start_tt = @start_instant.tt
+        end_tt = @end_instant.tt
+
+        if count == 1
+          [Instant.from_terrestrial_time(start_tt)]
+        else
+          step = (end_tt - start_tt) / (count - 1)
+          Array.new(count) do |i|
+            tt = start_tt + i * step
+            Instant.from_terrestrial_time(tt)
+          end
+        end
+      end
     end
 
     def calculate_initial_positions
@@ -184,11 +194,14 @@ module Astronoby
     end
 
     def find_crossing_intervals(differences)
-      differences
-        .each_cons(2)
-        .map { |a, b| b - a }
-        .each_with_index
-        .filter_map { |diff, i| i if diff.radians > 0.0 }
+      crossing_indexes = []
+
+      (0...differences.size - 1).each do |i|
+        diff = differences[i + 1] - differences[i]
+        crossing_indexes << i if diff.radians > 0.0
+      end
+
+      crossing_indexes
     end
 
     def interpolate_initial_times(crossing_indexes, angle_differences)
@@ -210,18 +223,21 @@ module Astronoby
       old_hour_angles,
       old_instants
     )
+      num_instants = new_instants.size
+      time_differences_in_days = Array.new(num_instants)
+      hour_angle_rates = Array.new(num_instants)
+      time_adjustments = Array.new(num_instants)
+
       REFINEMENT_ITERATIONS.times do |iteration|
         # Calculate positions at current estimates
         apparent_positions = calculate_positions_at_instants(new_instants)
 
-        # Calculate current hour angles
-        current_hour_angles = calculate_hour_angles(apparent_positions)
-
-        # Calculate desired hour angles based on current positions
-        desired_hour_angles = calculate_desired_hour_angles(
-          event_type,
-          apparent_positions
-        )
+        # Calculate current hour angles and desired hour angles
+        current_hour_angles, desired_hour_angles =
+          calculate_hour_angles_and_desired_angle(
+            apparent_positions,
+            event_type
+          )
 
         # Calculate hour angle adjustments
         hour_angle_adjustments = calculate_hour_angle_adjustments(
@@ -236,33 +252,27 @@ module Astronoby
           iteration
         )
 
-        # Calculate time differences
-        time_differences_in_days = new_instants.each_with_index.map do |instant, i|
-          instant.tt - old_instants[i].tt
-        end
-
-        # Calculate hour angle rate (radians per day)
-        hour_angle_rates = hour_angle_changes.each_with_index.map do |angle, i|
-          denominator = time_differences_in_days[i]
-          angle.radians / denominator
+        num_instants.times do |i|
+          time_differences_in_days[i] = new_instants[i].tt - old_instants[i].tt
+          hour_angle_rates[i] =
+            hour_angle_changes[i].radians / time_differences_in_days[i]
         end
 
         # Store current values for next iteration
         old_hour_angles = current_hour_angles
         old_instants = new_instants
 
-        # Calculate time adjustments
-        time_adjustments = hour_angle_adjustments
-          .each_with_index
-          .map do |angle, i|
-            ratio = angle.radians / hour_angle_rates[i]
-            time_adjustment = (ratio.nan? || ratio.infinite?) ? 0 : ratio
-            [time_adjustment, MIN_TIME_ADJUSTMENT].max
-          end
+        num_instants.times do |i|
+          ratio = hour_angle_adjustments[i].radians / hour_angle_rates[i]
+          time_adjustment = (ratio.nan? || ratio.infinite?) ? 0 : ratio
+          time_adjustments[i] = [time_adjustment, MIN_TIME_ADJUSTMENT].max
+        end
 
-        # Apply time adjustments
-        new_instants = new_instants.each_with_index.map do |instant, i|
-          Instant.from_terrestrial_time(instant.tt + time_adjustments[i])
+        # Apply time adjustments - reuse existing array
+        num_instants.times do |i|
+          new_instants[i] = Instant.from_terrestrial_time(
+            new_instants[i].tt + time_adjustments[i]
+          )
         end
       end
 
@@ -270,15 +280,19 @@ module Astronoby
     end
 
     def calculate_positions_at_instants(instants)
+      positions = Array.new(instants.size)
+
       if Astronoby.configuration.cache_enabled?
-        instants.map do |instant|
+        body_string = @body.to_s
+        observer_hash = @observer.hash
+        instants.each_with_index do |instant, i|
           cache_key = CacheKey.generate(
             :observed_by,
             instant,
-            @body.to_s,
-            @observer.hash
+            body_string,
+            observer_hash
           )
-          Astronoby.cache.fetch(cache_key) do
+          positions[i] = Astronoby.cache.fetch(cache_key) do
             @body
               .new(instant: instant, ephem: @ephem)
               .observed_by(@observer)
@@ -287,15 +301,17 @@ module Astronoby
       else
         @positions_cache ||= {}
         precision = Astronoby.configuration.cache_precision(:observed_by)
-        instants.map do |instant|
+        instants.each_with_index do |instant, i|
           rounded_instant = Instant.from_terrestrial_time(
             instant.tt.round(precision)
           )
-          @positions_cache[rounded_instant] ||= @body
+          positions[i] = @positions_cache[rounded_instant] ||= @body
             .new(instant: rounded_instant, ephem: @ephem)
             .observed_by(@observer)
         end
       end
+
+      positions
     end
 
     def calculate_hour_angles(positions)
@@ -305,6 +321,31 @@ module Astronoby
           longitude: @observer.longitude
         )
       end
+    end
+
+    def calculate_hour_angles_and_desired_angle(positions, event_type)
+      current_hour_angles = Array.new(positions.size)
+      desired_hour_angles = Array.new(positions.size)
+
+      positions.each_with_index do |position, i|
+        current_hour_angles[i] = position.equatorial.compute_hour_angle(
+          time: position.instant.to_time,
+          longitude: @observer.longitude
+        )
+        desired_hour_angles[i] = if event_type == :transit
+          Angle.zero
+        else
+          declination = position.equatorial.declination
+          ha = rising_hour_angle(
+            @observer.latitude,
+            declination,
+            horizon_angle(position.distance)
+          )
+          (event_type == :rising) ? ha : -ha
+        end
+      end
+
+      [current_hour_angles, desired_hour_angles]
     end
 
     def calculate_desired_hour_angles(event_type, positions)
