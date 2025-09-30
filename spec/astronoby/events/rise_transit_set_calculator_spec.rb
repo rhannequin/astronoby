@@ -132,7 +132,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
         aggregate_failures do
           expect(events.rising_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 10, 23, 11, 16, utc_offset)
+            .to eq Time.new(2025, 12, 10, 23, 11, 15, utc_offset)
           # USNO:        2025-12-10T23:11:00-07:00
           # Stellarium:  2025-12-10T23:11:00-07:00
           # Skyfield:    2025-12-10T23:11:15-07:00
