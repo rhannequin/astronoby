@@ -40,6 +40,11 @@ module Astronoby
       end
       alias_method :vector_from_mps, :vector_from_meters_per_second
 
+      def vector_from_astronomical_units_per_day(array)
+        Vector.elements(array.map { from_aupd(_1) })
+      end
+      alias_method :vector_from_aupd, :vector_from_astronomical_units_per_day
+
       def light_speed
         from_meters_per_second(Constants::LIGHT_SPEED_M_PER_S)
       end
