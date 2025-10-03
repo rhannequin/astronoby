@@ -73,6 +73,10 @@ module Astronoby
       @radians * Constants::PI_IN_DEGREES / Math::PI
     end
 
+    def degree_milliarcseconds
+      degrees * Constants::MILLIARCSECONDS_PER_DEGREE
+    end
+
     def hours
       @radians / Constants::RADIAN_PER_HOUR
     end
@@ -139,10 +143,10 @@ module Astronoby
       sign = degrees.negative? ? "-" : "+"
       absolute_degrees = degrees.abs
       deg = absolute_degrees.floor
-      decimal_minutes = Constants::MINUTES_PER_DEGREE *
+      decimal_minutes = Constants::ARCMINUTES_PER_DEGREE *
         (absolute_degrees - deg)
       absolute_decimal_minutes = (
-        Constants::MINUTES_PER_DEGREE * (absolute_degrees - deg)
+        Constants::ARCMINUTES_PER_DEGREE * (absolute_degrees - deg)
       ).abs
       minutes = decimal_minutes.floor
       seconds = Constants::SECONDS_PER_MINUTE * (
