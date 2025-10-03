@@ -58,11 +58,12 @@ described in the [UPGRADING] document.
 ## Precision
 
 The current precision for the major Solar System bodies' locations in the sky
-as seen from an observer on Earth is below 10 arc seconds. This corresponds to
-half the size of Saturn when it is closest to Earth.
+as seen from an observer on Earth is around 1-2 arc seconds, with sub-arcsecond
+often achieved. This corresponds to less than the apparent size of Neptune when
+it is closest to Earth.
 
 While the precision is not enough for spacecraft navigation, it is enough for
-automated guiding of amateur telescopes.
+automated guiding of amateur telescopes and some professional use-cases.
 
 The sources used for comparison are: [IMCCE], [JPL Horizons], [Stellarium],
 and the [Skyfield] library.
