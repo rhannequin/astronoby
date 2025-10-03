@@ -177,6 +177,36 @@ RSpec.describe Astronoby::Angle do
     end
   end
 
+  describe "#degree_milliarcseconds" do
+    it "returns the angle value in degree milliarcseconds unit" do
+      milliarcseconds = described_class
+        .from_degrees(180)
+        .degree_milliarcseconds
+
+      expect(milliarcseconds).to eq 648000000
+    end
+
+    context "when the angle is initialized from radians" do
+      it "returns the angle value in degree milliarcseconds unit" do
+        milliarcseconds = described_class
+          .from_radians(Math::PI)
+          .degree_milliarcseconds
+
+        expect(milliarcseconds).to eq 648000000
+      end
+    end
+
+    context "when the angle is initialized from hours" do
+      it "returns the angle value in degree milliarcseconds unit" do
+        milliarcseconds = described_class
+          .from_hours(12)
+          .degree_milliarcseconds
+
+        expect(milliarcseconds).to eq 648000000
+      end
+    end
+  end
+
   describe "#hours" do
     it "returns the angle value in degree unit" do
       hours = described_class.from_hours(12).hours
