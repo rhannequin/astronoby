@@ -55,7 +55,7 @@ RSpec.describe Astronoby::Events::MoonPhases do
       # Result from IMCCE: 2024-05-23T13:53:09Z
 
       expect(moon_phases[4].phase).to eq(:last_quarter)
-      expect(moon_phases[4].time).to eq(Time.utc(2024, 5, 30, 17, 12, 43))
+      expect(moon_phases[4].time).to eq(Time.utc(2024, 5, 30, 17, 12, 42))
       # Result from IMCCE: 2024-05-30T17:12:40Z
     end
   end

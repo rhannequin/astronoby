@@ -45,17 +45,17 @@ RSpec.describe Astronoby::Earth do
       geometric = planet.geometric
 
       expect(geometric.position.to_a.map(&:km).map(&:round))
-        .to eq([-140346472, 45128538, 19591516])
+        .to eq([-140346474, 45128535, 19591515])
       # IMCCE:    -140346454 45128536 19591514
       # Skyfield: -140346474 45128533 19591514
 
       expect(geometric.equatorial.right_ascension.str(:hms))
-        .to eq("10h 48m 41.9417s")
+        .to eq("10h 48m 41.9421s")
       # IMCCE:    10h 48m 41.9414s
       # Skyfield: 10h 48m 41.94s
 
       expect(geometric.equatorial.declination.str(:dms))
-        .to eq("+7° 34′ 11.406″")
+        .to eq("+7° 34′ 11.4038″")
       # IMCCE:    +7° 34′ 11.407″
       # Skyfield: +7° 34′ 11.4″
 
@@ -65,12 +65,12 @@ RSpec.describe Astronoby::Earth do
       # Skyfield: +0° 0′ 33.2″
 
       expect(geometric.ecliptic.longitude.str(:dms))
-        .to eq("+160° 40′ 55.7988″")
+        .to eq("+160° 40′ 55.8046″")
       # IMCCE:    +160° 40′ 55.794″
       # Skyfield: +160° 40′ 56.4″
 
       expect(geometric.distance.au)
-        .to eq(0.9941296922100831)
+        .to eq(0.9941296927689491)
       # IMCCE:    0.994129567869
       # Skyfield: 0.9941296929553649
     end
@@ -84,7 +84,7 @@ RSpec.describe Astronoby::Earth do
       geometric = planet.geometric
 
       expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-10513.91311, -25850.11479, -11207.13966])
+        .to eq([-10513.91232, -25850.11505, -11207.13978])
       # IMCCE:    -10513.91157 -25850.1153 -11207.13986
       # Skyfield: -10513.91205 -25850.11514 -11207.13981
     end

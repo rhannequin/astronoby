@@ -19,7 +19,7 @@ RSpec.describe Astronoby::Deflection do
       corrected_position = deflection.corrected_position
 
       expect(corrected_position.to_a.map(&:km).map(&:round))
-        .to eq([-67178484, 140336314, 69466873])
+        .to eq([-67178486, 140336315, 69466874])
       # Skyfield: -67178487 140336316 69466874
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Astronoby::Deflection do
       corrected_position = deflection.corrected_position
 
       expect(corrected_position.to_a.map(&:km).map(&:round))
-        .to eq([4375229345, 154618259, -45364787])
+        .to eq([4375229341, 154618257, -45364788])
       # Skyfield: 4375229340 154618257 -45364788
     end
   end

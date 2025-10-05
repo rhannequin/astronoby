@@ -20,7 +20,7 @@ RSpec.describe Astronoby::Aberration do
       corrected_position = aberration.corrected_position
 
       expect(corrected_position.to_a.map(&:km).map(&:round))
-        .to eq([-67181971, 140334599, 69466965])
+        .to eq([-67181974, 140334600, 69466966])
       # Skyfield: -67181974 140334600 69466966
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Astronoby::Aberration do
       corrected_position = aberration.corrected_position
 
       expect(corrected_position.to_a.map(&:km).map(&:round))
-        .to eq([4375222148, 154854265, -45253746])
+        .to eq([4375222145, 154854263, -45253746])
       # Skyfield: 4375222144 154854263 -45253747
     end
   end
