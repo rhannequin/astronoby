@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::DeepSkyObject do
+  include TestEphemHelper
+
   describe "#astrometric" do
     it "returns an Astrometric position" do
       time = Time.utc(2025, 10, 1)
@@ -98,6 +100,144 @@ RSpec.describe Astronoby::DeepSkyObject do
           .to eq("+61° 43′ 58.2722″")
         expect(astrometric.ecliptic.longitude.str(:dms))
           .to eq("+285° 18′ 58.9754″")
+      end
+    end
+  end
+
+  describe "#apparent" do
+    it "returns an Apparent position" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+        declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+        epoch: Astronoby::JulianDate::J2000
+      )
+
+      dso = described_class.new(
+        instant: instant,
+        equatorial_coordinates: equatorial_coordinates,
+        ephem: ephem,
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(200.94),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(286.23),
+        parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+      )
+      apparent = dso.apparent
+
+      expect(apparent).to be_a(Astronoby::Apparent)
+      expect(apparent.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(apparent.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+        declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+        epoch: Astronoby::JulianDate::J2000
+      )
+
+      dso = described_class.new(
+        instant: instant,
+        equatorial_coordinates: equatorial_coordinates,
+        ephem: ephem,
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(200.94),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(286.23),
+        parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+      )
+      apparent = dso.apparent
+
+      expect(apparent.equatorial.right_ascension.str(:hms))
+        .to eq("18h 37m 48.7215s")
+      # Skyfield:   18h 37m 48.70s
+      # Astropy:    18h 37m 48.6459s
+      # Stellarium: 18h 37m 48.47s
+      # SkySafari:  18h 37m 48.28s
+
+      expect(apparent.equatorial.declination.str(:dms))
+        .to eq("+38° 48′ 41.4879″")
+      # Skyfield:   +38° 48′ 41.5″
+      # Astropy:    +38° 48′ 50.5021″
+      # Stellarium: +38° 48′ 42.9″
+      # SkySafari:  +38° 48′ 16.1″
+
+      expect(apparent.ecliptic.latitude.str(:dms))
+        .to eq("+61° 44′ 2.4126″")
+      # Skyfield:   +61° 44′ 11.5″
+      # Astropy:    +61° 44′ 11.4624″
+      # Stellarium: +61° 44′ 13.2″
+      # SkySafari:  +61° 43′ 47.0″
+
+      expect(apparent.ecliptic.longitude.str(:dms))
+        .to eq("+285° 40′ 42.917″")
+      # Skyfield:   +285° 40′ 47.0″
+      # Astropy:    +285° 40′ 47.0272″
+      # Stellarium: +285° 40′ 41.9″
+      # SkySafari:  +285° 40′ 29.6″
+    end
+
+    context "when only ephem is given" do
+      it "computes the correct position" do
+        time = Time.utc(2025, 10, 1)
+        instant = Astronoby::Instant.from_time(time)
+        ephem = test_ephem
+        equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+          epoch: Astronoby::JulianDate::J2000
+        )
+
+        dso = described_class.new(
+          instant: instant,
+          equatorial_coordinates: equatorial_coordinates,
+          ephem: ephem
+        )
+        apparent = dso.apparent
+
+        expect(apparent.equatorial.right_ascension.str(:hms))
+          .to eq("18h 37m 48.2808s")
+        expect(apparent.equatorial.declination.str(:dms))
+          .to eq("+38° 48′ 34.1013″")
+        expect(apparent.ecliptic.latitude.str(:dms))
+          .to eq("+61° 43′ 55.8069″")
+        expect(apparent.ecliptic.longitude.str(:dms))
+          .to eq("+285° 40′ 29.9938″")
+      end
+    end
+
+    context "when no proper motion, parallax or radial velocity is given" do
+      it "computes the correct position assuming a default distance" do
+        time = Time.utc(2025, 10, 1)
+        instant = Astronoby::Instant.from_time(time)
+        equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+          epoch: Astronoby::JulianDate::J2000
+        )
+
+        dso = described_class.new(
+          instant: instant,
+          equatorial_coordinates: equatorial_coordinates
+        )
+        apparent = dso.apparent
+
+        expect(apparent.equatorial.right_ascension.str(:hms))
+          .to eq("18h 37m 48.2804s")
+        expect(apparent.equatorial.declination.str(:dms))
+          .to eq("+38° 48′ 16.0412″")
+        expect(apparent.ecliptic.latitude.str(:dms))
+          .to eq("+61° 43′ 37.9199″")
+        expect(apparent.ecliptic.longitude.str(:dms))
+          .to eq("+285° 40′ 24.7275″")
       end
     end
   end
