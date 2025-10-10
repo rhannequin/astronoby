@@ -40,8 +40,8 @@ RSpec.describe Astronoby::Instant do
 
       instant = described_class.from_time(time)
 
-      expect(instant.terrestrial_time).to eq(70867483223/28800r)
-      # 2460676.500798611
+      expect(instant.terrestrial_time.to_f).to eq(2460676.500800208)
+      # Skyfield: 2460676.500800740905106
     end
 
     it "handles time zones" do
@@ -49,8 +49,8 @@ RSpec.describe Astronoby::Instant do
 
       instant = described_class.from_time(time)
 
-      expect(instant.terrestrial_time).to eq(70867489223/28800r)
-      # 2460676.7091319445
+      expect(instant.terrestrial_time.to_f).to eq(2460676.7091335533)
+      # Skyfield: 2460676.709134073927999
     end
   end
 
@@ -67,8 +67,8 @@ RSpec.describe Astronoby::Instant do
 
       instant = described_class.from_utc_julian_date(julian_date)
 
-      expect(instant.terrestrial_time).to eq(70867483223/28800r)
-      # 2460676.500798611
+      expect(instant.terrestrial_time.to_f).to eq(2460676.500800208)
+      # Skyfield: 2460676.500800740905106
     end
   end
 
@@ -85,7 +85,8 @@ RSpec.describe Astronoby::Instant do
     it "returns the International Atomic Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.tai.to_f).to eq(2460676.5004261113)
+      expect(instant.tai.to_f).to eq(2460676.5004277085)
+      # Skyfield: 2460676.500428240746260
     end
   end
 
@@ -93,8 +94,8 @@ RSpec.describe Astronoby::Instant do
     it "returns the difference between the instance and the UTC time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.utc_offset).to eq(23/28800r)
-      # 0.0007986111111111112
+      expect(instant.utc_offset.to_f).to eq(0.0008002199074074074)
+      # Skyfield: 0.000800205394626
     end
   end
 
@@ -102,7 +103,8 @@ RSpec.describe Astronoby::Instant do
     it "returns the Greenwich Mean Sidereal Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.gmst).to eq(6.7266376305619815)
+      expect(instant.gmst).to eq(6.726637341652168)
+      # Skyfield: 6.726649735919012
     end
   end
 
@@ -110,7 +112,8 @@ RSpec.describe Astronoby::Instant do
     it "returns the difference delta-t = TT - UT" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.delta_t).to eq(69)
+      expect(instant.delta_t).to eq(69.139)
+      # Skyfield: 69.138
     end
   end
 
@@ -122,9 +125,9 @@ RSpec.describe Astronoby::Instant do
     end
 
     it "returns the correct DateTime" do
-      instant = described_class.from_time(Time.utc(2025, 1, 1))
+      instant = described_class.from_time(Time.utc(2025, 1, 1, 12, 0, 0))
 
-      expect(instant.to_datetime).to eq(DateTime.new(2025, 1, 1, 0, 0, 0))
+      expect(instant.to_datetime).to eq(DateTime.new(2025, 1, 1, 12, 0, 0))
     end
   end
 
@@ -136,7 +139,7 @@ RSpec.describe Astronoby::Instant do
     end
 
     it "returns the correct Date" do
-      instant = described_class.from_time(Time.utc(2025, 1, 1))
+      instant = described_class.from_time(Time.utc(2025, 1, 1, 12, 0, 0))
 
       expect(instant.to_date).to eq(Date.new(2025, 1, 1))
     end
@@ -150,9 +153,9 @@ RSpec.describe Astronoby::Instant do
     end
 
     it "returns the correct Time" do
-      instant = described_class.from_time(Time.utc(2025, 1, 1))
+      instant = described_class.from_time(Time.utc(2025, 1, 1, 12, 0, 0))
 
-      expect(instant.to_time).to eq(Time.utc(2025, 1, 1))
+      expect(instant.to_time).to eq(Time.utc(2025, 1, 1, 12, 0, 0))
     end
   end
 

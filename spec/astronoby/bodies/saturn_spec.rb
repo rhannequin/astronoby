@@ -45,7 +45,7 @@ RSpec.describe Astronoby::Saturn do
       geometric = planet.geometric
 
       expect(geometric.position.to_a.map(&:km).map(&:round))
-        .to eq([1425287156, -107081764, -105619618])
+        .to eq([1425287156, -107081762, -105619617])
       # IMCCE:    1425287177 -107081757 -105619619
       # Skyfield: 1425287156 -107081762 -105619617
 
@@ -55,7 +55,7 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: 23h 42m 48.83s
 
       expect(geometric.equatorial.declination.str(:dms))
-        .to eq("-4° 13′ 34.4575″")
+        .to eq("-4° 13′ 34.4574″")
       # IMCCE:    -4° 13′ 34.458″
       # Skyfield: -4° 13′ 34.5″
 
@@ -65,12 +65,12 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: -2° 10′ 18.1″
 
       expect(geometric.ecliptic.longitude.str(:dms))
-        .to eq("+354° 22′ 47.1815″")
+        .to eq("+354° 22′ 47.1817″")
       # IMCCE:    +354° 22′ 47.182″
       # Skyfield: +354° 44′ 7.3″
 
       expect(geometric.distance.au)
-        .to eq(9.580357829890923)
+        .to eq(9.580357829404551)
       # IMCCE:    9.580357970998
       # Skyfield: 9.580357829243903
     end
@@ -84,7 +84,7 @@ RSpec.describe Astronoby::Saturn do
       geometric = planet.geometric
 
       expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([410.67305, 8873.99334, 3647.70519])
+        .to eq([410.67304, 8873.99334, 3647.70519])
       # IMCCE:    410.67305 8873.99334 3647.70521
       # Skyfield: 410.673037 8873.99334 3647.70519
     end
@@ -118,12 +118,12 @@ RSpec.describe Astronoby::Saturn do
       astrometric = planet.astrometric
 
       expect(astrometric.equatorial.right_ascension.str(:hms))
-        .to eq("0h 3m 50.3691s")
+        .to eq("0h 3m 50.3692s")
       # IMCCE:    0h 3m 50.3693s
       # Skyfield: 0h 3m 50.37s
 
       expect(astrometric.equatorial.declination.str(:dms))
-        .to eq("-1° 52′ 50.7217″")
+        .to eq("-1° 52′ 50.7216″")
       # IMCCE:    -1° 52′ 50.722″
       # Skyfield: -1° 52′ 50.7″
 
@@ -133,12 +133,12 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: -2° 6′ 25.3″
 
       expect(astrometric.ecliptic.longitude.str(:dms))
-        .to eq("+0° 7′ 56.1071″")
+        .to eq("+0° 7′ 56.1075″")
       # IMCCE:    +0° 7′ 56.108″
       # Skyfield: +0° 29′ 16.2″
 
       expect(astrometric.distance.au)
-        .to eq(9.878564650795877)
+        .to eq(9.878564625593041)
       # IMCCE:    9.878564573683
       # Skyfield: 9.878564617268683
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Saturn do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-27194.09926, 18131.58422, 7660.22589])
+        .to eq([-27194.09953, 18131.58353, 7660.22559])
       # IMCCE:    -27194.10006 18131.58209 7660.22501
       # Skyfield: -27194.09962 18131.5833  7660.22549
     end
@@ -191,21 +191,21 @@ RSpec.describe Astronoby::Saturn do
       # IMCCE:  0h 5m 8.9047s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("-1° 44′ 18.9799″")
+        .to eq("-1° 44′ 18.9798″")
       # IMCCE:  -1° 44′ 18.997″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
-        .to eq("-2° 6′ 25.3471″")
+        .to eq("-2° 6′ 25.3472″")
       # IMCCE:  -2° 6′ 25.369″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+0° 29′ 21.2432″")
+        .to eq("+0° 29′ 21.2436″")
       # IMCCE:  +0° 29′ 21.251″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(9.878579135171094)
+        .to eq(9.878579109968433)
       # IMCCE: 9.878579058059
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Saturn do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-27315.85238, 17976.7133, 7592.94877])
+        .to eq([-27315.85265, 17976.7126, 7592.94846])
       # IMCCE:  -27315.85388  17976.70941 7592.94947
     end
   end
@@ -257,7 +257,7 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: 0h 5m 8.16s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-1° 44′ 22.9284″")
+        .to eq("-1° 44′ 22.9283″")
       # IMCCE:    -1° 44′ 22.850″
       # Skyfield: -1° 44′ 22.9″
 
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: -2° 6′ 24.6″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+0° 29′ 9.3958″")
+        .to eq("+0° 29′ 9.3962″")
       # IMCCE:    +0° 29′ 9.516″
       # Skyfield: +0° 29′ 9.2″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(9.878564650795873)
+        .to eq(9.87856462559304)
       # IMCCE:    9.878564573683
       # Skyfield: 9.878564617268687
     end
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Saturn do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("0h 5m 8.194s")
+          .to eq("0h 5m 8.1941s")
         # IMCCE:      0h 5m 8.1960s
         # Horizons:   0h 5m 8.192788s
         # Stellarium: 0h 5m 8.21s
         # Skyfield:   0h 5m 8.20s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-1° 44′ 23.591″")
+          .to eq("-1° 44′ 23.5908″")
         # IMCCE:      -1° 44′ 23.505″
         # Horizons:   -1° 44′ 23.50701″
         # Stellarium: -1° 44′ 23.5″
         # Skyfield:   -1° 44′ 23.5″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+76° 26′ 42.3883″")
+          .to eq("+76° 26′ 42.388″")
         # IMCCE:      +76° 26′ 43.440″
         # Horizons:   +76° 26′ 44.2263″
         # Stellarium: +76° 26′ 43.2″
         # Skyfield:   +76° 26′ 44.0″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-13° 50′ 9.3351″")
+          .to eq("-13° 50′ 9.3352″")
         # IMCCE:      -13° 50′ 8.520″
         # Horizons:   -13° 50′ 7.7396″
         # Stellarium: -13° 50′ 8.6″
@@ -407,7 +407,7 @@ RSpec.describe Astronoby::Saturn do
 
       phase_angle = planet.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+5° 43′ 54.2226″"
+      expect(phase_angle.str(:dms)).to eq "+5° 43′ 54.2224″"
       # IMCCE:    +5° 43′ 59.8799″
       # Horizons: +5° 43′ 59.52″
       # Skyfield: +5° 43′ 53.3″

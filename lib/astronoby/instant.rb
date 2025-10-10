@@ -94,7 +94,7 @@ module Astronoby
     def to_datetime
       DateTime.jd(
         @terrestrial_time -
-          Rational(delta_t / Constants::SECONDS_PER_DAY) +
+          Rational(delta_t, Constants::SECONDS_PER_DAY) +
           DATETIME_JD_EPOCH_ADJUSTMENT
       )
     end
@@ -151,7 +151,7 @@ module Astronoby
     #
     # @return [Numeric] the offset in days
     def utc_offset
-      @terrestrial_time - to_time.utc.to_datetime.ajd
+      Rational(delta_t / Constants::SECONDS_PER_DAY)
     end
 
     # Calculate hash value for the instant

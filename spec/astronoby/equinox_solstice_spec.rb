@@ -57,7 +57,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.june_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2004, 6, 21, 0, 56, 53)
+      expect(equinox).to eq Time.utc(2004, 6, 21, 0, 56, 52)
       # Time from Celestial Calculations: 2004-03-21T00:49:41
       # Time from Astronomical Algorithms: 2004-03-21T00:57:57
       # Time from IMCCE: 2004-06-21T00:56:52
@@ -86,7 +86,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.september_equinox(year, ephem)
 
-      expect(equinox).to eq Time.utc(2004, 9, 22, 16, 29, 51)
+      expect(equinox).to eq Time.utc(2004, 9, 22, 16, 29, 50)
       # Time from Celestial Calculations: 2004-09-22T16:30:54
       # Time from Astronomical Algorithms: 2004-09-22T16:27:20
       # Time from IMCCE: 2004-09-22T16:29:50
