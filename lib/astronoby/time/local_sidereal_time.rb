@@ -1,41 +1,50 @@
 # frozen_string_literal: true
 
 module Astronoby
-  class LocalSiderealTime
-    attr_reader :date, :time, :longitude
+  class LocalSiderealTime < SiderealTime
+    attr_reader :longitude
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 14 - Local sidereal time (LST)
     def self.from_gst(gst:, longitude:)
-      date = gst.date
-      time = gst.time + longitude.hours
-      time += Constants::HOURS_PER_DAY if time.negative?
-      time -= Constants::HOURS_PER_DAY if time > Constants::HOURS_PER_DAY
-
-      new(date: date, time: time, longitude: longitude)
+      case gst.type
+      when MEAN
+        LocalMeanSiderealTime.from_gst(gst: gst, longitude: longitude)
+      when APPARENT
+        LocalApparentSiderealTime.from_gst(gst: gst, longitude: longitude)
+      end
     end
 
-    def initialize(date:, time:, longitude:)
-      @date = date
-      @time = time
+    def self.from_utc(utc, longitude:, type: MEAN)
+      validate_type!(type)
+      case type
+      when MEAN
+        LocalMeanSiderealTime.from_utc(utc, longitude: longitude)
+      when APPARENT
+        LocalApparentSiderealTime.from_utc(utc, longitude: longitude)
+      end
+    end
+
+    def initialize(date:, time:, longitude:, type: MEAN)
+      super(date: date, time: time, type: type)
       @longitude = longitude
     end
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 15 - Converting LST to GST
     def to_gst
-      date = @date
-      time = @time - @longitude.hours
-      time += Constants::HOURS_PER_DAY if time.negative?
-      time -= Constants::HOURS_PER_DAY if time > Constants::HOURS_PER_DAY
-
-      GreenwichSiderealTime.new(date: date, time: time)
+      case @type
+      when MEAN
+        lst = LocalMeanSiderealTime.new(
+          date: @date,
+          time: @time,
+          longitude: @longitude
+        )
+        lst.to_gst
+      when APPARENT
+        last = LocalApparentSiderealTime.new(
+          date: @date,
+          time: @time,
+          longitude: @longitude
+        )
+        last.to_gst
+      end
     end
   end
 end

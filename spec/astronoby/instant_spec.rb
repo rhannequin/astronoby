@@ -108,6 +108,34 @@ RSpec.describe Astronoby::Instant do
     end
   end
 
+  describe "#gast" do
+    it "returns the Greenwich Apparent Sidereal Time" do
+      instant = described_class.from_time(Time.utc(2025, 1, 1))
+
+      expect(instant.gast).to eq(6.726640706554343)
+      # Skyfield: 6.726653092855316
+    end
+  end
+
+  describe "#lmst" do
+    it "returns the Local Mean Sidereal Time" do
+      instant = described_class.from_time(Time.utc(2025, 1, 1))
+      longitude = Astronoby::Angle.from_degrees(-74.0060)
+      expect(instant.lmst(longitude: longitude)).to eq(1.7929040083188355)
+      # Skyfield: 1.792916402585679
+    end
+  end
+
+  describe "#last" do
+    it "returns the Local Apparent Sidereal Time" do
+      instant = described_class.from_time(Time.utc(2025, 1, 1))
+      longitude = Astronoby::Angle.from_degrees(-74.0060)
+
+      expect(instant.last(longitude: longitude)).to eq(1.7929073732210101)
+      # Skyfield: 1.792919759521983
+    end
+  end
+
   describe "#delta_t" do
     it "returns the difference delta-t = TT - UT" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
