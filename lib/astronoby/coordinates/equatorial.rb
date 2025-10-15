@@ -42,8 +42,8 @@ module Astronoby
       end
 
       def compute_hour_angle(time:, longitude:)
-        lmst = LocalMeanSiderealTime.from_utc(time.utc, longitude: longitude)
-        ha = (lmst.time - @right_ascension.hours)
+        last = LocalApparentSiderealTime.from_utc(time.utc, longitude: longitude)
+        ha = (last.time - @right_ascension.hours)
         ha += Constants::HOURS_PER_DAY if ha.negative?
 
         Angle.from_hours(ha)

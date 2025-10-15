@@ -101,7 +101,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           expect(events.rising_times.first).to be_nil
 
           expect(events.transit_times.first)
-            .to eq Time.utc(2025, 6, 21, 12, 1, 52)
+            .to eq Time.utc(2025, 6, 21, 12, 1, 51)
           # IMCCE:       2025-06-21T12:01:51+00:00
           # Stellarium:  2025-06-21T12:02:00+00:00
           # Skyfield:    2025-06-21T12:01:51+00:00
@@ -132,7 +132,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
         aggregate_failures do
           expect(events.rising_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 10, 23, 11, 16, utc_offset)
+            .to eq Time.new(2025, 12, 10, 23, 11, 15, utc_offset)
           # USNO:        2025-12-10T23:11:00-07:00
           # Stellarium:  2025-12-10T23:11:00-07:00
           # Skyfield:    2025-12-10T23:11:15-07:00
@@ -175,7 +175,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           expect(events.rising_times.first).to be_nil
 
           expect(events.transit_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 11, 5, 45, 29, utc_offset)
+            .to eq Time.new(2025, 12, 11, 5, 45, 28, utc_offset)
           # IMCCE:       2025-12-11T05:45:25-07:00
           # Stellarium:  2025-12-11T05:45:00-07:00
           # Skyfield:    2025-12-11T05:45:24-07:00
@@ -216,7 +216,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           # Timeanddate: 2025-12-12T00:14:00-07:00
 
           expect(events.transit_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 12, 6, 26, 52, utc_offset)
+            .to eq Time.new(2025, 12, 12, 6, 26, 51, utc_offset)
           # IMCCE:       2025-12-12T06:26:52-07:00
           # Stellarium:  2025-12-12T06:27:00-07:00
           # Skyfield:    2025-12-12T06:26:51-07:00
@@ -251,7 +251,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
         aggregate_failures do
           expect(events.rising_times.first)
-            .to eq Time.utc(2025, 8, 7, 21, 15, 3)
+            .to eq Time.utc(2025, 8, 7, 21, 15, 2)
           # IMCCE:       2025-08-07T21:14:48+00:00
           # Stellarium:  2025-08-07T21:15:02+00:00
           # Skyfield:    2025-08-07T21:15:03+00:00
@@ -263,7 +263,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           # Skyfield:    2025-08-07T04:25:19+00:00
 
           expect(events.setting_times.first)
-            .to eq Time.utc(2025, 8, 7, 11, 36, 44)
+            .to eq Time.utc(2025, 8, 7, 11, 36, 43)
           # IMCCE:       2025-08-07T11:36:58+00:00
           # Stellarium:  2025-08-07T11:37:00+00:00
           # Skyfield:    2025-08-07T11:36:43+00:00
@@ -347,7 +347,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
         expect(events.rising_times[2]).to eq Time.utc(2025, 3, 12, 6, 6, 23)
 
         expect(events.transit_times.size).to eq 3
-        expect(events.transit_times[0]).to eq Time.utc(2025, 3, 10, 12, 10, 11)
+        expect(events.transit_times[0]).to eq Time.utc(2025, 3, 10, 12, 10, 10)
         expect(events.transit_times[1]).to eq Time.utc(2025, 3, 11, 12, 9, 55)
         expect(events.transit_times[2]).to eq Time.utc(2025, 3, 12, 12, 9, 39)
 
