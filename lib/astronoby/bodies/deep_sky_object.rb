@@ -47,6 +47,15 @@ module Astronoby
       )
     end
 
+    def observed_by(observer)
+      Topocentric.build_from_apparent(
+        apparent: @apparent,
+        observer: observer,
+        instant: @instant,
+        target_body: self
+      )
+    end
+
     private
 
     def astrometric_position

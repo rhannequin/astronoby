@@ -14,7 +14,7 @@ module Astronoby
         matrix * observer.geocentric_position.map(&:m)
       )
       observer_velocity = Velocity.vector_from_mps(
-        matrix * observer.geocentric_velocity.map(&:kmps)
+        matrix * observer.geocentric_velocity.map(&:mps)
       )
 
       position = apparent.position - observer_position

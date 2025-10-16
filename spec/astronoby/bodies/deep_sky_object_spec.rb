@@ -313,4 +313,153 @@ RSpec.describe Astronoby::DeepSkyObject do
       end
     end
   end
+
+  describe "#observed_by" do
+    it "returns a Topocentric position" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+        declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+        epoch: Astronoby::JulianDate::J2000
+      )
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.856614),
+        longitude: Astronoby::Angle.from_degrees(2.3522219)
+      )
+
+      dso = described_class.new(
+        instant: instant,
+        equatorial_coordinates: equatorial_coordinates,
+        ephem: ephem,
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(200.94),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(286.23),
+        parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+      )
+      topocentric = dso.observed_by(observer)
+
+      expect(topocentric).to be_a(Astronoby::Topocentric)
+      expect(topocentric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+      expect(topocentric.ecliptic).to be_a(Astronoby::Coordinates::Ecliptic)
+      expect(topocentric.horizontal).to be_a(Astronoby::Coordinates::Horizontal)
+    end
+
+    it "computes the correct position" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+        declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+        epoch: Astronoby::JulianDate::J2000
+      )
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.856614),
+        longitude: Astronoby::Angle.from_degrees(2.3522219)
+      )
+
+      dso = described_class.new(
+        instant: instant,
+        equatorial_coordinates: equatorial_coordinates,
+        ephem: ephem,
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(200.94),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(286.23),
+        parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+      )
+      topocentric = dso.observed_by(observer)
+
+      expect(topocentric.equatorial.right_ascension.str(:hms))
+        .to eq("18h 37m 48.7215s")
+      # Skyfield: 18h 37m 48.70s
+      # Astropy:  18h 37m 29.3159s
+
+      expect(topocentric.equatorial.declination.str(:dms))
+        .to eq("+38° 48′ 41.4879″")
+      # Skyfield: +38° 48′ 41.6″
+      # Astropy:  +38° 48′ 41.6272″
+
+      expect(topocentric.horizontal.altitude.str(:dms))
+        .to eq("+26° 30′ 5.1834″")
+      # Skyfield:   +26° 30′ 4.2″
+      # Astropy:    +26° 30′ 4.1613″
+      # Stellarium: +26° 30′ 4.1″
+
+      expect(topocentric.horizontal.azimuth.str(:dms))
+        .to eq("+299° 35′ 15.3519″")
+      # Skyfield:   +299° 35′ 16.6″
+      # Astropy:    +299° 35′ 16.1035″
+      # Stellarium: +299° 35′ 18.7″
+    end
+
+    context "when only ephem is given" do
+      it "computes the correct position" do
+        time = Time.utc(2025, 10, 1)
+        instant = Astronoby::Instant.from_time(time)
+        ephem = test_ephem
+        equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+          epoch: Astronoby::JulianDate::J2000
+        )
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.856614),
+          longitude: Astronoby::Angle.from_degrees(2.3522219)
+        )
+
+        dso = described_class.new(
+          instant: instant,
+          equatorial_coordinates: equatorial_coordinates,
+          ephem: ephem
+        )
+        topocentric = dso.observed_by(observer)
+
+        expect(topocentric.equatorial.right_ascension.str(:hms))
+          .to eq("18h 37m 48.2808s")
+        expect(topocentric.equatorial.declination.str(:dms))
+          .to eq("+38° 48′ 34.1013″")
+        expect(topocentric.horizontal.altitude.str(:dms))
+          .to eq("+26° 29′ 56.3869″")
+        expect(topocentric.horizontal.azimuth.str(:dms))
+          .to eq("+299° 35′ 13.1986″")
+      end
+    end
+
+    context "when no proper motion, parallax or radial velocity is given" do
+      it "computes the correct position" do
+        time = Time.utc(2025, 10, 1)
+        instant = Astronoby::Instant.from_time(time)
+        equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+          epoch: Astronoby::JulianDate::J2000
+        )
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.856614),
+          longitude: Astronoby::Angle.from_degrees(2.3522219)
+        )
+
+        dso = described_class.new(
+          instant: instant,
+          equatorial_coordinates: equatorial_coordinates
+        )
+        topocentric = dso.observed_by(observer)
+
+        expect(topocentric.equatorial.right_ascension.str(:hms))
+          .to eq("18h 37m 48.2804s")
+        expect(topocentric.equatorial.declination.str(:dms))
+          .to eq("+38° 48′ 16.0412″")
+        expect(topocentric.horizontal.altitude.str(:dms))
+          .to eq("+26° 29′ 44.1232″")
+        expect(topocentric.horizontal.azimuth.str(:dms))
+          .to eq("+299° 34′ 58.3848″")
+      end
+    end
+  end
 end
