@@ -19,6 +19,10 @@ module Astronoby
 
     attr_reader :geometric, :instant
 
+    def self.at(instant, ephem:)
+      new(ephem: ephem, instant: instant)
+    end
+
     def self.geometric(ephem:, instant:)
       compute_geometric(ephem: ephem, instant: instant)
     end
