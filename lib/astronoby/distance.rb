@@ -26,6 +26,12 @@ module Astronoby
       end
       alias_method :from_au, :from_astronomical_units
 
+      def from_parsecs(parsecs)
+        meters = parsecs * Constants::PARSEC_IN_METERS
+        from_meters(meters)
+      end
+      alias_method :from_pc, :from_parsecs
+
       def vector_from_meters(array)
         Vector.elements(array.map { from_meters(_1) })
       end
