@@ -210,7 +210,7 @@ module Astronoby
 
       twilight_in_hours =
         time_sign * (hour_angle_at_twilight - hour_angle_at_period).hours *
-        GreenwichSiderealTime::SIDEREAL_MINUTE_IN_UT_MINUTE
+        GreenwichMeanSiderealTime::SIDEREAL_MINUTE_IN_UT_MINUTE
       twilight_in_seconds = time_sign *
         twilight_in_hours *
         Constants::SECONDS_PER_HOUR

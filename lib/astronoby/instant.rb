@@ -123,9 +123,32 @@ module Astronoby
 
     # Get the Greenwich Mean Sidereal Time
     #
-    # @return [Numeric] the sidereal time in radians
+    # @return [Numeric] the sidereal time in hours
     def gmst
-      GreenwichSiderealTime.from_utc(to_time).time
+      GreenwichMeanSiderealTime.from_utc(to_time).time
+    end
+
+    # Get the Greenwich Apparent Sidereal Time
+    #
+    # @return [Numeric] the sidereal time in hours
+    def gast
+      GreenwichApparentSiderealTime.from_utc(to_time).time
+    end
+
+    # Get the Local Mean Sidereal Time
+    #
+    # @param longitude [Astronoby::Angle] the observer's longitude
+    # @return [Numeric] the sidereal time in hours
+    def lmst(longitude:)
+      LocalMeanSiderealTime.from_utc(to_time, longitude: longitude).time
+    end
+
+    # Get the Local Apparent Sidereal Time
+    #
+    # @param longitude [Astronoby::Angle] the observer's longitude
+    # @return [Numeric] the sidereal time in hours
+    def last(longitude:)
+      LocalApparentSiderealTime.from_utc(to_time, longitude: longitude).time
     end
 
     # Get the International Atomic Time (TAI)
