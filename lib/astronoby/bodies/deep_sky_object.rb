@@ -30,7 +30,10 @@ module Astronoby
       @proper_motion_dec = proper_motion_dec
       @parallax = parallax
       @radial_velocity = radial_velocity
-      compute_apparent(ephem)
+      if ephem
+        @earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
+      end
+      compute_apparent
     end
 
     # @return [Astronoby::Astrometric] Astrometric position of the object
@@ -80,17 +83,17 @@ module Astronoby
         proper_motion_dec: @proper_motion_dec,
         parallax: @parallax,
         radial_velocity: @radial_velocity,
-        instant: @instant
+        instant: @instant,
+        earth_geometric: @earth_geometric
       )
     end
 
-    def compute_apparent(ephem)
-      @apparent = if ephem
-        earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
+    def compute_apparent
+      @apparent = if @earth_geometric
         Apparent.build_from_astrometric(
           instant: @instant,
           target_astrometric: astrometric,
-          earth_geometric: earth_geometric,
+          earth_geometric: @earth_geometric,
           target_body: self
         )
       else

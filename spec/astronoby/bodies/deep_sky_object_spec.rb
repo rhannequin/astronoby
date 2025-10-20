@@ -76,6 +76,42 @@ RSpec.describe Astronoby::DeepSkyObject do
       # Stellarium: +285° 19′ 11.6″
     end
 
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+        declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+        epoch: Astronoby::JulianDate::J2000
+      )
+
+      dso = described_class.new(
+        instant: instant,
+        equatorial_coordinates: equatorial_coordinates,
+        ephem: ephem,
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(200.94),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(286.23),
+        parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+      )
+      astrometric = dso.astrometric
+
+      expect(astrometric.velocity.x.kmps.round(6)).to eq(-8.967842)
+      # Skyfield: -8.967842 km/s
+      # Astropy:  -8.968044 km/s
+
+      expect(astrometric.velocity.y.kmps.round(6)).to eq(8.973822)
+      # Skyfield: 8.973822 km/s
+      # Astropy:  8.973012 km/s
+
+      expect(astrometric.velocity.z.kmps.round(6)).to eq(12.026883)
+      # Skyfield: 12.026883 km/s
+      # Astropy:  12.026898 km/s
+    end
+
     context "when no proper motion, parallax or radial velocity is given" do
       it "computes the correct position assuming a default distance" do
         time = Time.utc(2025, 10, 1)
@@ -183,6 +219,42 @@ RSpec.describe Astronoby::DeepSkyObject do
       # Astropy:    +285° 40′ 47.0272″
       # Stellarium: +285° 40′ 41.9″
       # SkySafari:  +285° 40′ 29.6″
+    end
+
+    it "computes the correct velocity" do
+      time = Time.utc(2025, 10, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+        declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+        epoch: Astronoby::JulianDate::J2000
+      )
+
+      dso = described_class.new(
+        instant: instant,
+        equatorial_coordinates: equatorial_coordinates,
+        ephem: ephem,
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(200.94),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(286.23),
+        parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+      )
+      apparent = dso.apparent
+
+      expect(apparent.velocity.x.kmps.round(6)).to eq(-9.049629)
+      # Skyfield: -8.967842 km/s
+      # Astropy:  -8.968044 km/s
+
+      expect(apparent.velocity.y.kmps.round(6)).to eq(8.921273)
+      # Skyfield: 8.973822 km/s
+      # Astropy:  8.973012 km/s
+
+      expect(apparent.velocity.z.kmps.round(6)).to eq(12.004694)
+      # Skyfield: 12.026883 km/s
+      # Astropy:  12.026898 km/s
     end
 
     context "when only ephem is given" do

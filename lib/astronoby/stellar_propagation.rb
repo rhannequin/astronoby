@@ -23,19 +23,22 @@ module Astronoby
     # @param instant [Astronoby::Instant] Instant of the observation
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates at epoch J2000.0
-    # @param proper_motion_ra [Astronoby::AngularVelocity, nil] Proper motion in
+    # @param proper_motion_ra [Astronoby::AngularVelocity] Proper motion in
     #   right ascension
-    # @param proper_motion_dec [Astronoby::AngularVelocity, nil] Proper motion
-    #   in declination
-    # @param parallax [Astronoby::Angle, nil] Parallax angle
-    # @param radial_velocity [Astronoby::Velocity, nil] Radial velocity
+    # @param proper_motion_dec [Astronoby::AngularVelocity] Proper motion in
+    #   declination
+    # @param parallax [Astronoby::Angle] Parallax angle
+    # @param radial_velocity [Astronoby::Velocity] Radial velocity
+    # @param earth_geometric [Astronoby::ReferenceFrame::Geometric, nil]
+    #   Geometric reference frame of the Earth
     def initialize(
       instant:,
       equatorial_coordinates:,
       proper_motion_ra:,
       proper_motion_dec:,
       parallax:,
-      radial_velocity:
+      radial_velocity:,
+      earth_geometric: nil
     )
       @instant = instant
       @right_ascension = equatorial_coordinates.right_ascension
@@ -45,6 +48,7 @@ module Astronoby
       @proper_motion_dec = proper_motion_dec
       @parallax = parallax
       @radial_velocity = radial_velocity
+      @earth_geometric = earth_geometric
     end
 
     # @return [Astronoby::Vector] Propagated position vector of
@@ -52,14 +56,18 @@ module Astronoby
     def position
       @position ||= Distance.vector_from_meters(
         initial_position_vector +
-        velocity_vector.map(&:mps) * time_elapsed_seconds
+        tangential_velocity.map(&:mps) * time_elapsed_seconds
       )
     end
 
     # @return [Astronoby::Vector] Propagated position vector of
     #   Astronoby::Velocity components
     def velocity_vector
-      @velocity_vector ||= tangential_velocity_vector
+      @velocity_vector ||= if @earth_geometric
+        @earth_geometric.velocity - tangential_velocity
+      else
+        tangential_velocity
+      end
     end
 
     # @return [Astronoby::Coordinates::Equatorial] Propagated equatorial
@@ -117,8 +125,8 @@ module Astronoby
       @initial_position_vector ||= unit_position_vector * distance.meters
     end
 
-    def tangential_velocity_vector
-      @tangential_velocity_vector ||= begin
+    def tangential_velocity
+      @tangential_velocity ||= begin
         # Doppler factor for light travel time correction
         k = 1.0 / (1.0 - @radial_velocity.kmps / Velocity.light_speed.kmps)
 
