@@ -270,6 +270,84 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
         end
       end
     end
+
+    context "when the body is a deep sky object" do
+      it "computes correct values" do
+        ephem = test_ephem
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(51.5072),
+          longitude: Astronoby::Angle.from_degrees(-0.1276)
+        )
+        date = Date.new(2025, 10, 1)
+        body = Astronoby::DeepSkyObject.new(
+          equatorial_coordinates: Astronoby::Coordinates::Equatorial.new(
+            right_ascension: Astronoby::Angle.from_hms(6, 45, 8.917),
+            declination: Astronoby::Angle.from_dms(-16, 42, 58.02)
+          ),
+          proper_motion_ra: Astronoby::AngularVelocity
+            .from_milliarcseconds_per_year(-546.01),
+          proper_motion_dec: Astronoby::AngularVelocity
+            .from_milliarcseconds_per_year(-1223.08),
+          parallax: Astronoby::Angle.from_degree_arcseconds(379.21 / 1000.0),
+          radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-5.50)
+        )
+        calculator = described_class.new(
+          body: body,
+          observer: observer,
+          ephem: ephem
+        )
+
+        events = calculator.events_on(date)
+
+        aggregate_failures do
+          expect(events.rising_times.first)
+            .to eq Time.utc(2025, 10, 1, 1, 31, 28)
+          # USNO:       2025-10-01T01:31    UTC
+          # Stellarium: 2025-10-01T01:31:27 UTC
+          # Skyfield:   2025-10-01T01:36    UTC
+
+          expect(events.transit_times.first)
+            .to eq Time.utc(2025, 10, 1, 6, 5, 52)
+          # USNO:       2025-10-01T06:06    UTC
+          # Stellarium: 2025-10-01T06:05:51 UTC
+          # Skyfield:   2025-10-01T06:06    UTC
+
+          expect(events.setting_times.first)
+            .to eq Time.utc(2025, 10, 1, 10, 40, 16)
+          # USNO:       2025-10-01T10:40    UTC
+          # Stellarium: 2025-10-01T10:40:16 UTC
+          # Skyfield:   2025-10-01T10:36    UTC
+        end
+      end
+
+      context "when ephem is not provided" do
+        it "computes correct values" do
+          observer = Astronoby::Observer.new(
+            latitude: Astronoby::Angle.from_degrees(51.5072),
+            longitude: Astronoby::Angle.from_degrees(-0.1276)
+          )
+          date = Date.new(2025, 10, 1)
+          body = Astronoby::DeepSkyObject.new(
+            equatorial_coordinates: Astronoby::Coordinates::Equatorial.new(
+              right_ascension: Astronoby::Angle.from_hms(6, 45, 8.917),
+              declination: Astronoby::Angle.from_dms(-16, 42, 58.02)
+            )
+          )
+          calculator = described_class.new(body: body, observer: observer)
+
+          events = calculator.events_on(date)
+
+          aggregate_failures do
+            expect(events.rising_times.first)
+              .to eq Time.utc(2025, 10, 1, 1, 31, 27)
+            expect(events.transit_times.first)
+              .to eq Time.utc(2025, 10, 1, 6, 5, 53)
+            expect(events.setting_times.first)
+              .to eq Time.utc(2025, 10, 1, 10, 40, 19)
+          end
+        end
+      end
+    end
   end
 
   describe "#event_on" do

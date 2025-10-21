@@ -23,7 +23,11 @@ module Astronoby
     SUN_REFRACTION_ANGLE = -Angle.from_dms(0, 50, 0)
     EVENT_TYPES = [:rising, :transit, :setting].freeze
 
-    def initialize(body:, observer:, ephem:)
+    # @param body [Astronoby::SolarSystemBody, Astronoby::DeepSkyObject]
+    #   Celestial body for which to calculate events
+    # @param observer [Astronoby::Observer] Observer location
+    # @param ephem [::Ephem::SPK, nil] Ephemeris data source
+    def initialize(body:, observer:, ephem: nil)
       @body = body
       @observer = observer
       @ephem = ephem
@@ -280,7 +284,7 @@ module Astronoby
           )
           Astronoby.cache.fetch(cache_key) do
             @body
-              .new(instant: instant, ephem: @ephem)
+              .at(instant, ephem: @ephem)
               .observed_by(@observer)
           end
         end
@@ -292,7 +296,7 @@ module Astronoby
             instant.tt.round(precision)
           )
           @positions_cache[rounded_instant] ||= @body
-            .new(instant: rounded_instant, ephem: @ephem)
+            .at(rounded_instant, ephem: @ephem)
             .observed_by(@observer)
         end
       end
@@ -352,10 +356,9 @@ module Astronoby
     end
 
     def horizon_angle(distance)
-      case @body.name
-      when "Astronoby::Sun"
+      if @body == Astronoby::Sun
         SUN_REFRACTION_ANGLE
-      when "Astronoby::Moon"
+      elsif @body == Astronoby::Moon
         STANDARD_REFRACTION_ANGLE -
           Angle.from_radians(Moon::EQUATORIAL_RADIUS.m / distance.m)
       else
