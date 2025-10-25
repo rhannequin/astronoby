@@ -79,7 +79,7 @@ the target `399`.
 [IMCCE]: https://www.imcce.fr
 
 ## See also
-- [Celestial Bodies](celestial_bodies.md) - for using ephemeris data
+- [Solar System Bodies](solar_system_bodies.md) - for using ephemeris data
 - [Reference Frames](reference_frames.md) - for coordinate calculations
 - [Observer](observer.md) - for location-based calculations
 - [Configuration](configuration.md) - for performance tuning

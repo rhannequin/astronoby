@@ -164,4 +164,4 @@ horizontal.azimuth.str(:dms)
 - [Reference Frames](reference_frames.md) - for coordinate system details
 - [Angles](angles.md) - for working with angular measurements
 - [Observer](observer.md) - for location setup
-- [Celestial Bodies](celestial_bodies.md) - for object positions
+- [Solar System Bodies](solar_system_bodies.md) - for object positions

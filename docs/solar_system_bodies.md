@@ -1,4 +1,4 @@
-# Celestial Bodies
+# Solar System Bodies
 
 Currently, Astronoby only supports the following major bodies of the Solar
 System:

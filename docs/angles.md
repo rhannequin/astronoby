@@ -134,4 +134,4 @@ angle1.negative? # => false
 - [Coordinates](coordinates.md) - for using angles in coordinate systems
 - [Observer](observer.md) - for latitude and longitude
 - [Reference Frames](reference_frames.md) - for position calculations
-- [Celestial Bodies](celestial_bodies.md) - for object positions
+- [Solar System Bodies](solar_system_bodies.md) - for object positions
