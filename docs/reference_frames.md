@@ -132,7 +132,7 @@ You can learn more about observers on the [Observer page].
 ## See also
 - [Coordinates](coordinates.md) - for understanding coordinate systems
 - [Observer](observer.md) - for location setup
-- [Celestial Bodies](celestial_bodies.md) - for object positions
+- [Solar System Bodies](solar_system_bodies.md) - for object positions
 - [Ephemerides](ephem.md) - for data sources
 
 [Observer page]: observer.md

@@ -134,6 +134,6 @@ instant1 < instant2
 
 ## See also
 - [Ephemerides](ephem.md) - for time-based calculations
-- [Celestial Bodies](celestial_bodies.md) - for object positions
+- [Solar System Bodies](solar_system_bodies.md) - for object positions
 - [Reference Frames](reference_frames.md) - for coordinate systems
 - [Configuration](configuration.md) - for performance settings
