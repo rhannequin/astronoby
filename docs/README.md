@@ -180,8 +180,8 @@ You can learn more about equinoxes and solstices on the
 
 ## Deep-sky objects
 
-It is possible to manipulate any deep-sky possible, given equatorial coordinates
-from a catalogue at J2000 epoch.
+It is possible to manipulate any deep-sky, given equatorial coordinates from a
+catalogue at J2000 epoch.
 
 ```rb
 time = Time.utc(2025, 10, 1)
