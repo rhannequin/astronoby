@@ -41,7 +41,8 @@ previous versions, you can access the documentation in the README for each
 
 ### See also
 - [Quick Start Guide](docs/README.md) - for getting started examples
-- [Celestial Bodies](docs/celestial_bodies.md) - for understanding planets and objects
+- [Solar System Bodies](docs/solar_system_bodies.md) - for understanding planets
+  and objects
 - [Reference Frames](docs/reference_frames.md) - for coordinate systems
 - [Observer Setup](docs/observer.md) - for location configuration
 - [Glossary](docs/glossary.md) - for astronomical and technical terms

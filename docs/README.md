@@ -34,7 +34,7 @@ You can learn more about time scales on the [Instant page].
 jupiter = Astronoby::Jupiter.new(instant: instant, ephem: ephem)
 ```
 
-You can learn more about planets and bodies on the [Celestial Bodies page].
+You can learn more about planets and bodies on the [Solar System Bodies page].
 
 ## Define an observer from geographic coordinates
 
@@ -178,6 +178,33 @@ Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
 You can learn more about equinoxes and solstices on the
 [Equinoxes and solstices times page].
 
+## Deep-sky objects
+
+It is possible to manipulate any deep-sky possible, given equatorial coordinates
+from a catalogue at J2000 epoch.
+
+```rb
+time = Time.utc(2025, 10, 1)
+instant = Astronoby::Instant.from_time(time)
+
+vega_j2000 = Astronoby::Coordinates::Equatorial.new(
+  right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+  declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+  epoch: Astronoby::JulianDate::J2000
+)
+
+# Build the body for star Vega
+vega = Astronoby::DeepSkyObject.new(equatorial_coordinates: vega_j2000)
+
+# Build the position of star Vega for a given instant
+vega_position = vega.at(instant)
+
+vega_position.apparent.equatorial.right_ascension.str(:hms)
+# => "18h 36m 56.3363s"
+```
+
+You can learn more about deep-sky objects on the [Deep-sky Bodies page].
+
 ## See also
 - [Glossary](glossary.md) - for astronomical and technical terms
 - [Configuration](configuration.md) - for performance tuning
@@ -185,7 +212,7 @@ You can learn more about equinoxes and solstices on the
 
 [Ephem page]: ephem.md
 [Instant page]: instant.md
-[Celestial Bodies page]: celestial_bodies.md
+[Solar System Bodies page]: solar_system_bodies.md
 [Observer page]: observer.md
 [Reference Frames page]: reference_frames.md
 [Angles page]: angles.md
@@ -194,3 +221,4 @@ You can learn more about equinoxes and solstices on the
 [Twilight times page]: twilight_times.md
 [Moon phases page]: moon_phases.md
 [Equinoxes and solstices times page]: equinoxes_solstices_times.md
+[Deep-sky Bodies page]: deep_sky_bodies.md

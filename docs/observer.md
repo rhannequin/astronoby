@@ -62,4 +62,4 @@ observer1 == observer2
 - [Angles](angles.md) - for working with latitude and longitude
 - [Coordinates](coordinates.md) - for understanding position systems
 - [Reference Frames](reference_frames.md) - for topocentric calculations
-- [Celestial Bodies](celestial_bodies.md) - for observing objects
+- [Solar System Bodies](solar_system_bodies.md) - for observing objects
