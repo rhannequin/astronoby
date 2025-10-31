@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.9.0 - 2025-10-31
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+### Features
+
+* Add `#approaching_primary?` and `#receding_from_primary?` to solar system bodies ([#211])
+* Calculate apoapsis and periapsis events ([#213])
+* Improve precision of ΔT ([#219])
+* Deep Sky Object: Compute astrometric position ([#217])
+* Deep Sky Object: Compute apparent position ([#220])
+* Deep Sky Object: Handle velocities properly ([#222])
+* Deep Sky Object: Compute topocentric position ([#226])
+* Deep Sky Object: difference between the body and the position ([#227])
+* Deep Sky Object: Add support for RiseTransitSetCalculator ([#228])
+
+### Improvements
+
+* Drop `Astronoby::Apparent#angular_diameter` ([#221])
+* Bump rubyzip from 3.0.2 to 3.2.1 by @dependabot ([#210], [#215], [#223], [#233])
+* Bump standard from 1.50.0 to 1.51.1 by @dependabot ([#212], [#214])
+* Be proud about the precision achieved ([#218])
+* Use local apparent instead of local mean sidereal time for hour angle ([#225])
+* Bump rspec from 3.13.1 to 3.13.2 by @dependabot ([#229])
+* Bump benchmark from 0.4.1 to 0.5.0 by @dependabot ([#230])
+* Add documentation for deep-sky objects ([#232])
+* Bump rake from 13.3.0 to 13.3.1 by @dependabot ([#235])
+
+### Backward-incompatible changes
+
+* Drop `Astronoby::Apparent#angular_diameter` ([#221])
+* Use local apparent instead of local mean sidereal time for hour angle ([#225])
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.8.0...v0.9.0
+
+[#210]: https://github.com/rhannequin/astronoby/pull/210
+[#211]: https://github.com/rhannequin/astronoby/pull/211
+[#212]: https://github.com/rhannequin/astronoby/pull/212
+[#213]: https://github.com/rhannequin/astronoby/pull/213
+[#214]: https://github.com/rhannequin/astronoby/pull/214
+[#215]: https://github.com/rhannequin/astronoby/pull/215
+[#217]: https://github.com/rhannequin/astronoby/pull/217
+[#218]: https://github.com/rhannequin/astronoby/pull/218
+[#219]: https://github.com/rhannequin/astronoby/pull/219
+[#220]: https://github.com/rhannequin/astronoby/pull/220
+[#221]: https://github.com/rhannequin/astronoby/pull/221
+[#222]: https://github.com/rhannequin/astronoby/pull/222
+[#223]: https://github.com/rhannequin/astronoby/pull/223
+[#225]: https://github.com/rhannequin/astronoby/pull/225
+[#226]: https://github.com/rhannequin/astronoby/pull/226
+[#227]: https://github.com/rhannequin/astronoby/pull/227
+[#228]: https://github.com/rhannequin/astronoby/pull/228
+[#229]: https://github.com/rhannequin/astronoby/pull/229
+[#230]: https://github.com/rhannequin/astronoby/pull/230
+[#232]: https://github.com/rhannequin/astronoby/pull/232
+[#233]: https://github.com/rhannequin/astronoby/pull/233
+[#235]: https://github.com/rhannequin/astronoby/pull/235
+
 ## 0.8.0 - 2025-09-01
 
 _If you are upgrading: please see [UPGRADING.md]._

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    astronoby (0.8.0)
+    astronoby (0.9.0)
       ephem (~> 0.3)
       matrix (~> 0.4.2)
 
