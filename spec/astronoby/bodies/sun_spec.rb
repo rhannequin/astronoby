@@ -600,6 +600,136 @@ RSpec.describe Astronoby::Sun do
     end
   end
 
+  describe "::rise_transit_set_events" do
+    it "delegates to RiseTransitSetCalculator with a date" do
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      date = Date.new(2025, 3, 14)
+
+      events = described_class.rise_transit_set_events(
+        observer: observer,
+        date: date,
+        ephem: ephem
+      )
+
+      expect(events).to be_a(Astronoby::RiseTransitSetEvents)
+      expect(events.rising_times.first)
+        .to eq Time.utc(2025, 3, 14, 6, 5, 50)
+    end
+
+    it "delegates to RiseTransitSetCalculator with a time range" do
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      start_time = Time.utc(2025, 3, 14, 0, 0, 0)
+      end_time = Time.utc(2025, 3, 14, 23, 59, 59)
+
+      events = described_class.rise_transit_set_events(
+        observer: observer,
+        start_time: start_time,
+        end_time: end_time,
+        ephem: ephem
+      )
+
+      expect(events).to be_a(Astronoby::RiseTransitSetEvents)
+      expect(events.rising_times.first)
+        .to eq Time.utc(2025, 3, 14, 6, 5, 50)
+    end
+  end
+
+  describe "::twilight_events" do
+    it "delegates to TwilightCalculator with a date" do
+      ephem = test_ephem_sun
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
+      )
+      date = Date.new(2024, 3, 14)
+
+      event = described_class.twilight_events(
+        observer: observer,
+        date: date,
+        ephem: ephem
+      )
+
+      expect(event).to be_a(Astronoby::TwilightEvent)
+      expect(event.morning_civil_twilight_time)
+        .to eq Time.utc(2024, 3, 14, 5, 33, 56)
+    end
+
+    it "delegates to TwilightCalculator with a time range" do
+      ephem = test_ephem_sun
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
+      )
+      start_time = Time.utc(2024, 3, 14, 0, 0, 0)
+      end_time = Time.utc(2024, 3, 14, 23, 59, 59)
+
+      events = described_class.twilight_events(
+        observer: observer,
+        start_time: start_time,
+        end_time: end_time,
+        ephem: ephem
+      )
+
+      expect(events).to be_a(Astronoby::TwilightEvents)
+    end
+  end
+
+  describe "::march_equinox" do
+    it "delegates to EquinoxSolstice" do
+      ephem = test_ephem_sun
+
+      time = described_class.march_equinox(2025, ephem: ephem)
+
+      expect(time).to be_a(Time)
+      expect(time).to eq(Astronoby::EquinoxSolstice.march_equinox(2025, ephem))
+    end
+  end
+
+  describe "::june_solstice" do
+    it "delegates to EquinoxSolstice" do
+      ephem = test_ephem_sun
+
+      time = described_class.june_solstice(2025, ephem: ephem)
+
+      expect(time).to be_a(Time)
+      expect(time).to eq(Astronoby::EquinoxSolstice.june_solstice(2025, ephem))
+    end
+  end
+
+  describe "::september_equinox" do
+    it "delegates to EquinoxSolstice" do
+      ephem = test_ephem_sun
+
+      time = described_class.september_equinox(2025, ephem: ephem)
+
+      expect(time).to be_a(Time)
+      expect(time).to eq(
+        Astronoby::EquinoxSolstice.september_equinox(2025, ephem)
+      )
+    end
+  end
+
+  describe "::december_solstice" do
+    it "delegates to EquinoxSolstice" do
+      ephem = test_ephem_sun
+
+      time = described_class.december_solstice(2025, ephem: ephem)
+
+      expect(time).to be_a(Time)
+      expect(time).to eq(
+        Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
+      )
+    end
+  end
+
   describe "#phase_angle" do
     it "returns nil" do
       time = Time.utc(2025, 7, 14)

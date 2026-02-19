@@ -37,33 +37,54 @@ module Astronoby
       ABSOLUTE_MAGNITUDE
     end
 
+    # Finds all apoapsis events between two times
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @param start_time [Time] Start time
+    # @param end_time [Time] End time
+    # @return [Array<Astronoby::ExtremumEvent>] Array of apoapsis events
+    def self.apoapsis_events(
+      ephem:,
+      start_time:,
+      end_time:,
+      samples_per_period: 60
+    )
+      ExtremumCalculator.new(
+        body: self,
+        primary_body: Earth,
+        ephem: ephem,
+        samples_per_period: samples_per_period
+      ).apoapsis_events_between(start_time, end_time)
+    end
+
+    # Finds all periapsis events between two times
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @param start_time [Time] Start time
+    # @param end_time [Time] End time
+    # @return [Array<Astronoby::ExtremumEvent>] Array of periapsis events
+    def self.periapsis_events(
+      ephem:,
+      start_time:,
+      end_time:,
+      samples_per_period: 60
+    )
+      ExtremumCalculator.new(
+        body: self,
+        primary_body: Earth,
+        ephem: ephem,
+        samples_per_period: samples_per_period
+      ).periapsis_events_between(start_time, end_time)
+    end
+
     # @return [Float] Phase fraction, from 0 to 1
     def current_phase_fraction
       mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE
     end
 
-    # @return [Boolean] True if the body is approaching the primary
-    #   body (Earth), false otherwise.
-    def approaching_primary?
-      relative_position =
-        (geometric.position - @earth_geometric.position).map(&:m)
-      relative_velocity =
-        (geometric.velocity - @earth_geometric.velocity).map(&:mps)
-      radial_velocity_component = Astronoby::Util::Maths
-        .dot_product(relative_position, relative_velocity)
-      distance = Math.sqrt(
-        Astronoby::Util::Maths.dot_product(relative_position, relative_position)
-      )
-      radial_velocity_component / distance < 0
-    end
-
-    # @return [Boolean] True if the body is receding from the primary
-    #   body (Earth), false otherwise.
-    def receding_from_primary?
-      !approaching_primary?
-    end
-
     private
+
+    def primary_body_geometric
+      earth_geometric
+    end
 
     # Source:
     #  Title: Astronomical Algorithms
@@ -85,8 +106,6 @@ module Astronoby
     def elapsed_centuries
       (@instant.tt - JulianDate::DEFAULT_EPOCH) / Constants::DAYS_PER_JULIAN_CENTURY
     end
-
-    private
 
     # Source:
     #  Title: Computing Apparent Planetary Magnitudes for The Astronomical

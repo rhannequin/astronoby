@@ -7,6 +7,25 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.9.0 to 0.10.0
+
+### `SolarSystemBody` initialization is now lazy
+
+`SolarSystemBody#initialize` no longer eagerly computes geometric positions,
+light-time corrections, or Sun data. All computations are now deferred until
+the corresponding method is first called. This means ephemeris-related errors
+will surface on first property access rather than during instantiation.
+
+### `SolarSystemBody#geometric` is now a lazy method
+
+`geometric` was previously exposed via `attr_reader` and eagerly computed in
+`initialize`. It is now a lazy memoized method. The public interface is
+unchanged — `body.geometric` still returns a `Geometric` object.
+
+### `SolarSystemBody#ephem` is now publicly accessible
+
+The `ephem` object passed to `initialize` is now exposed via `attr_reader`.
+
 ## Upgrading from 0.8.0 to 0.9.0
 
 ### Constant `MINUTES_PER_DEGREE` renamed

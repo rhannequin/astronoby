@@ -97,10 +97,10 @@ module Astronoby
       end
 
       @event = event
+      @ephem = ephem
       @year = (year.to_i - 2000) / 1000.0
       uncorrected_time = compute
       @instant = Instant.from_time(uncorrected_time)
-      @sun = Sun.new(ephem: ephem, instant: @instant)
     end
 
     def time
@@ -135,8 +135,12 @@ module Astronoby
         component[4] * @year**4
     end
 
+    def sun
+      @sun ||= Sun.new(ephem: @ephem, instant: @instant)
+    end
+
     def corrected
-      longitude = @sun.apparent.ecliptic.longitude
+      longitude = sun.apparent.ecliptic.longitude
       58 * Angle.from_degrees(@event * 90 - longitude.degrees).sin
     end
   end
