@@ -139,31 +139,18 @@ module Astronoby
       dpsi = 0.0
       deps = 0.0
 
-      NUTATION_TERMS.each do |term|
-        # Extract the fundamental argument coefficients
-        arg_coef = term[0..4]
+      radians = a.map(&:radians)
+      jc = julian_centuries
 
-        # Calculate the argument
-        arg = Util::Maths.dot_product(arg_coef, a.map(&:radians))
+      NUTATION_TERMS.each do |term|
+        arg = term[0] * radians[0] + term[1] * radians[1] +
+          term[2] * radians[2] + term[3] * radians[3] + term[4] * radians[4]
 
         sin_arg = Math.sin(arg)
         cos_arg = Math.cos(arg)
 
-        # Extract longitude coefficients
-        long_coef = term[5..7]
-
-        # Extract obliquity coefficients
-        obl_coef = term[8..10]
-
-        # Update dpsi using longitude coefficients
-        dpsi += long_coef[0] * sin_arg
-        dpsi += long_coef[1] * sin_arg * julian_centuries
-        dpsi += long_coef[2] * cos_arg
-
-        # Update deps using obliquity coefficients
-        deps += obl_coef[0] * cos_arg
-        deps += obl_coef[1] * cos_arg * julian_centuries
-        deps += obl_coef[2] * sin_arg
+        dpsi += term[5] * sin_arg + term[6] * sin_arg * jc + term[7] * cos_arg
+        deps += term[8] * cos_arg + term[9] * cos_arg * jc + term[10] * sin_arg
       end
 
       [dpsi, deps] # in microarcseconds
