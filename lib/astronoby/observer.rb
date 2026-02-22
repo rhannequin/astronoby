@@ -60,7 +60,8 @@ module Astronoby
     end
 
     def earth_fixed_rotation_matrix_for(instant)
-      dpsi = Nutation.new(instant: instant).nutation_in_longitude
+      nutation = Nutation.new(instant: instant)
+      dpsi = nutation.nutation_in_longitude
 
       mean_obliquity = MeanObliquity.at(instant)
 
@@ -75,7 +76,7 @@ module Astronoby
         [0, 0, 1]
       ]
 
-      nutation_matrix = Nutation.matrix_for(instant)
+      nutation_matrix = nutation.matrix
       precession_matrix = Precession.matrix_for(instant)
 
       earth_rotation_matrix * nutation_matrix * precession_matrix
