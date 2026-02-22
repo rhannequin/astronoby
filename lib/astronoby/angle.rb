@@ -41,8 +41,8 @@ module Astronoby
       def from_dms(degree, minute, second)
         sign = degree.negative? ? -1 : 1
         degrees = degree.abs +
-          minute / Constants::MINUTES_PER_HOUR +
-          second / Constants::SECONDS_PER_HOUR
+          minute / Constants::ARCMINUTES_PER_DEGREE +
+          second / Constants::ARCSECONDS_PER_DEGREE
         from_degrees(sign * degrees)
       end
 
