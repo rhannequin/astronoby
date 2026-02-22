@@ -43,20 +43,24 @@ module Astronoby
     end
 
     def geocentric_position
-      n = earth_prime_vertical_radius_of_curvature
-      x = (n + @elevation.m) * @latitude.cos * @longitude.cos
-      y = (n + @elevation.m) * @latitude.cos * @longitude.sin
-      z = (n * (1 - Constants::WGS84_ECCENTICITY_SQUARED) + @elevation.m) *
-        @latitude.sin
-      Distance.vector_from_meters([x, y, z])
+      @geocentric_position ||= begin
+        n = earth_prime_vertical_radius_of_curvature
+        x = (n + @elevation.m) * @latitude.cos * @longitude.cos
+        y = (n + @elevation.m) * @latitude.cos * @longitude.sin
+        z = (n * (1 - Constants::WGS84_ECCENTICITY_SQUARED) + @elevation.m) *
+          @latitude.sin
+        Distance.vector_from_meters([x, y, z])
+      end
     end
 
     def geocentric_velocity
-      r = projected_radius
-      vx = -Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.sin
-      vy = Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.cos
-      vz = 0.0
-      Velocity.vector_from_mps([vx, vy, vz])
+      @geocentric_velocity ||= begin
+        r = projected_radius
+        vx = -Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.sin
+        vy = Constants::EARTH_ANGULAR_VELOCITY_RAD_PER_S * r * @longitude.cos
+        vz = 0.0
+        Velocity.vector_from_mps([vx, vy, vz])
+      end
     end
 
     def earth_fixed_rotation_matrix_for(instant)
@@ -126,19 +130,20 @@ module Astronoby
     end
 
     def earth_prime_vertical_radius_of_curvature
-      Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS./(
-        Math.sqrt(
-          1 -
-            Constants::WGS84_ECCENTICITY_SQUARED * @latitude.sin * @latitude.sin
+      @earth_prime_vertical_radius_of_curvature ||=
+        Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS./(
+          Math.sqrt(
+            1 -
+              Constants::WGS84_ECCENTICITY_SQUARED * @latitude.sin * @latitude.sin
+          )
         )
-      )
     end
 
     def projected_radius
-      Math.sqrt(
-        geocentric_position.x.m * geocentric_position.x.m +
-          geocentric_position.y.m * geocentric_position.y.m
-      )
+      @projected_radius ||= begin
+        pos = geocentric_position
+        Math.sqrt(pos.x.m * pos.x.m + pos.y.m * pos.y.m)
+      end
     end
   end
 end
