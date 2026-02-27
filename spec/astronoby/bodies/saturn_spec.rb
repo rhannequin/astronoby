@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: +354° 44′ 7.3″
 
       expect(geometric.distance.au)
-        .to eq(9.580357829404551)
+        .to eq(9.580357829348523)
       # IMCCE:    9.580357970998
       # Skyfield: 9.580357829243903
     end
@@ -123,7 +123,7 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: 0h 3m 50.37s
 
       expect(astrometric.equatorial.declination.str(:dms))
-        .to eq("-1° 52′ 50.7216″")
+        .to eq("-1° 52′ 50.7215″")
       # IMCCE:    -1° 52′ 50.722″
       # Skyfield: -1° 52′ 50.7″
 
@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: +0° 29′ 16.2″
 
       expect(astrometric.distance.au)
-        .to eq(9.878564625593041)
+        .to eq(9.878564622689755)
       # IMCCE:    9.878564573683
       # Skyfield: 9.878564617268683
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Saturn do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-27194.09953, 18131.58353, 7660.22559])
+        .to eq([-27194.09956, 18131.58345, 7660.22556])
       # IMCCE:    -27194.10006 18131.58209 7660.22501
       # Skyfield: -27194.09962 18131.5833  7660.22549
     end
@@ -205,7 +205,7 @@ RSpec.describe Astronoby::Saturn do
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(9.878579109968433)
+        .to eq(9.878579107065182)
       # IMCCE: 9.878579058059
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Saturn do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-27315.85265, 17976.7126, 7592.94846])
+        .to eq([-27315.85268, 17976.71252, 7592.94843])
       # IMCCE:  -27315.85388  17976.70941 7592.94947
     end
   end
@@ -257,7 +257,7 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: 0h 5m 8.16s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-1° 44′ 22.9283″")
+        .to eq("-1° 44′ 22.9282″")
       # IMCCE:    -1° 44′ 22.850″
       # Skyfield: -1° 44′ 22.9″
 
@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Saturn do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(9.87856462559304)
+        .to eq(9.878564622689753)
       # IMCCE:    9.878564573683
       # Skyfield: 9.878564617268687
     end
@@ -382,14 +382,14 @@ RSpec.describe Astronoby::Saturn do
         # Skyfield:   -1° 44′ 23.5″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+76° 26′ 43.511″")
+          .to eq("+76° 26′ 43.8217″")
         # IMCCE:      +76° 26′ 43.440″
         # Horizons:   +76° 26′ 44.2263″
         # Stellarium: +76° 26′ 43.2″
         # Skyfield:   +76° 26′ 44.0″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-13° 50′ 8.4271″")
+          .to eq("-13° 50′ 8.1759″")
         # IMCCE:      -13° 50′ 8.520″
         # Horizons:   -13° 50′ 7.7396″
         # Stellarium: -13° 50′ 8.6″

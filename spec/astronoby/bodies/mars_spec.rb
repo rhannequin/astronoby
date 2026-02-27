@@ -45,7 +45,7 @@ RSpec.describe Astronoby::Mars do
       geometric = planet.geometric
 
       expect(geometric.position.to_a.map(&:km).map(&:round))
-        .to eq([-214596105, 113040906, 57662717])
+        .to eq([-214596105, 113040906, 57662716])
       # IMCCE:    -214596085 113040908 57662716
       # Skyfield: -214596105 113040905 57662716
 
@@ -65,12 +65,12 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: +1° 49′ 34.9″
 
       expect(geometric.ecliptic.longitude.str(:dms))
-        .to eq("+149° 27′ 6.5804″")
+        .to eq("+149° 27′ 6.5805″")
       # IMCCE:    +149° 27′ 6.571″
       # Skyfield: +149° 27′ 17.0″
 
       expect(geometric.distance.au)
-        .to eq(1.6665243268471546)
+        .to eq(1.6665243268663144)
       # IMCCE:    1.666524219608
       # Skyfield: 1.66652432695766
     end
@@ -84,7 +84,7 @@ RSpec.describe Astronoby::Mars do
       geometric = planet.geometric
 
       expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-11481.40987, -17158.09537, -7560.12406])
+        .to eq([-11481.40985, -17158.09538, -7560.12406])
       # IMCCE:    -11481.40954 -17158.09555 -7560.12413
       # Skyfield: -11481.40978 -17158.09542 -7560.12408
     end
@@ -128,17 +128,17 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: +24° 3′ 35.9″
 
       expect(astrometric.ecliptic.latitude.str(:dms))
-        .to eq("+2° 39′ 41.3342″")
+        .to eq("+2° 39′ 41.3341″")
       # IMCCE:    +2° 39′ 41.334″
       # Skyfield: +2° 39′ 51.8″
 
       expect(astrometric.ecliptic.longitude.str(:dms))
-        .to eq("+113° 14′ 47.4532″")
+        .to eq("+113° 14′ 47.4533″")
       # IMCCE:    +113° 14′ 47.455″
       # Skyfield: +113° 35′ 57.8″
 
       expect(astrometric.distance.au)
-        .to eq(1.1389892469952143)
+        .to eq(1.1389892478787442)
       # IMCCE:    1.138989267589
       # Skyfield: 1.138989252092628
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Mars do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-16789.69843, 9770.68807, 4114.24476])
+        .to eq([-16789.69846, 9770.68805, 4114.24475])
       # IMCCE:    -16789.69917 9770.68769 4114.2446
       # Skyfield: -16789.69861 9770.68797 4114.24472
     end
@@ -199,13 +199,13 @@ RSpec.describe Astronoby::Mars do
       # IMCCE:  +2° 39′ 52.098″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+113° 36′ 9.7751″")
+        .to eq("+113° 36′ 9.7752″")
       # IMCCE:  +113° 36′ 9.784″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(1.1389410489106222)
+        .to eq(1.138941049794135)
       # IMCCE: 1.1389410695
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Mars do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-16853.58739, 9675.1642, 4072.69877])
+        .to eq([-16853.58742, 9675.16418, 4072.69877])
       # IMCCE:  -16853.58852  9675.16272  4072.69963
     end
   end
@@ -252,7 +252,7 @@ RSpec.describe Astronoby::Mars do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("7h 43m 50.9457s")
+        .to eq("7h 43m 50.9458s")
       # IMCCE:    7h 43m 50.9376s
       # Skyfield: 7h 43m 50.94s
 
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: +2° 39′ 52.7″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+113° 36′ 2.6883″")
+        .to eq("+113° 36′ 2.6885″")
       # IMCCE:    +113° 36′ 2.578″
       # Skyfield: +113° 36′ 2.4″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(1.1389892469952143)
+        .to eq(1.1389892478787444)
       # IMCCE:    1.138989267589
       # Skyfield: 1.1389892520926244
     end
@@ -382,14 +382,14 @@ RSpec.describe Astronoby::Mars do
         # Skyfield:   +23° 59′ 59.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+276° 30′ 36.8617″")
+          .to eq("+276° 30′ 37.2282″")
         # IMCCE:      +276° 30′ 37.080″
         # Horizons:   +276° 30′ 37.6815″
         # Stellarium: +276° 30′ 36.9″
         # Skyfield:   +276° 30′ 37.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 51′ 15.9636″")
+          .to eq("+26° 51′ 15.6286″")
         # IMCCE:      +26° 51′ 15.840″
         # Horizons:   +26° 51′ 15.3662″
         # Stellarium: +26° 51′ 15.9″

@@ -90,9 +90,9 @@ RSpec.describe Astronoby::GeocentricParallax do
       )
 
       expect(apparent_coordinates.right_ascension.str(:hms))
-        .to eq "22h 36m 43.215s"
+        .to eq "22h 36m 43.2106s"
       expect(apparent_coordinates.declination.str(:dms))
-        .to eq "-8° 32′ 17.1781″"
+        .to eq "-8° 32′ 17.184″"
     end
 
     # Source:

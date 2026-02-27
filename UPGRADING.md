@@ -9,6 +9,26 @@ public API, please read the upgrading notes for each release.
 
 ## Upgrading from 0.9.0 to 0.10.0
 
+### Minimum Ruby version bumped to 3.2.0
+
+The minimum required Ruby version is now 3.2.0 (previously 3.0.0), due to the
+new `iers` gem dependency.
+
+### Delta T and GMST now use IERS data
+
+Delta T (TT - UT1) is now computed from IERS data via the
+[`iers`](https://github.com/rhannequin/iers) gem instead of hardcoded lookup
+tables. Greenwich Mean Sidereal Time (GMST) is now computed using the IERS
+Conventions 2010 ERA-based expression instead of the Duffett-Smith polynomial.
+
+Both changes improve accuracy significantly (Delta T error reduced from ~0.5s
+to ~0.001s, GMST error reduced by 600-2200x vs Skyfield). As a result,
+computed values for sidereal times, horizontal coordinates, and
+rise/transit/set times may differ slightly from previous versions.
+
+The `iers` gem ships with bundled data files that work out of the box. See
+[IERS Data](docs/iers.md) for details on data coverage and updates.
+
 ### `SolarSystemBody` initialization is now lazy
 
 `SolarSystemBody#initialize` no longer eagerly computes geometric positions,
