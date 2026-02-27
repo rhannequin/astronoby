@@ -382,14 +382,14 @@ RSpec.describe Astronoby::Uranus do
         # Skyfield:   +19° 52′ 58.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+58° 50′ 30.7714″")
+          .to eq("+58° 50′ 30.3884″")
         # IMCCE:      +58° 50′ 31.200″
         # Horizons:   +58° 50′ 30.7697″
         # Stellarium: +58° 50′ 30.6″
         # Skyfield:   +58° 50′ 30.6″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+51° 34′ 45.0487″")
+          .to eq("+51° 34′ 45.5702″")
         # IMCCE:      +51° 34′ 44.760″
         # Horizons:   +51° 34′ 45.1039″
         # Stellarium: +51° 34′ 46.0″

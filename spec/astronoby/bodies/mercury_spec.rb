@@ -382,14 +382,14 @@ RSpec.describe Astronoby::Mercury do
         # Skyfield:   -21° 56′ 32.7″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+44° 8′ 51.5849″")
+          .to eq("+44° 8′ 52.5523″")
         # IMCCE:      +44° 8′ 52.800″
         # Horizons:   +44° 8′ 53.2819″
         # Stellarium: +44° 8′ 51.3″
         # Skyfield:   +44° 8′ 52.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-56° 56′ 39.3943″")
+          .to eq("-56° 56′ 39.0945″")
         # IMCCE:      -56° 56′ 39.120″
         # Horizons:   -56° 56′ 38.8135″
         # Stellarium: -56° 56′ 39.5″

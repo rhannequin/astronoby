@@ -382,14 +382,14 @@ RSpec.describe Astronoby::Neptune do
         # Skyfield:   -0° 26′ 58.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+122° 25′ 47.8072″")
+          .to eq("+122° 25′ 48.6219″")
         # IMCCE:      +122° 25′ 47.640″
         # Horizons:   +122° 25′ 48.4763″
         # Stellarium: +122° 25′ 46.1″
         # Skyfield:   +122° 25′ 48.3″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+24° 33′ 48.2807″")
+          .to eq("+24° 33′ 48.7755″")
         # IMCCE:      +24° 33′ 48.240″
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″

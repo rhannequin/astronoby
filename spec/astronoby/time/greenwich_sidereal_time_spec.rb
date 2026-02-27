@@ -17,7 +17,7 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
 
         expect(gmst.time.to_i).to eq(4)
         expect(minute.to_i).to eq(40)
-        expect(second.ceil(4)).to eq(5.2296)
+        expect(second.ceil(4)).to eq(5.5953)
         expect(gmst.type).to eq(:mean)
         expect(gmst).to be_mean
         expect(gmst).not_to be_apparent
@@ -38,7 +38,7 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
 
         expect(gmst.time.to_i).to eq(13)
         expect(minute.to_i).to eq(10)
-        expect(second.ceil(4)).to eq(46.3673)
+        expect(second.ceil(4)).to eq(46.0787)
         expect(gmst.type).to eq(:mean)
         # Skyfield: 13h 10m 46.0782s
       end
@@ -57,7 +57,7 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
 
         expect(gmst.time.to_i).to eq(8)
         expect(minute.to_i).to eq(36)
-        expect(second.ceil(4)).to eq(46.1279)
+        expect(second.ceil(4)).to eq(45.9087)
         expect(gmst.type).to eq(:mean)
         # Skyfield: 8h 36m 45.9086s
       end
@@ -73,7 +73,7 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
 
         expect(gast.time.to_i).to eq(13)
         expect(minute.to_i).to eq(10)
-        expect(second.ceil(4)).to eq(46.136)
+        expect(second.ceil(4)).to eq(45.8474)
         expect(gast.type).to eq(:apparent)
         # Skyfield: 13h 10m 45.8470s
       end
@@ -87,7 +87,7 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
 
         expect(gast.time.to_i).to eq(8)
         expect(minute.to_i).to eq(36)
-        expect(second.ceil(4)).to eq(46.6127)
+        expect(second.ceil(4)).to eq(46.3935)
         expect(gast.type).to eq(:apparent)
         # Skyfield: 8h 36m 46.3933s
       end

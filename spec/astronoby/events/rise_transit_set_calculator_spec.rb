@@ -41,7 +41,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
         # Timeanddate: 2025-03-14T12:09:00+00:00
 
         expect(events.setting_times.first)
-          .to eq Time.utc(2025, 3, 14, 18, 12, 22)
+          .to eq Time.utc(2025, 3, 14, 18, 12, 21)
         # USNO:        2025-03-14T18:12:00+00:00
         # Stellarium:  2025-03-14T18:12:00+00:00
         # Skyfield:    2025-03-14T18:12:21+00:00
@@ -301,7 +301,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
         aggregate_failures do
           expect(events.rising_times.first)
-            .to eq Time.utc(2025, 10, 1, 1, 31, 28)
+            .to eq Time.utc(2025, 10, 1, 1, 31, 27)
           # USNO:       2025-10-01T01:31    UTC
           # Stellarium: 2025-10-01T01:31:27 UTC
           # Skyfield:   2025-10-01T01:36    UTC
@@ -369,7 +369,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
       aggregate_failures do
         expect(event.rising_time).to eq Time.utc(2025, 3, 14, 6, 5, 50)
         expect(event.transit_time).to eq Time.utc(2025, 3, 14, 12, 9, 6)
-        expect(event.setting_time).to eq Time.utc(2025, 3, 14, 18, 12, 22)
+        expect(event.setting_time).to eq Time.utc(2025, 3, 14, 18, 12, 21)
       end
     end
 
@@ -393,7 +393,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
         aggregate_failures do
           expect(event.rising_time).to eq Time.utc(2025, 3, 14, 6, 5, 50)
           expect(event.transit_time).to eq Time.utc(2025, 3, 14, 12, 9, 6)
-          expect(event.setting_time).to eq Time.utc(2025, 3, 14, 18, 12, 22)
+          expect(event.setting_time).to eq Time.utc(2025, 3, 14, 18, 12, 21)
         end
 
         Astronoby.reset_configuration!
@@ -420,7 +420,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
       aggregate_failures do
         expect(events.rising_times.size).to eq 3
-        expect(events.rising_times[0]).to eq Time.utc(2025, 3, 10, 6, 6, 55)
+        expect(events.rising_times[0]).to eq Time.utc(2025, 3, 10, 6, 6, 54)
         expect(events.rising_times[1]).to eq Time.utc(2025, 3, 11, 6, 6, 39)
         expect(events.rising_times[2]).to eq Time.utc(2025, 3, 12, 6, 6, 23)
 

@@ -48,7 +48,7 @@ RSpec.describe Astronoby::Refraction do
 
       angle = described_class.angle(coordinates: true_horizontal_coordinates)
 
-      expect(angle.str(:dms)).to eq "+0° 10′ 29.4204″"
+      expect(angle.str(:dms)).to eq "+0° 10′ 29.4467″"
     end
 
     # Source:

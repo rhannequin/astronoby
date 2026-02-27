@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "iers"
+
 module Astronoby
   class GreenwichMeanSiderealTime < GreenwichSiderealTime
     JULIAN_CENTURIES_EXPONENTS = [
@@ -11,27 +13,15 @@ module Astronoby
     SIDEREAL_MINUTE_IN_UT_MINUTE = 0.9972695663
 
     # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 12 - Conversion of UT to Greenwich sidereal time (GST)
+    #  Title: IERS Conventions (2010)
+    #  Chapter: 5.5.7 - ERA based expressions for Greenwich Sidereal Time
     def self.from_utc(utc)
       date = utc.to_date
-      julian_day = utc.to_date.ajd
-      t = (julian_day - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
-      t0 = (
-        (JULIAN_CENTURIES_EXPONENTS[0] +
-          (JULIAN_CENTURIES_EXPONENTS[1] * t) +
-          (JULIAN_CENTURIES_EXPONENTS[2] * t * t)) % Constants::HOURS_PER_DAY
-      ).abs
+      gmst_radians = IERS::GMST.at(utc)
+      gmst_hours = gmst_radians * 12.0 / Math::PI
+      gmst_hours = normalize_time(gmst_hours)
 
-      ut_in_hours = utc.hour +
-        utc.min / Constants::MINUTES_PER_HOUR +
-        (utc.sec + utc.subsec) / Constants::SECONDS_PER_HOUR
-
-      gmst = normalize_time(1.002737909 * ut_in_hours + t0)
-
-      new(date: date, time: gmst)
+      new(date: date, time: gmst_hours)
     end
 
     def initialize(date:, time:)

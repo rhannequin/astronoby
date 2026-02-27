@@ -103,7 +103,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the Greenwich Mean Sidereal Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.gmst).to eq(6.7266376305619815)
+      expect(instant.gmst).to eq(6.726649748028655)
       # Skyfield: 6.726649735919012
     end
   end
@@ -112,7 +112,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the Greenwich Apparent Sidereal Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.gast).to eq(6.726640995464177)
+      expect(instant.gast).to eq(6.72665311293085)
       # Skyfield: 6.726653092855316
     end
   end
@@ -121,7 +121,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the Local Mean Sidereal Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
       longitude = Astronoby::Angle.from_degrees(-74.0060)
-      expect(instant.lmst(longitude: longitude)).to eq(1.7929042972286489)
+      expect(instant.lmst(longitude: longitude)).to eq(1.7929164146953225)
       # Skyfield: 1.792916402585679
     end
   end
@@ -131,7 +131,7 @@ RSpec.describe Astronoby::Instant do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
       longitude = Astronoby::Angle.from_degrees(-74.0060)
 
-      expect(instant.last(longitude: longitude)).to eq(1.792907662130844)
+      expect(instant.last(longitude: longitude)).to eq(1.7929197795975176)
       # Skyfield: 1.792919759521983
     end
   end
