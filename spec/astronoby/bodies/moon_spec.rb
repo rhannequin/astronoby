@@ -615,6 +615,40 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
+  describe "::apoapsis_events" do
+    it "delegates to ExtremumCalculator" do
+      ephem = test_ephem_inpop
+      start_time = Time.utc(2025, 1, 1)
+      end_time = Time.utc(2025, 2, 1)
+
+      events = described_class.apoapsis_events(
+        ephem: ephem,
+        start_time: start_time,
+        end_time: end_time
+      )
+
+      expect(events).to be_an(Array)
+      expect(events.first).to be_a(Astronoby::ExtremumEvent)
+    end
+  end
+
+  describe "::periapsis_events" do
+    it "delegates to ExtremumCalculator" do
+      ephem = test_ephem_inpop
+      start_time = Time.utc(2025, 1, 1)
+      end_time = Time.utc(2025, 2, 1)
+
+      events = described_class.periapsis_events(
+        ephem: ephem,
+        start_time: start_time,
+        end_time: end_time
+      )
+
+      expect(events).to be_an(Array)
+      expect(events.first).to be_a(Astronoby::ExtremumEvent)
+    end
+  end
+
   describe "#approaching_primary?" do
     it "returns true if the moon is approaching the Earth" do
       time = Time.utc(2025, 9, 9)

@@ -13,6 +13,60 @@ module Astronoby
       ABSOLUTE_MAGNITUDE
     end
 
+    # @param observer [Astronoby::Observer] Observer for whom to calculate
+    #   twilight events
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @param date [Date] Date for which to calculate twilight events (optional)
+    # @param start_time [Time] Start time for twilight event calculation
+    #   (optional)
+    # @param end_time [Time] End time for twilight event calculation (optional)
+    # @param utc_offset [String] UTC offset for the given date (e.g., "+02:00")
+    # @return [TwilightEvent, Array<TwilightEvent>] Twilight events for the
+    #   given date or time range.
+    def self.twilight_events(
+      observer:,
+      ephem:,
+      date: nil,
+      start_time: nil,
+      end_time: nil,
+      utc_offset: 0
+    )
+      calculator = TwilightCalculator.new(observer: observer, ephem: ephem)
+      if date
+        calculator.event_on(date, utc_offset: utc_offset)
+      else
+        calculator.events_between(start_time, end_time)
+      end
+    end
+
+    # @param year [Integer] Year for which to calculate equinoxes and solstices
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @return [Time] Time of the March equinox for the given year.
+    def self.march_equinox(year, ephem:)
+      EquinoxSolstice.march_equinox(year, ephem)
+    end
+
+    # @param year [Integer] Year for which to calculate equinoxes and solstices
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @return [Time] Time of the June solstice for the given year.
+    def self.june_solstice(year, ephem:)
+      EquinoxSolstice.june_solstice(year, ephem)
+    end
+
+    # @param year [Integer] Year for which to calculate equinoxes and solstices
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @return [Time] Time of the September equinox for the given year.
+    def self.september_equinox(year, ephem:)
+      EquinoxSolstice.september_equinox(year, ephem)
+    end
+
+    # @param year [Integer] Year for which to calculate equinoxes and solstices
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @return [Time] Time of the December solstice for the given year.
+    def self.december_solstice(year, ephem:)
+      EquinoxSolstice.december_solstice(year, ephem)
+    end
+
     # Source:
     #  Title: Explanatory Supplement to the Astronomical Almanac
     #  Authors: Sean E. Urban and P. Kenneth Seidelmann
@@ -55,10 +109,22 @@ module Astronoby
       ).round
     end
 
+    def phase_angle
+      nil
+    end
+
+    def approaching_primary?
+      false
+    end
+
+    def receding_from_primary?
+      false
+    end
+
     private
 
-    def requires_sun_data?
-      false
+    def primary_body_geometric
+      nil
     end
   end
 end

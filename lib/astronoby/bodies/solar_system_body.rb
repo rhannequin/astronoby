@@ -17,7 +17,7 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :geometric, :instant
+    attr_reader :instant, :ephem
 
     def self.at(instant, ephem:)
       new(ephem: ephem, instant: instant)
@@ -74,26 +74,63 @@ module Astronoby
       nil
     end
 
+    # @param observer [Astronoby::Observer] Observer for whom to calculate rise,
+    #   transit, and set events
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @param date [Date] Date for which to calculate rise, transit, and set
+    #   events (optional)
+    # @param start_time [Time] Start time for rise, transit, and set event
+    #   calculation (optional)
+    # @param end_time [Time] End time for rise, transit, and set event
+    #   calculation (optional)
+    # @param utc_offset [String] UTC offset for the given date (e.g., "+02:00")
+    # @return [RiseTransitSetEvent, Array<RiseTransitSetEvent>] Rise, transit,
+    # and set events for the given date or time range.
+    def self.rise_transit_set_events(
+      observer:,
+      ephem:,
+      date: nil,
+      start_time: nil,
+      end_time: nil,
+      utc_offset: 0
+    )
+      calculator = RiseTransitSetCalculator.new(
+        body: self,
+        observer: observer,
+        ephem: ephem
+      )
+      if date
+        calculator.events_on(date, utc_offset: utc_offset)
+      else
+        calculator.events_between(start_time, end_time)
+      end
+    end
+
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @param instant [Astronoby::Instant] Instant for which to calculate the
+    #   phase angle
     def initialize(ephem:, instant:)
+      @ephem = ephem
       @instant = instant
-      @geometric = compute_geometric(ephem)
-      @earth_geometric = Earth.geometric(ephem: ephem, instant: instant)
-      @light_time_corrected_position,
-        @light_time_corrected_velocity =
-        Correction::LightTimeDelay.compute(
-          center: @earth_geometric,
-          target: @geometric,
-          ephem: ephem
-        )
-      compute_sun(ephem) if requires_sun_data?
+    end
+
+    def geometric
+      @geometric ||= self.class.compute_geometric(
+        ephem: @ephem,
+        instant: @instant
+      )
+    end
+
+    def earth_geometric
+      @earth_geometric ||= Earth.geometric(ephem: @ephem, instant: @instant)
     end
 
     def astrometric
       @astrometric ||= Astrometric.build_from_geometric(
         instant: @instant,
-        earth_geometric: @earth_geometric,
-        light_time_corrected_position: @light_time_corrected_position,
-        light_time_corrected_velocity: @light_time_corrected_velocity,
+        earth_geometric: earth_geometric,
+        light_time_corrected_position: light_time_corrected_position,
+        light_time_corrected_velocity: light_time_corrected_velocity,
         target_body: self
       )
     end
@@ -101,8 +138,8 @@ module Astronoby
     def mean_of_date
       @mean_of_date ||= MeanOfDate.build_from_geometric(
         instant: @instant,
-        target_geometric: @geometric,
-        earth_geometric: @earth_geometric,
+        target_geometric: geometric,
+        earth_geometric: earth_geometric,
         target_body: self
       )
     end
@@ -111,7 +148,7 @@ module Astronoby
       @apparent ||= Apparent.build_from_astrometric(
         instant: @instant,
         target_astrometric: astrometric,
-        earth_geometric: @earth_geometric,
+        earth_geometric: earth_geometric,
         target_body: self
       )
     end
@@ -143,23 +180,23 @@ module Astronoby
     #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
     # @return [Astronoby::Angle, nil] Phase angle of the body
     def phase_angle
-      return unless @sun
+      return unless sun
 
       @phase_angle ||= begin
         geocentric_elongation = Angle.acos(
-          @sun.apparent.equatorial.declination.sin *
+          sun.apparent.equatorial.declination.sin *
           apparent.equatorial.declination.sin +
-          @sun.apparent.equatorial.declination.cos *
+          sun.apparent.equatorial.declination.cos *
           apparent.equatorial.declination.cos *
           (
-            @sun.apparent.equatorial.right_ascension -
+            sun.apparent.equatorial.right_ascension -
               apparent.equatorial.right_ascension
           ).cos
         )
 
-        term1 = @sun.astrometric.distance.km * geocentric_elongation.sin
+        term1 = sun.astrometric.distance.km * geocentric_elongation.sin
         term2 = astrometric.distance.km -
-          @sun.astrometric.distance.km * geocentric_elongation.cos
+          sun.astrometric.distance.km * geocentric_elongation.cos
         angle = Angle.atan(term1 / term2)
         Astronoby::Util::Trigonometry
           .adjustement_for_arctangent(term1, term2, angle)
@@ -186,7 +223,7 @@ module Astronoby
 
       @apparent_magnitude ||= begin
         body_sun_distance =
-          (astrometric.position - @sun.astrometric.position).magnitude
+          (astrometric.position - sun.astrometric.position).magnitude
         self.class.absolute_magnitude +
           5 * Math.log10(body_sun_distance.au * astrometric.distance.au) +
           magnitude_correction_term
@@ -206,13 +243,13 @@ module Astronoby
       end
     end
 
-    # @return [Boolean] True if the body is approaching the primary
-    #   body (Sun), false otherwise.
+    # @return [Boolean] True if the body is approaching its primary
+    #   body, false otherwise.
     def approaching_primary?
       relative_position =
-        (geometric.position - @sun.geometric.position).map(&:m)
+        (geometric.position - primary_body_geometric.position).map(&:m)
       relative_velocity =
-        (geometric.velocity - @sun.geometric.velocity).map(&:mps)
+        (geometric.velocity - primary_body_geometric.velocity).map(&:mps)
       radial_velocity_component = Astronoby::Util::Maths
         .dot_product(relative_position, relative_velocity)
       distance = Math.sqrt(
@@ -221,28 +258,39 @@ module Astronoby
       radial_velocity_component / distance < 0
     end
 
-    # @return [Boolean] True if the body is receding from the primary
-    #   body (Sun), false otherwise.
+    # @return [Boolean] True if the body is receding from its primary
+    #   body, false otherwise.
     def receding_from_primary?
       !approaching_primary?
     end
 
     private
 
-    # By default, Solar System bodies expose attributes that are dependent on
-    # the Sun's position, such as phase angle and illuminated fraction.
-    # If a body does not require Sun data, it should override this method to
-    # return false.
-    def requires_sun_data?
-      true
+    def sun
+      @sun ||= Sun.new(instant: @instant, ephem: @ephem)
     end
 
-    def compute_geometric(ephem)
-      self.class.compute_geometric(ephem: ephem, instant: @instant)
+    def primary_body_geometric
+      sun.geometric
     end
 
-    def compute_sun(ephem)
-      @sun ||= Sun.new(instant: @instant, ephem: ephem)
+    def light_time_corrected_position
+      compute_light_time_correction unless @light_time_corrected_position
+      @light_time_corrected_position
+    end
+
+    def light_time_corrected_velocity
+      compute_light_time_correction unless @light_time_corrected_velocity
+      @light_time_corrected_velocity
+    end
+
+    def compute_light_time_correction
+      @light_time_corrected_position, @light_time_corrected_velocity =
+        Correction::LightTimeDelay.compute(
+          center: earth_geometric,
+          target: geometric,
+          ephem: @ephem
+        )
     end
 
     # Source:

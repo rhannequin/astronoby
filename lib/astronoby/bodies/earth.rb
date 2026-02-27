@@ -18,49 +18,5 @@ module Astronoby
     def phase_angle
       nil
     end
-
-    private
-
-    # Attributes that require Sun data like phase angle or magnitude are not
-    # applicable for Earth.
-    def requires_sun_data?
-      true
-    end
-
-    def compute_astrometric(_ephem)
-      Astrometric.new(
-        position: Vector[
-          Distance.zero,
-          Distance.zero,
-          Distance.zero
-        ],
-        velocity: Vector[
-          Velocity.zero,
-          Velocity.zero,
-          Velocity.zero
-        ],
-        instant: @instant,
-        center_identifier: EARTH,
-        target_body: self.class
-      )
-    end
-
-    def compute_mean_of_date(_ephem)
-      MeanOfDate.new(
-        position: Vector[
-          Distance.zero,
-          Distance.zero,
-          Distance.zero
-        ],
-        velocity: Vector[
-          Velocity.zero,
-          Velocity.zero,
-          Velocity.zero
-        ],
-        instant: @instant,
-        center_identifier: EARTH,
-        target_body: self.class
-      )
-    end
   end
 end
