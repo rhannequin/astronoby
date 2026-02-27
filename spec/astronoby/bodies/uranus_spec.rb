@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Uranus do
       # Skyfield: +57° 48′ 29.4″
 
       expect(geometric.distance.au)
-        .to eq(19.51539197382218)
+        .to eq(19.51539197381909)
       # IMCCE:    19.51539553769
       # Skyfield: 19.51539197373322
     end
@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Uranus do
       # Skyfield: +59° 42′ 42.6″
 
       expect(astrometric.distance.au)
-        .to eq(20.293374059197262)
+        .to eq(20.293374059000232)
       # IMCCE:    20.293377161363
       # Skyfield: 20.293374053529913
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Uranus do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-34738.38361, -1183.67872, -418.31764])
+        .to eq([-34738.38361, -1183.67873, -418.31765])
       # IMCCE:    -34738.38097 -1183.6781 -418.31855
       # Skyfield: -34738.38357 -1183.67895 -418.31774
     end
@@ -205,7 +205,7 @@ RSpec.describe Astronoby::Uranus do
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(20.293369144201606)
+        .to eq(20.293369144004583)
       # IMCCE: 20.293372246358
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Uranus do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-34730.01156, -1381.83878, -504.41499])
+        .to eq([-34730.01156, -1381.83879, -504.41499])
       # IMCCE:  -34730.00886  -1381.84071  -504.41308
     end
   end
@@ -274,7 +274,7 @@ RSpec.describe Astronoby::Uranus do
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(20.293374059197255)
+        .to eq(20.29337405900023)
       # IMCCE:    20.293377161363
       # Skyfield: 20.29337405352995
     end
