@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Astronomy and astrometry Ruby library for astronomical data and events."
   spec.homepage = "https://github.com/rhannequin/astronoby"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "ephem", "~> 0.3"
+  spec.add_dependency "iers", "~> 0.1"
   spec.add_dependency "matrix", "~> 0.4.2"
 
   spec.add_development_dependency "benchmark", "~> 0.4"
