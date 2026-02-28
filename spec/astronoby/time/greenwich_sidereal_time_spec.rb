@@ -61,6 +61,17 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
         expect(gmst.type).to eq(:mean)
         # Skyfield: 8h 36m 45.9086s
       end
+
+      context "when the date is outside the IERS EOP data range" do
+        it "falls back to the polynomial formula" do
+          utc = Time.utc(1962, 7, 24, 0, 0, 0)
+
+          gmst = described_class.from_utc(utc)
+
+          expect(gmst.time.to_i).to eq(20)
+          expect(gmst.type).to eq(:mean)
+        end
+      end
     end
 
     context "when type is :apparent" do
