@@ -12,16 +12,45 @@ module Astronoby
 
     SIDEREAL_MINUTE_IN_UT_MINUTE = 0.9972695663
 
+    UT_TO_SIDEREAL_RATIO = 1.002737909
+
     # Source:
     #  Title: IERS Conventions (2010)
     #  Chapter: 5.5.7 - ERA based expressions for Greenwich Sidereal Time
     def self.from_utc(utc)
       date = utc.to_date
-      gmst_radians = IERS::GMST.at(utc)
-      gmst_hours = gmst_radians * 12.0 / Math::PI
+      gmst_hours = begin
+        gmst_radians = IERS::GMST.at(utc)
+        gmst_radians * 12.0 / Math::PI
+      rescue IERS::OutOfRangeError
+        from_utc_polynomial(utc)
+      end
       gmst_hours = normalize_time(gmst_hours)
 
       new(date: date, time: gmst_hours)
+    end
+
+    # Fallback for dates outside the IERS EOP data range.
+    #
+    # Source:
+    #  Title: Practical Astronomy with your Calculator or Spreadsheet
+    #  Authors: Peter Duffett-Smith and Jonathan Zwart
+    #  Edition: Cambridge University Press
+    #  Chapter: 12 - Conversion of UT to Greenwich sidereal time (GST)
+    def self.from_utc_polynomial(utc)
+      julian_day = utc.to_date.ajd
+      t = (julian_day - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
+      t0 = (
+        (JULIAN_CENTURIES_EXPONENTS[0] +
+          (JULIAN_CENTURIES_EXPONENTS[1] * t) +
+          (JULIAN_CENTURIES_EXPONENTS[2] * t * t)) % Constants::HOURS_PER_DAY
+      ).abs
+
+      ut_in_hours = utc.hour +
+        utc.min / Constants::MINUTES_PER_HOUR +
+        (utc.sec + utc.subsec) / Constants::SECONDS_PER_HOUR
+
+      UT_TO_SIDEREAL_RATIO * ut_in_hours + t0
     end
 
     def initialize(date:, time:)
