@@ -74,11 +74,13 @@ module Astronoby
           dpsi.radians * mean_obliquity.cos
       )
 
-      Matrix[
+      earth_rotation_matrix = Matrix[
         [gast.cos, -gast.sin, 0],
         [gast.sin, gast.cos, 0],
         [0, 0, 1]
       ]
+
+      earth_rotation_matrix * polar_motion_matrix_for(instant)
     end
 
     def ==(other)
@@ -122,6 +124,13 @@ module Astronoby
       term2 = UNIVERSAL_GAS_CONSTANT * @temperature
 
       Math.exp(-term1 / term2)
+    end
+
+    def polar_motion_matrix_for(instant)
+      rows = IERS::PolarMotion.rotation_matrix_at(instant.to_time)
+      Matrix[*rows]
+    rescue IERS::OutOfRangeError
+      Matrix.identity(3)
     end
 
     def earth_prime_vertical_radius_of_curvature

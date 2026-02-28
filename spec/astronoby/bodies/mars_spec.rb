@@ -375,7 +375,7 @@ RSpec.describe Astronoby::Mars do
         # Skyfield:   7h 43m 50.58s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+23° 59′ 59.7702″")
+          .to eq("+23° 59′ 59.7703″")
         # IMCCE:      +23° 59′ 59.875″
         # Horizons:   +23° 59′ 59.87576″
         # Stellarium: +23° 59′ 59.8″
