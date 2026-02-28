@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Uranus do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("3h 50m 14.909s")
+          .to eq("3h 50m 14.9092s")
         # IMCCE:      3h 50m 14.9269s
         # Horizons:   3h 50m 14.933300s
         # Stellarium: 3h 50m 14.84s
         # Skyfield:   3h 50m 14.93s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+19° 52′ 58.97″")
+          .to eq("+19° 52′ 58.9693″")
         # IMCCE:      +19° 52′ 58.883″
         # Horizons:   +19° 52′ 58.92164″
         # Stellarium: +19° 52′ 58.7″
         # Skyfield:   +19° 52′ 58.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+58° 50′ 30.3457″")
+          .to eq("+58° 50′ 30.3481″")
         # IMCCE:      +58° 50′ 31.200″
         # Horizons:   +58° 50′ 30.7697″
         # Stellarium: +58° 50′ 30.6″
         # Skyfield:   +58° 50′ 30.6″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+51° 34′ 45.5647″")
+          .to eq("+51° 34′ 45.5631″")
         # IMCCE:      +51° 34′ 44.760″
         # Horizons:   +51° 34′ 45.1039″
         # Stellarium: +51° 34′ 46.0″

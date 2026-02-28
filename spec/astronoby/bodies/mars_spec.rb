@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Mars do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("7h 43m 50.5857s")
+          .to eq("7h 43m 50.5852s")
         # IMCCE:      7h 43m 50.5809s
         # Horizons:   7h 43m 50.577366s
         # Stellarium: 7h 43m 50.57s
         # Skyfield:   7h 43m 50.58s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+23° 59′ 59.746″")
+          .to eq("+23° 59′ 59.7702″")
         # IMCCE:      +23° 59′ 59.875″
         # Horizons:   +23° 59′ 59.87576″
         # Stellarium: +23° 59′ 59.8″
         # Skyfield:   +23° 59′ 59.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+276° 30′ 37.2105″")
+          .to eq("+276° 30′ 37.2354″")
         # IMCCE:      +276° 30′ 37.080″
         # Horizons:   +276° 30′ 37.6815″
         # Stellarium: +276° 30′ 36.9″
         # Skyfield:   +276° 30′ 37.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 51′ 15.6109″")
+          .to eq("+26° 51′ 15.623″")
         # IMCCE:      +26° 51′ 15.840″
         # Horizons:   +26° 51′ 15.3662″
         # Stellarium: +26° 51′ 15.9″

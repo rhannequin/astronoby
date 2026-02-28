@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Sun do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("12h 29m 41.425s")
+          .to eq("12h 29m 41.426s")
         # IMCCE:      12h 29m 41.4346s
         # Horizons:   12h 29m 41.430649s
         # Stellarium: 12h 29m 41.43s
         # Skyfield:   12h 29m 41.43s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-3° 12′ 17.5315″")
+          .to eq("-3° 12′ 17.5337″")
         # IMCCE:      -3° 12′ 17.508″
         # Horizons:   -3° 12′ 17.50513″
         # Stellarium: -3° 12′ 17.5″
         # Skyfield:   -3° 12′ 17.5″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+93° 44′ 20.2372″")
+          .to eq("+93° 44′ 20.2389″")
         # IMCCE:      +93° 44′ 20.040″
         # Horizons:   +93° 44′ 20.1653″
         # Stellarium: +93° 44′ 20.1″
         # Skyfield:   +93° 44′ 20.2″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+16° 16′ 19.8325″")
+          .to eq("+16° 16′ 19.818″")
         # IMCCE:      +16° 16′ 18.120″
         # Horizons:   +16° 16′ 18.804″
         # Stellarium: +16° 16′ 18.3″
@@ -413,13 +413,13 @@ RSpec.describe Astronoby::Sun do
 
         aggregate_failures do
           expect(horizontal.azimuth.str(:dms))
-            .to eq("+93° 44′ 20.2372″")
+            .to eq("+93° 44′ 20.2389″")
           # Horizons:   +93° 44′ 20.1644″
           # Stellarium: +93° 44′ 20.2″
           # Skyfield:   +93° 44′ 20.2″
 
           expect(horizontal.altitude.str(:dms))
-            .to eq("+16° 19′ 39.3205″")
+            .to eq("+16° 19′ 39.306″")
           # Horizons:   +16° 19′ 42.1874″
           # Stellarium: +16° 19′ 39.8″
           # Skyfield:   +16° 19′ 39.3″
