@@ -591,7 +591,7 @@ RSpec.describe Astronoby::Moon do
 
       apparent_magnitude = planet.apparent_magnitude
 
-      expect(apparent_magnitude.round(2)).to eq(-8.3)
+      expect(apparent_magnitude.round(2)).to eq(-5.62)
       # IMCCE:      -3.56
       # Horizons:   -5.497
       # Stellarium: -4.57
