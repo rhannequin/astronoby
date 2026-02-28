@@ -252,29 +252,29 @@ RSpec.describe Astronoby::Neptune do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("0h 9m 25.3759s")
+        .to eq("0h 9m 25.3745s")
       # IMCCE:    0h 9m 25.3830s
       # Skyfield: 0h 9m 25.38s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-0° 26′ 57.939″")
+        .to eq("-0° 26′ 57.8881″")
       # IMCCE:    -0° 26′ 57.822″
       # Skyfield: -0° 26′ 57.9″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-1° 20′ 56.7983″")
+        .to eq("-1° 20′ 56.7428″")
       # IMCCE:    -1° 20′ 56.733″
       # Skyfield: -1° 20′ 57.1″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 58.5173″")
+        .to eq("+1° 58′ 58.5172″")
       # IMCCE:    +1° 58′ 58.661″
       # Skyfield: +1° 58′ 57.9″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(29.266429812525086)
+        .to eq(29.26642981252509)
       # IMCCE:    29.26643067546
       # Skyfield: 29.26642980300769
     end
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Neptune do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("0h 9m 25.386s")
+          .to eq("0h 9m 25.3845s")
         # IMCCE:      0h 9m 25.4021s
         # Horizons:   0h 9m 25.397981s
         # Stellarium: 0h 9m 25.47s
         # Skyfield:   0h 9m 25.40s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-0° 26′ 58.1657″")
+          .to eq("-0° 26′ 58.1148″")
         # IMCCE:      -0° 26′ 58.047″
         # Horizons:   -0° 26′ 58.08781″
         # Stellarium: -0° 26′ 57.5″
         # Skyfield:   -0° 26′ 58.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+122° 25′ 48.6219″")
+          .to eq("+122° 25′ 48.6111″")
         # IMCCE:      +122° 25′ 47.640″
         # Horizons:   +122° 25′ 48.4763″
         # Stellarium: +122° 25′ 46.1″
         # Skyfield:   +122° 25′ 48.3″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+24° 33′ 48.7755″")
+          .to eq("+24° 33′ 48.8302″")
         # IMCCE:      +24° 33′ 48.240″
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″
