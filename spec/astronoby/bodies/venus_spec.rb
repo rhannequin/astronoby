@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Venus do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("23h 47m 33.0078s")
+          .to eq("23h 47m 33.0045s")
         # IMCCE:      23h 47m 32.9892s
         # Horizons:   23h 47m 32.985655s
         # Stellarium: 23h 47m 33.0s
         # Skyfield:   23h 47m 32.99s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+0° 45′ 49.9392″")
+          .to eq("+0° 45′ 49.9289″")
         # IMCCE:      +0° 45′ 49.871″
         # Horizons:   +0° 45′ 49.87128″
         # Stellarium: +0° 45′ 49.9″
         # Skyfield:   +0° 45′ 49.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+88° 15′ 49.8881″")
+          .to eq("+88° 15′ 49.9023″")
         # IMCCE:      +88° 16′ 13.440″
         # Horizons:   +88° 15′ 49.9797″
         # Stellarium: +88° 15′ 49.9″
         # Skyfield:   +88° 15′ 50.0″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-31° 34′ 29.8157″")
+          .to eq("-31° 34′ 29.7661″")
         # IMCCE:      -31° 25′ 13.440″
         # Horizons:   -31° 34′ 29.5386″
         # Stellarium: -31° 34′ 30.5″

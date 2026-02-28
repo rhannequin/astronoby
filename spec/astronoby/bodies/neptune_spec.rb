@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Neptune do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("0h 9m 25.3845s")
+          .to eq("0h 9m 25.3846s")
         # IMCCE:      0h 9m 25.4021s
         # Horizons:   0h 9m 25.397981s
         # Stellarium: 0h 9m 25.47s
         # Skyfield:   0h 9m 25.40s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-0° 26′ 58.1148″")
+          .to eq("-0° 26′ 58.1143″")
         # IMCCE:      -0° 26′ 58.047″
         # Horizons:   -0° 26′ 58.08781″
         # Stellarium: -0° 26′ 57.5″
         # Skyfield:   -0° 26′ 58.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+122° 25′ 48.6111″")
+          .to eq("+122° 25′ 48.6097″")
         # IMCCE:      +122° 25′ 47.640″
         # Horizons:   +122° 25′ 48.4763″
         # Stellarium: +122° 25′ 46.1″
         # Skyfield:   +122° 25′ 48.3″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+24° 33′ 48.8302″")
+          .to eq("+24° 33′ 48.83″")
         # IMCCE:      +24° 33′ 48.240″
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″
