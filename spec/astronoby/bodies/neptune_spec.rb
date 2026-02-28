@@ -252,22 +252,22 @@ RSpec.describe Astronoby::Neptune do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("0h 9m 25.3745s")
+        .to eq("0h 9m 25.3806s")
       # IMCCE:    0h 9m 25.3830s
       # Skyfield: 0h 9m 25.38s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-0° 26′ 57.8881″")
+        .to eq("-0° 26′ 57.8492″")
       # IMCCE:    -0° 26′ 57.822″
       # Skyfield: -0° 26′ 57.9″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-1° 20′ 56.7428″")
+        .to eq("-1° 20′ 56.7439″")
       # IMCCE:    -1° 20′ 56.733″
       # Skyfield: -1° 20′ 57.1″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 58.5172″")
+        .to eq("+1° 58′ 58.6177″")
       # IMCCE:    +1° 58′ 58.661″
       # Skyfield: +1° 58′ 57.9″
 
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Neptune do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("0h 9m 25.3846s")
+          .to eq("0h 9m 25.3908s")
         # IMCCE:      0h 9m 25.4021s
         # Horizons:   0h 9m 25.397981s
         # Stellarium: 0h 9m 25.47s
         # Skyfield:   0h 9m 25.40s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-0° 26′ 58.1143″")
+          .to eq("-0° 26′ 58.0754″")
         # IMCCE:      -0° 26′ 58.047″
         # Horizons:   -0° 26′ 58.08781″
         # Stellarium: -0° 26′ 57.5″
         # Skyfield:   -0° 26′ 58.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+122° 25′ 48.6097″")
+          .to eq("+122° 25′ 48.5012″")
         # IMCCE:      +122° 25′ 47.640″
         # Horizons:   +122° 25′ 48.4763″
         # Stellarium: +122° 25′ 46.1″
         # Skyfield:   +122° 25′ 48.3″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+24° 33′ 48.83″")
+          .to eq("+24° 33′ 48.8108″")
         # IMCCE:      +24° 33′ 48.240″
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″
@@ -407,7 +407,7 @@ RSpec.describe Astronoby::Neptune do
 
       phase_angle = planet.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+1° 50′ 6.2918″"
+      expect(phase_angle.str(:dms)).to eq "+1° 50′ 6.2932″"
       # IMCCE:    +1° 50′ 12.8399″
       # Horizons: +1° 50′ 9.6″
       # Skyfield: +1° 50′ 6.0″
