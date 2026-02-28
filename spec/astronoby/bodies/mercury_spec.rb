@@ -252,22 +252,22 @@ RSpec.describe Astronoby::Mercury do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("17h 16m 17.1913s")
+        .to eq("17h 16m 17.1912s")
       # IMCCE:    17h 16m 17.1948s
       # Skyfield: 17h 16m 17.19s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-21° 56′ 29.1251″")
+        .to eq("-21° 56′ 29.1343″")
       # IMCCE:    -21° 56′ 29.130″
       # Skyfield: -21° 56′ 29.1″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+1° 6′ 40.2366″")
+        .to eq("+1° 6′ 40.2274″")
       # IMCCE:    +1° 6′ 40.235″
       # Skyfield: +1° 6′ 48.6″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+259° 52′ 11.9114″")
+        .to eq("+259° 52′ 11.9103″")
       # IMCCE:    +259° 52′ 11.960″
       # Skyfield: +259° 52′ 11.9″
 
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Mercury do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("17h 16m 17.3415s")
+          .to eq("17h 16m 17.3413s")
         # IMCCE:      17h 16m 17.3296s
         # Horizons:   17h 16m 17.326217s
         # Stellarium: 17h 16m 17.34s
         # Skyfield:   17h 16m 17.33s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-21° 56′ 32.7498″")
+          .to eq("-21° 56′ 32.759″")
         # IMCCE:      -21° 56′ 32.702″
         # Horizons:   -21° 56′ 32.70220″
         # Stellarium: -21° 56′ 32.7″
         # Skyfield:   -21° 56′ 32.7″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+44° 8′ 52.5523″")
+          .to eq("+44° 8′ 52.5633″")
         # IMCCE:      +44° 8′ 52.800″
         # Horizons:   +44° 8′ 53.2819″
         # Stellarium: +44° 8′ 51.3″
         # Skyfield:   +44° 8′ 52.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-56° 56′ 39.0945″")
+          .to eq("-56° 56′ 39.1016″")
         # IMCCE:      -56° 56′ 39.120″
         # Horizons:   -56° 56′ 38.8135″
         # Stellarium: -56° 56′ 39.5″
