@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Mercury do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("17h 16m 17.3413s")
+          .to eq("17h 16m 17.3399s")
         # IMCCE:      17h 16m 17.3296s
         # Horizons:   17h 16m 17.326217s
         # Stellarium: 17h 16m 17.34s
         # Skyfield:   17h 16m 17.33s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-21° 56′ 32.759″")
+          .to eq("-21° 56′ 32.7384″")
         # IMCCE:      -21° 56′ 32.702″
         # Horizons:   -21° 56′ 32.70220″
         # Stellarium: -21° 56′ 32.7″
         # Skyfield:   -21° 56′ 32.7″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+44° 8′ 52.5633″")
+          .to eq("+44° 8′ 52.5771″")
         # IMCCE:      +44° 8′ 52.800″
         # Horizons:   +44° 8′ 53.2819″
         # Stellarium: +44° 8′ 51.3″
         # Skyfield:   +44° 8′ 52.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-56° 56′ 39.1016″")
+          .to eq("-56° 56′ 39.0737″")
         # IMCCE:      -56° 56′ 39.120″
         # Horizons:   -56° 56′ 38.8135″
         # Stellarium: -56° 56′ 39.5″
