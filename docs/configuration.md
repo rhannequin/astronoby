@@ -20,11 +20,12 @@ Astronoby.configuration.cache_enabled = true
 
 Once caching is enabled, it will be used for the following parts of the library
 with default precision values:
-* [Geometric positions]
-* [Topocentric positions] when computing rising/transit/setting times
-* [Moon phases]
-* Nutation
-* Precession
+
+- [Geometric positions]
+- [Topocentric positions] when computing rising/transit/setting times
+- [Moon phases]
+- Nutation
+- Precession
 
 ## Cache precision
 
@@ -35,10 +36,11 @@ However, users may want to improve performance even more at the cost of some
 precision.
 
 It is possible to change the precision value for the following:
-* Geometric position, default: `9`
-* Topocentric position, default: `5`
-* Nutation, default: `2`
-* Precession, default: `2`
+
+- Geometric position, default: `9`
+- Topocentric position, default: `5`
+- Nutation, default: `2`
+- Precession, default: `2`
 
 ### Precision value
 
@@ -49,14 +51,14 @@ Let's take the example of `1`. Rounding a Julian Day with only one digit means
 that all times within 8640 seconds will be rounded to the same instant, which
 means a maximum rounding of 2.4 hours.
 
-* `1`: 2.4 hours
-* `2`: 14.4 minutes
-* `3`: 86.4 seconds
-* `4`: 8.6 seconds
-* `5`: 0.86 seconds
-* `6`: 0.086 seconds
-* `7`: 0.0086 seconds
-* ...
+- `1`: 2.4 hours
+- `2`: 14.4 minutes
+- `3`: 86.4 seconds
+- `4`: 8.6 seconds
+- `5`: 0.86 seconds
+- `6`: 0.086 seconds
+- `7`: 0.0086 seconds
+- ...
 
 ### Setting custom precision
 
@@ -92,6 +94,7 @@ Astronoby.cache.max_size
 [Julian Day]: https://en.wikipedia.org/wiki/Julian_day
 
 ## See also
+
 - [Reference Frames](reference_frames.md) - for understanding position calculations
 - [Ephemerides](ephem.md) - for data sources
 - [Performance Benchmarks](benchmarks/README.md) - for testing improvements

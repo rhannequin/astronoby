@@ -10,10 +10,11 @@ Once instantiated, the calculator doesn't do anything yet, it waits for your
 instruction.
 
 It takes as key arguments:
-* `body` (`Astronoby::SolarSystemBody` or `Astronoby::DeepSkyObject`): any
+
+- `body` (`Astronoby::SolarSystemBody` or `Astronoby::DeepSkyObject`): any
   supported celestial body, e.g. `Astronoby::Sun`
-* `observer` (`Astronoby::Observer`): location on Earth of the observer
-* `ephem`: ephemeris to provide the initial raw data
+- `observer` (`Astronoby::Observer`): location on Earth of the observer
+- `ephem`: ephemeris to provide the initial raw data
 
 You can learn more about [Solar System bodies] and [ephemerides].
 
@@ -56,7 +57,7 @@ events.transit_times
 # => [2025-05-01 07:21:34 UTC, 2025-05-02 07:18:01 UTC]
 
 events.setting_times
-# => [2025-05-01 13:14:24 UTC, 2025-05-02 13:10:59 UTC]
+# => [2025-05-01 13:14:24 UTC, 2025-05-02 13:10:58 UTC]
 ```
 
 ## `#events_on`
@@ -113,6 +114,7 @@ event.setting_time.localtime(utc_offset)
 [ephemerides]: ephem.md
 
 ## See also
+
 - [Twilight Times](twilight_times.md) - for sun-related events
 - [Solar System Bodies](solar_system_bodies.md) - for object information
 - [Observer](observer.md) - for location setup

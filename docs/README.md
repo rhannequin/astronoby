@@ -62,10 +62,10 @@ You can learn more about reference frames and positions on the
 
 ```rb
 topocentric.horizontal.azimuth.str(:dms)
-# => "+175° 34′ 28.2724″"
+# => "+175° 34′ 33.2353″"
 
 topocentric.horizontal.altitude.str(:dms)
-# => "+64° 22′ 58.1084″"
+# => "+64° 22′ 58.229″"
 ```
 
 You can learn more about coordinates on the [Coordinates page].
@@ -108,22 +108,22 @@ calculator = Astronoby::TwilightCalculator.new(
 event = calculator.event_on(Date.new(2025, 5, 1))
 
 event.morning_astronomical_twilight_time
-# => 2025-05-01 02:17:28 UTC
+# => 2025-05-01 02:17:07 UTC
 
 event.morning_nautical_twilight_time
-# => 2025-05-01 03:10:17 UTC
+# => 2025-05-01 03:09:44 UTC
 
 event.morning_civil_twilight_time
-# => 2025-05-01 03:55:17 UTC
+# => 2025-05-01 03:54:38 UTC
 
 event.evening_civil_twilight_time
-# => 2025-05-01 19:40:12 UTC
+# => 2025-05-01 19:41:51 UTC
 
 event.evening_nautical_twilight_time
-# => 2025-05-01 20:25:12 UTC
+# => 2025-05-01 20:26:56 UTC
 
 event.evening_astronomical_twilight_time
-# => 2025-05-01 21:18:01 UTC
+# => 2025-05-01 21:19:57 UTC
 ```
 
 You can learn more about this calculator on the [Twilight times page].
@@ -141,7 +141,7 @@ may_2024_phases.each { puts "#{_1.phase}: #{_1.time}" }
 # new_moon: 2024-05-08 03:21:56 UTC
 # first_quarter: 2024-05-15 11:48:02 UTC
 # full_moon: 2024-05-23 13:53:12 UTC
-# last_quarter: 2024-05-30 17:12:43 UTC
+# last_quarter: 2024-05-30 17:12:42 UTC
 ```
 
 ```rb
@@ -150,10 +150,10 @@ instant = Astronoby::Instant.from_time(time)
 moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
 
 moon.illuminated_fraction.round(2)
-# => 0.15
+# => 0.95
 
 moon.current_phase_fraction.round(2)
-# => 0.11
+# => 0.59
 ```
 
 You can learn more about phases on the [Moon phases page].
@@ -166,13 +166,13 @@ Astronoby::EquinoxSolstice.march_equinox(2025, ephem)
 # => 2025-03-20 09:01:29 UTC
 
 Astronoby::EquinoxSolstice.june_solstice(2025, ephem)
-# => 2025-06-21 02:42:19 UTC
+# => 2025-06-21 02:42:16 UTC
 
 Astronoby::EquinoxSolstice.september_equinox(2025, ephem)
-# => 2025-09-22 18:19:22 UTC
+# => 2025-09-22 18:19:21 UTC
 
 Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
-# => 2025-12-21 15:03:03 UTC
+# => 2025-12-21 15:03:05 UTC
 ```
 
 You can learn more about equinoxes and solstices on the
@@ -200,12 +200,13 @@ vega = Astronoby::DeepSkyObject.new(equatorial_coordinates: vega_j2000)
 vega_position = vega.at(instant)
 
 vega_position.apparent.equatorial.right_ascension.str(:hms)
-# => "18h 36m 56.3363s"
+# => "18h 37m 48.2804s"
 ```
 
 You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
 ## See also
+
 - [Glossary](glossary.md) - for astronomical and technical terms
 - [IERS Data](iers.md) - for Delta T and GMST data management
 - [Configuration](configuration.md) - for performance tuning
