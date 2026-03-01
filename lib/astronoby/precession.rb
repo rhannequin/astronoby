@@ -11,47 +11,45 @@ module Astronoby
     end
 
     def matrix
+      # Fukushima-Williams precession angles including frame bias.
       # Source:
-      #  IAU resolution in 2006 in favor of the P03 astronomical model
-      #  https://syrte.obspm.fr/iau2006/aa03_412_P03.pdf
-      # P(t) = R3(χA) R1(−ωA) R3(−ψA) R1(ϵ0)
+      #  IERS Conventions 2010, Section 5.6.4
+      #  Wallace & Capitaine (2006), A&A 459, 981
+      #  ERFA eraPfw06 / eraFw2m
+      # PB(t) = R1(−εA) R3(−ψ̄) R1(φ̄) R3(γ̄)
 
       cache.fetch(cache_key) do
-        # Precession in right ascension
-        psi_a = ((((
-            -0.0000000951 * t +
-            +0.000132851) * t +
-            -0.00114045) * t +
-            -1.0790069) * t +
-            +5038.481507) * t
+        gamma_bar = ((((
+          +0.0000000260 * t +
+          -0.000002788) * t +
+          -0.00031238) * t +
+          +0.4932044) * t +
+          +10.556378) * t +
+          -0.052928
 
-        # Precession in declination
-        omega_a = ((((
-          +0.0000003337 * t +
-          -0.000000467) * t +
-          -0.00772503) * t +
-          +0.0512623) * t +
-          -0.025754) * t +
-          eps0
+        phi_bar = ((((
+          -0.0000000176 * t +
+          -0.000000440) * t +
+          +0.00053289) * t +
+          +0.0511268) * t +
+          -46.811016) * t +
+          +84381.412819
 
-        # Precession of the ecliptic
-        chi_a = ((((
-          -0.0000000560 * t +
-          +0.000170663) * t +
-          -0.00121197) * t +
-          -2.3814292) * t +
-          +10.556403) * t
+        psi_bar = ((((
+          -0.0000000148 * t +
+          -0.000026452) * t +
+          -0.00018522) * t +
+          +1.5584175) * t +
+          +5038.481484) * t +
+          -0.041775
 
-        psi_a = Angle.from_degree_arcseconds(psi_a)
-        omega_a = Angle.from_degree_arcseconds(omega_a)
-        chi_a = Angle.from_degree_arcseconds(chi_a)
+        gamma_bar = Angle.from_degree_arcseconds(gamma_bar)
+        phi_bar = Angle.from_degree_arcseconds(phi_bar)
+        psi_bar = Angle.from_degree_arcseconds(psi_bar)
+        eps_a = MeanObliquity.at(@instant)
 
-        r3_psi = rotation_z(-psi_a)
-        r1_omega = rotation_x(-omega_a)
-        r3_chi = rotation_z(chi_a)
-        r1_eps0 = rotation_x(MeanObliquity.obliquity_of_reference)
-
-        r3_chi * r1_omega * r3_psi * r1_eps0
+        rotation_x(-eps_a) * rotation_z(-psi_bar) *
+          rotation_x(phi_bar) * rotation_z(gamma_bar)
       end
     end
 
@@ -161,10 +159,6 @@ module Astronoby
         @instant.tdb - JulianDate::DEFAULT_EPOCH,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
-    end
-
-    def eps0
-      @eps0 ||= MeanObliquity.obliquity_of_reference_in_arcseconds
     end
   end
 end

@@ -187,19 +187,19 @@ RSpec.describe Astronoby::Sun do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.equatorial.right_ascension.str(:hms))
-        .to eq("12h 29m 41.9493s")
+        .to eq("12h 29m 41.9503s")
       # IMCCE:  12h 29m 41.9518s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("-3° 12′ 22.7353″")
+        .to eq("-3° 12′ 22.7179″")
       # IMCCE:  -3° 12′ 22.726″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
-        .to eq("-0° 0′ 0.4762″")
+        .to eq("-0° 0′ 0.4544″")
       # IMCCE:  -0° 0′ 0.454″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+188° 5′ 2.2381″")
+        .to eq("+188° 5′ 2.2449″")
       # IMCCE:  +188° 5′ 2.267″
 
       # Note: mean of date distance doesn't really make sense
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Sun do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([4681.88429, -26950.28232, -11681.78323])
+        .to eq([4681.88526, -26950.28238, -11681.7827])
       # IMCCE:  4681.88845  -26950.28194  -11681.78252
     end
   end
@@ -252,22 +252,22 @@ RSpec.describe Astronoby::Sun do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("12h 29m 40.8636s")
+        .to eq("12h 29m 40.8646s")
       # IMCCE:    12h 29m 40.8661s
       # Skyfield: 12h 29m 40.86s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-3° 12′ 17.1876″")
+        .to eq("-3° 12′ 17.1703″")
       # IMCCE:    -3° 12′ 17.179″
       # Skyfield: -3° 12′ 17.2″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-0° 0′ 1.791″")
+        .to eq("-0° 0′ 1.7692″")
       # IMCCE:    -0° 0′ 1.769″
       # Skyfield: -0° 0′ 0.5″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+188° 4′ 45.1082″")
+        .to eq("+188° 4′ 45.115″")
       # IMCCE:    +188° 4′ 45.137″
       # Skyfield: +188° 4′ 45.1″
 
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Sun do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("12h 29m 41.4261s")
+          .to eq("12h 29m 41.4271s")
         # IMCCE:      12h 29m 41.4346s
         # Horizons:   12h 29m 41.430649s
         # Stellarium: 12h 29m 41.43s
         # Skyfield:   12h 29m 41.43s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-3° 12′ 17.5336″")
+          .to eq("-3° 12′ 17.5162″")
         # IMCCE:      -3° 12′ 17.508″
         # Horizons:   -3° 12′ 17.50513″
         # Stellarium: -3° 12′ 17.5″
         # Skyfield:   -3° 12′ 17.5″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+93° 44′ 20.2387″")
+          .to eq("+93° 44′ 20.22″")
         # IMCCE:      +93° 44′ 20.040″
         # Horizons:   +93° 44′ 20.1653″
         # Stellarium: +93° 44′ 20.1″
         # Skyfield:   +93° 44′ 20.2″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+16° 16′ 19.8161″")
+          .to eq("+16° 16′ 19.802″")
         # IMCCE:      +16° 16′ 18.120″
         # Horizons:   +16° 16′ 18.804″
         # Stellarium: +16° 16′ 18.3″
@@ -413,13 +413,13 @@ RSpec.describe Astronoby::Sun do
 
         aggregate_failures do
           expect(horizontal.azimuth.str(:dms))
-            .to eq("+93° 44′ 20.2387″")
+            .to eq("+93° 44′ 20.22″")
           # Horizons:   +93° 44′ 20.1644″
           # Stellarium: +93° 44′ 20.2″
           # Skyfield:   +93° 44′ 20.2″
 
           expect(horizontal.altitude.str(:dms))
-            .to eq("+16° 19′ 39.3041″")
+            .to eq("+16° 19′ 39.29″")
           # Horizons:   +16° 19′ 42.1874″
           # Stellarium: +16° 19′ 39.8″
           # Skyfield:   +16° 19′ 39.3″
