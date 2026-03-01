@@ -2,9 +2,9 @@
 
 Astronoby provides three different types of coordinates:
 
-* Equatorial
-* Ecliptic
-* Horizontal
+- Equatorial
+- Ecliptic
+- Horizontal
 
 Equatorial and ecliptic coordinates are available for each [reference frame],
 while horizontal coordinates are only available for a topocentric position.
@@ -36,7 +36,7 @@ saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
 equatorial = saturn.apparent.equatorial
 
 equatorial.right_ascension.str(:hms)
-# => "20h 45m 2.6702s"
+# => "20h 45m 2.6681s"
 ```
 
 You can learn more about angles on the [Angle page].
@@ -49,7 +49,7 @@ is at -90°.
 
 ```rb
 equatorial.declination.str(:dms)
-# => "-18° 46′ 16.1226″"
+# => "-18° 46′ 16.0931″"
 ```
 
 ### Hour angle
@@ -63,7 +63,7 @@ time. By convention, the hour angle is usually displayed in hours.
 longitude = Astronoby::Angle.from_degrees(2)
 
 equatorial.compute_hour_angle(longitude: longitude, time: time).str(:hms)
-# => "23h 27m 54.9585s"
+# => "23h 27m 54.1924s"
 ```
 
 ## Ecliptic
@@ -101,7 +101,7 @@ saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
 ecliptic = saturn.apparent.ecliptic
 
 ecliptic.latitude.str(:dms)
-# => "-0° 41′ 27.5439″"
+# => "-0° 41′ 27.5077″"
 ```
 
 ### Longitude
@@ -111,7 +111,7 @@ ecliptic towards the north (positive) or south (negative) ecliptic pole.
 
 ```rb
 ecliptic.longitude.str(:dms)
-# => "+308° 38′ 33.1744″"
+# => "+308° 38′ 33.1535″"
 ```
 
 ## Horizontal
@@ -142,7 +142,7 @@ saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
 horizontal = saturn.observed_by(observer).horizontal
 
 horizontal.altitude.str(:dms)
-# => "+28° 46′ 39.5994″"
+# => "+28° 46′ 38.3398″"
 ```
 
 ### Azimuth
@@ -152,7 +152,7 @@ eastward.
 
 ```rb
 horizontal.azimuth.str(:dms)
-# => "+171° 19′ 50.5798″"
+# => "+171° 19′ 38.2567″"
 ```
 
 [reference frame]: reference_frames.md
@@ -161,6 +161,7 @@ horizontal.azimuth.str(:dms)
 [topocentric position]: reference_frames.md#topocentric
 
 ## See also
+
 - [Reference Frames](reference_frames.md) - for coordinate system details
 - [Angles](angles.md) - for working with angular measurements
 - [Observer](observer.md) - for location setup
