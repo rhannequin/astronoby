@@ -13,8 +13,14 @@ The two required key arguments to instantiate an observer are:
   observer, from 180° to -180°, with positive angles eastward of the Greenwich
   meridian.
 
-Latitude and longitude are defined according to the [World Geodetic System].
-In other words, they are the same as those used for the [GPS].
+Latitude and longitude are defined according to the [World Geodetic System]
+(WGS-84). In other words, they are the same as those used for the [GPS].
+
+Internally, the observer's geodetic coordinates are converted to geocentric
+Cartesian coordinates in the **International Terrestrial Reference System
+(ITRS)**, also known as Earth-Centered Earth-Fixed (ECEF). These are then
+rotated into the celestial frame using Earth rotation (GAST) and IERS polar
+motion corrections. See [Reference Frames](reference_frames.md) for details.
 
 It is also possible to give the following optional key arguments:
 

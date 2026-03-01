@@ -154,9 +154,29 @@ A binary file (usually with .bsp extension) containing orbital data for Solar Sy
 
 The accuracy of decimal number calculations. Higher precision values in Astronoby provide more accurate results but may be slower.
 
+### **BCRS (Barycentric Celestial Reference System)**
+
+A coordinate system centered on the Solar System barycentre with axes aligned to the ICRS. In Astronoby, this corresponds to the geometric reference frame.
+
+### **GCRS (Geocentric Celestial Reference System)**
+
+A coordinate system centered on the Earth's centre with axes aligned to the ICRS. In Astronoby, this corresponds to the astrometric reference frame.
+
+### **ICRS (International Celestial Reference System)**
+
+The standard celestial reference system adopted by the IAU. Its axes are defined by the positions of extragalactic radio sources and are practically fixed in space. JPL ephemeris data is given in ICRS-aligned coordinates.
+
+### **ITRS (International Terrestrial Reference System)**
+
+The standard Earth-fixed reference system, also known as ECEF (Earth-Centered Earth-Fixed). Observer positions in Astronoby are expressed in ITRS before being rotated into the celestial frame.
+
 ### **Reference Frame**
 
-A coordinate system used to specify positions. Astronoby provides geometric, astrometric, mean of date, apparent, and topocentric reference frames.
+A coordinate system used to specify positions. Astronoby provides geometric, astrometric, mean of date, apparent, and topocentric reference frames. See [Reference Frames](reference_frames.md) for how they map to IAU/IERS standard systems.
+
+### **WGS-84 (World Geodetic System 1984)**
+
+The geodetic reference system used by GPS and Astronoby for specifying observer latitude, longitude, and elevation. Observer coordinates are converted from WGS-84 geodetic to ITRS geocentric Cartesian internally.
 
 ### **SPICE**
 
