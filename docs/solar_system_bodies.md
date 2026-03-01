@@ -2,9 +2,10 @@
 
 Currently, Astronoby only supports the following major bodies of the Solar
 System:
-* the Sun (`Astronoby::Sun`)
-* planets from Mercury to Neptune, including the Earth (`Astronoby::Earth`, ...)
-* the Moon (`Astronoby::Moon`)
+
+- the Sun (`Astronoby::Sun`)
+- planets from Mercury to Neptune, including the Earth (`Astronoby::Earth`, ...)
+- the Moon (`Astronoby::Moon`)
 
 Given an ephemeris (`Astronoby::Ephem`) and an instant object
 (`Astronoby::Instant`), these classes enable you to get instances which provide
@@ -21,7 +22,7 @@ venus = Astronoby::Venus.new(ephem: ephem, instant: instant)
 apparent_position = venus.apparent.position
 
 apparent_position.x.km.round
-# => -148794622
+# => -148794597
 ```
 
 Each of these bodies also provides its own equatorial radius
@@ -101,6 +102,7 @@ Astronoby::Venus.absolute_magnitude
 [reference frames]: reference_frames.md
 
 ## See also
+
 - [Ephemerides](ephem.md) - for understanding data sources
 - [Reference Frames](reference_frames.md) - for coordinate systems
 - [Observer](observer.md) - for setting up observation locations

@@ -63,7 +63,7 @@ vega_with_proper_motion
   .equatorial
   .right_ascension
   .str(:hms)
-# => "18h 37m 48.7215s"
+# => "18h 37m 48.706s"
 ```
 
 You can learn more about [ephemerides] and [reference frames].

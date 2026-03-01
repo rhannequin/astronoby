@@ -69,10 +69,11 @@ phases.each { puts "#{_1.phase}: #{_1.time}" }
 # new_moon: 2024-05-08 03:21:56 UTC
 # first_quarter: 2024-05-15 11:48:02 UTC
 # full_moon: 2024-05-23 13:53:12 UTC
-# last_quarter: 2024-05-30 17:12:43 UTC
+# last_quarter: 2024-05-30 17:12:42 UTC
 ```
 
 ## See also
+
 - [Twilight Times](twilight_times.md) - for sun-related events
 - [Rise, Transit and Set Times](rise_transit_set_times.md) - for moon events
 - [Solar System Bodies](solar_system_bodies.md) - for moon object details

@@ -5,19 +5,19 @@ on the reference frame and the corrections applied.
 
 Astronoby provides five reference frames for each celestial body:
 
-* Geometric
-* Astrometric
-* Mean of date
-* Apparent
-* Topocentric
+- Geometric
+- Astrometric
+- Mean of date
+- Apparent
+- Topocentric
 
 All reference frames provide this common interface:
 
-* `#position`: Vector of position as x,y,z `Astronoby::Distance` objects
-* `#velocity`: Vector of velocity as x,y,z `Astronoby::Velocity` objects
-* `#distance`: Distance from the centre (`Astronoby::Distance`)
-* `#equatorial`: Equatorial coordinates (`Astronoby::Coordinates::Equatorial`)
-* `#ecliptic`: Ecliptic coordinates (`Astronoby::Coordinates::Ecliptic`)
+- `#position`: Vector of position as x,y,z `Astronoby::Distance` objects
+- `#velocity`: Vector of velocity as x,y,z `Astronoby::Velocity` objects
+- `#distance`: Distance from the centre (`Astronoby::Distance`)
+- `#equatorial`: Equatorial coordinates (`Astronoby::Coordinates::Equatorial`)
+- `#ecliptic`: Ecliptic coordinates (`Astronoby::Coordinates::Ecliptic`)
 
 ## Geometric
 
@@ -36,7 +36,7 @@ geometric = moon.geometric
 # => #<Astronoby::Geometric:0x000000011e7ffd40
 
 geometric.distance.au
-# => 1.0095091198501744
+# => 1.0095091267969827
 
 geometric.equatorial.right_ascension.str(:hms, precision: 0)
 # => "20h 13m 52s"
@@ -70,7 +70,6 @@ astrometric.equatorial.right_ascension.str(:hms, precision: 0)
 This reference frame is related to the ecliptic or the mean equator and the mean
 equinox of the date. It provides the geometric position corrected for the
 precessional motion of the Earth's rotation axis (precession and nutation).
-
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -124,12 +123,13 @@ moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
 topocentric = moon.observed_by(observer)
 
 topocentric.horizontal.azimuth.str(:dms, precision: 0)
-# => "+90° 14′ 19″"
+# => "+90° 14′ 24″"
 ```
 
 You can learn more about observers on the [Observer page].
 
 ## See also
+
 - [Coordinates](coordinates.md) - for understanding coordinate systems
 - [Observer](observer.md) - for location setup
 - [Solar System Bodies](solar_system_bodies.md) - for object positions
