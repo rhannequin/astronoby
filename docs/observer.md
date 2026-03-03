@@ -19,8 +19,9 @@ Latitude and longitude are defined according to the [World Geodetic System]
 Internally, the observer's geodetic coordinates are converted to geocentric
 Cartesian coordinates in the **International Terrestrial Reference System
 (ITRS)**, also known as Earth-Centered Earth-Fixed (ECEF). These are then
-rotated into the celestial frame using Earth rotation (GAST) and IERS polar
-motion corrections. See [Reference Frames](reference_frames.md) for details.
+rotated into the celestial frame using Earth rotation (GAST) via
+`Astronoby::EarthRotation` and IERS polar motion corrections. See
+[Reference Frames](reference_frames.md) for details.
 
 It is also possible to give the following optional key arguments:
 

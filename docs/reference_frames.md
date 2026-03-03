@@ -3,7 +3,7 @@
 A given body at a given time can be perceived at different positions, depending
 on the reference frame and the corrections applied.
 
-Astronoby provides five reference frames for each celestial body, forming a
+Astronoby provides five reference frames for celestial bodies, forming a
 transformation chain:
 
 ```
@@ -18,6 +18,9 @@ Each step applies physical corrections to move closer to what an observer
 actually sees. The standard reference systems used follow the IAU/IERS
 conventions (see [Standard reference systems](#standard-reference-systems)
 below).
+
+A separate **TEME** (True Equator, Mean Equinox) frame is also available for
+satellite tracking. See [TEME](#teme) below.
 
 All reference frames provide this common interface:
 
@@ -106,7 +109,7 @@ Earth. The following corrections are applied to the astrometric position:
 - **Precession**: IAU 2006 Fukushima-Williams precession-bias matrix
 - **Nutation**: IAU 2000B 77-term nutation model
 
-The combined N * PB matrix rotates the aberration-corrected GCRS position into
+The combined N \* PB matrix rotates the aberration-corrected GCRS position into
 the true equator and equinox frame of the date.
 
 ```rb
@@ -152,18 +155,87 @@ topocentric.horizontal.azimuth.str(:dms, precision: 0)
 
 You can learn more about observers on the [Observer page].
 
+## TEME
+
+The **TEME (True Equator, Mean Equinox)** frame is the output frame of the
+SGP4/SDP4 satellite orbit propagators. Unlike the five frames above, TEME is
+not part of the celestial body chain — it is constructed directly from SGP4
+output and provides its own conversion methods.
+
+TEME shares the true equator with the apparent frame but uses the mean equinox
+(tracked by GMST) instead of the true equinox (tracked by GAST). The
+difference between the two is the equation of the equinoxes.
+
+### Conversions
+
+`Astronoby::Teme` provides three conversion methods:
+
+- `#to_ecef` - ECEF position and velocity, using R₃(GMST) and the ω×r
+  velocity correction
+- `#to_gcrs` - GCRS position and velocity (returns an `Astronoby::Astrometric`
+  frame), using the transposed precession and nutation matrices
+- `#observed_by(observer)` - topocentric position as seen from a specific
+  observer (returns an `Astronoby::Topocentric` frame)
+
+```rb
+instant = Astronoby::Instant.from_time(Time.utc(2025, 6, 15, 12))
+
+# Construct from SGP4 output
+teme = Astronoby::Teme.new(
+  position: Astronoby::Distance.vector_from_meters(
+    [4_154_639.35, 768_141.62, -5_327_440.29]
+  ),
+  velocity: Astronoby::Velocity.vector_from_mps(
+    [-1152.15, 7561.14, 192.76]
+  ),
+  instant: instant
+)
+
+# Convert to ECEF
+ecef = teme.to_ecef
+ecef.position[0].km
+# => 1196.49...
+
+# Convert to GCRS
+gcrs = teme.to_gcrs
+gcrs.equatorial.right_ascension.str(:hms, precision: 0)
+# => "0h 40m 42s"
+
+# Observe from a location
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(48.8566),
+  longitude: Astronoby::Angle.from_degrees(2.3522)
+)
+topocentric = teme.observed_by(observer)
+topocentric.horizontal.azimuth.str(:dms, precision: 0)
+# => "+223° 53′ 41″"
+```
+
+## Earth rotation
+
+`Astronoby::EarthRotation` provides standalone Earth rotation matrices:
+
+- `EarthRotation.matrix_for(instant)` — R₃(GAST), the apparent rotation
+  matrix (used for observer placement in the true-equinox frame)
+- `EarthRotation.mean_matrix_for(instant)` — R₃(GMST), the mean rotation
+  matrix (used for TEME ↔ ECEF conversions)
+
+Both return 3×3 orthogonal rotation matrices that transform ECEF coordinates
+into the corresponding celestial frame.
+
 ## Standard reference systems
 
 The table below maps Astronoby's reference frames to standard IAU/IERS
 reference systems and lists the corrections applied at each step.
 
-| Astronoby frame | Standard system | Origin | Axes | Corrections applied |
-|-----------------|-----------------|--------|------|---------------------|
-| Geometric | BCRS | Solar System barycentre | ICRS | None (raw ephemeris) |
-| Astrometric | GCRS | Earth centre | ICRS | Light-time, origin shift |
-| Mean of date | — | Earth centre | Mean equator & equinox of date | IAU 2006 precession (Fukushima-Williams, incl. frame bias) |
-| Apparent | — | Earth centre | True equator & equinox of date | Aberration, precession, IAU 2000B nutation |
-| Topocentric | — | Observer | True equator & equinox of date | GAST earth rotation, IERS polar motion, observer position (WGS-84/ITRS) |
+| Astronoby frame | Standard system | Origin                  | Axes                                | Corrections applied                                                     |
+| --------------- | --------------- | ----------------------- | ----------------------------------- | ----------------------------------------------------------------------- |
+| Geometric       | BCRS            | Solar System barycentre | ICRS                                | None (raw ephemeris)                                                    |
+| Astrometric     | GCRS            | Earth centre            | ICRS                                | Light-time, origin shift                                                |
+| Mean of date    | —               | Earth centre            | Mean equator & equinox of date      | IAU 2006 precession (Fukushima-Williams, incl. frame bias)              |
+| Apparent        | —               | Earth centre            | True equator & equinox of date      | Aberration, precession, IAU 2000B nutation                              |
+| Topocentric     | —               | Observer                | True equator & equinox of date      | GAST earth rotation, IERS polar motion, observer position (WGS-84/ITRS) |
+| TEME            | —               | Earth centre            | True equator & mean equinox of date | SGP4/SDP4 output frame; converts to ECEF, GCRS, or topocentric          |
 
 ### Models and references
 

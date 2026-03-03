@@ -120,6 +120,10 @@ The two times each year when the Sun reaches its northernmost (June) or southern
 
 As seen from a specific location on Earth's surface. Topocentric positions account for the observer's latitude, longitude, and elevation.
 
+### **TEME (True Equator, Mean Equinox)**
+
+The reference frame used by the SGP4/SDP4 satellite orbit propagators. It shares the true equator with the apparent frame but uses the mean equinox (tracked by GMST) instead of the true equinox (tracked by GAST).
+
 ### **Transit**
 
 The moment when a celestial object crosses the observer's meridian, reaching its highest point in the sky for that day.
@@ -158,9 +162,25 @@ The accuracy of decimal number calculations. Higher precision values in Astronob
 
 A coordinate system centered on the Solar System barycentre with axes aligned to the ICRS. In Astronoby, this corresponds to the geometric reference frame.
 
+### **ECEF (Earth-Centered Earth-Fixed)**
+
+A Cartesian coordinate system that rotates with the Earth. Equivalent to ITRS. In Astronoby, observer positions are expressed in ECEF.
+
+### **Equation of the Equinoxes**
+
+The difference between Greenwich Apparent Sidereal Time (GAST) and Greenwich Mean Sidereal Time (GMST), equal to the nutation in longitude projected onto the equator (Δψ cos ε₀). It defines the angular offset between the mean and true equinoxes.
+
+### **GAST (Greenwich Apparent Sidereal Time)**
+
+The hour angle of the true vernal equinox at the Greenwich meridian. Equal to GMST plus the equation of the equinoxes. Used to rotate observer positions from ECEF into the true-equinox celestial frame.
+
 ### **GCRS (Geocentric Celestial Reference System)**
 
 A coordinate system centered on the Earth's centre with axes aligned to the ICRS. In Astronoby, this corresponds to the astrometric reference frame.
+
+### **GMST (Greenwich Mean Sidereal Time)**
+
+The hour angle of the mean vernal equinox at the Greenwich meridian. It measures Earth's rotation relative to the mean equinox, without nutation corrections. Used in the TEME ↔ ECEF conversion.
 
 ### **ICRS (International Celestial Reference System)**
 
@@ -172,7 +192,7 @@ The standard Earth-fixed reference system, also known as ECEF (Earth-Centered Ea
 
 ### **Reference Frame**
 
-A coordinate system used to specify positions. Astronoby provides geometric, astrometric, mean of date, apparent, and topocentric reference frames. See [Reference Frames](reference_frames.md) for how they map to IAU/IERS standard systems.
+A coordinate system used to specify positions. Astronoby provides geometric, astrometric, mean of date, apparent, and topocentric reference frames for celestial bodies, plus TEME for satellite tracking. See [Reference Frames](reference_frames.md) for how they map to IAU/IERS standard systems.
 
 ### **WGS-84 (World Geodetic System 1984)**
 
