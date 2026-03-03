@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Topocentric reference frame. Represents a body's position as seen from a
+  # specific observer on Earth's surface, accounting for the observer's
+  # geocentric position and Earth rotation.
   class Topocentric < ReferenceFrame
+    # Builds a topocentric frame from an apparent frame and observer.
+    #
+    # @param apparent [Astronoby::Apparent] the apparent frame
+    # @param observer [Astronoby::Observer] the observer
+    # @param instant [Astronoby::Instant] the time instant
+    # @param target_body [Class, Object] the target body
+    # @return [Astronoby::Topocentric] a new topocentric frame
     def self.build_from_apparent(
       apparent:,
       observer:,
@@ -30,6 +40,12 @@ module Astronoby
       )
     end
 
+    # @param position [Astronoby::Vector<Astronoby::Distance>] position vector
+    # @param velocity [Astronoby::Vector<Astronoby::Velocity>] velocity vector
+    # @param instant [Astronoby::Instant] the time instant
+    # @param center_identifier [Array] observer coordinates
+    # @param target_body [Class, Object] the target body
+    # @param observer [Astronoby::Observer] the observer
     def initialize(
       position:,
       velocity:,
@@ -48,6 +64,8 @@ module Astronoby
       @observer = observer
     end
 
+    # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates at the
+    #   current instant
     def ecliptic
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?
@@ -56,6 +74,11 @@ module Astronoby
       end
     end
 
+    # Converts to horizontal coordinates (azimuth/altitude).
+    #
+    # @param refraction [Boolean] whether to apply atmospheric refraction
+    #   correction (default: false)
+    # @return [Astronoby::Coordinates::Horizontal] horizontal coordinates
     def horizontal(refraction: false)
       horizontal = equatorial.to_horizontal(
         time: @instant.to_time,

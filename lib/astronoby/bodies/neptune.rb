@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Represents Neptune.
   class Neptune < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(24_764_000)
     ABSOLUTE_MAGNITUDE = -7.0
 
+    # @param _ephem_source [Symbol] the ephemeris source type
+    # @return [Array<Array>] ephemeris segment identifiers
     def self.ephemeris_segments(_ephem_source)
       [[SOLAR_SYSTEM_BARYCENTER, NEPTUNE_BARYCENTER]]
     end
 
+    # @return [Float] absolute magnitude
     def self.absolute_magnitude
       ABSOLUTE_MAGNITUDE
     end

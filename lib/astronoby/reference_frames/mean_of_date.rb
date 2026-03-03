@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Mean-of-date reference frame. Represents a body's geocentric position
+  # corrected for precession only (no nutation or aberration).
   class MeanOfDate < ReferenceFrame
+    # Builds a mean-of-date frame from geometric frames by applying
+    # precession.
+    #
+    # @param instant [Astronoby::Instant] the time instant
+    # @param target_geometric [Astronoby::Geometric] target's geometric frame
+    # @param earth_geometric [Astronoby::Geometric] Earth's geometric frame
+    # @param target_body [Class, Object] the target body
+    # @return [Astronoby::MeanOfDate] a new mean-of-date frame
     def self.build_from_geometric(
       instant:,
       target_geometric:,
@@ -27,6 +37,8 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates at the
+    #   current instant (mean equinox of date)
     def ecliptic
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?

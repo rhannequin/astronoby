@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Represents a deep-sky object (star, galaxy, nebula, etc.) with optional
+  # proper motion and parallax data.
   class DeepSkyObject
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates at epoch J2000.0

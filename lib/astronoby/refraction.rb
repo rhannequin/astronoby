@@ -1,27 +1,44 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Computes atmospheric refraction corrections for horizontal coordinates.
+  #
+  # Source:
+  #  Title: Practical Astronomy with your Calculator or Spreadsheet
+  #  Authors: Peter Duffett-Smith and Jonathan Zwart
+  #  Edition: Cambridge University Press
+  #  Chapter: 37 - Refraction
   class Refraction
     LOW_ALTITUDE_BODY_ANGLE = Angle.from_degrees(15)
     ZENITH = Angle.from_degrees(90)
 
+    # Computes the refraction angle for the given horizontal coordinates.
+    #
+    # @param coordinates [Astronoby::Coordinates::Horizontal] horizontal
+    #   coordinates
+    # @return [Astronoby::Angle] the refraction angle
     def self.angle(coordinates:)
       new(coordinates).refraction_angle
     end
 
+    # Returns horizontal coordinates corrected for atmospheric refraction.
+    #
+    # @param coordinates [Astronoby::Coordinates::Horizontal] horizontal
+    #   coordinates
+    # @return [Astronoby::Coordinates::Horizontal] corrected coordinates
     def self.correct_horizontal_coordinates(coordinates:)
       new(coordinates).refract
     end
 
+    # @param coordinates [Astronoby::Coordinates::Horizontal] horizontal
+    #   coordinates
     def initialize(coordinates)
       @coordinates = coordinates
     end
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 37 - Refraction
+    # Returns horizontal coordinates with refraction applied to the altitude.
+    #
+    # @return [Astronoby::Coordinates::Horizontal] corrected coordinates
     def refract
       Coordinates::Horizontal.new(
         azimuth: @coordinates.azimuth,
@@ -30,6 +47,10 @@ module Astronoby
       )
     end
 
+    # Computes the refraction angle based on the observer's atmospheric
+    # conditions and the body's altitude.
+    #
+    # @return [Astronoby::Angle] the refraction angle
     def refraction_angle
       if @coordinates.altitude > LOW_ALTITUDE_BODY_ANGLE
         high_altitude_angle

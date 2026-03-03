@@ -62,6 +62,7 @@ module Astronoby
       end
     end
 
+    # @return [Numeric] the Terrestrial Time as a Julian Date
     attr_reader :terrestrial_time
     alias_method :tt, :terrestrial_time
     alias_method :julian_date, :terrestrial_time

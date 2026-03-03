@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Base class for solar system bodies. Provides the reference frame chain
+  # (geometric -> astrometric -> mean-of-date -> apparent -> topocentric)
+  # and common observational properties (phase angle, magnitude, etc.).
   class SolarSystemBody
     SOLAR_SYSTEM_BARYCENTER = 0
     SUN = 10
@@ -17,16 +20,33 @@ module Astronoby
     URANUS_BARYCENTER = 7
     NEPTUNE_BARYCENTER = 8
 
-    attr_reader :instant, :ephem
+    # @return [Astronoby::Instant] the time instant
+    attr_reader :instant
 
+    # @return [::Ephem::SPK] the ephemeris data source
+    attr_reader :ephem
+
+    # Creates a new body instance at the given instant.
+    #
+    # @param instant [Astronoby::Instant] the time instant
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @return [Astronoby::SolarSystemBody] a new body instance
     def self.at(instant, ephem:)
       new(ephem: ephem, instant: instant)
     end
 
+    # Computes the geometric reference frame for this body.
+    #
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @param instant [Astronoby::Instant] the time instant
+    # @return [Astronoby::Geometric] the geometric frame
     def self.geometric(ephem:, instant:)
       compute_geometric(ephem: ephem, instant: instant)
     end
 
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @param instant [Astronoby::Instant] the time instant
+    # @return [Astronoby::Geometric] the geometric frame
     def self.compute_geometric(ephem:, instant:)
       segments = ephemeris_segments(ephem.type)
       segment1 = segments[0]
@@ -66,10 +86,14 @@ module Astronoby
       end
     end
 
+    # @param _ephem_source [Symbol] the ephemeris source type
+    # @return [Array<Array>] ephemeris segment identifiers
+    # @raise [NotImplementedError] must be implemented by subclasses
     def self.ephemeris_segments(_ephem_source)
       raise NotImplementedError
     end
 
+    # @return [Float, nil] absolute magnitude of the body
     def self.absolute_magnitude
       nil
     end
@@ -84,8 +108,9 @@ module Astronoby
     # @param end_time [Time] End time for rise, transit, and set event
     #   calculation (optional)
     # @param utc_offset [String] UTC offset for the given date (e.g., "+02:00")
-    # @return [RiseTransitSetEvent, Array<RiseTransitSetEvent>] Rise, transit,
-    # and set events for the given date or time range.
+    # @return [Astronoby::RiseTransitSetEvent,
+    #   Array<Astronoby::RiseTransitSetEvent>] Rise, transit, and set events for
+    #   the given date or time range.
     def self.rise_transit_set_events(
       observer:,
       ephem:,
@@ -114,6 +139,7 @@ module Astronoby
       @instant = instant
     end
 
+    # @return [Astronoby::Geometric] the geometric reference frame (BCRS)
     def geometric
       @geometric ||= self.class.compute_geometric(
         ephem: @ephem,
@@ -121,10 +147,12 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Geometric] Earth's geometric reference frame
     def earth_geometric
       @earth_geometric ||= Earth.geometric(ephem: @ephem, instant: @instant)
     end
 
+    # @return [Astronoby::Astrometric] the astrometric reference frame (GCRS)
     def astrometric
       @astrometric ||= Astrometric.build_from_geometric(
         instant: @instant,
@@ -135,6 +163,7 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::MeanOfDate] the mean-of-date reference frame
     def mean_of_date
       @mean_of_date ||= MeanOfDate.build_from_geometric(
         instant: @instant,
@@ -144,6 +173,7 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Apparent] the apparent reference frame
     def apparent
       @apparent ||= Apparent.build_from_astrometric(
         instant: @instant,
@@ -153,6 +183,10 @@ module Astronoby
       )
     end
 
+    # Computes the topocentric reference frame for a specific observer.
+    #
+    # @param observer [Astronoby::Observer] the observer
+    # @return [Astronoby::Topocentric] the topocentric reference frame
     def observed_by(observer)
       Topocentric.build_from_apparent(
         apparent: apparent,

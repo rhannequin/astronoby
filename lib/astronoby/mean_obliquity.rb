@@ -4,6 +4,7 @@
 # as these coefficients work with TT (Terrestrial Time).
 
 module Astronoby
+  # Computes the mean obliquity of the ecliptic using the IAU 2006 P03 model.
   class MeanObliquity
     # Source:
     #  IAU resolution in 2006 in favor of the P03 astronomical model
@@ -12,6 +13,10 @@ module Astronoby
     EPOCH_OF_REFERENCE = JulianDate::DEFAULT_EPOCH
     OBLIQUITY_OF_REFERENCE = 23.4392794
 
+    # Computes the mean obliquity of the ecliptic at the given instant.
+    #
+    # @param instant [Astronoby::Instant] the time instant
+    # @return [Astronoby::Angle] the mean obliquity
     def self.at(instant)
       return obliquity_of_reference if instant.julian_date == EPOCH_OF_REFERENCE
 
@@ -32,10 +37,13 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Angle] the mean obliquity at the reference epoch
+    #   (J2000.0)
     def self.obliquity_of_reference
       Angle.from_degree_arcseconds(obliquity_of_reference_in_arcseconds)
     end
 
+    # @return [Float] the mean obliquity at J2000.0 in arcseconds
     def self.obliquity_of_reference_in_arcseconds
       84381.406
     end

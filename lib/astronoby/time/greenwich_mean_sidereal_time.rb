@@ -3,6 +3,9 @@
 require "iers"
 
 module Astronoby
+  # Greenwich Mean Sidereal Time (GMST). Computed from UTC using the IERS
+  # Conventions 2010 ERA-based expression, with a polynomial fallback for
+  # dates outside the IERS EOP data range.
   class GreenwichMeanSiderealTime < GreenwichSiderealTime
     JULIAN_CENTURIES_EXPONENTS = [
       6.697374558,
@@ -14,9 +17,15 @@ module Astronoby
 
     UT_TO_SIDEREAL_RATIO = 1.002737909
 
+    # Creates GMST from UTC using the IERS Conventions 2010 ERA-based
+    # expression.
+    #
     # Source:
     #  Title: IERS Conventions (2010)
     #  Chapter: 5.5.7 - ERA based expressions for Greenwich Sidereal Time
+    #
+    # @param utc [Time] the UTC time
+    # @return [Astronoby::GreenwichMeanSiderealTime]
     def self.from_utc(utc)
       date = utc.to_date
       gmst_hours = begin
@@ -30,13 +39,16 @@ module Astronoby
       new(date: date, time: gmst_hours)
     end
 
-    # Fallback for dates outside the IERS EOP data range.
+    # Polynomial fallback for dates outside the IERS EOP data range.
     #
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 12 - Conversion of UT to Greenwich sidereal time (GST)
+    #
+    # @param utc [Time] the UTC time
+    # @return [Numeric] GMST in hours
     def self.from_utc_polynomial(utc)
       julian_day = utc.to_date.ajd
       t = (julian_day - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_CENTURY
@@ -53,15 +65,21 @@ module Astronoby
       UT_TO_SIDEREAL_RATIO * ut_in_hours + t0
     end
 
+    # @param date [Date] the calendar date
+    # @param time [Numeric] GMST in hours
     def initialize(date:, time:)
       super(date: date, time: time, type: MEAN)
     end
 
+    # Converts GMST back to UTC.
+    #
     # Source:
     #  Title: Practical Astronomy with your Calculator or Spreadsheet
     #  Authors: Peter Duffett-Smith and Jonathan Zwart
     #  Edition: Cambridge University Press
     #  Chapter: 13 - Conversion of GST to UT
+    #
+    # @return [Time] the UTC time
     def to_utc
       date = @date
       julian_day = @date.ajd

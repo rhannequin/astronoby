@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Represents the Moon. Provides phase events, apoapsis/periapsis events,
+  # and phase fraction.
   class Moon < SolarSystemBody
     SEMIDIAMETER_VARIATION = 0.7275
     EQUATORIAL_RADIUS = Distance.from_meters(1_737_400)
     ABSOLUTE_MAGNITUDE = 0.28
 
+    # @param ephem_source [Symbol] the ephemeris source type
+    # @return [Array<Array>] ephemeris segment identifiers
     def self.ephemeris_segments(ephem_source)
       if ephem_source == ::Ephem::SPK::JPL_DE
         [
@@ -33,6 +37,7 @@ module Astronoby
       Events::MoonPhases.phases_for(year: year, month: month)
     end
 
+    # @return [Float] absolute magnitude
     def self.absolute_magnitude
       ABSOLUTE_MAGNITUDE
     end

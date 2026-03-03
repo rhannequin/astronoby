@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Represents the Sun. Provides twilight events, equinox/solstice
+  # calculations, and equation of time.
   class Sun < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(695_700_000)
     ABSOLUTE_MAGNITUDE = -26.74
 
+    # @param _ephem_source [Symbol] the ephemeris source type
+    # @return [Array<Array>] ephemeris segment identifiers
     def self.ephemeris_segments(_ephem_source)
       [[SOLAR_SYSTEM_BARYCENTER, SUN]]
     end
 
+    # @return [Float] absolute magnitude
     def self.absolute_magnitude
       ABSOLUTE_MAGNITUDE
     end
@@ -21,8 +26,8 @@ module Astronoby
     #   (optional)
     # @param end_time [Time] End time for twilight event calculation (optional)
     # @param utc_offset [String] UTC offset for the given date (e.g., "+02:00")
-    # @return [TwilightEvent, Array<TwilightEvent>] Twilight events for the
-    #   given date or time range.
+    # @return [Astronoby::TwilightEvent, Array<Astronoby::TwilightEvent>]
+    #   Twilight events for the given date or time range.
     def self.twilight_events(
       observer:,
       ephem:,
@@ -109,14 +114,17 @@ module Astronoby
       ).round
     end
 
+    # @return [nil] the Sun has no phase angle as seen from Earth
     def phase_angle
       nil
     end
 
+    # @return [Boolean] always false; the Sun has no primary body
     def approaching_primary?
       false
     end
 
+    # @return [Boolean] always false; the Sun has no primary body
     def receding_from_primary?
       false
     end
