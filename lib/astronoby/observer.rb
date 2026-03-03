@@ -86,23 +86,7 @@ module Astronoby
     # @param instant [Astronoby::Instant] the time instant
     # @return [Matrix] 3x3 rotation matrix
     def earth_fixed_rotation_matrix_for(instant)
-      nutation = Nutation.new(instant: instant)
-      dpsi = nutation.nutation_in_longitude
-
-      mean_obliquity = MeanObliquity.at(instant)
-
-      gast = Angle.from_radians(
-        Angle.from_hours(instant.gmst).radians +
-          dpsi.radians * mean_obliquity.cos
-      )
-
-      earth_rotation_matrix = Matrix[
-        [gast.cos, -gast.sin, 0],
-        [gast.sin, gast.cos, 0],
-        [0, 0, 1]
-      ]
-
-      earth_rotation_matrix * polar_motion_matrix_for(instant)
+      EarthRotation.matrix_for(instant) * polar_motion_matrix_for(instant)
     end
 
     # @param other [Astronoby::Observer] observer to compare with
