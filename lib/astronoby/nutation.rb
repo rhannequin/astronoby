@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Computes nutation using the IAU 2000B model (77-term series).
+  # Provides both the nutation matrix and the individual nutation angles
+  # (in longitude and obliquity).
   class Nutation
     # IAU 2000B model corrections (in microarcseconds)
     IAU2000B_DPSI_CORRECTION = -0.000135e7

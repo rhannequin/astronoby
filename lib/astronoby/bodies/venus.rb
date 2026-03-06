@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Represents Venus.
   class Venus < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(6_051_800)
     ABSOLUTE_MAGNITUDE = -4.384
 
+    # @param _ephem_source [Symbol] the ephemeris source type
+    # @return [Array<Array>] ephemeris segment identifiers
     def self.ephemeris_segments(_ephem_source)
       [[SOLAR_SYSTEM_BARYCENTER, VENUS_BARYCENTER]]
     end
 
+    # @return [Float] absolute magnitude
     def self.absolute_magnitude
       ABSOLUTE_MAGNITUDE
     end

@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Apparent reference frame. Represents a body's geocentric position as it
+  # appears from Earth, corrected for aberration, precession, and nutation.
   class Apparent < ReferenceFrame
+    # Builds an apparent frame from an astrometric frame by applying
+    # aberration in GCRS, then rotating by nutation * precession (with ICRS
+    # frame bias).
+    #
+    # @param instant [Astronoby::Instant] the time instant
+    # @param target_astrometric [Astronoby::Astrometric] target's astrometric
+    #   frame
+    # @param earth_geometric [Astronoby::Geometric] Earth's geometric frame
+    # @param target_body [Class, Object] the target body
+    # @return [Astronoby::Apparent] a new apparent frame
     def self.build_from_astrometric(
       instant:,
       target_astrometric:,
@@ -41,6 +53,8 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates at the
+    #   current instant (true equinox of date)
     def ecliptic
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?

@@ -10,15 +10,26 @@ module Astronoby
     MOLAR_MASS_OF_AIR = 0.0289644
     UNIVERSAL_GAS_CONSTANT = 8.31432
 
-    attr_reader :latitude,
-      :longitude,
-      :elevation,
-      :utc_offset,
-      :temperature,
-      :pressure
+    # @return [Astronoby::Angle] geographic latitude
+    attr_reader :latitude
 
-    # @param latitude [Angle] geographic latitude of the observer
-    # @param longitude [Angle] geographic longitude of the observer
+    # @return [Astronoby::Angle] geographic longitude
+    attr_reader :longitude
+
+    # @return [Astronoby::Distance] geographic elevation above sea level
+    attr_reader :elevation
+
+    # @return [Numeric, String] offset from Coordinated Universal Time
+    attr_reader :utc_offset
+
+    # @return [Numeric] temperature in kelvins
+    attr_reader :temperature
+
+    # @return [Numeric] atmospheric pressure in millibars
+    attr_reader :pressure
+
+    # @param latitude [Astronoby::Angle] geographic latitude of the observer
+    # @param longitude [Astronoby::Angle] geographic longitude of the observer
     # @param elevation [Astronoby::Distance] geographic elevation (or altitude)
     #   of the observer above sea level
     # @param utc_offset [Numeric, String] offset from Coordinated Universal Time
@@ -42,6 +53,9 @@ module Astronoby
       @pressure = pressure || compute_pressure
     end
 
+    # Returns the observer's ECEF position vector (WGS-84 geodetic to ECEF).
+    #
+    # @return [Astronoby::Vector<Astronoby::Distance>] geocentric position
     def geocentric_position
       @geocentric_position ||= begin
         n = earth_prime_vertical_radius_of_curvature
@@ -53,6 +67,9 @@ module Astronoby
       end
     end
 
+    # Returns the observer's ECEF velocity vector due to Earth rotation.
+    #
+    # @return [Astronoby::Vector<Astronoby::Velocity>] geocentric velocity
     def geocentric_velocity
       @geocentric_velocity ||= begin
         r = projected_radius
@@ -63,6 +80,11 @@ module Astronoby
       end
     end
 
+    # Computes the Earth-fixed rotation matrix R₃(GAST) * W (polar motion)
+    # for a given instant.
+    #
+    # @param instant [Astronoby::Instant] the time instant
+    # @return [Matrix] 3x3 rotation matrix
     def earth_fixed_rotation_matrix_for(instant)
       nutation = Nutation.new(instant: instant)
       dpsi = nutation.nutation_in_longitude
@@ -83,6 +105,8 @@ module Astronoby
       earth_rotation_matrix * polar_motion_matrix_for(instant)
     end
 
+    # @param other [Astronoby::Observer] observer to compare with
+    # @return [Boolean] true if all attributes are equal
     def ==(other)
       return false unless other.is_a?(self.class)
 
@@ -95,6 +119,7 @@ module Astronoby
     end
     alias_method :eql?, :==
 
+    # @return [Integer] hash value
     def hash
       [
         self.class,
@@ -109,7 +134,6 @@ module Astronoby
 
     private
 
-    # @return [Float] the atmospheric pressure in millibars.
     def compute_pressure
       @pressure ||= PRESSURE_AT_SEA_LEVEL * pressure_ratio
     end

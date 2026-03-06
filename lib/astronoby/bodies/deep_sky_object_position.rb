@@ -1,14 +1,21 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Represents the computed position of a deep-sky object at a specific
+  # instant, providing astrometric, apparent, and topocentric reference frames.
   class DeepSkyObjectPosition
     DEFAULT_DISTANCE = Distance.from_parsecs(1e9)
 
-    attr_reader :instant, :apparent
+    # @return [Astronoby::Instant] the time instant
+    attr_reader :instant
+
+    # @return [Astronoby::Apparent] the apparent reference frame
+    attr_reader :apparent
 
     # @param instant [Astronoby::Instant] Instant of the observation
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates at epoch J2000.0
+    # @param ephem [::Ephem::SPK, nil] Ephemeris data source for Earth position
     # @param proper_motion_ra [Astronoby::AngularVelocity, nil] Proper motion in
     #   right ascension
     # @param proper_motion_dec [Astronoby::AngularVelocity, nil] Proper motion
@@ -47,6 +54,10 @@ module Astronoby
       )
     end
 
+    # Computes the topocentric position for a specific observer.
+    #
+    # @param observer [Astronoby::Observer] the observer
+    # @return [Astronoby::Topocentric] the topocentric reference frame
     def observed_by(observer)
       Topocentric.build_from_apparent(
         apparent: @apparent,

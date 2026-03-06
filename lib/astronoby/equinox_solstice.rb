@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module Astronoby
+  # Computes the time of equinoxes and solstices for a given year.
+  #
+  # Source:
+  #  Title: Astronomical Algorithms
+  #  Author: Jean Meeus
+  #  Edition: 2nd edition
+  #  Chapter: 27 - Equinoxes and Soltices
   class EquinoxSolstice
-    # Source:
-    #  Title: Astronomical Algorithms
-    #  Author: Jean Meeus
-    #  Edition: 2nd edition
-    #  Chapter: 27 - Equinoxes and Soltices
-
     EVENTS = [
       MARCH_EQUINOX = 0,
       JUNE_SOLSTICE = 1,
@@ -73,22 +74,39 @@ module Astronoby
       [8, 15.45, 16859.074]
     ].freeze
 
+    # @param year [Integer] the year
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @return [Time] time of the March equinox
     def self.march_equinox(year, ephem)
       new(year, MARCH_EQUINOX, ephem).time
     end
 
+    # @param year [Integer] the year
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @return [Time] time of the June solstice
     def self.june_solstice(year, ephem)
       new(year, JUNE_SOLSTICE, ephem).time
     end
 
+    # @param year [Integer] the year
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @return [Time] time of the September equinox
     def self.september_equinox(year, ephem)
       new(year, SEPTEMBER_EQUINOX, ephem).time
     end
 
+    # @param year [Integer] the year
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @return [Time] time of the December solstice
     def self.december_solstice(year, ephem)
       new(year, DECEMBER_SOLSTICE, ephem).time
     end
 
+    # @param year [Integer] the year
+    # @param event [Integer] one of MARCH_EQUINOX, JUNE_SOLSTICE,
+    #   SEPTEMBER_EQUINOX, or DECEMBER_SOLSTICE
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @raise [Astronoby::UnsupportedEventError] if event is invalid
     def initialize(year, event, ephem)
       unless EVENTS.include?(event)
         raise UnsupportedEventError.new(
@@ -103,6 +121,7 @@ module Astronoby
       @instant = Instant.from_time(uncorrected_time)
     end
 
+    # @return [Time] the corrected UTC time of the event
     def time
       Instant.from_terrestrial_time(@instant.tt + corrected).to_time.round
     end

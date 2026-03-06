@@ -2,9 +2,24 @@
 
 module Astronoby
   module Coordinates
+    # Equatorial coordinate system (right ascension and declination).
     class Equatorial
-      attr_reader :declination, :right_ascension, :hour_angle, :epoch
+      # @return [Astronoby::Angle] declination
+      attr_reader :declination
 
+      # @return [Astronoby::Angle] right ascension
+      attr_reader :right_ascension
+
+      # @return [Astronoby::Angle, nil] hour angle, if set
+      attr_reader :hour_angle
+
+      # @return [Numeric] the Julian Date epoch
+      attr_reader :epoch
+
+      # @param declination [Astronoby::Angle] declination
+      # @param right_ascension [Astronoby::Angle] right ascension
+      # @param hour_angle [Astronoby::Angle, nil] hour angle
+      # @param epoch [Numeric] Julian Date epoch (default: J2000.0 = 2451545.0)
       def initialize(
         declination:,
         right_ascension:,
@@ -17,10 +32,15 @@ module Astronoby
         @epoch = epoch
       end
 
+      # @return [Astronoby::Coordinates::Equatorial] zero coordinates
       def self.zero
         new(declination: Angle.zero, right_ascension: Angle.zero)
       end
 
+      # Derives equatorial coordinates from a position vector.
+      #
+      # @param position [Astronoby::Vector<Astronoby::Distance>] position vector
+      # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates
       def self.from_position_vector(position)
         return zero if position.zero?
 
@@ -41,6 +61,11 @@ module Astronoby
         new(declination: declination, right_ascension: right_ascension)
       end
 
+      # Computes the hour angle for a given time and observer longitude.
+      #
+      # @param time [Time] the UTC time
+      # @param longitude [Astronoby::Angle] the observer's longitude
+      # @return [Astronoby::Angle] the hour angle
       def compute_hour_angle(time:, longitude:)
         last = LocalApparentSiderealTime.from_utc(time.utc, longitude: longitude)
         ha = (last.time - @right_ascension.hours)
@@ -49,6 +74,11 @@ module Astronoby
         Angle.from_hours(ha)
       end
 
+      # Converts to horizontal coordinates for a given observer and time.
+      #
+      # @param time [Time] the UTC time
+      # @param observer [Astronoby::Observer] the observer
+      # @return [Astronoby::Coordinates::Horizontal] horizontal coordinates
       def to_horizontal(time:, observer:)
         latitude = observer.latitude
         longitude = observer.longitude
@@ -74,11 +104,17 @@ module Astronoby
         )
       end
 
+      # Converts to ecliptic coordinates.
+      #
       # Source:
       #  Title: Celestial Calculations
       #  Author: J. L. Lawrence
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
+      #
+      # @param instant [Astronoby::Instant] the time instant for the mean
+      #   obliquity
+      # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates
       def to_ecliptic(instant:)
         mean_obliquity = MeanObliquity.at(instant)
 
