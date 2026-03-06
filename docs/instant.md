@@ -14,7 +14,9 @@ from the irregularities in the rotation of Earth and the irregularly fluctuating
 mean solar time.
 
 Astronoby handles this situation by implementing an `Astronoby::Instant` class,
-used in most calculations instead of `Time`.
+used in most calculations instead of `Time`. Converting between UTC and
+Terrestrial Time requires knowing [Delta T (TT - UT1)][Delta T], which
+Astronoby obtains from [IERS data](iers.md).
 
 `Astronoby::Instant` is a value object that stores an instant in time on Earth
 in [Terrestrial Time], an astronomical time standard defined by the
@@ -131,6 +133,7 @@ instant1 < instant2
 [Gregorian calendar]: https://en.wikipedia.org/wiki/Gregorian_calendar
 [Terrestrial Time]: https://en.wikipedia.org/wiki/Terrestrial_Time
 [Julian Date]: https://en.wikipedia.org/wiki/Julian_day
+[Delta T]: https://en.wikipedia.org/wiki/ΔT_(timekeeping)
 
 ## See also
 - [Ephemerides](ephem.md) - for time-based calculations

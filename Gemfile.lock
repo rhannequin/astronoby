@@ -3,6 +3,7 @@ PATH
   specs:
     astronoby (0.9.0)
       ephem (~> 0.3)
+      iers (~> 0.1)
       matrix (~> 0.4.2)
 
 GEM
@@ -20,6 +21,7 @@ GEM
       zlib (~> 3.2)
     erb (4.0.4)
       cgi (>= 0.3.3)
+    iers (0.1.0)
     io-console (0.8.2)
     irb (1.17.0)
       pp (>= 0.6.0)

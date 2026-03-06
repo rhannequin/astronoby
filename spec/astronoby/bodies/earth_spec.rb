@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Earth do
       # Skyfield: +160° 40′ 56.4″
 
       expect(geometric.distance.au)
-        .to eq(0.9941296927689491)
+        .to eq(0.9941296927663614)
       # IMCCE:    0.994129567869
       # Skyfield: 0.9941296929553649
     end
@@ -84,7 +84,7 @@ RSpec.describe Astronoby::Earth do
       geometric = planet.geometric
 
       expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-10513.91232, -25850.11505, -11207.13978])
+        .to eq([-10513.91232, -25850.11505, -11207.13977])
       # IMCCE:    -10513.91157 -25850.1153 -11207.13986
       # Skyfield: -10513.91205 -25850.11514 -11207.13981
     end
