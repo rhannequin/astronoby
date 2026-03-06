@@ -113,21 +113,27 @@ module Astronoby
     #  Authors: Anthony Mallama and James L. Hilton
     def magnitude_correction_term
       phase_angle_degrees = phase_angle.degrees
-      if phase_angle_degrees <= 150 && current_phase_fraction <= 0.5
-        2.9994 * 10**-2 * phase_angle_degrees -
-          1.6057 * 10**-4 * phase_angle_degrees**2 +
-          3.1543 * 10**-6 * phase_angle_degrees**3 -
-          2.0667 * 10**-8 * phase_angle_degrees**4 +
-          6.2553 * 10**-11 * phase_angle_degrees**5
-      elsif phase_angle_degrees <= 150 && current_phase_fraction > 0.5
-        3.3234 * 10**-2 * phase_angle_degrees -
-          3.0725 * 10**-4 * phase_angle_degrees**2 +
-          6.1575 * 10**-6 * phase_angle_degrees**3 -
-          4.7723 * 10**-8 * phase_angle_degrees**4 +
-          1.4681 * 10**-10 * phase_angle_degrees**5
+      if phase_angle_degrees <= 150 && current_phase_fraction > 0.5
+        waning_magnitude_correction(phase_angle_degrees)
       else
-        super
+        waxing_magnitude_correction(phase_angle_degrees)
       end
+    end
+
+    def waxing_magnitude_correction(phase_angle_degrees)
+      2.9994 * 10**-2 * phase_angle_degrees -
+        1.6057 * 10**-4 * phase_angle_degrees**2 +
+        3.1543 * 10**-6 * phase_angle_degrees**3 -
+        2.0667 * 10**-8 * phase_angle_degrees**4 +
+        6.2553 * 10**-11 * phase_angle_degrees**5
+    end
+
+    def waning_magnitude_correction(phase_angle_degrees)
+      3.3234 * 10**-2 * phase_angle_degrees -
+        3.0725 * 10**-4 * phase_angle_degrees**2 +
+        6.1575 * 10**-6 * phase_angle_degrees**3 -
+        4.7723 * 10**-8 * phase_angle_degrees**4 +
+        1.4681 * 10**-10 * phase_angle_degrees**5
     end
   end
 end
