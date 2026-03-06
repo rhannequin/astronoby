@@ -187,19 +187,19 @@ RSpec.describe Astronoby::Neptune do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.equatorial.right_ascension.str(:hms))
-        .to eq("0h 9m 24.6328s")
+        .to eq("0h 9m 24.6338s")
       # IMCCE:  0h 9m 24.6353s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("-0° 27′ 3.5374″")
+        .to eq("-0° 27′ 3.5542″")
       # IMCCE:  -0° 27′ 3.510″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
-        .to eq("-1° 20′ 57.5048″")
+        .to eq("-1° 20′ 57.526″")
       # IMCCE:  -1° 20′ 57.494″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 46.0607″")
+        .to eq("+1° 58′ 46.0674″")
       # IMCCE:  +1° 58′ 46.105″
 
       # Note: mean of date distance doesn't really make sense
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Neptune do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-22741.4662, -12050.39591, -5345.53792])
+        .to eq([-22741.46578, -12050.3977, -5345.53569])
       # IMCCE:  -22741.46431  -12050.39917  -5345.53618
     end
   end
@@ -252,22 +252,22 @@ RSpec.describe Astronoby::Neptune do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("0h 9m 25.3806s")
+        .to eq("0h 9m 25.3816s")
       # IMCCE:    0h 9m 25.3830s
       # Skyfield: 0h 9m 25.38s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-0° 26′ 57.8492″")
+        .to eq("-0° 26′ 57.8661″")
       # IMCCE:    -0° 26′ 57.822″
       # Skyfield: -0° 26′ 57.9″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-1° 20′ 56.7439″")
+        .to eq("-1° 20′ 56.7652″")
       # IMCCE:    -1° 20′ 56.733″
       # Skyfield: -1° 20′ 57.1″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 58.6177″")
+        .to eq("+1° 58′ 58.6243″")
       # IMCCE:    +1° 58′ 58.661″
       # Skyfield: +1° 58′ 57.9″
 
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Neptune do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("0h 9m 25.3908s")
+          .to eq("0h 9m 25.3917s")
         # IMCCE:      0h 9m 25.4021s
         # Horizons:   0h 9m 25.397981s
         # Stellarium: 0h 9m 25.47s
         # Skyfield:   0h 9m 25.40s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-0° 26′ 58.0754″")
+          .to eq("-0° 26′ 58.0923″")
         # IMCCE:      -0° 26′ 58.047″
         # Horizons:   -0° 26′ 58.08781″
         # Stellarium: -0° 26′ 57.5″
         # Skyfield:   -0° 26′ 58.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+122° 25′ 48.5012″")
+          .to eq("+122° 25′ 48.4982″")
         # IMCCE:      +122° 25′ 47.640″
         # Horizons:   +122° 25′ 48.4763″
         # Stellarium: +122° 25′ 46.1″
         # Skyfield:   +122° 25′ 48.3″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+24° 33′ 48.8108″")
+          .to eq("+24° 33′ 48.7888″")
         # IMCCE:      +24° 33′ 48.240″
         # Horizons:   +24° 33′ 48.7809″
         # Stellarium: +24° 33′ 48.0″

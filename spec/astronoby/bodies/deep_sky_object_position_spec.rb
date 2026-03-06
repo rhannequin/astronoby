@@ -193,28 +193,28 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
       apparent = dso.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("18h 37m 48.706s")
+        .to eq("18h 37m 48.708s")
       # Skyfield:   18h 37m 48.70s
       # Astropy:    18h 37m 48.6459s
       # Stellarium: 18h 37m 48.47s
       # SkySafari:  18h 37m 48.28s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("+38° 48′ 41.4927″")
+        .to eq("+38° 48′ 41.4968″")
       # Skyfield:   +38° 48′ 41.5″
       # Astropy:    +38° 48′ 50.5021″
       # Stellarium: +38° 48′ 42.9″
       # SkySafari:  +38° 48′ 16.1″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+61° 44′ 2.4422″")
+        .to eq("+61° 44′ 2.4432″")
       # Skyfield:   +61° 44′ 11.5″
       # Astropy:    +61° 44′ 11.4624″
       # Stellarium: +61° 44′ 13.2″
       # SkySafari:  +61° 43′ 47.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+285° 40′ 42.5417″")
+        .to eq("+285° 40′ 42.5896″")
       # Skyfield:   +285° 40′ 47.0″
       # Astropy:    +285° 40′ 47.0272″
       # Stellarium: +285° 40′ 41.9″
@@ -276,13 +276,13 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         apparent = dso.apparent
 
         expect(apparent.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2654s")
+          .to eq("18h 37m 48.2673s")
         expect(apparent.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 34.1061″")
+          .to eq("+38° 48′ 34.1102″")
         expect(apparent.ecliptic.latitude.str(:dms))
-          .to eq("+61° 43′ 55.8365″")
+          .to eq("+61° 43′ 55.8375″")
         expect(apparent.ecliptic.longitude.str(:dms))
-          .to eq("+285° 40′ 29.6185″")
+          .to eq("+285° 40′ 29.6664″")
       end
     end
 
@@ -303,13 +303,13 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         apparent = dso.apparent
 
         expect(apparent.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2804s")
+          .to eq("18h 37m 48.2824s")
         expect(apparent.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.0412″")
+          .to eq("+38° 48′ 16.0454″")
         expect(apparent.ecliptic.latitude.str(:dms))
-          .to eq("+61° 43′ 37.9199″")
+          .to eq("+61° 43′ 37.921″")
         expect(apparent.ecliptic.longitude.str(:dms))
-          .to eq("+285° 40′ 24.7275″")
+          .to eq("+285° 40′ 24.7754″")
       end
     end
   end
@@ -376,23 +376,23 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
       topocentric = dso.observed_by(observer)
 
       expect(topocentric.equatorial.right_ascension.str(:hms))
-        .to eq("18h 37m 48.706s")
+        .to eq("18h 37m 48.708s")
       # Skyfield: 18h 37m 48.70s
       # Astropy:  18h 37m 29.3159s
 
       expect(topocentric.equatorial.declination.str(:dms))
-        .to eq("+38° 48′ 41.4927″")
+        .to eq("+38° 48′ 41.4968″")
       # Skyfield: +38° 48′ 41.6″
       # Astropy:  +38° 48′ 41.6272″
 
       expect(topocentric.horizontal.altitude.str(:dms))
-        .to eq("+26° 30′ 4.2789″")
+        .to eq("+26° 30′ 4.2981″")
       # Skyfield:   +26° 30′ 4.2″
       # Astropy:    +26° 30′ 4.1613″
       # Stellarium: +26° 30′ 4.1″
 
       expect(topocentric.horizontal.azimuth.str(:dms))
-        .to eq("+299° 35′ 16.2936″")
+        .to eq("+299° 35′ 16.2801″")
       # Skyfield:   +299° 35′ 16.6″
       # Astropy:    +299° 35′ 16.1035″
       # Stellarium: +299° 35′ 18.7″
@@ -421,13 +421,13 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2654s")
+          .to eq("18h 37m 48.2673s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 34.1061″")
+          .to eq("+38° 48′ 34.1102″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 55.4824″")
+          .to eq("+26° 29′ 55.5016″")
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 35′ 14.1403″")
+          .to eq("+299° 35′ 14.1268″")
       end
     end
 
@@ -452,13 +452,13 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2804s")
+          .to eq("18h 37m 48.2824s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.0412″")
+          .to eq("+38° 48′ 16.0454″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 43.3477″")
+          .to eq("+26° 29′ 43.3669″")
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 34′ 59.186″")
+          .to eq("+299° 34′ 59.1725″")
       end
     end
   end

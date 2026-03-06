@@ -187,19 +187,19 @@ RSpec.describe Astronoby::Venus do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.equatorial.right_ascension.str(:hms))
-        .to eq("23h 47m 32.442s")
+        .to eq("23h 47m 32.4429s")
       # IMCCE:  23h 47m 32.4432s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("+0° 45′ 55.1752″")
+        .to eq("+0° 45′ 55.1591″")
       # IMCCE:  +0° 45′ 55.161″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
-        .to eq("+1° 56′ 26.3872″")
+        .to eq("+1° 56′ 26.3665″")
       # IMCCE:  +1° 56′ 26.367″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+357° 26′ 45.1151″")
+        .to eq("+357° 26′ 45.1222″")
       # IMCCE:  +357° 26′ 45.126″
 
       # Note: mean of date distance doesn't really make sense
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Venus do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-11949.91591, 11240.40852, 6938.40198])
+        .to eq([-11949.91615, 11240.4079, 6938.40256])
       # IMCCE:  -11949.91633  11240.4073   6938.40229
     end
   end
@@ -252,29 +252,29 @@ RSpec.describe Astronoby::Venus do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("23h 47m 32.0438s")
+        .to eq("23h 47m 32.0448s")
       # IMCCE:    23h 47m 32.0451s
       # Skyfield: 23h 47m 32.04s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("+0° 45′ 50.405″")
+        .to eq("+0° 45′ 50.3888″")
       # IMCCE:    +0° 45′ 50.391″
       # Skyfield: +0° 45′ 50.4″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+1° 56′ 24.3827″")
+        .to eq("+1° 56′ 24.362″")
       # IMCCE:    +1° 56′ 24.363″
       # Skyfield: +1° 56′ 24.8″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+357° 26′ 37.7354″")
+        .to eq("+357° 26′ 37.7424″")
       # IMCCE:    +357° 26′ 37.747″
       # Skyfield: +357° 26′ 38.1″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(0.5226080487102144)
+        .to eq(0.5226080487102142)
       # IMCCE:    0.522608040526
       # Skyfield: 0.522608044699388
     end
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Venus do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("23h 47m 32.999s")
+          .to eq("23h 47m 33.0s")
         # IMCCE:      23h 47m 32.9892s
         # Horizons:   23h 47m 32.985655s
         # Stellarium: 23h 47m 33.0s
         # Skyfield:   23h 47m 32.99s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+0° 45′ 49.8893″")
+          .to eq("+0° 45′ 49.8731″")
         # IMCCE:      +0° 45′ 49.871″
         # Horizons:   +0° 45′ 49.87128″
         # Stellarium: +0° 45′ 49.9″
         # Skyfield:   +0° 45′ 49.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+88° 15′ 49.9523″")
+          .to eq("+88° 15′ 49.9706″")
         # IMCCE:      +88° 15′ 49.981″
         # Horizons:   +88° 15′ 49.9797″
         # Stellarium: +88° 15′ 49.9″
         # Skyfield:   +88° 15′ 50.0″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-31° 34′ 29.6855″")
+          .to eq("-31° 34′ 29.7008″")
         # IMCCE:      -31° 34′ 29.536″
         # Horizons:   -31° 34′ 29.5386″
         # Stellarium: -31° 34′ 30.5″
