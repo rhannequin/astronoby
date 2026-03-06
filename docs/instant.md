@@ -30,9 +30,10 @@ standards can be expressed, such as the
 ## Initialization
 
 An `Astronoby::Instant` object can be instantiated from:
-* Terrestrial time (`Numeric`): `.from_terrestrial_time`
-* Ruby `Time` object: `.from_time`
-* UTC Julian date (`Numeric`): `.from_utc_julian_date`
+
+- Terrestrial time (`Numeric`): `.from_terrestrial_time`
+- Ruby `Time` object: `.from_time`
+- UTC Julian date (`Numeric`): `.from_utc_julian_date`
 
 ```rb
 Astronoby::Instant.from_terrestrial_time(2460796)
@@ -50,7 +51,7 @@ Astronoby::Instant.from_utc_julian_date(2460796)
 
 From the same instant, it is possible to extract different time standards.
 
-* Gregorian `Date`
+- Gregorian `Date`
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
@@ -59,34 +60,34 @@ instant.to_date
 # => #<Date: 2025-04-30 ((2460796j,0s,0n),+0s,2299161j)>
 ```
 
-* UTC `DateTime`
+- UTC `DateTime`
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.to_datetime
-# => #<DateTime: 2025-04-30T11:58:51+00:00 ((2460796j,43131s,12159n),+0s,2299161j)>
+# => #<DateTime: 2025-04-30T11:58:50+00:00 ((2460796j,43130s,845637619n),+0s,2299161j)>
 ```
 
-* UTC `Time`
+- UTC `Time`
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.to_datetime
-# => 2025-04-30 11:58:51.000012159 UTC
+# => 2025-04-30T11:58:50+00:00 UTC
 ```
 
-* Greenwich Sidereal Time
+- Greenwich Sidereal Time
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.gmst
-# => 2.5597425440141457
+# => 2.5597070126923764
 ```
 
-* International Atomic Time
+- International Atomic Time
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
@@ -95,16 +96,16 @@ instant.tai.to_f
 # => 2460795.9996275003
 ```
 
-* UTC offset (difference with UTC in days)
+- UTC offset (difference with UTC in days)
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.utc_offset.to_f
-# => 0.0007986109703819444
+# => 0.0008003974106626159
 ```
 
-* Barycentric Dynamic Time
+- Barycentric Dynamic Time
 
 ```rb
 # This is not handled for now, and returns TT
@@ -136,6 +137,7 @@ instant1 < instant2
 [Delta T]: https://en.wikipedia.org/wiki/ΔT_(timekeeping)
 
 ## See also
+
 - [Ephemerides](ephem.md) - for time-based calculations
 - [Solar System Bodies](solar_system_bodies.md) - for object positions
 - [Reference Frames](reference_frames.md) - for coordinate systems

@@ -17,8 +17,9 @@ providing the filename.
 ### Manually
 
 Ephemerides are available for download from:
-* the JPL public FTP interface: https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/
-* the INPOP releases page of the IMCCE: https://www.imcce.fr/inpop
+
+- the JPL public FTP interface: https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/
+- the INPOP releases page of the IMCCE: https://www.imcce.fr/inpop
 
 You can download any `.bsp` file. For the moment, Astronoby only supports the
 planets of the Solar System, and the Sun and the Moon, so you need to
@@ -48,6 +49,7 @@ ephem = Astronoby::Ephem.load("tmp/de421.bsp")
 
 JPL produces many different kernels over the years, with different accuracy and
 ranges of supported years. Here are some that we recommend to begin with:
+
 - `de421.bsp`: from 1900 to 2050, 17 MB
 - `de440s.bsp`: from 1849 to 2150, 32 MB
 - `inpop19a.bsp`: from 1900 to 2100, 22 MB
@@ -79,6 +81,7 @@ the target `399`.
 [IMCCE]: https://www.imcce.fr
 
 ## See also
+
 - [Solar System Bodies](solar_system_bodies.md) - for using ephemeris data
 - [Reference Frames](reference_frames.md) - for coordinate calculations
 - [Observer](observer.md) - for location-based calculations

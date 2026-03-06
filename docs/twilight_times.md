@@ -5,14 +5,15 @@ some of its light still illuminates the atmosphere, making the sky brighter than
 during full night.
 
 We usually define 4 moments when talking about twilight:
-* sunrise/sunset: right when the Sun goes above the horizon or right after it
+
+- sunrise/sunset: right when the Sun goes above the horizon or right after it
   goes below the horizon. The Sun's horizon angle is 0°.
-* civil twilight: when the horizon angle is between 0° and -6°. Usually, during
+- civil twilight: when the horizon angle is between 0° and -6°. Usually, during
   this time, artificial light is not needed yet.
-* nautical twilight: when the horizon angle is between -6° and -12°. When the
+- nautical twilight: when the horizon angle is between -6° and -12°. When the
   nautical twilight starts, the difference between the horizon at sea and the
   sky cannot be seen clearly anymore.
-* astronomical twilight: when the horizon angle is between -12° and -18°. Some
+- astronomical twilight: when the horizon angle is between -12° and -18°. Some
   stars can be seen during this time.
 
 These moments change every day and depend on the observer's location. They can
@@ -24,8 +25,9 @@ Once instantiated, the calculator doesn't do anything yet, it waits for your
 instruction.
 
 It takes as key arguments:
-* `observer` (`Astronoby::Observer`): location on Earth of the observer
-* `ephem`: ephemeris to provide the initial raw data
+
+- `observer` (`Astronoby::Observer`): location on Earth of the observer
+- `ephem`: ephemeris to provide the initial raw data
 
 You can learn more about ephemerides on the [Ephem page].
 
@@ -53,17 +55,18 @@ that will happen between two dates.
 
 It returns a `Astronoby::TwilightEvents` object which exposes the 6 following
 instance methods:
-* `#morning_astronomical_twilight_times`: when the rising Sun reaches 18° below
+
+- `#morning_astronomical_twilight_times`: when the rising Sun reaches 18° below
   the horizon
-* `#morning_nautical_twilight_times`: when the rising Sun reaches 12° below the
+- `#morning_nautical_twilight_times`: when the rising Sun reaches 12° below the
   horizon
-* `#morning_civil_twilight_times`: when the rising Sun reaches 6° below the
+- `#morning_civil_twilight_times`: when the rising Sun reaches 6° below the
   horizon
-* `#evening_civil_twilight_times`: when the setting Sun reaches 6° below the
+- `#evening_civil_twilight_times`: when the setting Sun reaches 6° below the
   horizon
-* `#evening_nautical_twilight_times`: when the setting Sun reaches 12° below the
+- `#evening_nautical_twilight_times`: when the setting Sun reaches 12° below the
   horizon
-* `#evening_astronomical_twilight_times`: when the setting Sun reaches 18° below
+- `#evening_astronomical_twilight_times`: when the setting Sun reaches 18° below
   the horizon
 
 ```rb
@@ -76,11 +79,11 @@ events.morning_civil_twilight_times
 # =>
 # [2025-08-01 02:29:17 UTC,
 #  2025-08-02 02:30:21 UTC,
-#  2025-08-03 02:31:26 UTC,
+#  2025-08-03 02:31:25 UTC,
 #  2025-08-04 02:32:30 UTC,
-#  2025-08-05 02:33:35 UTC,
-#  2025-08-06 02:34:40 UTC,
-#  2025-08-07 02:35:45 UTC]
+#  2025-08-05 02:33:34 UTC,
+#  2025-08-06 02:34:39 UTC,
+#  2025-08-07 02:35:44 UTC]
 ```
 
 ## `#event_on`
@@ -98,25 +101,26 @@ instance methods: `#morning_astronomical_twilight_time`,
 event = calculator.event_on(Date.new(2025, 5, 1))
 
 event.morning_astronomical_twilight_time
-# => 2025-05-01 01:17:18 UTC
+# => 2025-05-01 01:16:21 UTC
 
 event.morning_nautical_twilight_time
-# => 2025-05-01 01:56:48 UTC
+# => 2025-05-01 01:55:54 UTC
 
 event.evening_civil_twilight_time
-# => 2025-05-01 17:29:41 UTC
+# => 2025-05-01 17:30:45 UTC
 
 event.evening_nautical_twilight_time
-# => 2025-05-01 18:06:08 UTC
+# => 2025-05-01 18:07:13 UTC
 
 event.evening_astronomical_twilight_time
-# => 2025-05-01 18:45:38 UTC
+# => 2025-05-01 18:46:47 UTC
 ```
 
 [Ephem page]: ephem.md
 [Observer page]: observer.md
 
 ## See also
+
 - [Rise, Transit and Set Times](rise_transit_set_times.md) - for sun and moon events
 - [Observer](observer.md) - for location setup
 - [Ephemerides](ephem.md) - for data sources
