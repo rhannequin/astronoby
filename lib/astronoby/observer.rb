@@ -74,16 +74,11 @@ module Astronoby
           dpsi.radians * mean_obliquity.cos
       )
 
-      earth_rotation_matrix = Matrix[
+      Matrix[
         [gast.cos, -gast.sin, 0],
         [gast.sin, gast.cos, 0],
         [0, 0, 1]
       ]
-
-      nutation_matrix = nutation.matrix
-      precession_matrix = Precession.matrix_for(instant)
-
-      earth_rotation_matrix * nutation_matrix * precession_matrix
     end
 
     def ==(other)

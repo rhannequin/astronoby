@@ -216,7 +216,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           # Timeanddate: 2025-12-12T00:14:00-07:00
 
           expect(events.transit_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 12, 6, 26, 51, utc_offset)
+            .to eq Time.new(2025, 12, 12, 6, 26, 52, utc_offset)
           # IMCCE:       2025-12-12T06:26:52-07:00
           # Stellarium:  2025-12-12T06:27:00-07:00
           # Skyfield:    2025-12-12T06:26:51-07:00
