@@ -3,13 +3,21 @@
 A given body at a given time can be perceived at different positions, depending
 on the reference frame and the corrections applied.
 
-Astronoby provides five reference frames for each celestial body:
+Astronoby provides five reference frames for each celestial body, forming a
+transformation chain:
 
-- Geometric
-- Astrometric
-- Mean of date
-- Apparent
-- Topocentric
+```
+Geometric (BCRS)
+  → Astrometric (GCRS)
+    → Mean of date
+      → Apparent
+        → Topocentric
+```
+
+Each step applies physical corrections to move closer to what an observer
+actually sees. The standard reference systems used follow the IAU/IERS
+conventions (see [Standard reference systems](#standard-reference-systems)
+below).
 
 All reference frames provide this common interface:
 
@@ -21,10 +29,10 @@ All reference frames provide this common interface:
 
 ## Geometric
 
-Also called "mean J2000", this reference frame is related to the mean ecliptic
-or terrestrial equator and the mean equinox of the reference date (J2000). It is
-the strict position computed from the ephemeris file in a reference frame
-centered on the Solar System barycentre, with no corrections applied.
+The geometric frame corresponds to the **Barycentric Celestial Reference System
+(BCRS)**, centered on the Solar System barycentre, with axes aligned to the
+**International Celestial Reference System (ICRS)**. It is the raw position
+read from the ephemeris file, with no corrections applied.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -44,11 +52,11 @@ geometric.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Astrometric
 
-Also called "astrometric J2000", this reference frame is related to the ecliptic
-or the mean terrestrial equator and the mean equinox of the reference date
-(J2000). It applies light-time correction between the celestial body and the
-observer. The frame is centred on the Earth's centre, as are all the following
-reference frames.
+The astrometric frame corresponds to the **Geocentric Celestial Reference System
+(GCRS)**, centered on the Earth's centre, with axes still aligned to the ICRS.
+It is obtained by subtracting the Earth's barycentric position from the target's
+light-time-corrected barycentric position. All subsequent frames are also
+Earth-centered.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -67,9 +75,13 @@ astrometric.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Mean of date
 
-This reference frame is related to the ecliptic or the mean equator and the mean
-equinox of the date. It provides the geometric position corrected for the
-precessional motion of the Earth's rotation axis (precession and nutation).
+This frame is referred to the **mean equator and mean equinox of the date**. It
+is obtained by applying the precession-bias matrix to the geocentric ICRS
+position, rotating it from the ICRS axes to the mean pole and equinox at the
+given instant.
+
+Astronoby uses the **IAU 2006 precession** model in its Fukushima-Williams
+four-angle parameterization, which includes the ICRS-to-J2000 frame bias.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -85,11 +97,17 @@ mean_of_date.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Apparent
 
-This reference frame is related to the true ecliptic or equator and the true
-equinox of the date. It is the actual position in the sky of a celestial object
-as seen from the centre of the Earth. It applies several corrections to the
-astrometric position:the deflection of light, the aberration, the precession and
-the nutation.
+This frame is referred to the **true equator and true equinox of the date**. It
+represents the position of a celestial object as seen from the centre of the
+Earth. The following corrections are applied to the astrometric position:
+
+- **Aberration**: relativistic stellar aberration due to Earth's velocity
+  (Explanatory Supplement, Ch. 7.2.3)
+- **Precession**: IAU 2006 Fukushima-Williams precession-bias matrix
+- **Nutation**: IAU 2000B 77-term nutation model
+
+The combined N * PB matrix rotates the aberration-corrected GCRS position into
+the true equator and equinox frame of the date.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -105,10 +123,16 @@ apparent.equatorial.right_ascension.str(:hms, precision: 0)
 
 ## Topocentric
 
-This reference frame is the final transformation of a position. It provides the
-apparent position of a celestial body as seen from a location on Earth. It can
-only be produced given an observer (`Astronoby::Observer`). It provides another
-set of coordinates: horizontal (`Astronoby::Coordinates::Horizontal`).
+This is the final frame in the chain, providing the position of a celestial body
+as seen from a specific location on Earth's surface. It can only be produced
+given an observer (`Astronoby::Observer`). It provides an additional set of
+coordinates: horizontal (`Astronoby::Coordinates::Horizontal`).
+
+To go from the apparent frame (true equator and equinox) to the topocentric
+frame, the observer's position must be transformed from the **International
+Terrestrial Reference System (ITRS)** into the same true-equinox frame. This is
+done by applying the **IERS polar motion matrix** (W) followed by the Earth
+rotation via **Greenwich Apparent Sidereal Time (GAST)**.
 
 ```rb
 ephem = Astronoby::Ephem.load("inpop19a.bsp")
@@ -127,6 +151,33 @@ topocentric.horizontal.azimuth.str(:dms, precision: 0)
 ```
 
 You can learn more about observers on the [Observer page].
+
+## Standard reference systems
+
+The table below maps Astronoby's reference frames to standard IAU/IERS
+reference systems and lists the corrections applied at each step.
+
+| Astronoby frame | Standard system | Origin | Axes | Corrections applied |
+|-----------------|-----------------|--------|------|---------------------|
+| Geometric | BCRS | Solar System barycentre | ICRS | None (raw ephemeris) |
+| Astrometric | GCRS | Earth centre | ICRS | Light-time, origin shift |
+| Mean of date | — | Earth centre | Mean equator & equinox of date | IAU 2006 precession (Fukushima-Williams, incl. frame bias) |
+| Apparent | — | Earth centre | True equator & equinox of date | Aberration, precession, IAU 2000B nutation |
+| Topocentric | — | Observer | True equator & equinox of date | GAST earth rotation, IERS polar motion, observer position (WGS-84/ITRS) |
+
+### Models and references
+
+- **Precession**: IAU 2006 P03, Fukushima-Williams parameterization including
+  ICRS frame bias (IERS Conventions 2010, Section 5.6.4; ERFA `eraPfw06` /
+  `eraFw2m`)
+- **Nutation**: IAU 2000B, 77-term truncation of the IAU 2000A model (IERS
+  Conventions 2010, Section 5.5.2)
+- **Aberration**: Relativistic stellar aberration (Explanatory Supplement to the
+  Astronomical Almanac, Ch. 7.2.3)
+- **Earth rotation**: Greenwich Apparent Sidereal Time (GAST) computed as GMST +
+  equation of equinoxes (IERS Conventions 2010, Section 5.5.7)
+- **Polar motion**: IERS Earth Orientation Parameters via the `iers` gem
+- **Observer coordinates**: WGS-84 geodetic to geocentric (ITRS/ECEF) conversion
 
 ## See also
 
