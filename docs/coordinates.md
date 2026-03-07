@@ -1,13 +1,15 @@
 # Coordinates
 
-Astronoby provides three different types of coordinates:
+Astronoby provides four types of coordinates:
 
 - Equatorial
 - Ecliptic
 - Horizontal
+- Geodetic
 
 Equatorial and ecliptic coordinates are available for each [reference frame],
-while horizontal coordinates are only available for a topocentric position.
+horizontal coordinates are only available for a topocentric position, and
+geodetic coordinates are used for Earth-surface positions (ECEF ↔ WGS-84).
 
 ## Equatorial
 
@@ -155,6 +157,63 @@ horizontal.azimuth.str(:dms)
 # => "+171° 19′ 38.2567″"
 ```
 
+## Geodetic
+
+Geodetic coordinates describe a position on or above the Earth's surface using
+the [WGS-84] reference ellipsoid, the same system used by GPS. They have three
+attributes:
+
+### Latitude
+
+The angle from the equator to the point on the ellipsoid surface, from +90°
+(North Pole) to -90° (South Pole).
+
+### Longitude
+
+The angle from the Greenwich meridian, from +180° to -180°, with positive
+angles eastward.
+
+### Elevation
+
+The distance above (or below) the WGS-84 ellipsoid surface.
+
+### From ECEF
+
+Geodetic coordinates can be derived from Earth-Centered Earth-Fixed (ECEF)
+Cartesian coordinates using `Astronoby::Coordinates::Geodetic.from_ecef`. This
+is particularly useful for satellite tracking, where a propagator produces ECEF
+positions via `Astronoby::Teme#to_ecef`:
+
+```rb
+teme = Astronoby::Teme.new(
+  position: Astronoby::Distance.vector_from_meters(
+    [5_094_180.16, 6_127_644.66, 6_380_344.53]
+  ),
+  velocity: Astronoby::Velocity.vector_from_mps(
+    [-4746.13, 785.82, 5531.93]
+  ),
+  instant: instant
+)
+
+geodetic = teme.to_ecef.geodetic
+
+geodetic.latitude.str(:dms)
+# => "+38° 48′ 3.3038″"
+
+geodetic.longitude.str(:dms)
+# => "+97° 27′ 6.7374″"
+
+geodetic.elevation.km.round
+# => 3838
+```
+
+The conversion uses Bowring's iterative method, which converges in 2-3
+iterations for typical satellite altitudes.
+
+The forward direction (geodetic → ECEF) is handled by
+[`Astronoby::Observer#geocentric_position`][Observer page].
+
+[WGS-84]: https://en.wikipedia.org/wiki/World_Geodetic_System
 [reference frame]: reference_frames.md
 [Wikipedia]: https://en.wikipedia.org/wiki/Equatorial_coordinate_system
 [Angle page]: angles.md

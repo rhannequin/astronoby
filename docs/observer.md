@@ -23,6 +23,9 @@ rotated into the celestial frame using Earth rotation (GAST) via
 `Astronoby::EarthRotation` and IERS polar motion corrections. See
 [Reference Frames](reference_frames.md) for details.
 
+The reverse conversion (ECEF → geodetic) is available via
+[`Astronoby::Coordinates::Geodetic.from_ecef`][Coordinates page].
+
 It is also possible to give the following optional key arguments:
 
 - `elevation` (`Astronoby::Distance`): the distance above or below the average
@@ -66,6 +69,7 @@ observer1 == observer2
 [GPS]: https://en.wikipedia.org/wiki/GPS
 [timezone specifiers]: https://ruby-doc.org/3.4.1/Time.html#class-Time-label-Timezone+Specifiers
 [Angles page]: angles.md
+[Coordinates page]: coordinates.md#geodetic
 
 ## See also
 

@@ -20,6 +20,14 @@ module Astronoby
         @velocity = velocity
         freeze
       end
+
+      # Converts the ECEF position to WGS-84 geodetic coordinates using
+      # Bowring's iterative method.
+      #
+      # @return [Astronoby::Coordinates::Geodetic] geodetic coordinates
+      def geodetic
+        Coordinates::Geodetic.from_ecef(@position)
+      end
     end
 
     # @param position [Astronoby::Vector<Astronoby::Distance>] TEME position

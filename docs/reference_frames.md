@@ -171,7 +171,9 @@ difference between the two is the equation of the equinoxes.
 `Astronoby::Teme` provides three conversion methods:
 
 - `#to_ecef` - ECEF position and velocity, using R₃(GMST) and the ω×r
-  velocity correction
+  velocity correction. The returned `EcefCoordinates` object also provides
+  a `#geodetic` method to convert to WGS-84 geodetic coordinates
+  (`Astronoby::Coordinates::Geodetic`)
 - `#to_gcrs` - GCRS position and velocity (returns an `Astronoby::Astrometric`
   frame), using the transposed precession and nutation matrices
 - `#observed_by(observer)` - topocentric position as seen from a specific
@@ -195,6 +197,11 @@ teme = Astronoby::Teme.new(
 ecef = teme.to_ecef
 ecef.position[0].km
 # => 1196.49...
+
+# Convert ECEF to geodetic (WGS-84)
+geodetic = ecef.geodetic
+geodetic.latitude.str(:dms)
+# => "+10° 29′ 51.7526″"
 
 # Convert to GCRS
 gcrs = teme.to_gcrs
