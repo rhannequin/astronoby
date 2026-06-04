@@ -11,7 +11,9 @@ Some algorithms are based on the following astrometry books:
   Duffet-Smith and Jonathan Zwart
 
 Solar System bodies' positions are computed based on ephemerides from the
-[IMCCE] or [NASA/JPL].
+[IMCCE] or [NASA/JPL]. The library also supports Earth-orbiting satellite
+tracking through the [TEME] reference frame, suitable for use with SGP4/SDP4
+orbit propagators.
 
 ## Content
 - [Installation](#installation)
@@ -45,6 +47,8 @@ previous versions, you can access the documentation in the README for each
   and objects
 - [Reference Frames](docs/reference_frames.md) - for coordinate systems
 - [Observer Setup](docs/observer.md) - for location configuration
+- [IERS Data](docs/iers.md) - for Delta T and Greenwich Mean Sidereal Time
+  (GMST) data management
 - [Glossary](docs/glossary.md) - for astronomical and technical terms
 
 ### Expected breaking changes notice
@@ -122,6 +126,7 @@ Everyone interacting in the Astronoby project's codebases, issue trackers, chat
 rooms and mailing lists is expected to follow the [code of conduct].
 
 [NASA/JPL]: https://ssd.jpl.nasa.gov/planets/eph_export.html
+[TEME]: https://github.com/rhannequin/astronoby/blob/main/docs/reference_frames.md#teme
 [Bundler]: https://bundler.io
 [`docs/`]: https://github.com/rhannequin/astronoby/blob/main/docs
 [release]: https://github.com/rhannequin/astronoby/releases
