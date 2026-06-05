@@ -78,6 +78,7 @@ module Astronoby
       end
 
       @terrestrial_time = terrestrial_time
+      @memo = {}
       freeze
     end
 
@@ -93,7 +94,7 @@ module Astronoby
     #
     # @return [DateTime] the UTC time as DateTime
     def to_datetime
-      DateTime.jd(
+      @memo[:to_datetime] ||= DateTime.jd(
         @terrestrial_time -
           Rational(delta_t, Constants::SECONDS_PER_DAY) +
           DATETIME_JD_EPOCH_ADJUSTMENT
@@ -111,7 +112,7 @@ module Astronoby
     #
     # @return [Time] the UTC time
     def to_time
-      to_datetime.to_time.utc
+      @memo[:to_time] ||= to_datetime.to_time.utc
     end
 
     # Get the ΔT (Delta T) value for this instant
@@ -119,21 +120,22 @@ module Astronoby
     #
     # @return [Numeric] Delta T in seconds
     def delta_t
-      Util::Time.terrestrial_universal_time_delta(@terrestrial_time)
+      @memo[:delta_t] ||=
+        Util::Time.terrestrial_universal_time_delta(@terrestrial_time)
     end
 
     # Get the Greenwich Mean Sidereal Time
     #
     # @return [Numeric] the sidereal time in hours
     def gmst
-      GreenwichMeanSiderealTime.from_utc(to_time).time
+      @memo[:gmst] ||= GreenwichMeanSiderealTime.from_utc(to_time).time
     end
 
     # Get the Greenwich Apparent Sidereal Time
     #
     # @return [Numeric] the sidereal time in hours
     def gast
-      GreenwichApparentSiderealTime.from_utc(to_time).time
+      @memo[:gast] ||= GreenwichApparentSiderealTime.from_utc(to_time).time
     end
 
     # Get the Local Mean Sidereal Time
@@ -156,7 +158,7 @@ module Astronoby
     #
     # @return [Numeric] TAI as Julian Date
     def tai
-      @terrestrial_time -
+      @memo[:tai] ||= @terrestrial_time -
         Rational(Constants::TAI_TT_OFFSET, Constants::SECONDS_PER_DAY)
     end
 
@@ -168,7 +170,7 @@ module Astronoby
       # This is technically false, there is a slight difference between TT and
       # TDB. However, this difference is so small that currenly Astronoby
       # doesn't support it and consider they are the same value.
-      @terrestrial_time
+      @memo[:tdb] ||= @terrestrial_time
     end
 
     # Get the offset between TT and UTC for this instant
