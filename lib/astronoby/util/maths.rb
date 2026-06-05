@@ -9,6 +9,14 @@ module Astronoby
         a.zip(b).sum { |x, y| x * y }
       end
 
+      def cross_product(a, b)
+        [
+          a[1] * b[2] - a[2] * b[1],
+          a[2] * b[0] - a[0] * b[2],
+          a[0] * b[1] - a[1] * b[0]
+        ]
+      end
+
       # Find maximum altitude using quadratic interpolation
       # @param t1, t2, t3 [Time] Three consecutive times
       # @param alt1, alt2, alt3 [Float] Corresponding altitudes

@@ -217,16 +217,7 @@ module Astronoby
       return unless sun
 
       @phase_angle ||= begin
-        geocentric_elongation = Angle.acos(
-          sun.apparent.equatorial.declination.sin *
-          apparent.equatorial.declination.sin +
-          sun.apparent.equatorial.declination.cos *
-          apparent.equatorial.declination.cos *
-          (
-            sun.apparent.equatorial.right_ascension -
-              apparent.equatorial.right_ascension
-          ).cos
-        )
+        geocentric_elongation = sun.apparent.separation_from(apparent)
 
         term1 = sun.astrometric.distance.km * geocentric_elongation.sin
         term2 = astrometric.distance.km -
