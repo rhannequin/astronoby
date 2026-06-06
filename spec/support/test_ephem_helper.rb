@@ -21,6 +21,11 @@ module TestEphemHelper
     Astronoby::Ephem.load(path)
   end
 
+  def test_ephem_inpop_2000_2050
+    path = File.path("#{__dir__}/data/inpop19a_2000_2050_excerpt.bsp")
+    Astronoby::Ephem.load(path)
+  end
+
   def test_ephem_inpop_full
     path = File.path("#{__dir__}/data/inpop19a.bsp")
     Astronoby::Ephem.load(path)

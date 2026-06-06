@@ -10,6 +10,26 @@ RSpec.describe Astronoby::Util::Maths do
     end
   end
 
+  describe ".cross_product" do
+    it "returns the cross product of two vectors" do
+      expect(described_class.cross_product([1, 0, 0], [0, 1, 0]))
+        .to eq([0, 0, 1])
+    end
+
+    it "computes the cross product component-wise" do
+      expect(described_class.cross_product([1, 2, 3], [4, 5, 6]))
+        .to eq([-3, 6, -3])
+    end
+
+    it "is anti-commutative" do
+      a = [1, 2, 3]
+      b = [4, 5, 6]
+
+      expect(described_class.cross_product(a, b))
+        .to eq(described_class.cross_product(b, a).map(&:-@))
+    end
+  end
+
   describe ".quadratic_maximum" do
     it "finds the maximum of a simple parabola" do
       # Parabola: y = -x² + 10x - 20 (maximum at x=5, y=5)

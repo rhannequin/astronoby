@@ -68,5 +68,49 @@ module Astronoby
         @position.magnitude
       end
     end
+
+    # @param other [Astronoby::ReferenceFrame] another frame at the same stage
+    #   and instant
+    # @return [Astronoby::Angle] the angular separation, between 0° and 180°
+    # @raise [Astronoby::IncompatibleArgumentsError] if the frames cannot be
+    #   meaningfully compared
+    def separation_from(other)
+      ensure_comparable!(other)
+      return Angle.zero if @position.zero? || other.position.zero?
+
+      position_vector = @position.map(&:m)
+      other_position_vector = other.position.map(&:m)
+      cross = Util::Maths.cross_product(position_vector, other_position_vector)
+      cross_magnitude = Math.sqrt(Util::Maths.dot_product(cross, cross))
+      dot = Util::Maths.dot_product(position_vector, other_position_vector)
+
+      Angle.from_radians(Math.atan2(cross_magnitude, dot))
+    end
+
+    private
+
+    def ensure_comparable!(other)
+      unless other.is_a?(ReferenceFrame)
+        raise IncompatibleArgumentsError,
+          "Expected an Astronoby::ReferenceFrame, got #{other.class}"
+      end
+
+      unless instance_of?(other.class)
+        raise IncompatibleArgumentsError,
+          "Cannot compute the separation between different reference frames " \
+          "(#{self.class} and #{other.class}); both frames must be at the " \
+          "same stage of the reference frame chain"
+      end
+
+      unless instant == other.instant
+        raise IncompatibleArgumentsError,
+          "Cannot compute the separation between frames at different instants"
+      end
+
+      unless center_identifier == other.center_identifier
+        raise IncompatibleArgumentsError,
+          "Cannot compute the separation between frames with different centers"
+      end
+    end
   end
 end

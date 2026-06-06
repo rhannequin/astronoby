@@ -29,6 +29,8 @@ All reference frames provide this common interface:
 - `#distance`: Distance from the centre (`Astronoby::Distance`)
 - `#equatorial`: Equatorial coordinates (`Astronoby::Coordinates::Equatorial`)
 - `#ecliptic`: Ecliptic coordinates (`Astronoby::Coordinates::Ecliptic`)
+- `#separation_from(other)`: Angular separation to another frame
+  (`Astronoby::Angle`)
 
 ## Geometric
 
@@ -154,6 +156,31 @@ topocentric.horizontal.azimuth.str(:dms, precision: 0)
 ```
 
 You can learn more about observers on the [Observer page].
+
+## Angular separation
+
+Any two frames can be compared with `#separation_from`, which returns the
+angular separation (an `Astronoby::Angle`, between 0° and 180°) between the two
+targets' directions as seen from their shared centre.
+
+The two frames may belong to different kinds of objects (a Solar System body
+and a deep-sky object, for example) as long as they are in the same reference
+frame and at the same instant. Otherwise the separation is not physically
+meaningful and an `Astronoby::IncompatibleArgumentsError` is raised.
+
+```rb
+ephem = Astronoby::Ephem.load("inpop19a.bsp")
+instant = Astronoby::Instant.from_time(Time.utc(2020, 12, 21, 18))
+
+jupiter = Astronoby::Jupiter.new(ephem: ephem, instant: instant)
+saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
+
+# The 2020 "Great Conjunction", the closest since 1623
+separation = jupiter.apparent.separation_from(saturn.apparent)
+
+separation.str(:dms, precision: 0)
+# => "+0° 6′ 6″"
+```
 
 ## TEME
 
