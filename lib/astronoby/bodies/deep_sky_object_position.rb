@@ -4,6 +4,8 @@ module Astronoby
   # Represents the computed position of a deep-sky object at a specific
   # instant, providing astrometric, apparent, and topocentric reference frames.
   class DeepSkyObjectPosition
+    include Position
+
     DEFAULT_DISTANCE = Distance.from_parsecs(1e9)
 
     # @return [Astronoby::Instant] the time instant
@@ -11,6 +13,9 @@ module Astronoby
 
     # @return [Astronoby::Apparent] the apparent reference frame
     attr_reader :apparent
+
+    # @return [Astronoby::DeepSkyObject] the body definition
+    attr_reader :body
 
     # @param instant [Astronoby::Instant] Instant of the observation
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
@@ -22,6 +27,7 @@ module Astronoby
     #   in declination
     # @param parallax [Astronoby::Angle, nil] Parallax angle
     # @param radial_velocity [Astronoby::Velocity, nil] Radial velocity
+    # @param deep_sky_object [Astronoby::DeepSkyObject, nil] the body definition
     def initialize(
       instant:,
       equatorial_coordinates:,
@@ -29,7 +35,8 @@ module Astronoby
       proper_motion_ra: nil,
       proper_motion_dec: nil,
       parallax: nil,
-      radial_velocity: nil
+      radial_velocity: nil,
+      deep_sky_object: nil
     )
       @instant = instant
       @initial_equatorial_coordinates = equatorial_coordinates
@@ -37,6 +44,7 @@ module Astronoby
       @proper_motion_dec = proper_motion_dec
       @parallax = parallax
       @radial_velocity = radial_velocity
+      @body = deep_sky_object
       if ephem
         @earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
       end
@@ -50,20 +58,7 @@ module Astronoby
         position: astrometric_position,
         velocity: astrometric_velocity,
         center: Center.geocentric,
-        target_body: self
-      )
-    end
-
-    # Computes the topocentric position for a specific observer.
-    #
-    # @param observer [Astronoby::Observer] the observer
-    # @return [Astronoby::Topocentric] the topocentric reference frame
-    def observed_by(observer)
-      Topocentric.build_from_apparent(
-        apparent: @apparent,
-        observer: observer,
-        instant: @instant,
-        target_body: self
+        target_body: body
       )
     end
 
@@ -114,7 +109,7 @@ module Astronoby
           instant: @instant,
           target_astrometric: astrometric,
           earth_geometric: @earth_geometric,
-          target_body: self
+          target_body: body
         )
       else
         precession_matrix = Precession.matrix_for(@instant)
@@ -130,7 +125,7 @@ module Astronoby
           velocity: corrected_velocity,
           instant: @instant,
           center: Center.geocentric,
-          target_body: self
+          target_body: body
         )
       end
     end

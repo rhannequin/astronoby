@@ -142,9 +142,17 @@ The point directly above an observer on Earth, at an altitude of 90°.
 
 The set of methods and classes that programmers use to interact with the Astronoby library.
 
+### **Body**
+
+A catalog definition that can position itself at an instant, returning a Position. Solar system bodies (the classes themselves, e.g. `Astronoby::Saturn`) and deep-sky objects (`Astronoby::DeepSkyObject` instances) both fulfil this role.
+
 ### **Cache**
 
 A temporary storage system that stores frequently used calculation results to improve performance.
+
+### **Centre**
+
+The point a reference frame is relative to, modelled by the `Astronoby::Center` value object: barycentric (Solar System barycentre), geocentric (Earth's centre), or topocentric (a specific observer's location).
 
 ### **Coordinate System**
 
@@ -189,6 +197,10 @@ The standard celestial reference system adopted by the IAU. Its axes are defined
 ### **ITRS (International Terrestrial Reference System)**
 
 The standard Earth-fixed reference system, also known as ECEF (Earth-Centered Earth-Fixed). Observer positions in Astronoby are expressed in ITRS before being rotated into the celestial frame.
+
+### **Position**
+
+A target resolved at a specific instant, exposing the reference frame chain (astrometric, apparent, topocentric, ...) for a Body. Solar system body instances and `Astronoby::DeepSkyObjectPosition` instances fulfil this role.
 
 ### **Reference Frame**
 
