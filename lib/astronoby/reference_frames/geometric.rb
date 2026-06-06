@@ -7,7 +7,7 @@ module Astronoby
     # @param position [Astronoby::Vector<Astronoby::Distance>] position vector
     # @param velocity [Astronoby::Vector<Astronoby::Velocity>] velocity vector
     # @param instant [Astronoby::Instant] the time instant
-    # @param target_body [Class] the target body class
+    # @param target_body [Astronoby::Body, nil] the target body
     def initialize(
       position:,
       velocity:,

@@ -10,7 +10,7 @@ module Astronoby
     # @param apparent [Astronoby::Apparent] the apparent frame
     # @param observer [Astronoby::Observer] the observer
     # @param instant [Astronoby::Instant] the time instant
-    # @param target_body [Class, Object] the target body
+    # @param target_body [Astronoby::Body, nil] the target body
     # @return [Astronoby::Topocentric] a new topocentric frame
     def self.build_from_apparent(
       apparent:,
@@ -44,7 +44,7 @@ module Astronoby
     # @param velocity [Astronoby::Vector<Astronoby::Velocity>] velocity vector
     # @param instant [Astronoby::Instant] the time instant
     # @param center [Astronoby::Center] the center of the frame
-    # @param target_body [Astronoby::Body] the target body
+    # @param target_body [Astronoby::Body, nil] the target body
     # @param observer [Astronoby::Observer] the observer
     def initialize(
       position:,

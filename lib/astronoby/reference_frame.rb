@@ -17,14 +17,14 @@ module Astronoby
     # @return [Astronoby::Center] the center of the frame
     attr_reader :center
 
-    # @return [Astronoby::Body] the target body
+    # @return [Astronoby::Body, nil] the target body
     attr_reader :target_body
 
     # @param position [Astronoby::Vector<Astronoby::Distance>] position vector
     # @param velocity [Astronoby::Vector<Astronoby::Velocity>] velocity vector
     # @param instant [Astronoby::Instant] the time instant
     # @param center [Astronoby::Center] the center of the frame
-    # @param target_body [Astronoby::Body] the target body
+    # @param target_body [Astronoby::Body, nil] the target body
     def initialize(
       position:,
       velocity:,

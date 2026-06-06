@@ -14,7 +14,7 @@ module Astronoby
     # @return [Astronoby::Apparent] the apparent reference frame
     attr_reader :apparent
 
-    # @return [Astronoby::DeepSkyObject] the body definition
+    # @return [Astronoby::DeepSkyObject, nil] the body definition
     attr_reader :body
 
     # @param instant [Astronoby::Instant] Instant of the observation
