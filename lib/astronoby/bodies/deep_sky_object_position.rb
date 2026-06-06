@@ -49,7 +49,7 @@ module Astronoby
         instant: @instant,
         position: astrometric_position,
         velocity: astrometric_velocity,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: self
       )
     end
@@ -129,7 +129,7 @@ module Astronoby
           position: corrected_position,
           velocity: corrected_velocity,
           instant: @instant,
-          center_identifier: SolarSystemBody::EARTH,
+          center: Center.geocentric,
           target_body: self
         )
       end

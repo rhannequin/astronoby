@@ -120,6 +120,32 @@ RSpec.describe Astronoby::ReferenceFrame do
       end
     end
 
+    context "when the observers differ only in elevation" do
+      it "raises an error" do
+        instant = Astronoby::Instant.from_time(Time.utc(2020, 12, 21, 18))
+        ephem = test_ephem_inpop_2000_2050
+        jupiter = Astronoby::Jupiter.new(instant: instant, ephem: ephem)
+        sea_level = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.8566),
+          longitude: Astronoby::Angle.from_degrees(2.3522),
+          elevation: Astronoby::Distance.zero
+        )
+        mountain = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.8566),
+          longitude: Astronoby::Angle.from_degrees(2.3522),
+          elevation: Astronoby::Distance.from_meters(1000)
+        )
+
+        expect {
+          jupiter.observed_by(sea_level)
+            .separation_from(jupiter.observed_by(mountain))
+        }.to raise_error(
+          Astronoby::IncompatibleArgumentsError,
+          /different centers/
+        )
+      end
+    end
+
     context "when the other object is not a reference frame" do
       it "raises an error" do
         instant = Astronoby::Instant.from_time(Time.utc(2020, 12, 21, 18))

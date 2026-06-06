@@ -26,7 +26,7 @@ module Astronoby
         position: light_time_corrected_position - earth_geometric.position,
         velocity: light_time_corrected_velocity - earth_geometric.velocity,
         instant: instant,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: target_body
       )
     end

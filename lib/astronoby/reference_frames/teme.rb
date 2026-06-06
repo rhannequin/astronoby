@@ -38,7 +38,7 @@ module Astronoby
         position: position,
         velocity: velocity,
         instant: instant,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: nil
       )
     end
@@ -84,7 +84,7 @@ module Astronoby
           gcrs_rotation_matrix * @velocity.map(&:mps)
         ),
         instant: @instant,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: nil
       )
     end
@@ -116,7 +116,7 @@ module Astronoby
         position: satellite_position - observer_position,
         velocity: satellite_velocity - observer_velocity,
         instant: @instant,
-        center_identifier: [observer.longitude, observer.latitude],
+        center: Center.topocentric(observer),
         target_body: nil,
         observer: observer
       )

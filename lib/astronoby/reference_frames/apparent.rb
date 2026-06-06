@@ -48,7 +48,7 @@ module Astronoby
         position: corrected_position,
         velocity: corrected_velocity,
         instant: instant,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: target_body
       )
     end

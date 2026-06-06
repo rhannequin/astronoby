@@ -175,7 +175,7 @@ RSpec.describe Astronoby::Astrometric do
         position: position,
         velocity: kind_of(Vector),
         instant: kind_of(Astronoby::Instant),
-        center_identifier: Astronoby::SolarSystemBody::EARTH,
+        center: Astronoby::Center.geocentric,
         target_body: Astronoby::Jupiter
       )
 
@@ -194,7 +194,7 @@ RSpec.describe Astronoby::Astrometric do
         position: position,
         velocity: kind_of(Vector),
         instant: kind_of(Astronoby::Instant),
-        center_identifier: Astronoby::SolarSystemBody::EARTH,
+        center: Astronoby::Center.geocentric,
         target_body: Astronoby::Jupiter
       )
 
@@ -212,7 +212,7 @@ RSpec.describe Astronoby::Astrometric do
           position: position,
           velocity: kind_of(Vector),
           instant: kind_of(Astronoby::Instant),
-          center_identifier: Astronoby::SolarSystemBody::EARTH,
+          center: Astronoby::Center.geocentric,
           target_body: Astronoby::Jupiter
         )
 

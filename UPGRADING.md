@@ -46,6 +46,27 @@ unchanged — `body.geometric` still returns a `Geometric` object.
 
 The `ephem` object passed to `initialize` is now exposed via `attr_reader`.
 
+### `ReferenceFrame#center_identifier` replaced by `#center`
+
+Every reference frame previously exposed `#center_identifier`, an `Integer`
+(e.g. `Astronoby::SolarSystemBody::EARTH`) for barycentric/geocentric frames or
+a `[longitude, latitude]` array for topocentric frames. It is replaced by
+`#center`, which returns an `Astronoby::Center` value object.
+
+```rb
+# Before
+frame.center_identifier # => 399 or [longitude, latitude]
+
+# After
+frame.center                 # => #<Astronoby::Center ...>
+frame.center.geocentric?     # => true
+frame.center == Astronoby::Center.geocentric # => true
+frame.center.observer        # => the Observer, for topocentric frames
+```
+
+Two topocentric centers are equal when their observers share the same
+latitude, longitude and elevation (atmospheric parameters are ignored).
+
 ## Upgrading from 0.8.0 to 0.9.0
 
 ### Constant `MINUTES_PER_DEGREE` renamed

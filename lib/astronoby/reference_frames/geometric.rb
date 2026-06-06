@@ -18,7 +18,7 @@ module Astronoby
         position: position,
         velocity: velocity,
         instant: instant,
-        center_identifier: SolarSystemBody::SOLAR_SYSTEM_BARYCENTER,
+        center: Center.barycentric,
         target_body: target_body
       )
     end
