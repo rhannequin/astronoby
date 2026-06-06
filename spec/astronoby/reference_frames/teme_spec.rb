@@ -165,8 +165,7 @@ RSpec.describe Astronoby::Teme do
       gcrs = teme.to_gcrs
 
       expect(gcrs).to be_a(Astronoby::Astrometric)
-      expect(gcrs.center_identifier)
-        .to eq(Astronoby::SolarSystemBody::EARTH)
+      expect(gcrs.center).to eq(Astronoby::Center.geocentric)
       gcrs.position.map(&:km).to_a.zip(
         [4145.733618591874, 744.299429723425, -5337.752413125928]
       ).each do |actual, expected|

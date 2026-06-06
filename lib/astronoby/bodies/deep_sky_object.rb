@@ -4,6 +4,8 @@ module Astronoby
   # Represents a deep-sky object (star, galaxy, nebula, etc.) with optional
   # proper motion and parallax data.
   class DeepSkyObject
+    include Body
+
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates at epoch J2000.0
     # @param proper_motion_ra [Astronoby::AngularVelocity, nil] Proper motion in
@@ -39,7 +41,8 @@ module Astronoby
         proper_motion_ra: @proper_motion_ra,
         proper_motion_dec: @proper_motion_dec,
         parallax: @parallax,
-        radial_velocity: @radial_velocity
+        radial_velocity: @radial_velocity,
+        deep_sky_object: self
       )
     end
   end

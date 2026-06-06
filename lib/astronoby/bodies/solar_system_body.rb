@@ -5,6 +5,9 @@ module Astronoby
   # (geometric -> astrometric -> mean-of-date -> apparent -> topocentric)
   # and common observational properties (phase angle, magnitude, etc.).
   class SolarSystemBody
+    include Position
+    extend Body
+
     SOLAR_SYSTEM_BARYCENTER = 0
     SUN = 10
     MERCURY_BARYCENTER = 1
@@ -159,7 +162,7 @@ module Astronoby
         earth_geometric: earth_geometric,
         light_time_corrected_position: light_time_corrected_position,
         light_time_corrected_velocity: light_time_corrected_velocity,
-        target_body: self
+        target_body: body
       )
     end
 
@@ -169,7 +172,7 @@ module Astronoby
         instant: @instant,
         target_geometric: geometric,
         earth_geometric: earth_geometric,
-        target_body: self
+        target_body: body
       )
     end
 
@@ -179,21 +182,13 @@ module Astronoby
         instant: @instant,
         target_astrometric: astrometric,
         earth_geometric: earth_geometric,
-        target_body: self
+        target_body: body
       )
     end
 
-    # Computes the topocentric reference frame for a specific observer.
-    #
-    # @param observer [Astronoby::Observer] the observer
-    # @return [Astronoby::Topocentric] the topocentric reference frame
-    def observed_by(observer)
-      Topocentric.build_from_apparent(
-        apparent: apparent,
-        observer: observer,
-        instant: @instant,
-        target_body: self
-      )
+    # @return [Astronoby::Body] the body definition (the class itself)
+    def body
+      self.class
     end
 
     # Returns the constellation of the body

@@ -10,7 +10,7 @@ module Astronoby
     # @param instant [Astronoby::Instant] the time instant
     # @param target_geometric [Astronoby::Geometric] target's geometric frame
     # @param earth_geometric [Astronoby::Geometric] Earth's geometric frame
-    # @param target_body [Class, Object] the target body
+    # @param target_body [Astronoby::Body, nil] the target body
     # @return [Astronoby::MeanOfDate] a new mean-of-date frame
     def self.build_from_geometric(
       instant:,
@@ -32,7 +32,7 @@ module Astronoby
         position: corrected_position,
         velocity: corrected_velocity,
         instant: instant,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: target_body
       )
     end

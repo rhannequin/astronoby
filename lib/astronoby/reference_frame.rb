@@ -14,28 +14,28 @@ module Astronoby
     # @return [Astronoby::Instant] the time instant
     attr_reader :instant
 
-    # @return [Integer, Array] identifier for the center of the frame
-    attr_reader :center_identifier
+    # @return [Astronoby::Center] the center of the frame
+    attr_reader :center
 
-    # @return [Class, Object] the target body
+    # @return [Astronoby::Body, nil] the target body
     attr_reader :target_body
 
     # @param position [Astronoby::Vector<Astronoby::Distance>] position vector
     # @param velocity [Astronoby::Vector<Astronoby::Velocity>] velocity vector
     # @param instant [Astronoby::Instant] the time instant
-    # @param center_identifier [Integer, Array] identifier for the center
-    # @param target_body [Class, Object] the target body
+    # @param center [Astronoby::Center] the center of the frame
+    # @param target_body [Astronoby::Body, nil] the target body
     def initialize(
       position:,
       velocity:,
       instant:,
-      center_identifier:,
+      center:,
       target_body:
     )
       @position = position
       @velocity = velocity
       @instant = instant
-      @center_identifier = center_identifier
+      @center = center
       @target_body = target_body
     end
 
@@ -107,7 +107,7 @@ module Astronoby
           "Cannot compute the separation between frames at different instants"
       end
 
-      unless center_identifier == other.center_identifier
+      unless center == other.center
         raise IncompatibleArgumentsError,
           "Cannot compute the separation between frames with different centers"
       end

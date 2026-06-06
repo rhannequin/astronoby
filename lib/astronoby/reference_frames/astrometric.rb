@@ -13,7 +13,7 @@ module Astronoby
     #   target position corrected for light-time delay
     # @param light_time_corrected_velocity [Astronoby::Vector<Astronoby::Velocity>]
     #   target velocity corrected for light-time delay
-    # @param target_body [Class, Object] the target body
+    # @param target_body [Astronoby::Body, nil] the target body
     # @return [Astronoby::Astrometric] a new astrometric frame
     def self.build_from_geometric(
       instant:,
@@ -26,7 +26,7 @@ module Astronoby
         position: light_time_corrected_position - earth_geometric.position,
         velocity: light_time_corrected_velocity - earth_geometric.velocity,
         instant: instant,
-        center_identifier: SolarSystemBody::EARTH,
+        center: Center.geocentric,
         target_body: target_body
       )
     end
