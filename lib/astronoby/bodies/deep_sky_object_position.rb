@@ -65,7 +65,16 @@ module Astronoby
     private
 
     def astrometric_position
-      @astrometric_position ||= if use_stellar_propagation?
+      @astrometric_position ||=
+        if @earth_geometric
+          barycentric_position - @earth_geometric.position
+        else
+          barycentric_position
+        end
+    end
+
+    def barycentric_position
+      if use_stellar_propagation?
         stellar_propagation.position
       else
         astronomical_distance = DEFAULT_DISTANCE.meters
