@@ -86,7 +86,98 @@ module Astronoby
       mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE
     end
 
+    # Total (optical + physical) geocentric libration of the Moon.
+    #
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 53 - Ephemeris for Physical Observations of the Moon
+    # @return [Astronoby::Libration] Libration in longitude and latitude
+    def libration
+      physical_ephemeris.libration
+    end
+
+    # Position angle of the Moon's axis of rotation, measured eastward from the
+    # north point of the disk.
+    #
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 53 - Ephemeris for Physical Observations of the Moon
+    # @return [Astronoby::Angle] Position angle of the axis
+    def position_angle_of_axis
+      physical_ephemeris.position_angle_of_axis
+    end
+
+    # Position angle of the Moon's bright limb: the position angle of the
+    # midpoint of the illuminated limb, measured eastward from the north point
+    # of the disk. Geocentric, from the apparent equatorial coordinates of the
+    # Moon and the Sun.
+    #
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
+    # @return [Astronoby::Angle, nil] Position angle of the bright limb, between
+    #   0 and 360 degrees
+    def bright_limb_position_angle
+      return unless sun
+
+      @bright_limb_position_angle ||= begin
+        moon = apparent.equatorial
+        sun_coordinates = sun.apparent.equatorial
+        delta_ra = sun_coordinates.right_ascension - moon.right_ascension
+
+        angle = Angle.from_radians(
+          Math.atan2(
+            sun_coordinates.declination.cos * delta_ra.sin,
+            sun_coordinates.declination.sin * moon.declination.cos -
+              sun_coordinates.declination.cos * moon.declination.sin *
+                delta_ra.cos
+          )
+        )
+        Angle.from_degrees(angle.degrees % Constants::DEGREES_PER_CIRCLE)
+      end
+    end
+
+    # Parallactic angle of the Moon for a given observer: the angle at the Moon
+    # between the direction of the north celestial pole and the direction of
+    # the observer's zenith. Computed from the topocentric place, where lunar
+    # parallax is significant.
+    #
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 14 - The Parallactic Angle
+    # @param observer [Astronoby::Observer] Observer for whom to compute the
+    #   parallactic angle
+    # @return [Astronoby::Angle] Parallactic angle
+    def parallactic_angle(observer:)
+      equatorial = observed_by(observer).equatorial
+      declination = equatorial.declination
+      hour_angle = equatorial.compute_hour_angle(
+        time: @instant.to_time,
+        longitude: observer.longitude
+      )
+
+      Angle.from_radians(
+        Math.atan2(
+          hour_angle.sin,
+          observer.latitude.tan * declination.cos -
+            declination.sin * hour_angle.cos
+        )
+      )
+    end
+
     private
+
+    def physical_ephemeris
+      @physical_ephemeris ||= MoonPhysicalEphemeris.new(self)
+    end
 
     def primary_body_geometric
       earth_geometric
