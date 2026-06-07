@@ -33,7 +33,7 @@ moon.position_angle_of_axis.str(:dms) # => "-21° 48′ 46.657″"
 
 ## Position angle of the bright limb
 
-`Astronoby::Moon#bright_limb_position_angle` returns the position angle of the midpoint of the illuminated limb, measured eastward from the north point of the disk, between 0 and 360 degrees. It is a geocentric quantity computed from the apparent equatorial coordinates of the Moon and the Sun, and it points away from the Sun.
+`Astronoby::Moon#bright_limb_position_angle` returns the position angle of the midpoint of the illuminated limb, measured eastward from the north point of the disk, between 0 and 360 degrees. It is a geocentric quantity computed from the apparent equatorial coordinates of the Moon and the Sun, and it points towards the Sun, since the bright limb is the limb facing the Sun.
 
 ```rb
 moon.bright_limb_position_angle.str(:dms) # => "+248° 1′ 57.9467″"

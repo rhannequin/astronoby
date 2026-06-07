@@ -19,6 +19,7 @@ module Astronoby
     def initialize(longitude:, latitude:)
       @longitude = longitude
       @latitude = latitude
+      freeze
     end
   end
 end
