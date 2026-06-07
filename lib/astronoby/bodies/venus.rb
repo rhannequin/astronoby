@@ -5,6 +5,12 @@ module Astronoby
   class Venus < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(6_051_800)
     ABSOLUTE_MAGNITUDE = -4.384
+    ORBITAL_PERIOD = 224.701
+
+    # @return [Boolean] true; Venus is an inferior planet
+    def self.inferior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

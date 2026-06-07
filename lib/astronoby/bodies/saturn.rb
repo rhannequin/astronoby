@@ -5,6 +5,12 @@ module Astronoby
   class Saturn < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(60_268_000)
     ABSOLUTE_MAGNITUDE = -8.914
+    ORBITAL_PERIOD = 10759.22
+
+    # @return [Boolean] true; Saturn is a superior planet
+    def self.superior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

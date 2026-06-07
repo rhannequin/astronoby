@@ -5,6 +5,12 @@ module Astronoby
   class Mars < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(3_396_200)
     ABSOLUTE_MAGNITUDE = -1.601
+    ORBITAL_PERIOD = 686.98
+
+    # @return [Boolean] true; Mars is a superior planet
+    def self.superior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

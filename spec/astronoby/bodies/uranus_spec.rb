@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Uranus do
       # Skyfield: +19° 52′ 58.9″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-0° 12′ 25.5319″")
-      # IMCCE:    -0° 12′ 25.537″
+        .to eq("-0° 12′ 32.958″")
+      # IMCCE:    -0° 12′ 32.999″
       # Skyfield: -0° 12′ 33.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+59° 42′ 27.0597″")
-      # IMCCE:    +59° 42′ 26.954″
+        .to eq("+59° 42′ 27.0439″")
+      # IMCCE:    +59° 42′ 26.937″
       # Skyfield: +59° 42′ 27.0″
 
       # Note: apparent distance doesn't really make sense

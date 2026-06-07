@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Sun do
       # Skyfield: -3° 12′ 17.2″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-0° 0′ 1.7692″")
-      # IMCCE:    -0° 0′ 1.769″
+        .to eq("-0° 0′ 0.4549″")
+      # IMCCE:    -0° 0′ 0.449″
       # Skyfield: -0° 0′ 0.5″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+188° 4′ 45.115″")
-      # IMCCE:    +188° 4′ 45.137″
+        .to eq("+188° 4′ 45.1151″")
+      # IMCCE:    +188° 4′ 45.119″
       # Skyfield: +188° 4′ 45.1″
 
       # Note: apparent distance doesn't really make sense

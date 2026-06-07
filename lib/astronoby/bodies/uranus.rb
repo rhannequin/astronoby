@@ -5,6 +5,12 @@ module Astronoby
   class Uranus < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(25_559_000)
     ABSOLUTE_MAGNITUDE = -7.11
+    ORBITAL_PERIOD = 30688.5
+
+    # @return [Boolean] true; Uranus is a superior planet
+    def self.superior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

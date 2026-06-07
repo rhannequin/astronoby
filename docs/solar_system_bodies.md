@@ -61,6 +61,26 @@ venus.constellation.abbreviation
 # => "Cnc"
 ```
 
+### `#elongation`
+
+Apparent angular distance between the body and the Sun, as seen from Earth
+("Sun-Earth-object" angle). Returns a `Astronoby::Angle` object.
+
+```rb
+venus.elongation.degrees.round
+# => 41
+```
+
+### `#eastern?` and `#western?`
+
+Whether the body lies east of the Sun (visible in the evening) or west of it
+(visible in the morning). Both return a `Boolean`.
+
+```rb
+venus.eastern? # => false
+venus.western? # => true
+```
+
 ### `#phase_angle`
 
 "Sun-object-Earth" angle. Returns a `Astronoby::Angle` object.

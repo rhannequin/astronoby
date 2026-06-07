@@ -112,23 +112,24 @@ module Astronoby
       #  Edition: MIT Press
       #  Chapter: 4 - Orbits and Coordinate Systems
       #
-      # @param instant [Astronoby::Instant] the time instant for the mean
-      #   obliquity
+      # @param instant [Astronoby::Instant] the time instant for the obliquity
+      # @param obliquity [Astronoby::Angle] the obliquity of the ecliptic to
+      #   rotate by. Defaults to the mean obliquity of date; pass the true
+      #   obliquity when the equatorial coordinates already include nutation
+      #   (true-of-date apparent and topocentric places).
       # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates
-      def to_ecliptic(instant:)
-        mean_obliquity = MeanObliquity.at(instant)
-
+      def to_ecliptic(instant:, obliquity: MeanObliquity.at(instant))
         y = Angle.from_radians(
-          @right_ascension.sin * mean_obliquity.cos +
-          @declination.tan * mean_obliquity.sin
+          @right_ascension.sin * obliquity.cos +
+          @declination.tan * obliquity.sin
         )
         x = Angle.from_radians(@right_ascension.cos)
         r = Angle.atan(y.radians / x.radians)
         longitude = Util::Trigonometry.adjustement_for_arctangent(y, x, r)
 
         latitude = Angle.asin(
-          @declination.sin * mean_obliquity.cos -
-          @declination.cos * mean_obliquity.sin * @right_ascension.sin
+          @declination.sin * obliquity.cos -
+          @declination.cos * obliquity.sin * @right_ascension.sin
         )
 
         Ecliptic.new(
