@@ -54,12 +54,15 @@ module Astronoby
     end
 
     # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates at the
-    #   current instant (true equinox of date)
+    #   current instant (true ecliptic and equinox of date)
     def ecliptic
       @ecliptic ||= begin
         return Coordinates::Ecliptic.zero if distance.zero?
 
-        equatorial.to_ecliptic(instant: @instant)
+        equatorial.to_ecliptic(
+          instant: @instant,
+          obliquity: TrueObliquity.at(@instant)
+        )
       end
     end
   end

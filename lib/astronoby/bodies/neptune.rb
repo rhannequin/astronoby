@@ -5,6 +5,12 @@ module Astronoby
   class Neptune < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(24_764_000)
     ABSOLUTE_MAGNITUDE = -7.0
+    ORBITAL_PERIOD = 60182.0
+
+    # @return [Boolean] true; Neptune is a superior planet
+    def self.superior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

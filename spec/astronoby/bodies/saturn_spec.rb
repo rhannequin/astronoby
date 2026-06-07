@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Saturn do
       # Skyfield: -1° 44′ 22.9″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-2° 6′ 24.4825″")
-      # IMCCE:    -2° 6′ 24.483″
+        .to eq("-2° 6′ 24.5555″")
+      # IMCCE:    -2° 6′ 24.557″
       # Skyfield: -2° 6′ 24.6″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+0° 29′ 9.5204″")
-      # IMCCE:    +0° 29′ 9.516″
+        .to eq("+0° 29′ 9.2034″")
+      # IMCCE:    +0° 29′ 9.197″
       # Skyfield: +0° 29′ 9.2″
 
       # Note: apparent distance doesn't really make sense

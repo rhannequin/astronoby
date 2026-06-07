@@ -119,6 +119,38 @@ RSpec.describe Astronoby::SolarSystemBody do
     end
   end
 
+  describe "planetary phenomena availability" do
+    it "raises when requesting oppositions for an inferior planet" do
+      expect do
+        Astronoby::Mercury.opposition_events(
+          ephem: double,
+          start_time: Time.utc(2025, 1, 1),
+          end_time: Time.utc(2026, 1, 1)
+        )
+      end.to raise_error(Astronoby::UnsupportedEventError)
+    end
+
+    it "raises when requesting greatest elongations for a superior planet" do
+      expect do
+        Astronoby::Mars.greatest_elongation_events(
+          ephem: double,
+          start_time: Time.utc(2025, 1, 1),
+          end_time: Time.utc(2026, 1, 1)
+        )
+      end.to raise_error(Astronoby::UnsupportedEventError)
+    end
+
+    it "raises when requesting conjunctions for a non-planet" do
+      expect do
+        Astronoby::Sun.conjunction_events(
+          ephem: double,
+          start_time: Time.utc(2025, 1, 1),
+          end_time: Time.utc(2026, 1, 1)
+        )
+      end.to raise_error(Astronoby::UnsupportedEventError)
+    end
+  end
+
   def build_planet
     @planet ||=
       Class.new(described_class) do

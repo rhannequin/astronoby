@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Venus do
       # Skyfield: +0° 45′ 50.4″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+1° 56′ 24.362″")
-      # IMCCE:    +1° 56′ 24.363″
+        .to eq("+1° 56′ 24.7713″")
+      # IMCCE:    +1° 56′ 24.773″
       # Skyfield: +1° 56′ 24.8″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+357° 26′ 37.7424″")
-      # IMCCE:    +357° 26′ 37.747″
+        .to eq("+357° 26′ 38.053″")
+      # IMCCE:    +357° 26′ 38.057″
       # Skyfield: +357° 26′ 38.1″
 
       # Note: apparent distance doesn't really make sense
@@ -395,6 +395,21 @@ RSpec.describe Astronoby::Venus do
         # Stellarium: -31° 34′ 30.5″
         # Skyfield:   -31° 34′ 29.6″
       end
+    end
+  end
+
+  describe "#elongation" do
+    it "returns the elongation from the Sun for 2025-07-14" do
+      time = Time.utc(2025, 7, 14)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      expect(planet.elongation.str(:dms))
+        .to eq "+41° 28′ 5.5884″"
+      # Skyfield: +41° 28′ 5.6″
+      expect(planet).to be_western
+      expect(planet).not_to be_eastern
     end
   end
 

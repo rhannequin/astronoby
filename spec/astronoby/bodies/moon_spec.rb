@@ -275,13 +275,13 @@ RSpec.describe Astronoby::Moon do
       # Skyfield: -2° 42′ 31.0″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-0° 19′ 15.9431″")
-      # IMCCE:    -0° 19′ 15.945″
+        .to eq("-0° 19′ 14.9172″")
+      # IMCCE:    -0° 19′ 14.911″
       # Skyfield: -0° 19′ 14.9″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+353° 55′ 17.4994″")
-      # IMCCE:    +353° 55′ 17.585″
+        .to eq("+353° 55′ 17.4454″")
+      # IMCCE:    +353° 55′ 17.473″
       # Skyfield: +353° 55′ 17.5″
 
       # Note: apparent distance doesn't really make sense

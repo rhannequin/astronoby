@@ -101,6 +101,21 @@ module Astronoby
       nil
     end
 
+    # @return [Boolean] true for an inferior planet (Mercury, Venus)
+    def self.inferior_planet?
+      false
+    end
+
+    # @return [Boolean] true for a superior planet (Mars through Neptune)
+    def self.superior_planet?
+      false
+    end
+
+    # @return [Boolean] true for a planet (excludes the Sun, Earth and Moon)
+    def self.planet?
+      inferior_planet? || superior_planet?
+    end
+
     # @param observer [Astronoby::Observer] Observer for whom to calculate rise,
     #   transit, and set events
     # @param ephem [::Ephem::SPK] Ephemeris data source
@@ -132,6 +147,78 @@ module Astronoby
       else
         calculator.events_between(start_time, end_time)
       end
+    end
+
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @param start_time [Time] start time
+    # @param end_time [Time] end time
+    # @param samples_per_period [Integer] number of samples per synodic period
+    # @return [Array<Astronoby::Conjunction>] conjunctions with the Sun
+    # @raise [Astronoby::UnsupportedEventError] unless the body is a planet
+    def self.conjunction_events(
+      ephem:,
+      start_time:,
+      end_time:,
+      samples_per_period: 60
+    )
+      unless planet?
+        raise UnsupportedEventError, "#{self} has no conjunctions with the Sun"
+      end
+
+      ConjunctionOppositionCalculator.new(
+        body: self,
+        ephem: ephem,
+        samples_per_period: samples_per_period
+      ).conjunction_events_between(start_time, end_time)
+    end
+
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @param start_time [Time] start time
+    # @param end_time [Time] end time
+    # @param samples_per_period [Integer] number of samples per synodic period
+    # @return [Array<Astronoby::Opposition>] oppositions with the Sun
+    # @raise [Astronoby::UnsupportedEventError] unless the body is a superior
+    #   planet
+    def self.opposition_events(
+      ephem:,
+      start_time:,
+      end_time:,
+      samples_per_period: 60
+    )
+      unless superior_planet?
+        raise UnsupportedEventError, "#{self} has no oppositions with the Sun"
+      end
+
+      ConjunctionOppositionCalculator.new(
+        body: self,
+        ephem: ephem,
+        samples_per_period: samples_per_period
+      ).opposition_events_between(start_time, end_time)
+    end
+
+    # @param ephem [::Ephem::SPK] ephemeris data source
+    # @param start_time [Time] start time
+    # @param end_time [Time] end time
+    # @param samples_per_period [Integer] number of samples per synodic period
+    # @return [Array<Astronoby::GreatestElongation>] greatest elongations
+    # @raise [Astronoby::UnsupportedEventError] unless the body is an inferior
+    #   planet
+    def self.greatest_elongation_events(
+      ephem:,
+      start_time:,
+      end_time:,
+      samples_per_period: 60
+    )
+      unless inferior_planet?
+        raise UnsupportedEventError,
+          "#{self} has no greatest elongations from the Sun"
+      end
+
+      GreatestElongationCalculator.new(
+        body: self,
+        ephem: ephem,
+        samples_per_period: samples_per_period
+      ).greatest_elongation_events_between(start_time, end_time)
     end
 
     # @param ephem [::Ephem::SPK] Ephemeris data source
@@ -202,6 +289,25 @@ module Astronoby
       )
     end
 
+    # Apparent geocentric Sun-Earth-body angle
+    # @return [Astronoby::Angle, nil] Elongation of the body
+    def elongation
+      return unless sun
+
+      @elongation ||= sun.apparent.separation_from(apparent)
+    end
+
+    # @return [Boolean] true when the body is east of the Sun
+    def eastern?
+      (apparent.ecliptic.longitude - sun.apparent.ecliptic.longitude)
+        .sin.positive?
+    end
+
+    # @return [Boolean] true when the body is west of the Sun
+    def western?
+      !eastern?
+    end
+
     # Source:
     #  Title: Astronomical Algorithms
     #  Author: Jean Meeus
@@ -212,11 +318,9 @@ module Astronoby
       return unless sun
 
       @phase_angle ||= begin
-        geocentric_elongation = sun.apparent.separation_from(apparent)
-
-        term1 = sun.astrometric.distance.km * geocentric_elongation.sin
+        term1 = sun.astrometric.distance.km * elongation.sin
         term2 = astrometric.distance.km -
-          sun.astrometric.distance.km * geocentric_elongation.cos
+          sun.astrometric.distance.km * elongation.cos
         angle = Angle.atan(term1 / term2)
         Astronoby::Util::Trigonometry
           .adjustement_for_arctangent(term1, term2, angle)

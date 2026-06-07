@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Jupiter do
       # Skyfield: +22° 55′ 13.0″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-0° 14′ 7.018″")
-      # IMCCE:    -0° 14′ 7.020″
+        .to eq("-0° 14′ 15.9561″")
+      # IMCCE:    -0° 14′ 15.999″
       # Skyfield: -0° 14′ 16.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+81° 22′ 10.8207″")
-      # IMCCE:    +81° 22′ 10.8961″
+        .to eq("+81° 22′ 10.8151″")
+      # IMCCE:    +81° 22′ 10.8235″
       # Skyfield: +81° 22′ 10.8″
 
       # Note: apparent distance doesn't really make sense

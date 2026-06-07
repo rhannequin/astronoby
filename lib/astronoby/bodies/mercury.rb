@@ -5,6 +5,12 @@ module Astronoby
   class Mercury < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(2_439_700)
     ABSOLUTE_MAGNITUDE = -0.613
+    ORBITAL_PERIOD = 87.969
+
+    # @return [Boolean] true; Mercury is an inferior planet
+    def self.inferior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers
