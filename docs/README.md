@@ -158,6 +158,29 @@ moon.current_phase_fraction.round(2)
 
 You can learn more about phases on the [Moon phases page].
 
+## Lunar observation
+
+```rb
+time = Time.utc(2025, 3, 1)
+instant = Astronoby::Instant.from_time(time)
+moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+
+moon.libration.longitude.str(:dms)
+# => "-2° 5′ 4.4219″"
+
+moon.libration.latitude.str(:dms)
+# => "+0° 28′ 45.9616″"
+
+moon.position_angle_of_axis.str(:dms)
+# => "-21° 48′ 46.657″"
+
+moon.bright_limb_position_angle.str(:dms)
+# => "+248° 1′ 57.9467″"
+```
+
+You can learn more about libration, axis and limb angles on the
+[Lunar observation page].
+
 ## Equinox and solstice times
 
 ```rb
@@ -243,6 +266,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 [Rise, transit and setting times page]: rise_transit_set_times.md
 [Twilight times page]: twilight_times.md
 [Moon phases page]: moon_phases.md
+[Lunar observation page]: lunar_observation.md
 [Equinoxes and solstices times page]: equinoxes_solstices_times.md
 [Planetary phenomena page]: planetary_phenomena.md
 [Deep-sky Bodies page]: deep_sky_bodies.md

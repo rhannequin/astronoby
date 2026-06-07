@@ -682,4 +682,136 @@ RSpec.describe Astronoby::Moon do
       expect(moon.receding_from_primary?).to be false
     end
   end
+
+  describe "#libration" do
+    it "returns the libration in longitude and latitude for 2025-03-01" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      libration = moon.libration
+
+      aggregate_failures do
+        expect(libration.longitude.str(:dms)).to eq("-2° 5′ 4.4204″")
+        # Horizons: -2° 4′ 44.4″
+        # IMCCE:    -1° 42′ 36″
+
+        expect(libration.latitude.str(:dms)).to eq("+0° 28′ 45.961″")
+        # Horizons: +0° 27′ 27.7″
+        # IMCCE:    +0° 27′ 36″
+      end
+    end
+
+    it "returns the libration when tilted east and south for 2025-01-15" do
+      time = Time.utc(2025, 1, 15)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      libration = moon.libration
+
+      aggregate_failures do
+        expect(libration.longitude.str(:dms)).to eq("+5° 10′ 33.5628″")
+        # Horizons: +5° 10′ 12.1″
+        # IMCCE:    +5° 33′ 0″
+
+        expect(libration.latitude.str(:dms)).to eq("-5° 8′ 14.0413″")
+        # Horizons: -5° 9′ 51.4″
+        # IMCCE:    -5° 9′ 36″
+      end
+    end
+
+    it "returns the libration when tilted west and north for 2025-06-10" do
+      time = Time.utc(2025, 6, 10)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      libration = moon.libration
+
+      aggregate_failures do
+        expect(libration.longitude.str(:dms)).to eq("-2° 19′ 8.0135″")
+        # Horizons: -2° 19′ 27.6″
+        # IMCCE:    -1° 56′ 24″
+
+        expect(libration.latitude.str(:dms)).to eq("+6° 14′ 47.9887″")
+        # Horizons: +6° 13′ 28.3″
+        # IMCCE:    +6° 13′ 12″
+      end
+    end
+  end
+
+  describe "#position_angle_of_axis" do
+    it "returns the position angle of the axis for 2025-03-01" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      position_angle = moon.position_angle_of_axis
+
+      expect(position_angle.str(:dms)).to eq("-21° 48′ 46.6571″")
+      # Horizons: 338° 11′ 26.9″
+      # IMCCE:    338° 11′ 24″
+    end
+
+    it "returns a positive position angle for 2025-09-20" do
+      time = Time.utc(2025, 9, 20)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      position_angle = moon.position_angle_of_axis
+
+      expect(position_angle.str(:dms)).to eq("+20° 11′ 28.0988″")
+      # Horizons: +20° 11′ 15.7″
+      # IMCCE:    +20° 11′ 24″
+    end
+  end
+
+  describe "#bright_limb_position_angle" do
+    # Source:
+    #  Title: Astronomical Algorithms
+    #  Author: Jean Meeus
+    #  Edition: 2nd edition
+    #  Chapter: 48 - Illuminated Fraction of the Moon's Disk
+    #  Example: 48.a, 1992 April 12, at 0h TD
+    it "reproduces Meeus's worked example" do
+      instant = Astronoby::Instant.from_terrestrial_time(
+        Astronoby::JulianDate.from_time(Time.utc(1992, 4, 12))
+      )
+      moon = described_class.new(instant: instant, ephem: test_ephem_inpop_full)
+
+      expect(moon.bright_limb_position_angle.str(:dms))
+        .to eq("+285° 2′ 38.6751″")
+      # Meeus: 285°
+    end
+
+    it "returns the bright limb position angle for 2025-03-01" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      expect(moon.bright_limb_position_angle.str(:dms))
+        .to eq("+248° 1′ 57.945″")
+    end
+  end
+
+  describe "#parallactic_angle" do
+    it "returns the parallactic angle for an observer for 2025-03-01" do
+      time = Time.utc(2025, 3, 1)
+      instant = Astronoby::Instant.from_time(time)
+      ephem = test_ephem_moon
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8566),
+        longitude: Astronoby::Angle.from_degrees(2.3522)
+      )
+      moon = described_class.new(instant: instant, ephem: ephem)
+
+      expect(moon.parallactic_angle(observer: observer).str(:dms))
+        .to eq("+11° 42′ 47.1254″")
+    end
+  end
 end
