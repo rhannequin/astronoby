@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: +24° 0′ 4.6″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+2° 40′ 1.5091″")
-      # IMCCE:    +2° 40′ 1.509″
+        .to eq("+2° 39′ 52.6977″")
+      # IMCCE:    +2° 39′ 52.660″
       # Skyfield: +2° 39′ 52.7″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+113° 36′ 2.5735″")
-      # IMCCE:    +113° 36′ 2.578″
+        .to eq("+113° 36′ 2.3943″")
+      # IMCCE:    +113° 36′ 2.396″
       # Skyfield: +113° 36′ 2.4″
 
       # Note: apparent distance doesn't really make sense

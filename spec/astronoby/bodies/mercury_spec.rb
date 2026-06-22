@@ -262,13 +262,13 @@ RSpec.describe Astronoby::Mercury do
       # Skyfield: -21° 56′ 29.1″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+1° 6′ 40.2353″")
-      # IMCCE:    +1° 6′ 40.235″
+        .to eq("+1° 6′ 48.6067″")
+      # IMCCE:    +1° 6′ 48.647″
       # Skyfield: +1° 6′ 48.6″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+259° 52′ 11.9627″")
-      # IMCCE:    +259° 52′ 11.960″
+        .to eq("+259° 52′ 11.9336″")
+      # IMCCE:    +259° 52′ 11.930″
       # Skyfield: +259° 52′ 11.9″
 
       # Note: apparent distance doesn't really make sense

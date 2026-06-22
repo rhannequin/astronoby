@@ -4,6 +4,8 @@ module Astronoby
   # Represents the Earth. Provides ephemeris segments for computing Earth's
   # geometric position.
   class Earth < SolarSystemBody
+    ORBITAL_PERIOD = 365.256
+
     # @param ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers
     def self.ephemeris_segments(ephem_source)

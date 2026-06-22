@@ -207,14 +207,14 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
       # SkySafari:  +38° 48′ 16.1″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+61° 44′ 2.4432″")
+        .to eq("+61° 44′ 11.4469″")
       # Skyfield:   +61° 44′ 11.5″
       # Astropy:    +61° 44′ 11.4624″
       # Stellarium: +61° 44′ 13.2″
       # SkySafari:  +61° 43′ 47.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+285° 40′ 42.5896″")
+        .to eq("+285° 40′ 47.2902″")
       # Skyfield:   +285° 40′ 47.0″
       # Astropy:    +285° 40′ 47.0272″
       # Stellarium: +285° 40′ 41.9″
@@ -280,9 +280,11 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         expect(apparent.equatorial.declination.str(:dms))
           .to eq("+38° 48′ 34.1102″")
         expect(apparent.ecliptic.latitude.str(:dms))
-          .to eq("+61° 43′ 55.8375″")
+          .to eq("+61° 44′ 4.8414″")
+        # Skyfield: +61° 44′ 4.8410″
         expect(apparent.ecliptic.longitude.str(:dms))
-          .to eq("+285° 40′ 29.6664″")
+          .to eq("+285° 40′ 34.3656″")
+        # Skyfield: +285° 40′ 34.3736″
       end
     end
 
@@ -307,9 +309,9 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         expect(apparent.equatorial.declination.str(:dms))
           .to eq("+38° 48′ 16.0454″")
         expect(apparent.ecliptic.latitude.str(:dms))
-          .to eq("+61° 43′ 37.921″")
+          .to eq("+61° 43′ 46.9249″")
         expect(apparent.ecliptic.longitude.str(:dms))
-          .to eq("+285° 40′ 24.7754″")
+          .to eq("+285° 40′ 29.4732″")
       end
     end
   end

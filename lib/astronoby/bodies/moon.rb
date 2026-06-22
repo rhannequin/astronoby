@@ -7,6 +7,7 @@ module Astronoby
     SEMIDIAMETER_VARIATION = 0.7275
     EQUATORIAL_RADIUS = Distance.from_meters(1_737_400)
     ABSOLUTE_MAGNITUDE = 0.28
+    ORBITAL_PERIOD = 27.504339
 
     # @param ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

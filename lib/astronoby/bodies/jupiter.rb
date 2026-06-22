@@ -5,6 +5,12 @@ module Astronoby
   class Jupiter < SolarSystemBody
     EQUATORIAL_RADIUS = Distance.from_meters(71_492_000)
     ABSOLUTE_MAGNITUDE = -9.395
+    ORBITAL_PERIOD = 4332.59
+
+    # @return [Boolean] true; Jupiter is a superior planet
+    def self.superior_planet?
+      true
+    end
 
     # @param _ephem_source [Symbol] the ephemeris source type
     # @return [Array<Array>] ephemeris segment identifiers

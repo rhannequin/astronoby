@@ -178,6 +178,27 @@ Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
 You can learn more about equinoxes and solstices on the
 [Equinoxes and solstices times page].
 
+## Planetary phenomena
+
+```rb
+Astronoby::Mars.opposition_events(
+  ephem: ephem,
+  start_time: Time.utc(2025, 1, 1),
+  end_time: Time.utc(2026, 1, 1)
+).first.instant.to_time
+# => 2025-01-16 02:38:35 UTC
+
+Astronoby::Venus.greatest_elongation_events(
+  ephem: ephem,
+  start_time: Time.utc(2025, 1, 1),
+  end_time: Time.utc(2026, 1, 1)
+).first.angle.degrees.round(1)
+# => 47.2
+```
+
+You can learn more about conjunctions, oppositions and greatest elongations on
+the [Planetary phenomena page].
+
 ## Deep-sky objects
 
 It is possible to manipulate any deep-sky possible, given equatorial coordinates
@@ -223,4 +244,5 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 [Twilight times page]: twilight_times.md
 [Moon phases page]: moon_phases.md
 [Equinoxes and solstices times page]: equinoxes_solstices_times.md
+[Planetary phenomena page]: planetary_phenomena.md
 [Deep-sky Bodies page]: deep_sky_bodies.md
