@@ -693,11 +693,13 @@ RSpec.describe Astronoby::Moon do
       libration = moon.libration
 
       aggregate_failures do
-        expect(libration.longitude.str(:dms)).to eq("-2° 5′ 4.4204″")
+        expect(libration.longitude.str(:dms))
+          .to eq("-2° 5′ 4.4204″")
         # Horizons: -2° 4′ 44.4″
         # IMCCE:    -1° 42′ 36″
 
-        expect(libration.latitude.str(:dms)).to eq("+0° 28′ 45.961″")
+        expect(libration.latitude.str(:dms))
+          .to eq("+0° 28′ 45.961″")
         # Horizons: +0° 27′ 27.7″
         # IMCCE:    +0° 27′ 36″
       end
@@ -712,11 +714,13 @@ RSpec.describe Astronoby::Moon do
       libration = moon.libration
 
       aggregate_failures do
-        expect(libration.longitude.str(:dms)).to eq("+5° 10′ 33.5628″")
+        expect(libration.longitude.str(:dms))
+          .to eq("+5° 10′ 33.5628″")
         # Horizons: +5° 10′ 12.1″
         # IMCCE:    +5° 33′ 0″
 
-        expect(libration.latitude.str(:dms)).to eq("-5° 8′ 14.0413″")
+        expect(libration.latitude.str(:dms))
+          .to eq("-5° 8′ 14.0413″")
         # Horizons: -5° 9′ 51.4″
         # IMCCE:    -5° 9′ 36″
       end
@@ -731,13 +735,38 @@ RSpec.describe Astronoby::Moon do
       libration = moon.libration
 
       aggregate_failures do
-        expect(libration.longitude.str(:dms)).to eq("-2° 19′ 8.0135″")
+        expect(libration.longitude.str(:dms))
+          .to eq("-2° 19′ 8.0135″")
         # Horizons: -2° 19′ 27.6″
         # IMCCE:    -1° 56′ 24″
 
-        expect(libration.latitude.str(:dms)).to eq("+6° 14′ 47.9887″")
+        expect(libration.latitude.str(:dms))
+          .to eq("+6° 14′ 47.9887″")
         # Horizons: +6° 13′ 28.3″
         # IMCCE:    +6° 13′ 12″
+      end
+    end
+
+    context "with an orientation kernel" do
+      it "returns the arcsecond-accurate libration for 2025-03-01" do
+        time = Time.utc(2025, 3, 1)
+        instant = Astronoby::Instant.from_time(time)
+        moon = described_class.new(
+          instant: instant,
+          ephem: test_ephem_moon,
+          orientation: test_orientation
+        )
+
+        libration = moon.libration
+
+        aggregate_failures do
+          expect(libration.longitude.str(:dms))
+            .to eq("-2° 4′ 44.4397″")
+          # Horizons: -2° 4′ 44.4396″
+          expect(libration.latitude.str(:dms))
+            .to eq("+0° 27′ 27.7258″")
+          # Horizons: +0° 27′ 27.7236″
+        end
       end
     end
   end
@@ -751,7 +780,8 @@ RSpec.describe Astronoby::Moon do
 
       position_angle = moon.position_angle_of_axis
 
-      expect(position_angle.str(:dms)).to eq("-21° 48′ 46.6571″")
+      expect(position_angle.str(:dms))
+        .to eq("-21° 48′ 46.6571″")
       # Horizons: 338° 11′ 26.9″
       # IMCCE:    338° 11′ 24″
     end
@@ -764,9 +794,26 @@ RSpec.describe Astronoby::Moon do
 
       position_angle = moon.position_angle_of_axis
 
-      expect(position_angle.str(:dms)).to eq("+20° 11′ 28.0988″")
+      expect(position_angle.str(:dms))
+        .to eq("+20° 11′ 28.0988″")
       # Horizons: +20° 11′ 15.7″
       # IMCCE:    +20° 11′ 24″
+    end
+
+    context "with an orientation kernel" do
+      it "returns the arcsecond-accurate position angle for 2025-09-20" do
+        time = Time.utc(2025, 9, 20)
+        instant = Astronoby::Instant.from_time(time)
+        moon = described_class.new(
+          instant: instant,
+          ephem: test_ephem_moon,
+          orientation: test_orientation
+        )
+
+        expect(moon.position_angle_of_axis.str(:dms))
+          .to eq("+20° 11′ 15.8176″")
+        # Horizons: +20° 11′ 15.72″
+      end
     end
   end
 

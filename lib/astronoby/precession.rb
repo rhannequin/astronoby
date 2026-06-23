@@ -59,35 +59,9 @@ module Astronoby
         psi_bar = Angle.from_degree_arcseconds(psi_bar)
         eps_a = MeanObliquity.at(@instant)
 
-        rotation_x(-eps_a) * rotation_z(-psi_bar) *
-          rotation_x(phi_bar) * rotation_z(gamma_bar)
+        Rotation.about_x(-eps_a) * Rotation.about_z(-psi_bar) *
+          Rotation.about_x(phi_bar) * Rotation.about_z(gamma_bar)
       end
-    end
-
-    # Rotation matrix around the x-axis.
-    #
-    # @param angle [Astronoby::Angle] the rotation angle
-    # @return [Matrix] 3x3 rotation matrix
-    def rotation_x(angle)
-      c, s = angle.cos, angle.sin
-      Matrix[
-        [1, 0, 0],
-        [0, c, s],
-        [0, -s, c]
-      ]
-    end
-
-    # Rotation matrix around the z-axis.
-    #
-    # @param angle [Astronoby::Angle] the rotation angle
-    # @return [Matrix] 3x3 rotation matrix
-    def rotation_z(angle)
-      c, s = angle.cos, angle.sin
-      Matrix[
-        [c, s, 0],
-        [-s, c, 0],
-        [0, 0, 1]
-      ]
     end
 
     # Source:

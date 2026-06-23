@@ -86,29 +86,28 @@ module Astronoby
       mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE
     end
 
-    # Total (optical + physical) geocentric libration of the Moon.
+    # Total geocentric libration of the Moon, in longitude and latitude.
     #
-    # Source:
-    #  Title: Astronomical Algorithms
-    #  Author: Jean Meeus
-    #  Edition: 2nd edition
-    #  Chapter: 53 - Ephemeris for Physical Observations of the Moon
+    # With an orientation kernel (see +orientation:+ on the constructor), this
+    # is the sub-Earth point from the integrated DE orientation, accurate to
+    # better than an arcsecond. Without one, it is the analytic optical plus
+    # physical libration (Meeus, Astronomical Algorithms, 2nd ed., chapter 53).
+    #
     # @return [Astronoby::Libration] Libration in longitude and latitude
     def libration
-      physical_ephemeris.libration
+      lunar_ephemeris.libration
     end
 
     # Position angle of the Moon's axis of rotation, measured eastward from the
     # north point of the disk.
     #
-    # Source:
-    #  Title: Astronomical Algorithms
-    #  Author: Jean Meeus
-    #  Edition: 2nd edition
-    #  Chapter: 53 - Ephemeris for Physical Observations of the Moon
+    # With an orientation kernel this comes from the integrated DE orientation;
+    # without one, from the analytic series (Meeus, Astronomical Algorithms,
+    # 2nd ed., chapter 53).
+    #
     # @return [Astronoby::Angle] Position angle of the axis
     def position_angle_of_axis
-      physical_ephemeris.position_angle_of_axis
+      lunar_ephemeris.position_angle_of_axis
     end
 
     # Position angle of the Moon's bright limb: the position angle of the
@@ -127,18 +126,7 @@ module Astronoby
       return unless sun
 
       @bright_limb_position_angle ||= begin
-        moon = apparent.equatorial
-        sun_coordinates = sun.apparent.equatorial
-        delta_ra = sun_coordinates.right_ascension - moon.right_ascension
-
-        angle = Angle.from_radians(
-          Math.atan2(
-            sun_coordinates.declination.cos * delta_ra.sin,
-            sun_coordinates.declination.sin * moon.declination.cos -
-              sun_coordinates.declination.cos * moon.declination.sin *
-                delta_ra.cos
-          )
-        )
+        angle = apparent.equatorial.position_angle_to(sun.apparent.equatorial)
         Angle.from_degrees(angle.degrees % Constants::DEGREES_PER_CIRCLE)
       end
     end
@@ -175,8 +163,13 @@ module Astronoby
 
     private
 
-    def physical_ephemeris
-      @physical_ephemeris ||= MoonPhysicalEphemeris.new(self)
+    def lunar_ephemeris
+      @lunar_ephemeris ||=
+        if orientation
+          MoonOrientationEphemeris.new(self)
+        else
+          MoonPhysicalEphemeris.new(self)
+        end
     end
 
     def primary_body_geometric

@@ -30,4 +30,9 @@ module TestEphemHelper
     path = File.path("#{__dir__}/data/inpop19a.bsp")
     Astronoby::Ephem.load(path)
   end
+
+  def test_orientation
+    path = File.path("#{__dir__}/data/moon_pa_de440_excerpt.bpc")
+    Astronoby::Orientation.load(path)
+  end
 end
