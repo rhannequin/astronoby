@@ -2,7 +2,7 @@
 
 RSpec.describe Astronoby::EclipsePhase do
   describe "#duration" do
-    it "returns the duration between the boundary instants in seconds" do
+    it "returns the duration between the boundary instants" do
       phase = described_class.new(
         starting_instant: Astronoby::Instant.from_time(
           Time.utc(2025, 3, 14, 6, 26, 6)
@@ -12,7 +12,7 @@ RSpec.describe Astronoby::EclipsePhase do
         )
       )
 
-      expect(phase.duration).to eq(3920)
+      expect(phase.duration).to eq(Astronoby::Duration.from_seconds(3920))
     end
 
     it "rounds the duration to the nearest second" do
@@ -25,7 +25,7 @@ RSpec.describe Astronoby::EclipsePhase do
         )
       )
 
-      expect(phase.duration).to eq(30)
+      expect(phase.duration.seconds).to eq(30)
     end
   end
 

@@ -50,7 +50,7 @@ eclipse.shadow_axis_distance.km     # => 2222.37
 
 ## Phases
 
-An eclipse exposes its phases as `Astronoby::EclipsePhase` objects, each with a `#starting_instant`, an `#ending_instant`, and a `#duration` in seconds. The penumbral phase is always present. The partial phase is present for partial and total eclipses, and the total phase (totality) only for total eclipses. A phase that does not occur is `nil`.
+An eclipse exposes its phases as `Astronoby::EclipsePhase` objects, each with a `#starting_instant`, an `#ending_instant`, and a `#duration` (an `Astronoby::Duration`). The penumbral phase is always present. The partial phase is present for partial and total eclipses, and the total phase (totality) only for total eclipses. A phase that does not occur is `nil`.
 
 ```rb
 eclipse.penumbral.starting_instant.to_time # => 2025-03-14 03:57:29 UTC (P1)
@@ -60,7 +60,7 @@ eclipse.total.ending_instant.to_time       # => 2025-03-14 07:31:32 UTC (U3)
 eclipse.partial.ending_instant.to_time     # => 2025-03-14 08:47:55 UTC (U4)
 eclipse.penumbral.ending_instant.to_time   # => 2025-03-14 10:00:08 UTC (P4)
 
-eclipse.total.duration # => 3931 (seconds of totality)
+eclipse.total.duration.seconds # => 3931 (seconds of totality)
 ```
 
 For a penumbral eclipse, `#partial` and `#total` are `nil`. For a partial eclipse, `#total` is `nil`.

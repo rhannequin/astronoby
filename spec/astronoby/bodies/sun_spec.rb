@@ -503,7 +503,7 @@ RSpec.describe Astronoby::Sun do
   end
 
   describe "#equation_of_time" do
-    it "returns an Integer" do
+    it "returns a Duration" do
       time = Time.new
       instant = Astronoby::Instant.from_time(time)
       ephem = test_ephem_sun
@@ -511,7 +511,7 @@ RSpec.describe Astronoby::Sun do
 
       equation_of_time = sun.equation_of_time
 
-      expect(equation_of_time).to be_an Integer
+      expect(equation_of_time).to be_a Astronoby::Duration
     end
 
     # Source:
@@ -527,7 +527,7 @@ RSpec.describe Astronoby::Sun do
 
       equation_of_time = sun.equation_of_time
 
-      expect(equation_of_time).to eq(-392)
+      expect(equation_of_time.seconds).to eq(-392)
       # Value from Practical Astronomy: 392
     end
 
@@ -544,7 +544,7 @@ RSpec.describe Astronoby::Sun do
 
       equation_of_time = sun.equation_of_time
 
-      expect(equation_of_time).to eq(199)
+      expect(equation_of_time.seconds).to eq(199)
       # Value from Celestial Calculations: 199
     end
 
@@ -561,7 +561,7 @@ RSpec.describe Astronoby::Sun do
 
       equation_of_time = sun.equation_of_time
 
-      expect(equation_of_time).to eq(-336)
+      expect(equation_of_time.seconds).to eq(-336)
       # Value from Celestial Calculations: 337
     end
 
@@ -578,7 +578,7 @@ RSpec.describe Astronoby::Sun do
 
       equation_of_time = sun.equation_of_time
 
-      expect(equation_of_time).to eq(202)
+      expect(equation_of_time.seconds).to eq(202)
       # Value from Celestial Calculations: 201
     end
 
@@ -595,7 +595,7 @@ RSpec.describe Astronoby::Sun do
 
       equation_of_time = sun.equation_of_time
 
-      expect(equation_of_time).to eq(-185)
+      expect(equation_of_time.seconds).to eq(-185)
       # Value from Celestial Calculations: 187
     end
   end
