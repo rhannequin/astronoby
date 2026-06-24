@@ -81,6 +81,17 @@ module Astronoby
       ).periapsis_events_between(start_time, end_time)
     end
 
+    # Finds all lunar eclipses whose greatest instant falls between two times
+    # @param ephem [::Ephem::SPK] Ephemeris data source
+    # @param start_time [Time] Start time
+    # @param end_time [Time] End time
+    # @return [Array<Astronoby::LunarEclipse>] Lunar eclipses in the range
+    def self.eclipse_events(ephem:, start_time:, end_time:)
+      LunarEclipseCalculator
+        .new(ephem: ephem)
+        .events_between(start_time, end_time)
+    end
+
     # @return [Float] Phase fraction, from 0 to 1
     def current_phase_fraction
       mean_elongation.degrees / Constants::DEGREES_PER_CIRCLE

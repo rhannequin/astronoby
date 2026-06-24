@@ -449,6 +449,22 @@ RSpec.describe Astronoby::Moon do
     end
   end
 
+  describe "::eclipse_events" do
+    it "delegates to the lunar eclipse calculator and returns the eclipses" do
+      ephem = test_ephem_inpop_2000_2050
+
+      events = described_class.eclipse_events(
+        ephem: ephem,
+        start_time: Time.utc(2025, 3, 1),
+        end_time: Time.utc(2025, 4, 1)
+      )
+
+      expect(events.size).to eq(1)
+      expect(events.first).to be_a(Astronoby::LunarEclipse)
+      expect(events.first).to be_total
+    end
+  end
+
   describe "#phase_angle" do
     it "returns the phase angle for 2025-07-14" do
       time = Time.utc(2025, 7, 14)
