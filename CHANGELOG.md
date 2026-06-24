@@ -1,5 +1,106 @@
 # Changelog
 
+## 0.10.0 - 2026-06-26
+
+_If you are upgrading: please see [UPGRADING.md]._
+
+### Bug fixes
+
+* Fix constant name typo ([#245])
+* Fix matrix multiplication order in Apparent frame ([#250])
+* Remove spurious N·P from observer ECEF-to-TOD transformation ([#251])
+* Apply aberration in GCRS before precession/nutation rotation ([#253])
+* Fix Moon magnitude ([#254])
+* Fix astrometric position for Deep Sky Objects ([#272])
+
+### Features
+
+* Defer Solar System body computations lazily ([#244])
+* Integrate `iers` gem for Delta T and GMST ([#249])
+* Add IERS polar motion correction to observer ECEF-to-TOD transformation ([#252])
+* Fall back to polynomial GMST for dates outside IERS EOP range ([#255])
+* Add ICRS frame bias to precession matrix ([#257])
+* Extract `EarthRotation` class from `Observer` ([#260])
+* Add TEME reference frame for satellite tracking ([#261])
+* Add ECEF to geodetic conversion (WGS-84) ([#262])
+* Memoize per-instant conversions on `Instant` ([#268])
+* Add `ReferenceFrame#separation_from` for angular separation ([#269])
+* Introduce `Center`, `Body` and `Position` domain objects ([#270])
+* Add planetary phenomena ([#271])
+* Add lunar libration, position angle of axis and bright limb ([#273])
+* Add `Astronoby::Orientation` for arcsecond lunar libration ([#279])
+* Add Lunar eclipses ([#280])
+* Add `Astronoby::Duration` ([#281])
+
+### Improvements
+
+* Optimize nutation loop by eliminating array allocations ([#246])
+* Reuse single Nutation instance in observer matrix computation ([#247])
+* Memoize Observer geodetic computation methods ([#248])
+* Update documentation with recent values ([#256])
+* Update referential frames documentation ([#258])
+* YARD documentation update ([#259])
+* Update zlib, JSON and ERB for security reasons
+* Add references to README
+* Bump actions/checkout from 5 to 7 by @dependabot ([#239], [#276])
+* Bump rubyzip from 3.2.1 to 3.4.0 by @dependabot ([#237], [#267], [#275])
+* Bump irb from 1.15.2 to 1.17.0 by @dependabot ([#242])
+* Bump standard from 1.51.1 to 1.55.0 by @dependabot ([#243], [#274])
+* Bump rake from 13.3.1 to 13.4.2 by @dependabot ([#264])
+* Bump ephem from 0.4.1 to 0.5.0 by @dependabot ([#278])
+* Upgrade default Ruby to 4.0.5 ([#277])
+
+### Backward-incompatible changes
+
+* Minimum Ruby version bumped to 3.2.0 ([#249])
+* Delta T and GMST now use IERS data ([#249])
+* Defer Solar System body computations lazily ([#244])
+* `SolarSystemBody#ephem` is now publicly accessible ([#244])
+* `ReferenceFrame#center_identifier` replaced by `#center` ([#270])
+* `Sun#equation_of_time` now returns a `Duration` ([#281])
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.9.0...v0.10.0
+
+[#237]: https://github.com/rhannequin/astronoby/pull/237
+[#239]: https://github.com/rhannequin/astronoby/pull/239
+[#242]: https://github.com/rhannequin/astronoby/pull/242
+[#243]: https://github.com/rhannequin/astronoby/pull/243
+[#244]: https://github.com/rhannequin/astronoby/pull/244
+[#245]: https://github.com/rhannequin/astronoby/pull/245
+[#246]: https://github.com/rhannequin/astronoby/pull/246
+[#247]: https://github.com/rhannequin/astronoby/pull/247
+[#248]: https://github.com/rhannequin/astronoby/pull/248
+[#249]: https://github.com/rhannequin/astronoby/pull/249
+[#250]: https://github.com/rhannequin/astronoby/pull/250
+[#251]: https://github.com/rhannequin/astronoby/pull/251
+[#252]: https://github.com/rhannequin/astronoby/pull/252
+[#253]: https://github.com/rhannequin/astronoby/pull/253
+[#254]: https://github.com/rhannequin/astronoby/pull/254
+[#255]: https://github.com/rhannequin/astronoby/pull/255
+[#256]: https://github.com/rhannequin/astronoby/pull/256
+[#257]: https://github.com/rhannequin/astronoby/pull/257
+[#258]: https://github.com/rhannequin/astronoby/pull/258
+[#259]: https://github.com/rhannequin/astronoby/pull/259
+[#260]: https://github.com/rhannequin/astronoby/pull/260
+[#261]: https://github.com/rhannequin/astronoby/pull/261
+[#262]: https://github.com/rhannequin/astronoby/pull/262
+[#264]: https://github.com/rhannequin/astronoby/pull/264
+[#267]: https://github.com/rhannequin/astronoby/pull/267
+[#268]: https://github.com/rhannequin/astronoby/pull/268
+[#269]: https://github.com/rhannequin/astronoby/pull/269
+[#270]: https://github.com/rhannequin/astronoby/pull/270
+[#271]: https://github.com/rhannequin/astronoby/pull/271
+[#272]: https://github.com/rhannequin/astronoby/pull/272
+[#273]: https://github.com/rhannequin/astronoby/pull/273
+[#274]: https://github.com/rhannequin/astronoby/pull/274
+[#275]: https://github.com/rhannequin/astronoby/pull/275
+[#276]: https://github.com/rhannequin/astronoby/pull/276
+[#277]: https://github.com/rhannequin/astronoby/pull/277
+[#278]: https://github.com/rhannequin/astronoby/pull/278
+[#279]: https://github.com/rhannequin/astronoby/pull/279
+[#280]: https://github.com/rhannequin/astronoby/pull/280
+[#281]: https://github.com/rhannequin/astronoby/pull/281
+
 ## 0.9.0 - 2025-10-31
 
 _If you are upgrading: please see [UPGRADING.md]._
