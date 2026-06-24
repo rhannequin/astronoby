@@ -13,4 +13,10 @@ module Astronoby
 
   # Raised when there is an error with ephemeris data.
   class EphemerisError < StandardError; end
+
+  # Raised when an orientation kernel is not a supported orientation source.
+  class OrientationError < StandardError; end
+
+  # Raised when an orientation kernel does not cover the requested instant.
+  class OrientationOutOfRangeError < StandardError; end
 end

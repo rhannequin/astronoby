@@ -137,6 +137,25 @@ module Astronoby
           longitude: longitude
         )
       end
+
+      # Position angle of another point as seen from this one, measured
+      # eastward (counterclockwise) from the direction of the north celestial
+      # pole. Both points must be expressed in the same frame.
+      #
+      # @param other [Astronoby::Coordinates::Equatorial] the target point
+      # @return [Astronoby::Angle] position angle, between -180 and 180 degrees
+      def position_angle_to(other)
+        delta_right_ascension = other.right_ascension - @right_ascension
+
+        Angle.from_radians(
+          Math.atan2(
+            other.declination.cos * delta_right_ascension.sin,
+            other.declination.sin * @declination.cos -
+              other.declination.cos * @declination.sin *
+                delta_right_ascension.cos
+          )
+        )
+      end
     end
   end
 end

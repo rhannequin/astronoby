@@ -29,13 +29,17 @@ module Astronoby
     # @return [::Ephem::SPK] the ephemeris data source
     attr_reader :ephem
 
+    # @return [Astronoby::Orientation, nil] the orientation kernel, if provided
+    attr_reader :orientation
+
     # Creates a new body instance at the given instant.
     #
     # @param instant [Astronoby::Instant] the time instant
     # @param ephem [::Ephem::SPK] ephemeris data source
+    # @param orientation [Astronoby::Orientation, nil] orientation kernel
     # @return [Astronoby::SolarSystemBody] a new body instance
-    def self.at(instant, ephem:)
-      new(ephem: ephem, instant: instant)
+    def self.at(instant, ephem:, orientation: nil)
+      new(ephem: ephem, instant: instant, orientation: orientation)
     end
 
     # Computes the geometric reference frame for this body.
@@ -224,9 +228,12 @@ module Astronoby
     # @param ephem [::Ephem::SPK] Ephemeris data source
     # @param instant [Astronoby::Instant] Instant for which to calculate the
     #   phase angle
-    def initialize(ephem:, instant:)
+    # @param orientation [Astronoby::Orientation, nil] Orientation kernel,
+    #   enabling arcsecond-accurate lunar libration and axis position angle
+    def initialize(ephem:, instant:, orientation: nil)
       @ephem = ephem
       @instant = instant
+      @orientation = orientation
     end
 
     # @return [Astronoby::Geometric] the geometric reference frame (BCRS)
