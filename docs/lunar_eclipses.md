@@ -2,7 +2,7 @@
 
 Astronoby computes lunar eclipses: the passages of the Moon through Earth's shadow. A lunar eclipse is a geocentric event, the same for every observer who can see the Moon, so no observer is involved. The geometry is built from the apparent geocentric positions of the Sun and Moon, which matches the standard reduction used by [NASA's Five Millennium Canon of Lunar Eclipses] and by IMCCE.
 
-There are three kinds of lunar eclipse. A penumbral eclipse is when the Moon only enters Earth's penumbra, the outer, partial shadow. A partial eclipse is when part of the Moon enters the umbra, the inner, total shadow. A total eclipse is when the whole Moon enters the umbra.
+There are three kinds of lunar eclipses. A penumbral eclipse is when the Moon only enters Earth's penumbra, the outer, partial shadow. A partial eclipse is when part of the Moon enters the umbra, the inner, total shadow. A total eclipse is when the whole Moon enters the umbra.
 
 ## Finding eclipses
 
