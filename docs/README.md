@@ -181,6 +181,22 @@ moon.bright_limb_position_angle.str(:dms)
 You can learn more about libration, axis and limb angles on the
 [Lunar observation page].
 
+## Lunar eclipses
+
+```rb
+eclipses = Astronoby::Moon.eclipse_events(
+  ephem: ephem,
+  start_time: Time.utc(2025, 1, 1),
+  end_time: Time.utc(2026, 1, 1)
+)
+
+eclipses.map { |eclipse| [eclipse.instant.to_time, eclipse.kind] }
+# => [[2025-03-14 06:58:47 UTC, :total], [2025-09-07 18:11:49 UTC, :total]]
+```
+
+You can learn more about umbral and penumbral magnitudes, phases and contact
+times on the [Lunar eclipses page].
+
 ## Equinox and solstice times
 
 ```rb
@@ -267,6 +283,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 [Twilight times page]: twilight_times.md
 [Moon phases page]: moon_phases.md
 [Lunar observation page]: lunar_observation.md
+[Lunar eclipses page]: lunar_eclipses.md
 [Equinoxes and solstices times page]: equinoxes_solstices_times.md
 [Planetary phenomena page]: planetary_phenomena.md
 [Deep-sky Bodies page]: deep_sky_bodies.md
