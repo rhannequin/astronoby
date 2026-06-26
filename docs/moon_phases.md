@@ -77,5 +77,6 @@ phases.each { puts "#{_1.phase}: #{_1.time}" }
 - [Twilight Times](twilight_times.md) - for sun-related events
 - [Rise, Transit and Set Times](rise_transit_set_times.md) - for moon events
 - [Lunar Observation](lunar_observation.md) - for libration, axis and limb angles
+- [Lunar Eclipses](lunar_eclipses.md) - for eclipses of the Moon
 - [Solar System Bodies](solar_system_bodies.md) - for moon object details
 - [Ephemerides](ephem.md) - for data sources

@@ -81,6 +81,7 @@ moon.parallactic_angle(observer: observer).str(:dms) # => "+11° 42′ 47.1246�
 
 - [Solar System Bodies](solar_system_bodies.md) - for the Moon's other properties
 - [Moon Phases](moon_phases.md) - for lunar phase events
+- [Lunar Eclipses](lunar_eclipses.md) - for eclipses of the Moon
 - [Observer](observer.md) - for setting up observation locations
 - [Reference Frames](reference_frames.md) - for coordinate systems
 - [Angles](angles.md) - for working with angular measurements
