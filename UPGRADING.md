@@ -67,6 +67,30 @@ frame.center.observer        # => the Observer, for topocentric frames
 Two topocentric centers are equal when their observers share the same
 latitude, longitude and elevation (atmospheric parameters are ignored).
 
+### `Sun#equation_of_time` now returns a `Duration`
+
+Lengths of time are now wrapped in a new `Astronoby::Duration` value object,
+consistent with `Angle`, `Distance` and `Velocity`. As a result,
+`Sun#equation_of_time` returns an `Astronoby::Duration` instead of an
+`Integer` of seconds. Call `#seconds` to get the previous value.
+
+```rb
+# Before
+sun.equation_of_time # => -185
+
+# After
+sun.equation_of_time         # => #<Astronoby::Duration ...>
+sun.equation_of_time.seconds # => -185
+sun.equation_of_time.minutes # => -3.08...
+```
+
+A `Duration` can be built with `from_seconds`, `from_minutes`, `from_hours`
+and `from_days`, and read back in any of those units. It is immutable,
+comparable, and supports `+` and `-`.
+
+Note that `EclipsePhase#duration`, also introduced in this release, returns
+an `Astronoby::Duration` as well.
+
 ## Upgrading from 0.8.0 to 0.9.0
 
 ### Constant `MINUTES_PER_DEGREE` renamed

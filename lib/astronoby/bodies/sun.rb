@@ -90,7 +90,7 @@ module Astronoby
     #  Edition: 2nd edition
     #  Chapter: 28 - Equation of Time
 
-    # @return [Integer] Equation of time in seconds
+    # @return [Astronoby::Duration] Equation of time
     def equation_of_time
       right_ascension = apparent.equatorial.right_ascension
       t = (@instant.julian_date - JulianDate::J2000) / Constants::DAYS_PER_JULIAN_MILLENIA
@@ -103,7 +103,7 @@ module Astronoby
       nutation = Nutation.new(instant: instant).nutation_in_longitude
       obliquity = TrueObliquity.at(@instant)
 
-      (
+      seconds = (
         Angle
           .from_degrees(
             l0 -
@@ -112,6 +112,7 @@ module Astronoby
               nutation.degrees * obliquity.cos
           ).hours * Constants::SECONDS_PER_HOUR
       ).round
+      Duration.from_seconds(seconds)
     end
 
     # @return [nil] the Sun has no phase angle as seen from Earth

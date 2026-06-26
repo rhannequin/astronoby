@@ -17,9 +17,11 @@ module Astronoby
       freeze
     end
 
-    # @return [Integer] phase duration in seconds
+    # @return [Astronoby::Duration] phase duration
     def duration
-      (@ending_instant.to_time - @starting_instant.to_time).round
+      Duration.from_seconds(
+        (@ending_instant.to_time - @starting_instant.to_time).round
+      )
     end
   end
 end
