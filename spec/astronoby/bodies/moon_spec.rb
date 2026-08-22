@@ -544,7 +544,7 @@ RSpec.describe Astronoby::Moon do
     it "returns the apparent ecliptic coordinates for 2003-09-01" do
       # Example gives 2003-09-01 00:00:00 TT (and not UTC)
       time = Time.utc(2003, 9, 1, 0, 0, 0)
-      time -= Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+      time -= Astronoby::DeltaT.at(time)
       instant = Astronoby::Instant.from_time(time)
       ephem = test_ephem_moon
       moon = described_class.new(instant: instant, ephem: ephem)

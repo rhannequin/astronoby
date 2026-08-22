@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "iers"
-
 module Astronoby
   module Util
     module Time
@@ -39,26 +37,6 @@ module Astronoby
         end
 
         ::Time.utc(date.year, date.month, date.day, hour, minute, second).round
-      end
-
-      # @param instant [Numeric, Time, Date, DateTime]
-      # @return [Numeric] Delta T (TT - UT1) in seconds for the given instant
-      def self.terrestrial_universal_time_delta(instant)
-        case instant
-        when Numeric
-          IERS::DeltaT.at(jd: instant).delta_t
-        when ::Time, ::Date, ::DateTime
-          IERS::DeltaT.at(instant).delta_t
-        else
-          raise IncompatibleArgumentsError,
-            "Expected a Numeric, Time, Date or DateTime object, got #{instant.class}"
-        end
-      rescue IERS::OutOfRangeError => e
-        if e.available_range
-          IERS::DeltaT.at(mjd: e.available_range.end).delta_t
-        else
-          0
-        end
       end
     end
   end

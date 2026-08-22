@@ -44,7 +44,7 @@ module Astronoby
       # @param time [Time] a Time object to convert
       # @return [Astronoby::Instant] a new Instant object
       def from_time(time)
-        delta_t = Util::Time.terrestrial_universal_time_delta(time)
+        delta_t = DeltaT.at(time)
         terrestrial_time = time.utc.to_datetime.ajd +
           Rational(delta_t, Constants::SECONDS_PER_DAY)
         from_terrestrial_time(terrestrial_time)
@@ -55,7 +55,7 @@ module Astronoby
       # @param julian_date [Numeric] the Julian Date in UTC
       # @return [Astronoby::Instant] a new Instant object
       def from_utc_julian_date(julian_date)
-        delta_t = Util::Time.terrestrial_universal_time_delta(julian_date)
+        delta_t = DeltaT.at(julian_date)
         terrestrial_time = julian_date +
           Rational(delta_t, Constants::SECONDS_PER_DAY)
         from_terrestrial_time(terrestrial_time)
@@ -120,8 +120,7 @@ module Astronoby
     #
     # @return [Numeric] Delta T in seconds
     def delta_t
-      @memo[:delta_t] ||=
-        Util::Time.terrestrial_universal_time_delta(@terrestrial_time)
+      @memo[:delta_t] ||= DeltaT.at(@terrestrial_time)
     end
 
     # Get the Greenwich Mean Sidereal Time

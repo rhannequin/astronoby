@@ -54,43 +54,4 @@ RSpec.describe Astronoby::Util::Time do
       end
     end
   end
-
-  describe "::terrestrial_universal_time_delta" do
-    it "returns the number of seconds between TT and UT for a given Julian Day" do
-      epoch = 2437665.5 # 1962-01-01T00:00:00
-
-      delta = described_class.terrestrial_universal_time_delta(epoch).round(2)
-
-      expect(delta).to eq 33.99
-      # USNO historic_deltat.data: 33.992
-    end
-
-    it "returns the number of seconds between TT and UT for a given Time object" do
-      time = Time.utc(1977, 1, 1) # 2443144.5
-
-      delta = described_class.terrestrial_universal_time_delta(time).round(2)
-
-      expect(delta).to eq 47.52
-      # USNO deltat.data: 47.5214
-    end
-
-    it "returns the number of seconds between TT and UT for a given Date object" do
-      date = Date.new(1980, 1, 1) # 2444239.5
-
-      delta = described_class.terrestrial_universal_time_delta(date).round(2)
-
-      expect(delta).to eq 50.54
-      # USNO deltat.data: 50.5387
-    end
-
-    context "when the date is before 1800" do
-      it "returns 0" do
-        date = Date.new(1700, 1, 1)
-
-        delta = described_class.terrestrial_universal_time_delta(date)
-
-        expect(delta).to eq 0
-      end
-    end
-  end
 end
