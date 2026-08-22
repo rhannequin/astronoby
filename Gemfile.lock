@@ -17,7 +17,7 @@ GEM
       minitar (~> 0.12)
       zlib (~> 3.2)
     erb (6.0.4)
-    iers (0.1.1)
+    iers (0.2.0)
     io-console (0.8.2)
     irb (1.17.0)
       pp (>= 0.6.0)
