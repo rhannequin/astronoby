@@ -7,6 +7,23 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.10.0 to 0.11.0
+
+### `Util::Time.terrestrial_universal_time_delta` replaced by `DeltaT.at`
+
+Delta T (TT - UT1) now has its own namespace instead of living in
+`Astronoby::Util::Time`. The returned value is unchanged.
+
+```rb
+# Before
+Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+
+# After
+Astronoby::DeltaT.at(time)
+```
+
+`Astronoby::Util::Time` keeps `decimal_hour_to_time`.
+
 ## Upgrading from 0.9.0 to 0.10.0
 
 ### Minimum Ruby version bumped to 3.2.0
