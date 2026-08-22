@@ -94,8 +94,7 @@ module Astronoby
 
     # @return [Numeric] the Terrestrial Time as a Julian Date
     def terrestrial_time
-      @memo[:terrestrial_time] ||=
-        @instant.as(:julian_date, scale: :tt, as: :rational)
+      @memo[:terrestrial_time] ||= @instant.as(:julian_date, scale: :tt)
     end
     alias_method :tt, :terrestrial_time
     alias_method :julian_date, :terrestrial_time
@@ -113,7 +112,7 @@ module Astronoby
     # @return [DateTime] the UTC time as DateTime
     def to_datetime
       @memo[:to_datetime] ||= DateTime.jd(
-        terrestrial_time -
+        precise_terrestrial_time -
           Rational(delta_t, Constants::SECONDS_PER_DAY) +
           DATETIME_JD_EPOCH_ADJUSTMENT
       )
@@ -175,14 +174,14 @@ module Astronoby
     #
     # @return [Numeric] TAI as Julian Date
     def tai
-      @memo[:tai] ||= @instant.as(:julian_date, scale: :tai, as: :rational)
+      @memo[:tai] ||= @instant.as(:julian_date, scale: :tai)
     end
 
     # Get the Barycentric Dynamical Time (TDB)
     #
     # @return [Numeric] TDB as Julian Date
     def tdb
-      @memo[:tdb] ||= @instant.as(:julian_date, scale: :tdb, as: :rational)
+      @memo[:tdb] ||= @instant.as(:julian_date, scale: :tdb)
     end
 
     # Get the offset between TT and UTC for this instant
@@ -215,5 +214,12 @@ module Astronoby
 
     # @return [Horologium::Instant] the underlying scale-free instant
     attr_reader :instant
+
+    private
+
+    def precise_terrestrial_time
+      @memo[:precise_terrestrial_time] ||=
+        @instant.as(:julian_date, scale: :tt, as: :rational)
+    end
   end
 end

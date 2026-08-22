@@ -30,17 +30,19 @@ Bretagnon model. The two differ by up to about 1.7 milliseconds.
 Note that `Precession` continues to be evaluated in TT, as SOFA and ERFA do,
 so precession results are unchanged.
 
-### `Instant#tt`, `#tai`, `#tdb` and `#diff` return a `Rational`
+### `Instant#tt`, `#tai`, `#tdb` and `#diff` return a `Float`
 
 These previously returned whichever numeric type the arithmetic happened to
 produce: an `Integer` or `Float` for an instant built with
 `from_terrestrial_time`, a `Rational` for one built with `from_time`. They now
-consistently return a `Rational`.
+consistently return a `Float`.
 
-A `Rational` is returned rather than a `Float` on purpose. A Julian Date is
-around 2.46 million, which leaves a single `Float` about 47 microseconds for
-the fraction of a day. That is 2 cm of Earth rotation, enough to show in the
-TEME and ECEF frames. Call `to_f` where a `Float` is wanted.
+A Julian Date is around 2.46 million, which leaves a `Float` about 47
+microseconds for the fraction of a day. That is ample for the theories of
+motion, where it is worth a small fraction of a milliarcsecond. Only the
+rotation of the Earth is sensitive to it, and the conversions that depend on it
+(`to_time`, `to_date`, `to_datetime`, and the sidereal times derived from them)
+keep full precision internally rather than reading `tt`.
 
 ### `Instant#hash` is now consistent with `#eql?`
 
