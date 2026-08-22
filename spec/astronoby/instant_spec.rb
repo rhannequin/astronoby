@@ -220,6 +220,27 @@ RSpec.describe Astronoby::Instant do
 
       expect(set.include?(instant1_bis)).to be true
     end
+
+    it "hashes equally for equal instants built from different numeric types" do
+      integer = described_class.from_terrestrial_time(2460797)
+      float = described_class.from_terrestrial_time(2460797.0)
+      rational = described_class.from_terrestrial_time(Rational(2460797))
+
+      expect(integer.eql?(float)).to be true
+      expect(integer.hash).to eq float.hash
+      expect(integer.eql?(rational)).to be true
+      expect(integer.hash).to eq rational.hash
+    end
+
+    it "deduplicates equal instants built from different numeric types" do
+      integer = described_class.from_terrestrial_time(2460797)
+      float = described_class.from_terrestrial_time(2460797.0)
+      rational = described_class.from_terrestrial_time(Rational(2460797))
+      map = {integer => :instant}
+
+      expect(map[float]).to eq :instant
+      expect([integer, float, rational].uniq.size).to eq 1
+    end
   end
 
   describe "comparison" do

@@ -9,6 +9,46 @@ public API, please read the upgrading notes for each release.
 
 ## Upgrading from 0.10.0 to 0.11.0
 
+### New `horologium` dependency, and `iers` raised to 0.2
+
+Time scale conversions are now delegated to the
+[`horologium`](https://github.com/rhannequin/horologium) gem, which brings the
+TAI, TT and TDB scales. UT1 stays in Astronoby: it rests on observations of
+the rotation of the Earth rather than on definitions, and comes from
+`Astronoby::DeltaT`.
+
+`horologium` requires `iers` 0.2, so the minimum `iers` version is raised from
+0.1 to 0.2. The change is additive and no `iers` API Astronoby uses has
+changed.
+
+### `Instant#tdb` now returns Barycentric Dynamical Time
+
+`tdb` previously returned Terrestrial Time unchanged, documented as an
+approximation. It now returns real TDB, computed from the full Fairhead and
+Bretagnon model. The two differ by up to about 1.7 milliseconds.
+
+Note that `Precession` continues to be evaluated in TT, as SOFA and ERFA do,
+so precession results are unchanged.
+
+### `Instant#tt`, `#tai`, `#tdb` and `#diff` return a `Rational`
+
+These previously returned whichever numeric type the arithmetic happened to
+produce: an `Integer` or `Float` for an instant built with
+`from_terrestrial_time`, a `Rational` for one built with `from_time`. They now
+consistently return a `Rational`.
+
+A `Rational` is returned rather than a `Float` on purpose. A Julian Date is
+around 2.46 million, which leaves a single `Float` about 47 microseconds for
+the fraction of a day. That is 2 cm of Earth rotation, enough to show in the
+TEME and ECEF frames. Call `to_f` where a `Float` is wanted.
+
+### `Instant#hash` is now consistent with `#eql?`
+
+Two instants that compare equal but were built from different numeric types
+(say `2460797` and `2460797.0`) reported `eql?` as true while hashing
+differently. They failed to deduplicate in a `Hash`, a `Set`, or `Array#uniq`.
+They now hash equally.
+
 ### `Util::Time.terrestrial_universal_time_delta` replaced by `DeltaT.at`
 
 Delta T (TT - UT1) now has its own namespace instead of living in
