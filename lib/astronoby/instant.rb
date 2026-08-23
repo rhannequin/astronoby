@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "date"
+require "horologium"
 
 module Astronoby
   # Represents a specific instant in time using Terrestrial Time (TT) as its
@@ -8,8 +9,13 @@ module Astronoby
   # time scales commonly used in astronomy:
   # - Terrestrial Time (TT)
   # - International Atomic Time (TAI)
+  # - Barycentric Dynamical Time (TDB)
   # - Universal Time Coordinated (UTC)
   # - Greenwich Mean Sidereal Time (GMST)
+  #
+  # TAI, TT and TDB are delegated to the horologium gem. UT1 is not: it rests
+  # on observations of the rotation of the Earth rather than on definitions,
+  # and comes from {Astronoby::DeltaT}.
   #
   # @example Create an instant from the current time
   #   instant = Astronoby::Instant.from_time(Time.now)
@@ -27,6 +33,11 @@ module Astronoby
     # start at noon. `DateTime.jd` expects a day that starts at the preceding
     # midnight. This constant adds 0.5 days (12 hours) to make the conversion.
     DATETIME_JD_EPOCH_ADJUSTMENT = 0.5
+
+    # Astronoby pins the precision rather than reading horologium's global
+    # default, so a host application configuring horologium for itself cannot
+    # change what Astronoby computes.
+    PRECISION = :standard
 
     class << self
       # Creates a new Instant from a Terrestrial Time value
@@ -62,11 +73,6 @@ module Astronoby
       end
     end
 
-    # @return [Numeric] the Terrestrial Time as a Julian Date
-    attr_reader :terrestrial_time
-    alias_method :tt, :terrestrial_time
-    alias_method :julian_date, :terrestrial_time
-
     # Initialize a new Instant
     #
     # @param terrestrial_time [Numeric] the Terrestrial Time as Julian Date
@@ -77,17 +83,28 @@ module Astronoby
         raise UnsupportedFormatError, "terrestrial_time must be a Numeric"
       end
 
-      @terrestrial_time = terrestrial_time
+      @instant = Horologium::Instant.from_julian_date(
+        terrestrial_time,
+        scale: :tt,
+        precision: PRECISION
+      )
       @memo = {}
       freeze
     end
+
+    # @return [Numeric] the Terrestrial Time as a Julian Date
+    def terrestrial_time
+      @memo[:terrestrial_time] ||= @instant.as(:julian_date, scale: :tt)
+    end
+    alias_method :tt, :terrestrial_time
+    alias_method :julian_date, :terrestrial_time
 
     # Calculate the time difference between two Instant objects
     #
     # @param other [Astronoby::Instant] another Instant to compare with
     # @return [Numeric] the difference in days
     def diff(other)
-      @terrestrial_time - other.terrestrial_time
+      terrestrial_time - other.terrestrial_time
     end
 
     # Convert to DateTime (UTC)
@@ -95,7 +112,7 @@ module Astronoby
     # @return [DateTime] the UTC time as DateTime
     def to_datetime
       @memo[:to_datetime] ||= DateTime.jd(
-        @terrestrial_time -
+        precise_terrestrial_time -
           Rational(delta_t, Constants::SECONDS_PER_DAY) +
           DATETIME_JD_EPOCH_ADJUSTMENT
       )
@@ -120,7 +137,7 @@ module Astronoby
     #
     # @return [Numeric] Delta T in seconds
     def delta_t
-      @memo[:delta_t] ||= DeltaT.at(@terrestrial_time)
+      @memo[:delta_t] ||= DeltaT.at(terrestrial_time)
     end
 
     # Get the Greenwich Mean Sidereal Time
@@ -157,19 +174,14 @@ module Astronoby
     #
     # @return [Numeric] TAI as Julian Date
     def tai
-      @memo[:tai] ||= @terrestrial_time -
-        Rational(Constants::TAI_TT_OFFSET, Constants::SECONDS_PER_DAY)
+      @memo[:tai] ||= @instant.as(:julian_date, scale: :tai)
     end
 
     # Get the Barycentric Dynamical Time (TDB)
-    # Note: Currently approximated as equal to TT
     #
     # @return [Numeric] TDB as Julian Date
     def tdb
-      # This is technically false, there is a slight difference between TT and
-      # TDB. However, this difference is so small that currenly Astronoby
-      # doesn't support it and consider they are the same value.
-      @memo[:tdb] ||= @terrestrial_time
+      @memo[:tdb] ||= @instant.as(:julian_date, scale: :tdb)
     end
 
     # Get the offset between TT and UTC for this instant
@@ -183,7 +195,7 @@ module Astronoby
     #
     # @return [Integer] hash value
     def hash
-      [@terrestrial_time, self.class].hash
+      [@instant, self.class].hash
     end
 
     # Compare this instant with another
@@ -194,8 +206,20 @@ module Astronoby
     def <=>(other)
       return unless other.is_a?(self.class)
 
-      @terrestrial_time <=> other.terrestrial_time
+      @instant <=> other.instant
     end
     alias_method :eql?, :==
+
+    protected
+
+    # @return [Horologium::Instant] the underlying scale-free instant
+    attr_reader :instant
+
+    private
+
+    def precise_terrestrial_time
+      @memo[:precise_terrestrial_time] ||=
+        @instant.as(:julian_date, scale: :tt, as: :rational)
+    end
   end
 end
