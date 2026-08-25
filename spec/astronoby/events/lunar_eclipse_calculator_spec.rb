@@ -103,6 +103,110 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
       # IMCCE: 0.9635
     end
 
+    it "exposes the shadow geometry at greatest eclipse" do
+      ephem = test_ephem_inpop_2000_2050
+      calculator = described_class.new(ephem: ephem)
+
+      events = calculator.events_between(
+        Time.utc(2026, 3, 1),
+        Time.utc(2026, 4, 1)
+      )
+
+      geometry = events.first.geometry
+      expect(arcminutes(geometry.umbra_angular_radius)).to eq(41.91)
+      # IMCCE: 41.9100'
+      expect(arcminutes(geometry.penumbra_angular_radius)).to eq(74.17)
+      # IMCCE: 74.1642'
+      expect(arcminutes(geometry.angular_axis_distance)).to eq(21.58)
+      # IMCCE: 21.5766'
+      expect(geometry.position_angle.degrees.round(2)).to eq(208.22)
+      # IMCCE: 208.19577°
+    end
+
+    it "exposes the shadow geometry at every contact" do
+      ephem = test_ephem_inpop_2000_2050
+      calculator = described_class.new(ephem: ephem)
+
+      events = calculator.events_between(
+        Time.utc(2026, 3, 1),
+        Time.utc(2026, 4, 1)
+      )
+
+      eclipse = events.first
+      expect(arcminutes(eclipse.penumbral.starting_geometry.angular_axis_distance))
+        .to eq(89.87)
+      # IMCCE: 89.8698' (P1)
+      expect(arcminutes(eclipse.partial.starting_geometry.angular_axis_distance))
+        .to eq(57.58)
+      # IMCCE: 57.5808' (U1)
+      expect(arcminutes(eclipse.total.starting_geometry.angular_axis_distance))
+        .to eq(26.31)
+      # IMCCE: 26.3010' (U2)
+      expect(arcminutes(eclipse.total.ending_geometry.angular_axis_distance))
+        .to eq(26.29)
+      # IMCCE: 26.2836' (U3)
+      expect(arcminutes(eclipse.partial.ending_geometry.angular_axis_distance))
+        .to eq(57.47)
+      # IMCCE: 57.4728' (U4)
+      expect(arcminutes(eclipse.penumbral.ending_geometry.angular_axis_distance))
+        .to eq(89.69)
+      # IMCCE: 89.6922' (P2)
+    end
+
+    it "places the Moon on the side of the shadow axis IMCCE reports" do
+      ephem = test_ephem_inpop_2000_2050
+      calculator = described_class.new(ephem: ephem)
+
+      events = calculator.events_between(
+        Time.utc(2026, 3, 1),
+        Time.utc(2026, 4, 1)
+      )
+
+      eclipse = events.first
+      expect(opposite(eclipse.penumbral.starting_geometry.position_angle))
+        .to eq(104.3)
+      # IMCCE: 104.30027 degrees (P1)
+      expect(opposite(eclipse.partial.starting_geometry.position_angle))
+        .to eq(96.19)
+      # IMCCE: 96.18881 degrees (U1)
+      expect(eclipse.total.starting_geometry.position_angle.degrees.round(2))
+        .to eq(243.1)
+      # IMCCE: 243.07967 degrees (U2)
+      expect(eclipse.total.ending_geometry.position_angle.degrees.round(2))
+        .to eq(173.36)
+      # IMCCE: 173.37756 degrees (U3)
+      expect(opposite(eclipse.partial.ending_geometry.position_angle))
+        .to eq(320.26)
+      # IMCCE: 320.25722 degrees (U4)
+      expect(opposite(eclipse.penumbral.ending_geometry.position_angle))
+        .to eq(312.13)
+      # IMCCE: 312.13033 degrees (P2)
+    end
+
+    it "closes the contact geometry on the definition of each contact" do
+      ephem = test_ephem_inpop_2000_2050
+      calculator = described_class.new(ephem: ephem)
+
+      events = calculator.events_between(
+        Time.utc(2026, 3, 1),
+        Time.utc(2026, 4, 1)
+      )
+
+      eclipse = events.first
+      expect(eclipse.penumbral.starting_geometry.penumbral_magnitude)
+        .to be_within(1e-6).of(0)
+      expect(eclipse.penumbral.ending_geometry.penumbral_magnitude)
+        .to be_within(1e-6).of(0)
+      expect(eclipse.partial.starting_geometry.umbral_magnitude)
+        .to be_within(1e-6).of(0)
+      expect(eclipse.partial.ending_geometry.umbral_magnitude)
+        .to be_within(1e-6).of(0)
+      expect(eclipse.total.starting_geometry.umbral_magnitude)
+        .to be_within(1e-6).of(1)
+      expect(eclipse.total.ending_geometry.umbral_magnitude)
+        .to be_within(1e-6).of(1)
+    end
+
     it "finds and classifies every lunar eclipse between 2023 and 2025" do
       ephem = test_ephem_inpop_2000_2050
       calculator = described_class.new(ephem: ephem)
@@ -142,5 +246,13 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
 
       expect(events).to be_empty
     end
+  end
+
+  def arcminutes(angle)
+    (angle.degrees * 60).round(2)
+  end
+
+  def opposite(angle)
+    ((angle.degrees + 180) % 360).round(2)
   end
 end

@@ -65,6 +65,42 @@ eclipse.total.duration.seconds # => 3931 (seconds of totality)
 
 For a penumbral eclipse, `#partial` and `#total` are `nil`. For a partial eclipse, `#total` is `nil`.
 
+## Shadow geometry
+
+`Astronoby::LunarEclipseGeometry` describes Earth's shadow and the Moon's place in it at one instant. The eclipse carries the geometry at greatest eclipse, and each phase carries the geometry at its two contacts, so the seven contacts of a total eclipse are all reachable. This is what a contact diagram is drawn from: two concentric circles for the cones, and the Moon's centre placed by a distance and a direction.
+
+```rb
+geometry = eclipse.geometry
+
+geometry.umbra_angular_radius.degrees * 60     # => 41.91 (arcminutes)
+geometry.penumbra_angular_radius.degrees * 60  # => 74.17
+geometry.angular_axis_distance.degrees * 60    # => 21.58
+geometry.position_angle.degrees                # => 208.22
+```
+
+The cone radii are measured in the plane perpendicular to the shadow axis at the Moon's distance, which is where they are published. They are available as an `Astronoby::Distance` through `#umbra_radius` and `#penumbra_radius`, and as an `Astronoby::Angle` through `#umbra_angular_radius` and `#penumbra_angular_radius`. `#moon_distance` is the geocentric distance of the Moon, the distance of that plane.
+
+The Moon's centre is placed by `#axis_distance` (or `#angular_axis_distance`) and `#position_angle`, which is measured at the shadow axis, from celestial north through east, and points towards the Moon.
+
+`#umbral_magnitude` and `#penumbral_magnitude` are available at any of these instants, not only at greatest eclipse. They are 0 at the contacts that define them and 1 at the total contacts.
+
+```rb
+eclipse.penumbral.starting_geometry.penumbral_magnitude # => 0.0 (P1)
+eclipse.partial.starting_geometry.umbral_magnitude      # => 0.0 (U1)
+eclipse.total.starting_geometry.umbral_magnitude        # => 1.0 (U2)
+```
+
+### Comparing position angles with IMCCE
+
+IMCCE publishes a position angle `P` measured differently: it is the angle of the *contact point on the Moon's limb*, seen from the Moon's centre, rather than the direction from the shadow axis to the Moon. At an external tangency (P1, P4, and the partial contacts U1 and U4) the contact point faces the axis, so `P` is `#position_angle` turned by 180 degrees. At an internal tangency (the total contacts U2 and U3) it faces away, so `P` equals `#position_angle`. At greatest eclipse, where there is no contact point, they report the axis-to-Moon direction, which is `#position_angle` directly.
+
+```rb
+p1 = eclipse.penumbral.starting_geometry.position_angle
+(p1.degrees + 180) % 360 # => 104.3, matching IMCCE's P at P1
+```
+
+Note also that IMCCE labels the end of the penumbral phase `P2`, where this documentation uses `P4`.
+
 ```rb
 penumbral_eclipse = Astronoby::Moon.eclipse_events(
   ephem: ephem,
@@ -79,7 +115,9 @@ penumbral_eclipse.total   # => nil
 
 ## Precision
 
-Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE. Validated across the 2023 to 2025 eclipses, the eclipse kind, greatest eclipse instant, magnitudes, and contact times all match IMCCE to within a second or two.
+Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE. Validated across the 2023 to 2026 eclipses, the eclipse kind, greatest eclipse instant, magnitudes, and contact times all match IMCCE to within a second or two.
+
+The shadow geometry matches IMCCE to well under an arcsecond: the umbra radius to 0.2", the penumbra radius to 0.4", the angular distance from the shadow axis to 0.1" at greatest eclipse and at the outer contacts, and the position angle to 0.03 degrees.
 
 ## See also
 

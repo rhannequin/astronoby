@@ -37,6 +37,11 @@ module Astronoby
     #   of which gamma is the value in Earth radii.
     attr_reader :shadow_axis_distance
 
+    # @return [Astronoby::LunarEclipseGeometry] the geometry of Earth's shadow
+    #   and the Moon's place in it at greatest eclipse. The geometry at each
+    #   contact is on the phases.
+    attr_reader :geometry
+
     # @return [Astronoby::EclipsePhase] the penumbral phase (always present)
     attr_reader :penumbral
 
@@ -55,6 +60,8 @@ module Astronoby
     # @param gamma [Float] least distance from the shadow axis, in Earth radii
     # @param shadow_axis_distance [Astronoby::Distance] least distance from the
     #   shadow axis
+    # @param geometry [Astronoby::LunarEclipseGeometry] the shadow geometry at
+    #   greatest eclipse
     # @param penumbral [Astronoby::EclipsePhase] the penumbral phase
     # @param partial [Astronoby::EclipsePhase, nil] the partial phase
     # @param total [Astronoby::EclipsePhase, nil] the total phase
@@ -65,6 +72,7 @@ module Astronoby
       penumbral_magnitude:,
       gamma:,
       shadow_axis_distance:,
+      geometry:,
       penumbral:,
       partial: nil,
       total: nil
@@ -75,6 +83,7 @@ module Astronoby
       @penumbral_magnitude = penumbral_magnitude
       @gamma = gamma
       @shadow_axis_distance = shadow_axis_distance
+      @geometry = geometry
       @penumbral = penumbral
       @partial = partial
       @total = total

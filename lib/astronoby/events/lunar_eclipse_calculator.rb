@@ -68,12 +68,38 @@ module Astronoby
       # @return [Float] signed distance from the shadow axis, in Earth radii
       attr_reader :gamma
 
-      def initialize(axis_distance:, umbra_radius:, penumbra_radius:, gamma:)
+      # @return [Float] position angle of the Moon's centre from the shadow
+      #   axis, in radians from celestial north through east
+      attr_reader :position_angle
+
+      # @return [Float] geocentric distance of the Moon (km)
+      attr_reader :moon_distance
+
+      def initialize(
+        axis_distance:,
+        umbra_radius:,
+        penumbra_radius:,
+        gamma:,
+        position_angle:,
+        moon_distance:
+      )
         @axis_distance = axis_distance
         @umbra_radius = umbra_radius
         @penumbra_radius = penumbra_radius
         @gamma = gamma
+        @position_angle = position_angle
+        @moon_distance = moon_distance
         freeze
+      end
+
+      def to_lunar_eclipse_geometry
+        LunarEclipseGeometry.new(
+          axis_distance: Distance.from_kilometers(axis_distance),
+          position_angle: Angle.from_radians(position_angle),
+          umbra_radius: Distance.from_kilometers(umbra_radius),
+          penumbra_radius: Distance.from_kilometers(penumbra_radius),
+          moon_distance: Distance.from_kilometers(moon_distance)
+        )
       end
 
       def umbral_magnitude
@@ -190,6 +216,7 @@ module Astronoby
         penumbral_magnitude: geometry.penumbral_magnitude,
         gamma: geometry.gamma,
         shadow_axis_distance: Distance.from_kilometers(geometry.axis_distance),
+        geometry: geometry.to_lunar_eclipse_geometry,
         penumbral: penumbral,
         partial: partial,
         total: total
@@ -228,15 +255,21 @@ module Astronoby
       )
       return nil unless starting && ending
 
+      starting_jd, starting_geometry = starting
+      ending_jd, ending_geometry = ending
+
       EclipsePhase.new(
-        starting_instant: Instant.from_terrestrial_time(starting),
-        ending_instant: Instant.from_terrestrial_time(ending)
+        starting_instant: Instant.from_terrestrial_time(starting_jd),
+        ending_instant: Instant.from_terrestrial_time(ending_jd),
+        starting_geometry: starting_geometry.to_lunar_eclipse_geometry,
+        ending_geometry: ending_geometry.to_lunar_eclipse_geometry
       )
     end
 
     # Bisects for the single contact between +outside_jd+ (value positive, the
     # Moon outside the boundary) and +inside_jd+ (value negative, at greatest
-    # eclipse). Returns nil if the boundary is not crossed within the window.
+    # eclipse). Returns the contact date and the geometry there, or nil if the
+    # boundary is not crossed within the window.
     def bisect_contact(value_at, outside_jd, inside_jd)
       return nil unless value_at.call(outside_jd).positive?
 
@@ -248,7 +281,7 @@ module Astronoby
           outside_jd = midpoint
         end
       end
-      (outside_jd + inside_jd) / 2.0
+      [(outside_jd + inside_jd) / 2.0, geometry_at(inside_jd)]
     end
 
     # Builds the geometry at a Julian Date (TT) from the apparent geocentric
@@ -293,7 +326,9 @@ module Astronoby
           axis_distance: perpendicular_distance,
           umbra_radius: earth_radius - axial_distance * umbra_half_angle_tangent,
           penumbra_radius: earth_radius + axial_distance * penumbra_half_angle_tangent,
-          gamma: (north.negative? ? -1 : 1) * perpendicular_distance / EARTH_RADIUS_KM
+          gamma: (north.negative? ? -1 : 1) * perpendicular_distance / EARTH_RADIUS_KM,
+          position_angle: Math.atan2(east, north) % Constants::RADIANS_PER_CIRCLE,
+          moon_distance: moon_distance
         )
       end
     end

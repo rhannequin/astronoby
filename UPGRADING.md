@@ -7,6 +7,16 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Unreleased
+
+### `EclipsePhase` and `LunarEclipse` require their shadow geometry
+
+`Astronoby::EclipsePhase.new` now requires `starting_geometry:` and
+`ending_geometry:`, and `Astronoby::LunarEclipse.new` now requires `geometry:`,
+each an `Astronoby::LunarEclipseGeometry`. Both objects are built by
+`Astronoby::LunarEclipseCalculator`, so this only affects code constructing them
+directly.
+
 ## Upgrading from 0.9.0 to 0.10.0
 
 ### Minimum Ruby version bumped to 3.2.0

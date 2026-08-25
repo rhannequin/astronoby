@@ -9,11 +9,30 @@ module Astronoby
     # @return [Astronoby::Instant] when the phase ends
     attr_reader :ending_instant
 
+    # @return [Astronoby::LunarEclipseGeometry] the shadow geometry when the
+    #   phase begins
+    attr_reader :starting_geometry
+
+    # @return [Astronoby::LunarEclipseGeometry] the shadow geometry when the
+    #   phase ends
+    attr_reader :ending_geometry
+
     # @param starting_instant [Astronoby::Instant] when the phase begins
     # @param ending_instant [Astronoby::Instant] when the phase ends
-    def initialize(starting_instant:, ending_instant:)
+    # @param starting_geometry [Astronoby::LunarEclipseGeometry] the geometry
+    #   when the phase begins
+    # @param ending_geometry [Astronoby::LunarEclipseGeometry] the geometry when
+    #   the phase ends
+    def initialize(
+      starting_instant:,
+      ending_instant:,
+      starting_geometry:,
+      ending_geometry:
+    )
       @starting_instant = starting_instant
       @ending_instant = ending_instant
+      @starting_geometry = starting_geometry
+      @ending_geometry = ending_geometry
       freeze
     end
 
