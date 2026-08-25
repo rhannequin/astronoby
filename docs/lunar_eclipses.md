@@ -67,15 +67,15 @@ For a penumbral eclipse, `#partial` and `#total` are `nil`. For a partial eclips
 
 ## Shadow geometry
 
-`Astronoby::LunarEclipseGeometry` describes Earth's shadow and the Moon's place in it at one instant. The eclipse carries the geometry at greatest eclipse, and each phase carries the geometry at its two contacts, so the seven contacts of a total eclipse are all reachable. This is what a contact diagram is drawn from: two concentric circles for the cones, and the Moon's centre placed by a distance and a direction.
+`Astronoby::LunarEclipseGeometry` describes Earth's shadow and the Moon's place in it at one instant. The eclipse carries the geometry at greatest eclipse, and each phase carries the geometry at its two contacts, so all six contacts of a total eclipse are reachable as well as greatest eclipse. It gives the size of the two shadow cones, how far the Moon's centre is from the shadow axis, and where on the Moon's limb the shadow bites.
 
 ```rb
 geometry = eclipse.geometry
 
-geometry.umbra_angular_radius.degrees * 60     # => 41.91 (arcminutes)
-geometry.penumbra_angular_radius.degrees * 60  # => 74.17
-geometry.angular_axis_distance.degrees * 60    # => 21.58
-geometry.position_angle.degrees                # => 208.22
+geometry.umbra_angular_radius.degrees * 60     # => 39.23 (arcminutes)
+geometry.penumbra_angular_radius.degrees * 60  # => 71.4
+geometry.angular_axis_distance.degrees * 60    # => 19.03
+geometry.position_angle.degrees                # => 29.07
 ```
 
 The cone radii are measured in the plane perpendicular to the shadow axis at the Moon's distance, which is where they are published. They are available as an `Astronoby::Distance` through `#umbra_radius` and `#penumbra_radius`, and as an `Astronoby::Angle` through `#umbra_angular_radius` and `#penumbra_angular_radius`. `#moon_distance` is the geocentric distance of the Moon, the distance of that plane.
@@ -91,8 +91,8 @@ eclipse.total.starting_geometry.umbral_magnitude        # => 1.0 (U2)
 ```
 
 ```rb
-eclipse.penumbral.starting_geometry.position_angle.degrees # => 104.3 (P1)
-eclipse.total.starting_geometry.position_angle.degrees     # => 243.1 (U2)
+eclipse.penumbral.starting_geometry.position_angle.degrees # => 131.8 (P1)
+eclipse.total.starting_geometry.position_angle.degrees     # => 350.44 (U2)
 ```
 
 Note that IMCCE labels the end of the penumbral phase `P2`, where this documentation uses `P4`.

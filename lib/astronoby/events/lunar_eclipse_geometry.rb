@@ -8,9 +8,6 @@ module Astronoby
   # the Moon's distance, which is where their radii are published. Earth's
   # radius is enlarged by its atmosphere before the cones are built, so these
   # are the enlarged, observable radii.
-  # The Moon's centre is placed by a distance from the shadow axis and a
-  # position angle. The position angle is measured at the axis, from celestial
-  # north through east, and points towards the Moon.
   class LunarEclipseGeometry
     # @return [Astronoby::Distance] distance of the Moon's centre from the axis
     #   of Earth's shadow

@@ -140,6 +140,8 @@ module Astronoby
       end
     end
 
+    private_constant :Geometry
+
     # @param ephem [::Ephem::SPK] ephemeris data source
     def initialize(ephem:)
       @ephem = ephem

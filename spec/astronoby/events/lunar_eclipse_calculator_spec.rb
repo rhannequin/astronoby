@@ -103,6 +103,29 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
       # IMCCE: 0.9635
     end
 
+    it "signs gamma by the side of the shadow axis the Moon passes" do
+      ephem = test_ephem_inpop_2000_2050
+      calculator = described_class.new(ephem: ephem)
+      earth_radius =
+        Astronoby::Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS / 1000.0
+
+      northward = calculator.events_between(
+        Time.utc(2025, 3, 1),
+        Time.utc(2025, 4, 1)
+      ).first
+      southward = calculator.events_between(
+        Time.utc(2026, 3, 1),
+        Time.utc(2026, 4, 1)
+      ).first
+
+      expect(northward.gamma.round(3)).to eq(0.348)
+      expect(northward.gamma)
+        .to be_within(1e-9).of(northward.shadow_axis_distance.km / earth_radius)
+      expect(southward.gamma.round(3)).to eq(-0.376)
+      expect(southward.gamma)
+        .to be_within(1e-9).of(-southward.shadow_axis_distance.km / earth_radius)
+    end
+
     it "exposes the shadow geometry at greatest eclipse" do
       ephem = test_ephem_inpop_2000_2050
       calculator = described_class.new(ephem: ephem)
