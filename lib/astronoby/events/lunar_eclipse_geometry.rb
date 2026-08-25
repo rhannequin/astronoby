@@ -16,8 +16,11 @@ module Astronoby
     #   of Earth's shadow
     attr_reader :axis_distance
 
-    # @return [Astronoby::Angle] position angle of the Moon's centre from the
-    #   axis of Earth's shadow, from celestial north through east
+    # @return [Astronoby::Angle] position angle of the contact point on the
+    #   Moon's limb, seen from the Moon's centre, from celestial north through
+    #   east. This is the quantity IMCCE and NASA publish. At greatest eclipse,
+    #   where there is no contact point, it is the direction from the shadow
+    #   axis to the Moon, which is what they report there.
     attr_reader :position_angle
 
     # @return [Astronoby::Distance] radius of the umbra, the inner and total

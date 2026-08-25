@@ -53,6 +53,15 @@ module Astronoby
     # well below the one-second resolution the contacts are reported at.
     CONTACT_TOLERANCE = 1e-7
 
+    # Which limb of the Moon a phase boundary touches the shadow cone with. The
+    # penumbral and partial phases are bounded by external tangencies, where the
+    # contact point is on the limb facing the shadow axis; the total phase by
+    # internal ones, where it is on the far limb. Greatest eclipse has no
+    # contact point, and IMCCE reports the axis-to-Moon direction there.
+    EXTERNAL_TANGENCY = :external
+    INTERNAL_TANGENCY = :internal
+    NO_TANGENCY = :none
+
     # Geometry of the Sun, Moon and Earth's shadow at one instant, in kilometres
     # in the plane perpendicular to the shadow axis at the Moon's distance.
     class Geometry
@@ -92,10 +101,16 @@ module Astronoby
         freeze
       end
 
-      def to_lunar_eclipse_geometry
+      def to_lunar_eclipse_geometry(tangency)
+        angle = if tangency == EXTERNAL_TANGENCY
+          (position_angle + Math::PI) % Constants::RADIANS_PER_CIRCLE
+        else
+          position_angle
+        end
+
         LunarEclipseGeometry.new(
           axis_distance: Distance.from_kilometers(axis_distance),
-          position_angle: Angle.from_radians(position_angle),
+          position_angle: Angle.from_radians(angle),
           umbra_radius: Distance.from_kilometers(umbra_radius),
           penumbra_radius: Distance.from_kilometers(penumbra_radius),
           moon_distance: Distance.from_kilometers(moon_distance)
@@ -203,11 +218,15 @@ module Astronoby
 
     def eclipse_at(greatest_jd)
       geometry = geometry_at(greatest_jd)
-      penumbral = phase_for(greatest_jd, &:penumbral_contact_value)
+      penumbral = phase_for(
+        greatest_jd,
+        EXTERNAL_TANGENCY,
+        &:penumbral_contact_value
+      )
       return nil if penumbral.nil?
 
-      partial = phase_for(greatest_jd, &:partial_contact_value)
-      total = phase_for(greatest_jd, &:total_contact_value)
+      partial = phase_for(greatest_jd, EXTERNAL_TANGENCY, &:partial_contact_value)
+      total = phase_for(greatest_jd, INTERNAL_TANGENCY, &:total_contact_value)
 
       LunarEclipse.new(
         instant: Instant.from_terrestrial_time(greatest_jd),
@@ -216,7 +235,7 @@ module Astronoby
         penumbral_magnitude: geometry.penumbral_magnitude,
         gamma: geometry.gamma,
         shadow_axis_distance: Distance.from_kilometers(geometry.axis_distance),
-        geometry: geometry.to_lunar_eclipse_geometry,
+        geometry: geometry.to_lunar_eclipse_geometry(NO_TANGENCY),
         penumbral: penumbral,
         partial: partial,
         total: total
@@ -239,7 +258,7 @@ module Astronoby
     # corresponding edge of the window, found by bisection. This is robust to
     # arbitrarily short phases (a barely-total or grazing eclipse), unlike a
     # fixed-resolution scan that can step over a brief crossing.
-    def phase_for(greatest_jd, &contact_value)
+    def phase_for(greatest_jd, tangency, &contact_value)
       value_at = ->(jd) { contact_value.call(geometry_at(jd)) }
       return nil unless value_at.call(greatest_jd).negative?
 
@@ -261,8 +280,9 @@ module Astronoby
       EclipsePhase.new(
         starting_instant: Instant.from_terrestrial_time(starting_jd),
         ending_instant: Instant.from_terrestrial_time(ending_jd),
-        starting_geometry: starting_geometry.to_lunar_eclipse_geometry,
-        ending_geometry: ending_geometry.to_lunar_eclipse_geometry
+        starting_geometry:
+          starting_geometry.to_lunar_eclipse_geometry(tangency),
+        ending_geometry: ending_geometry.to_lunar_eclipse_geometry(tangency)
       )
     end
 
