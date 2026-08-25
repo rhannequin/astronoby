@@ -262,22 +262,38 @@ module Astronoby
 
         moon_distance = moon.distance.km
         sun_distance = sun.distance.km
-        axis_angle = Math::PI - sun.separation_from(moon).radians
-        axial_distance = moon_distance * Math.cos(axis_angle)
-        perpendicular_distance = moon_distance * Math.sin(axis_angle)
+
+        moon_x, moon_y, moon_z =
+          moon.position.to_a.map { |component| component.km / moon_distance }
+        axis_x, axis_y, axis_z =
+          sun.position.to_a.map { |component| -component.km / sun_distance }
+
+        hypotenuse = Math.sqrt(axis_x * axis_x + axis_y * axis_y)
+        east_x = -axis_y / hypotenuse
+        east_y = axis_x / hypotenuse
+        north_x = -axis_z * east_y
+        north_y = axis_z * east_x
+        north_z = axis_x * east_y - axis_y * east_x
+
+        east = moon_x * east_x + moon_y * east_y
+        north = moon_x * north_x + moon_y * north_y + moon_z * north_z
+        cosine = moon_x * axis_x + moon_y * axis_y + moon_z * axis_z
+        sine = Math.sqrt(east * east + north * north)
+
+        axial_distance = moon_distance * cosine
+        perpendicular_distance = moon_distance * sine
 
         # Danjon enlargement: enlarge Earth's radius before building the cones.
         earth_radius = EARTH_RADIUS_KM * SHADOW_ENLARGEMENT
         umbra_half_angle_tangent = (SUN_RADIUS_KM - earth_radius) / sun_distance
         penumbra_half_angle_tangent =
           (SUN_RADIUS_KM + earth_radius) / sun_distance
-        latitude_sign = moon.ecliptic.latitude.degrees.negative? ? -1 : 1
 
         Geometry.new(
           axis_distance: perpendicular_distance,
           umbra_radius: earth_radius - axial_distance * umbra_half_angle_tangent,
           penumbra_radius: earth_radius + axial_distance * penumbra_half_angle_tangent,
-          gamma: latitude_sign * perpendicular_distance / EARTH_RADIUS_KM
+          gamma: (north.negative? ? -1 : 1) * perpendicular_distance / EARTH_RADIUS_KM
         )
       end
     end
