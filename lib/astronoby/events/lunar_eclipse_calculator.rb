@@ -290,8 +290,9 @@ module Astronoby
 
     # Bisects for the single contact between +outside_jd+ (value positive, the
     # Moon outside the boundary) and +inside_jd+ (value negative, at greatest
-    # eclipse). Returns the contact date and the geometry there, or nil if the
-    # boundary is not crossed within the window.
+    # eclipse). Returns the contact date, taken as the midpoint of the final
+    # bracket, and the geometry already computed at that bracket's inner end, at
+    # most 2 ms away. Returns nil if the boundary is not crossed in the window.
     def bisect_contact(value_at, outside_jd, inside_jd)
       return nil unless value_at.call(outside_jd).positive?
 
