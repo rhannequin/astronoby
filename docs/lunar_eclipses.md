@@ -82,7 +82,7 @@ The cone radii are measured in the plane perpendicular to the shadow axis at the
 
 `#position_angle` is the position angle of the contact point on the Moon's limb, seen from the Moon's centre, from celestial north through east. This is the quantity IMCCE and NASA publish. At greatest eclipse, where there is no contact point, it is the direction from the shadow axis to the Moon, which is what they report there too.
 
-`#umbral_magnitude` and `#penumbral_magnitude` are available at any of these instants, not only at greatest eclipse. They are 0 at the contacts that define them and 1 at the total contacts.
+`#umbral_magnitude` and `#penumbral_magnitude` are available at any of these instants, not only at greatest eclipse. Each one is 0 at the contacts that define it, so the penumbral magnitude at P1 and P4 and the umbral magnitude at U1 and U4. The umbral magnitude is 1 at U2 and U3, where the Moon is wholly inside the umbra. The penumbral magnitude is well past 1 by then, since the Moon is far deeper into the penumbra than into the umbra.
 
 ```rb
 eclipse.penumbral.starting_geometry.penumbral_magnitude # => 0.0 (P1)

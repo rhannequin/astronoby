@@ -33,7 +33,8 @@ module Astronoby
     attr_reader :moon_distance
 
     # @param axis_distance [Astronoby::Distance] distance from the shadow axis
-    # @param position_angle [Astronoby::Angle] position angle from the axis
+    # @param position_angle [Astronoby::Angle] position angle of the contact
+    #   point on the Moon's limb, from celestial north through east
     # @param umbra_radius [Astronoby::Distance] umbra radius
     # @param penumbra_radius [Astronoby::Distance] penumbra radius
     # @param moon_distance [Astronoby::Distance] geocentric distance of the Moon
