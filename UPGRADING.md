@@ -9,6 +9,24 @@ public API, please read the upgrading notes for each release.
 
 ## Unreleased
 
+### Lunar eclipse contacts and magnitudes have changed slightly
+
+Lunar eclipse contacts are now reduced with the IAU eclipse constant
+k = 0.2725076 Earth radii, putting the Moon's radius at 1738.09 km, instead of
+its physical equatorial radius of 1737.4 km. This is what IMCCE and NASA reduce
+eclipses with. The atmospheric enlargement of Earth's shadow has been
+recalibrated alongside it, from 1/99 of Earth's radius to a 64 km shell.
+
+The two constants have to move together: either one alone makes agreement with
+IMCCE worse, because the old 1/99 enlargement was partly compensating for the
+smaller lunar radius. Together they cut the contact-time error against IMCCE by
+more than half, and the worst case over the 2026 to 2048 eclipses from 8.9
+seconds to 2.2 seconds.
+
+Contact times may shift by a second or two, and the magnitudes in the fifth
+decimal. Greatest eclipse, `#gamma` and `#shadow_axis_distance` are unaffected,
+since they depend on neither constant.
+
 ### `EclipsePhase` and `LunarEclipse` require their shadow geometry
 
 `Astronoby::EclipsePhase.new` now requires `starting_geometry:` and

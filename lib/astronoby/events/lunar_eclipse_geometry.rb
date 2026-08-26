@@ -88,7 +88,7 @@ module Astronoby
     end
 
     def magnitude_for(shadow_radius)
-      moon_radius = Moon::EQUATORIAL_RADIUS.km
+      moon_radius = Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
       (
         shadow_radius.km + moon_radius - @axis_distance.km
       ) / (2 * moon_radius)

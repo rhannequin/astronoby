@@ -3,7 +3,7 @@
 RSpec.describe Astronoby::LunarEclipseGeometry do
   describe "#umbral_magnitude" do
     it "is 0 when the Moon's near limb just touches the umbra" do
-      moon_radius = Astronoby::Moon::EQUATORIAL_RADIUS.km
+      moon_radius = Astronoby::Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
 
       geometry = geometry_with(
         umbra_radius: 5000,
@@ -20,7 +20,7 @@ RSpec.describe Astronoby::LunarEclipseGeometry do
     end
 
     it "is 1 when the Moon's far limb passes into the umbra" do
-      moon_radius = Astronoby::Moon::EQUATORIAL_RADIUS.km
+      moon_radius = Astronoby::Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
 
       geometry = geometry_with(
         umbra_radius: 5000,
@@ -31,7 +31,7 @@ RSpec.describe Astronoby::LunarEclipseGeometry do
     end
 
     it "is negative when the Moon stays clear of the umbra" do
-      moon_radius = Astronoby::Moon::EQUATORIAL_RADIUS.km
+      moon_radius = Astronoby::Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
 
       geometry = geometry_with(
         umbra_radius: 5000,
@@ -44,7 +44,7 @@ RSpec.describe Astronoby::LunarEclipseGeometry do
 
   describe "#penumbral_magnitude" do
     it "is 0 when the Moon's near limb just touches the penumbra" do
-      moon_radius = Astronoby::Moon::EQUATORIAL_RADIUS.km
+      moon_radius = Astronoby::Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
 
       geometry = geometry_with(
         penumbra_radius: 9000,

@@ -9,6 +9,7 @@
 ### Improvements
 
 * Resolve the lunar eclipse shadow axis offset with vectors
+* Reduce lunar eclipse contacts with the IAU eclipse constant k
 
 ## 0.10.0 - 2026-06-26
 

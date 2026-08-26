@@ -21,17 +21,18 @@ module Astronoby
   #  Authors: Sean E. Urban and P. Kenneth Seidelmann
   #  Chapter: 11 - Eclipses of the Sun and Moon
   class LunarEclipseCalculator
-    # Atmospheric enlargement of Earth's shadow (Danjon-style): Earth's radius is
-    # enlarged before the shadow cones are built, which propagates into both the
-    # umbra and the penumbra. The 1/99 factor is calibrated against IMCCE (which
-    # uses the same INPOP19A ephemeris): it reproduces IMCCE's umbra and penumbra
-    # angular radii to about 0.1 arcsecond across the 2023-2025 eclipses.
-    SHADOW_ENLARGEMENT = 1.0 + 1.0 / 99
+    # Atmospheric enlargement of Earth's shadow (Danjon-style): the shell of
+    # atmosphere added to Earth's radius before the shadow cones are built, which
+    # propagates into both the umbra and the penumbra. Calibrated against IMCCE,
+    # which uses the same INPOP19A ephemeris, over the eclipses from 2026 to
+    # 2048. It is well below the textbook values, which put the shell at 75 km
+    # (Danjon) or 128 km (Chauvenet).
+    SHADOW_ATMOSPHERE_KM = 64.0
 
     SUN_RADIUS_KM = Sun::EQUATORIAL_RADIUS.km
-    MOON_RADIUS_KM = Moon::EQUATORIAL_RADIUS.km
     EARTH_RADIUS_KM =
       Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS / 1000.0
+    MOON_RADIUS_KM = Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
 
     # Largest distance of the Moon's centre from the shadow axis, in Earth radii,
     # at which any (penumbral) eclipse is still possible is about 1.57. Full moons
@@ -340,7 +341,7 @@ module Astronoby
         perpendicular_distance = moon_distance * sine
 
         # Danjon enlargement: enlarge Earth's radius before building the cones.
-        earth_radius = EARTH_RADIUS_KM * SHADOW_ENLARGEMENT
+        earth_radius = EARTH_RADIUS_KM + SHADOW_ATMOSPHERE_KM
         umbra_half_angle_tangent = (SUN_RADIUS_KM - earth_radius) / sun_distance
         penumbra_half_angle_tangent =
           (SUN_RADIUS_KM + earth_radius) / sun_distance

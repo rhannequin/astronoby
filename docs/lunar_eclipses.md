@@ -54,13 +54,13 @@ An eclipse exposes its phases as `Astronoby::EclipsePhase` objects, each with a 
 
 ```rb
 eclipse.penumbral.starting_instant.to_time # => 2025-03-14 03:57:29 UTC (P1)
-eclipse.partial.starting_instant.to_time   # => 2025-03-14 05:09:37 UTC (U1)
-eclipse.total.starting_instant.to_time     # => 2025-03-14 06:26:01 UTC (U2)
-eclipse.total.ending_instant.to_time       # => 2025-03-14 07:31:32 UTC (U3)
-eclipse.partial.ending_instant.to_time     # => 2025-03-14 08:47:55 UTC (U4)
-eclipse.penumbral.ending_instant.to_time   # => 2025-03-14 10:00:08 UTC (P4)
+eclipse.partial.starting_instant.to_time   # => 2025-03-14 05:09:36 UTC (U1)
+eclipse.total.starting_instant.to_time     # => 2025-03-14 06:26:03 UTC (U2)
+eclipse.total.ending_instant.to_time       # => 2025-03-14 07:31:30 UTC (U3)
+eclipse.partial.ending_instant.to_time     # => 2025-03-14 08:47:56 UTC (U4)
+eclipse.penumbral.ending_instant.to_time   # => 2025-03-14 10:00:09 UTC (P4)
 
-eclipse.total.duration.seconds # => 3931 (seconds of totality)
+eclipse.total.duration.seconds # => 3927 (seconds of totality)
 ```
 
 For a penumbral eclipse, `#partial` and `#total` are `nil`. For a partial eclipse, `#total` is `nil`.
@@ -73,7 +73,7 @@ For a penumbral eclipse, `#partial` and `#total` are `nil`. For a partial eclips
 geometry = eclipse.geometry
 
 geometry.umbra_angular_radius.degrees * 60     # => 39.23 (arcminutes)
-geometry.penumbra_angular_radius.degrees * 60  # => 71.4
+geometry.penumbra_angular_radius.degrees * 60  # => 71.39
 geometry.angular_axis_distance.degrees * 60    # => 19.03
 geometry.position_angle.degrees                # => 29.07
 ```
@@ -92,7 +92,7 @@ eclipse.total.starting_geometry.umbral_magnitude        # => 1.0 (U2)
 
 ```rb
 eclipse.penumbral.starting_geometry.position_angle.degrees # => 131.8 (P1)
-eclipse.total.starting_geometry.position_angle.degrees     # => 350.44 (U2)
+eclipse.total.starting_geometry.position_angle.degrees     # => 350.46 (U2)
 ```
 
 Note that IMCCE labels the end of the penumbral phase `P2`, where this documentation uses `P4`.
@@ -111,7 +111,9 @@ penumbral_eclipse.total   # => nil
 
 ## Precision
 
-Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE. Validated against IMCCE, the eclipse kind, greatest eclipse instant, magnitudes and contact times all match to within a second or two. The shadow radii and the distance from the shadow axis match to well under an arcsecond, and position angles to 0.05 degrees.
+Two conventions shape the result. Earth's shadow is enlarged by its atmosphere, so Astronoby adds a 64 km shell to Earth's radius before building the shadow cones. And eclipse contacts are reduced with the IAU eclipse constant k, which puts the Moon's radius at 1738.09 km, slightly above its physical equatorial radius. Both are calibrated against IMCCE.
+
+Validated against IMCCE, the eclipse kind and the magnitudes match, and the contacts agree to within a couple of seconds. The shadow radii and the distance from the shadow axis match to well under an arcsecond, and position angles to 0.03 degrees.
 
 ## See also
 

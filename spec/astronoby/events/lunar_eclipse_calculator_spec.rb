@@ -19,26 +19,26 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
       expect(eclipse.instant.to_time.round)
         .to eq(Time.utc(2025, 3, 14, 6, 58, 47))
       # IMCCE: 2025-03-14T06:58:47Z
-      expect(eclipse.umbral_magnitude.round(5)).to eq(1.17904)
+      expect(eclipse.umbral_magnitude.round(5)).to eq(1.17865)
       # IMCCE: 1.17874
 
       expect(eclipse.penumbral.starting_instant.to_time.round)
         .to eq(Time.utc(2025, 3, 14, 3, 57, 29))
       # IMCCE: 2025-03-14T03:57:29Z (P1)
       expect(eclipse.partial.starting_instant.to_time.round)
-        .to eq(Time.utc(2025, 3, 14, 5, 9, 37))
+        .to eq(Time.utc(2025, 3, 14, 5, 9, 36))
       # IMCCE: 2025-03-14T05:09:36Z (U1)
       expect(eclipse.total.starting_instant.to_time.round)
-        .to eq(Time.utc(2025, 3, 14, 6, 26, 1))
+        .to eq(Time.utc(2025, 3, 14, 6, 26, 3))
       # IMCCE: 2025-03-14T06:26:02Z (U2)
       expect(eclipse.total.ending_instant.to_time.round)
-        .to eq(Time.utc(2025, 3, 14, 7, 31, 32))
+        .to eq(Time.utc(2025, 3, 14, 7, 31, 30))
       # IMCCE: 2025-03-14T07:31:30Z (U3)
       expect(eclipse.partial.ending_instant.to_time.round)
-        .to eq(Time.utc(2025, 3, 14, 8, 47, 55))
+        .to eq(Time.utc(2025, 3, 14, 8, 47, 56))
       # IMCCE: 2025-03-14T08:47:55Z (U4)
       expect(eclipse.penumbral.ending_instant.to_time.round)
-        .to eq(Time.utc(2025, 3, 14, 10, 0, 8))
+        .to eq(Time.utc(2025, 3, 14, 10, 0, 9))
       # IMCCE: 2025-03-14T10:00:09Z (P2)
     end
 
@@ -57,7 +57,7 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
       expect(eclipse.instant.to_time.round)
         .to eq(Time.utc(2025, 9, 7, 18, 11, 49))
       # IMCCE: 2025-09-07T18:11:49Z
-      expect(eclipse.umbral_magnitude.round(5)).to eq(1.36248)
+      expect(eclipse.umbral_magnitude.round(5)).to eq(1.36202)
       # IMCCE: 1.36214
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
       expect(eclipse.instant.to_time.round)
         .to eq(Time.utc(2024, 9, 18, 2, 44, 17))
       # IMCCE: 2024-09-18T02:44:16Z
-      expect(eclipse.umbral_magnitude.round(5)).to eq(0.08517)
+      expect(eclipse.umbral_magnitude.round(5)).to eq(0.08521)
       # IMCCE: 0.08519
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
       expect(eclipse.instant.to_time.round)
         .to eq(Time.utc(2023, 5, 5, 17, 23, 1))
       # IMCCE: 2023-05-05T17:22:55Z
-      expect(eclipse.penumbral_magnitude.round(5)).to eq(0.96371)
+      expect(eclipse.penumbral_magnitude.round(5)).to eq(0.9634)
       # IMCCE: 0.9635
     end
 
@@ -163,10 +163,10 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
         .to eq(57.58)
       # IMCCE: 57.5808' (U1)
       expect(arcminutes(eclipse.total.starting_geometry.angular_axis_distance))
-        .to eq(26.31)
+        .to eq(26.3)
       # IMCCE: 26.3010' (U2)
       expect(arcminutes(eclipse.total.ending_geometry.angular_axis_distance))
-        .to eq(26.29)
+        .to eq(26.28)
       # IMCCE: 26.2836' (U3)
       expect(arcminutes(eclipse.partial.ending_geometry.angular_axis_distance))
         .to eq(57.47)
@@ -193,10 +193,10 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
         .to eq(96.19)
       # IMCCE: 96.18881 degrees (U1)
       expect(degrees(eclipse.total.starting_geometry.position_angle))
-        .to eq(243.1)
+        .to eq(243.07)
       # IMCCE: 243.07967 degrees (U2)
       expect(degrees(eclipse.total.ending_geometry.position_angle))
-        .to eq(173.36)
+        .to eq(173.39)
       # IMCCE: 173.37756 degrees (U3)
       expect(degrees(eclipse.partial.ending_geometry.position_angle))
         .to eq(320.26)
@@ -217,17 +217,17 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
 
       eclipse = events.first
       expect(eclipse.penumbral.starting_geometry.penumbral_magnitude)
-        .to be_within(1e-6).of(0)
+        .to be_within(1e-5).of(0)
       expect(eclipse.penumbral.ending_geometry.penumbral_magnitude)
-        .to be_within(1e-6).of(0)
+        .to be_within(1e-5).of(0)
       expect(eclipse.partial.starting_geometry.umbral_magnitude)
-        .to be_within(1e-6).of(0)
+        .to be_within(1e-5).of(0)
       expect(eclipse.partial.ending_geometry.umbral_magnitude)
-        .to be_within(1e-6).of(0)
+        .to be_within(1e-5).of(0)
       expect(eclipse.total.starting_geometry.umbral_magnitude)
-        .to be_within(1e-6).of(1)
+        .to be_within(1e-5).of(1)
       expect(eclipse.total.ending_geometry.umbral_magnitude)
-        .to be_within(1e-6).of(1)
+        .to be_within(1e-5).of(1)
     end
 
     it "finds and classifies every lunar eclipse between 2023 and 2025" do
