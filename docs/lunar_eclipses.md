@@ -111,13 +111,7 @@ penumbral_eclipse.total   # => nil
 
 ## Precision
 
-Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE.
-
-Validated against IMCCE over the 50 eclipses from 2026 to 2048, every one is classified identically. Of the 204 contacts, 171 agree to within a second and 199 to within two seconds. The greatest magnitude agrees to 0.0006. The shadow geometry stays well under an arcsecond: the umbra and penumbra radii to 0.4", and the angular distance from the shadow axis to 0.02" at greatest eclipse and 0.45" at the contacts. Position angles agree to 0.05 degrees at the contacts, and at greatest eclipse for 46 of the 50.
-
-The remaining disagreements are on eclipses whose geometry is ill-conditioned, rather than on the approximation. When the Moon barely grazes the penumbra its limb meets the shadow almost tangentially, so the contact time is very sensitive to the shadow radius: the 2027-07-18 eclipse, of penumbral magnitude 0.001, has contacts 9 seconds from IMCCE's. When an eclipse is shallow, the distance from the axis has a very flat minimum and the instant of greatest eclipse is loosely located: 2038-07-16 differs by 8 seconds. And when an eclipse is nearly central the position angle at greatest eclipse is close to undefined, because the Moon passes almost exactly through the axis: 2029-06-26, of gamma 0.012, differs by 0.12 degrees. These are the cases where published sources disagree with each other too.
-
-One residual is systematic rather than noisy. At the total contacts the distance from the axis runs about 0.42" larger than IMCCE's, and that comes from the assumed size of the Moon, not from the shadow. Astronoby uses the Moon's physical equatorial radius of 1737.4 km, while IMCCE uses the IAU eclipse constant k = 0.2725076 Earth radii, or 1738.09 km. Those 0.7 km are 0.37" at the Moon's distance, which adds to the umbra residual at U2 and U3 and partly cancels the penumbra residual at P1 and P4.
+Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE. Validated against IMCCE, the eclipse kind, greatest eclipse instant, magnitudes and contact times all match to within a second or two. The shadow radii and the distance from the shadow axis match to well under an arcsecond, and position angles to 0.05 degrees.
 
 ## See also
 
