@@ -113,7 +113,9 @@ penumbral_eclipse.total   # => nil
 
 Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE. Validated across the 2023 to 2026 eclipses, the eclipse kind, greatest eclipse instant, magnitudes, and contact times all match IMCCE to within a second or two.
 
-The shadow geometry matches IMCCE to well under an arcsecond: the umbra radius to 0.2", the penumbra radius to 0.4", and the angular distance from the shadow axis to 0.1" at greatest eclipse and at the outer contacts. Position angles match to 0.01 degrees at the outer contacts, 0.03 degrees at the total contacts, and 0.05 degrees at greatest eclipse, where the angle sweeps fastest and the residual is dominated by the second or so between the two greatest-eclipse instants rather than by the geometry.
+The shadow geometry matches IMCCE to well under an arcsecond across the same eclipses: the umbra radius to 0.3", the penumbra radius to 0.4", and the angular distance from the shadow axis to 0.02" at greatest eclipse, 0.25" at the outer contacts and 0.45" at the total contacts. Position angles match to 0.02 degrees at the outer contacts, 0.03 degrees at the total contacts and 0.05 degrees at greatest eclipse.
+
+Those two patterns are inverted for a reason. The distance from the axis is stationary at greatest eclipse, so a difference of a second in the instant barely moves it, while the position angle sweeps fastest exactly there. Wherever a contact instant differs from IMCCE's by a second or two, that difference dominates the residual rather than the geometry does.
 
 ## See also
 
