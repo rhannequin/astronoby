@@ -54,16 +54,48 @@ An eclipse exposes its phases as `Astronoby::EclipsePhase` objects, each with a 
 
 ```rb
 eclipse.penumbral.starting_instant.to_time # => 2025-03-14 03:57:29 UTC (P1)
-eclipse.partial.starting_instant.to_time   # => 2025-03-14 05:09:37 UTC (U1)
-eclipse.total.starting_instant.to_time     # => 2025-03-14 06:26:01 UTC (U2)
-eclipse.total.ending_instant.to_time       # => 2025-03-14 07:31:32 UTC (U3)
-eclipse.partial.ending_instant.to_time     # => 2025-03-14 08:47:55 UTC (U4)
-eclipse.penumbral.ending_instant.to_time   # => 2025-03-14 10:00:08 UTC (P4)
+eclipse.partial.starting_instant.to_time   # => 2025-03-14 05:09:36 UTC (U1)
+eclipse.total.starting_instant.to_time     # => 2025-03-14 06:26:03 UTC (U2)
+eclipse.total.ending_instant.to_time       # => 2025-03-14 07:31:30 UTC (U3)
+eclipse.partial.ending_instant.to_time     # => 2025-03-14 08:47:56 UTC (U4)
+eclipse.penumbral.ending_instant.to_time   # => 2025-03-14 10:00:09 UTC (P4)
 
-eclipse.total.duration.seconds # => 3931 (seconds of totality)
+eclipse.total.duration.seconds # => 3927 (seconds of totality)
 ```
 
 For a penumbral eclipse, `#partial` and `#total` are `nil`. For a partial eclipse, `#total` is `nil`.
+
+## Shadow geometry
+
+`Astronoby::LunarEclipseGeometry` describes Earth's shadow and the Moon's place in it at one instant. The eclipse carries the geometry at greatest eclipse, and each phase carries the geometry at its two contacts, so all six contacts of a total eclipse are reachable as well as greatest eclipse. It gives the size of the two shadow cones, how far the Moon's centre is from the shadow axis, and where on the Moon's limb the shadow bites.
+
+```rb
+geometry = eclipse.geometry
+
+geometry.umbra_angular_radius.degrees * 60     # => 39.23 (arcminutes)
+geometry.penumbra_angular_radius.degrees * 60  # => 71.39
+geometry.angular_axis_distance.degrees * 60    # => 19.03
+geometry.position_angle.degrees                # => 29.07
+```
+
+The cone radii are measured in the plane perpendicular to the shadow axis at the Moon's distance, which is where they are published. They are available as an `Astronoby::Distance` through `#umbra_radius` and `#penumbra_radius`, and as an `Astronoby::Angle` through `#umbra_angular_radius` and `#penumbra_angular_radius`. `#moon_distance` is the geocentric distance of the Moon, the distance of that plane.
+
+`#position_angle` is the position angle of the contact point on the Moon's limb, seen from the Moon's centre, from celestial north through east. This is the quantity IMCCE and NASA publish. At greatest eclipse, where there is no contact point, it is the direction from the shadow axis to the Moon, which is what they report there too.
+
+`#umbral_magnitude` and `#penumbral_magnitude` are available at any of these instants, not only at greatest eclipse. Each one is 0 at the contacts that define it, so the penumbral magnitude at P1 and P4 and the umbral magnitude at U1 and U4. The umbral magnitude is 1 at U2 and U3, where the Moon is wholly inside the umbra. The penumbral magnitude is well past 1 by then, since the Moon is far deeper into the penumbra than into the umbra.
+
+```rb
+eclipse.penumbral.starting_geometry.penumbral_magnitude # => 0.0 (P1)
+eclipse.partial.starting_geometry.umbral_magnitude      # => 0.0 (U1)
+eclipse.total.starting_geometry.umbral_magnitude        # => 1.0 (U2)
+```
+
+```rb
+eclipse.penumbral.starting_geometry.position_angle.degrees # => 131.8 (P1)
+eclipse.total.starting_geometry.position_angle.degrees     # => 350.46 (U2)
+```
+
+Note that IMCCE labels the end of the penumbral phase `P2`, where this documentation uses `P4`.
 
 ```rb
 penumbral_eclipse = Astronoby::Moon.eclipse_events(
@@ -79,7 +111,9 @@ penumbral_eclipse.total   # => nil
 
 ## Precision
 
-Earth's shadow is enlarged by its atmosphere. Astronoby enlarges Earth's radius by 1/99 before building the shadow cones, a factor calibrated against IMCCE. Validated across the 2023 to 2025 eclipses, the eclipse kind, greatest eclipse instant, magnitudes, and contact times all match IMCCE to within a second or two.
+Two conventions shape the result. Earth's shadow is enlarged by its atmosphere, so Astronoby adds a 64 km shell to Earth's radius before building the shadow cones. And eclipse contacts are reduced with the IAU eclipse constant k, which puts the Moon's radius at 1738.09 km, slightly above its physical equatorial radius. Both are calibrated against IMCCE.
+
+Validated against IMCCE, the eclipse kind and the magnitudes match, and the contacts agree to within a couple of seconds. The shadow radii and the distance from the shadow axis match to well under an arcsecond, and position angles to 0.03 degrees.
 
 ## See also
 

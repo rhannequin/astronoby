@@ -21,17 +21,18 @@ module Astronoby
   #  Authors: Sean E. Urban and P. Kenneth Seidelmann
   #  Chapter: 11 - Eclipses of the Sun and Moon
   class LunarEclipseCalculator
-    # Atmospheric enlargement of Earth's shadow (Danjon-style): Earth's radius is
-    # enlarged before the shadow cones are built, which propagates into both the
-    # umbra and the penumbra. The 1/99 factor is calibrated against IMCCE (which
-    # uses the same INPOP19A ephemeris): it reproduces IMCCE's umbra and penumbra
-    # angular radii to about 0.1 arcsecond across the 2023-2025 eclipses.
-    SHADOW_ENLARGEMENT = 1.0 + 1.0 / 99
+    # Atmospheric enlargement of Earth's shadow (Danjon-style): the shell of
+    # atmosphere added to Earth's radius before the shadow cones are built, which
+    # propagates into both the umbra and the penumbra. Calibrated against IMCCE,
+    # which uses the same INPOP19A ephemeris, over the eclipses from 2026 to
+    # 2048. It is well below the textbook values, which put the shell at 75 km
+    # (Danjon) or 128 km (Chauvenet).
+    SHADOW_ATMOSPHERE_KM = 64.0
 
     SUN_RADIUS_KM = Sun::EQUATORIAL_RADIUS.km
-    MOON_RADIUS_KM = Moon::EQUATORIAL_RADIUS.km
     EARTH_RADIUS_KM =
       Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS / 1000.0
+    MOON_RADIUS_KM = Constants::IAU_MOON_RADIUS_IN_METERS / 1000.0
 
     # Largest distance of the Moon's centre from the shadow axis, in Earth radii,
     # at which any (penumbral) eclipse is still possible is about 1.57. Full moons
@@ -53,6 +54,15 @@ module Astronoby
     # well below the one-second resolution the contacts are reported at.
     CONTACT_TOLERANCE = 1e-7
 
+    # Which limb of the Moon a phase boundary touches the shadow cone with. The
+    # penumbral and partial phases are bounded by external tangencies, where the
+    # contact point is on the limb facing the shadow axis; the total phase by
+    # internal ones, where it is on the far limb. Greatest eclipse has no
+    # contact point, and IMCCE reports the axis-to-Moon direction there.
+    EXTERNAL_TANGENCY = :external
+    INTERNAL_TANGENCY = :internal
+    NO_TANGENCY = :none
+
     # Geometry of the Sun, Moon and Earth's shadow at one instant, in kilometres
     # in the plane perpendicular to the shadow axis at the Moon's distance.
     class Geometry
@@ -68,12 +78,44 @@ module Astronoby
       # @return [Float] signed distance from the shadow axis, in Earth radii
       attr_reader :gamma
 
-      def initialize(axis_distance:, umbra_radius:, penumbra_radius:, gamma:)
+      # @return [Float] position angle of the Moon's centre from the shadow
+      #   axis, in radians from celestial north through east
+      attr_reader :position_angle
+
+      # @return [Float] geocentric distance of the Moon (km)
+      attr_reader :moon_distance
+
+      def initialize(
+        axis_distance:,
+        umbra_radius:,
+        penumbra_radius:,
+        gamma:,
+        position_angle:,
+        moon_distance:
+      )
         @axis_distance = axis_distance
         @umbra_radius = umbra_radius
         @penumbra_radius = penumbra_radius
         @gamma = gamma
+        @position_angle = position_angle
+        @moon_distance = moon_distance
         freeze
+      end
+
+      def to_lunar_eclipse_geometry(tangency)
+        angle = if tangency == EXTERNAL_TANGENCY
+          (position_angle + Math::PI) % Constants::RADIANS_PER_CIRCLE
+        else
+          position_angle
+        end
+
+        LunarEclipseGeometry.new(
+          axis_distance: Distance.from_kilometers(axis_distance),
+          position_angle: Angle.from_radians(angle),
+          umbra_radius: Distance.from_kilometers(umbra_radius),
+          penumbra_radius: Distance.from_kilometers(penumbra_radius),
+          moon_distance: Distance.from_kilometers(moon_distance)
+        )
       end
 
       def umbral_magnitude
@@ -98,6 +140,8 @@ module Astronoby
         axis_distance - (umbra_radius - MOON_RADIUS_KM)
       end
     end
+
+    private_constant :Geometry
 
     # @param ephem [::Ephem::SPK] ephemeris data source
     def initialize(ephem:)
@@ -177,11 +221,15 @@ module Astronoby
 
     def eclipse_at(greatest_jd)
       geometry = geometry_at(greatest_jd)
-      penumbral = phase_for(greatest_jd, &:penumbral_contact_value)
+      penumbral = phase_for(
+        greatest_jd,
+        EXTERNAL_TANGENCY,
+        &:penumbral_contact_value
+      )
       return nil if penumbral.nil?
 
-      partial = phase_for(greatest_jd, &:partial_contact_value)
-      total = phase_for(greatest_jd, &:total_contact_value)
+      partial = phase_for(greatest_jd, EXTERNAL_TANGENCY, &:partial_contact_value)
+      total = phase_for(greatest_jd, INTERNAL_TANGENCY, &:total_contact_value)
 
       LunarEclipse.new(
         instant: Instant.from_terrestrial_time(greatest_jd),
@@ -190,6 +238,7 @@ module Astronoby
         penumbral_magnitude: geometry.penumbral_magnitude,
         gamma: geometry.gamma,
         shadow_axis_distance: Distance.from_kilometers(geometry.axis_distance),
+        geometry: geometry.to_lunar_eclipse_geometry(NO_TANGENCY),
         penumbral: penumbral,
         partial: partial,
         total: total
@@ -212,7 +261,7 @@ module Astronoby
     # corresponding edge of the window, found by bisection. This is robust to
     # arbitrarily short phases (a barely-total or grazing eclipse), unlike a
     # fixed-resolution scan that can step over a brief crossing.
-    def phase_for(greatest_jd, &contact_value)
+    def phase_for(greatest_jd, tangency, &contact_value)
       value_at = ->(jd) { contact_value.call(geometry_at(jd)) }
       return nil unless value_at.call(greatest_jd).negative?
 
@@ -228,15 +277,23 @@ module Astronoby
       )
       return nil unless starting && ending
 
+      starting_jd, starting_geometry = starting
+      ending_jd, ending_geometry = ending
+
       EclipsePhase.new(
-        starting_instant: Instant.from_terrestrial_time(starting),
-        ending_instant: Instant.from_terrestrial_time(ending)
+        starting_instant: Instant.from_terrestrial_time(starting_jd),
+        ending_instant: Instant.from_terrestrial_time(ending_jd),
+        starting_geometry:
+          starting_geometry.to_lunar_eclipse_geometry(tangency),
+        ending_geometry: ending_geometry.to_lunar_eclipse_geometry(tangency)
       )
     end
 
     # Bisects for the single contact between +outside_jd+ (value positive, the
     # Moon outside the boundary) and +inside_jd+ (value negative, at greatest
-    # eclipse). Returns nil if the boundary is not crossed within the window.
+    # eclipse). Returns the contact date, taken as the midpoint of the final
+    # bracket, and the geometry already computed at that bracket's inner end, at
+    # most 2 ms away. Returns nil if the boundary is not crossed in the window.
     def bisect_contact(value_at, outside_jd, inside_jd)
       return nil unless value_at.call(outside_jd).positive?
 
@@ -248,7 +305,7 @@ module Astronoby
           outside_jd = midpoint
         end
       end
-      (outside_jd + inside_jd) / 2.0
+      [(outside_jd + inside_jd) / 2.0, geometry_at(inside_jd)]
     end
 
     # Builds the geometry at a Julian Date (TT) from the apparent geocentric
@@ -262,22 +319,40 @@ module Astronoby
 
         moon_distance = moon.distance.km
         sun_distance = sun.distance.km
-        axis_angle = Math::PI - sun.separation_from(moon).radians
-        axial_distance = moon_distance * Math.cos(axis_angle)
-        perpendicular_distance = moon_distance * Math.sin(axis_angle)
+
+        moon_x, moon_y, moon_z =
+          moon.position.to_a.map { |component| component.km / moon_distance }
+        axis_x, axis_y, axis_z =
+          sun.position.to_a.map { |component| -component.km / sun_distance }
+
+        hypotenuse = Math.sqrt(axis_x * axis_x + axis_y * axis_y)
+        east_x = -axis_y / hypotenuse
+        east_y = axis_x / hypotenuse
+        north_x = -axis_z * east_y
+        north_y = axis_z * east_x
+        north_z = axis_x * east_y - axis_y * east_x
+
+        east = moon_x * east_x + moon_y * east_y
+        north = moon_x * north_x + moon_y * north_y + moon_z * north_z
+        cosine = moon_x * axis_x + moon_y * axis_y + moon_z * axis_z
+        sine = Math.sqrt(east * east + north * north)
+
+        axial_distance = moon_distance * cosine
+        perpendicular_distance = moon_distance * sine
 
         # Danjon enlargement: enlarge Earth's radius before building the cones.
-        earth_radius = EARTH_RADIUS_KM * SHADOW_ENLARGEMENT
+        earth_radius = EARTH_RADIUS_KM + SHADOW_ATMOSPHERE_KM
         umbra_half_angle_tangent = (SUN_RADIUS_KM - earth_radius) / sun_distance
         penumbra_half_angle_tangent =
           (SUN_RADIUS_KM + earth_radius) / sun_distance
-        latitude_sign = moon.ecliptic.latitude.degrees.negative? ? -1 : 1
 
         Geometry.new(
           axis_distance: perpendicular_distance,
           umbra_radius: earth_radius - axial_distance * umbra_half_angle_tangent,
           penumbra_radius: earth_radius + axial_distance * penumbra_half_angle_tangent,
-          gamma: latitude_sign * perpendicular_distance / EARTH_RADIUS_KM
+          gamma: (north.negative? ? -1 : 1) * perpendicular_distance / EARTH_RADIUS_KM,
+          position_angle: Math.atan2(east, north) % Constants::RADIANS_PER_CIRCLE,
+          moon_distance: moon_distance
         )
       end
     end

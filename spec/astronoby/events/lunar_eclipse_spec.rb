@@ -4,7 +4,19 @@ RSpec.describe Astronoby::LunarEclipse do
   def phase_at(starting, ending)
     Astronoby::EclipsePhase.new(
       starting_instant: Astronoby::Instant.from_time(starting),
-      ending_instant: Astronoby::Instant.from_time(ending)
+      ending_instant: Astronoby::Instant.from_time(ending),
+      starting_geometry: geometry,
+      ending_geometry: geometry
+    )
+  end
+
+  def geometry
+    Astronoby::LunarEclipseGeometry.new(
+      axis_distance: Astronoby::Distance.from_kilometers(2219.6),
+      position_angle: Astronoby::Angle.from_degrees(208.2),
+      umbra_radius: Astronoby::Distance.from_kilometers(4664.4),
+      penumbra_radius: Astronoby::Distance.from_kilometers(8254.0),
+      moon_distance: Astronoby::Distance.from_kilometers(382601.0)
     )
   end
 
@@ -18,6 +30,7 @@ RSpec.describe Astronoby::LunarEclipse do
         penumbral_magnitude: 2.261,
         gamma: 0.348,
         shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
+        geometry: geometry,
         penumbral: phase_at(
           Time.utc(2025, 3, 14, 3, 57),
           Time.utc(2025, 3, 14, 10, 0)
@@ -38,6 +51,7 @@ RSpec.describe Astronoby::LunarEclipse do
         penumbral_magnitude: 2.261,
         gamma: 0.348,
         shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
+        geometry: geometry,
         penumbral: phase_at(
           Time.utc(2025, 3, 14, 3, 57),
           Time.utc(2025, 3, 14, 10, 0)
@@ -58,6 +72,7 @@ RSpec.describe Astronoby::LunarEclipse do
         penumbral_magnitude: 2.261,
         gamma: 0.348,
         shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
+        geometry: geometry,
         penumbral: phase_at(
           Time.utc(2025, 3, 14, 3, 57),
           Time.utc(2025, 3, 14, 10, 0)
@@ -87,6 +102,7 @@ RSpec.describe Astronoby::LunarEclipse do
         penumbral_magnitude: 0.956,
         gamma: 1.072,
         shadow_axis_distance: Astronoby::Distance.from_kilometers(6837.4),
+        geometry: geometry,
         penumbral: phase_at(
           Time.utc(2024, 3, 25, 4, 53),
           Time.utc(2024, 3, 25, 9, 32)
@@ -107,6 +123,7 @@ RSpec.describe Astronoby::LunarEclipse do
       penumbral_magnitude: 2.261,
       gamma: 0.348,
       shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
+      geometry: geometry,
       penumbral: phase_at(
         Time.utc(2025, 3, 14, 3, 57),
         Time.utc(2025, 3, 14, 10, 0)
