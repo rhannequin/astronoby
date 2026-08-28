@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Bug fixes
+
+* Let the rise, transit and set refinement move an estimate back in time. The
+  correction was clamped to be positive, so an estimate that overshot its event
+  could never be brought back, and settings and transits came out up to a few
+  minutes late depending on the window asked for.
+
 ### Features
 
 * Expose lunar eclipse shadow geometry at greatest eclipse and at every contact

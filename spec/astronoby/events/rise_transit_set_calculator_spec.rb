@@ -139,14 +139,14 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           # Timeanddate: 2025-12-10T23:11:00-07:00
 
           expect(events.transit_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 10, 5, 1, 55, utc_offset)
+            .to eq Time.new(2025, 12, 10, 5, 1, 33, utc_offset)
           # IMCCE:       2025-12-10T05:01:33-07:00
           # Stellarium:  2025-12-10T05:02:00-07:00
           # Skyfield:    2025-12-10T05:01:33-07:00
           # Timeanddate: 2025-12-10T05:01:00-07:00
 
           expect(events.setting_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 10, 11, 46, 17, utc_offset)
+            .to eq Time.new(2025, 12, 10, 11, 46, 10, utc_offset)
           # USNO:        2025-12-10T11:46:00-07:00
           # Stellarium:  2025-12-10T11:46:00-07:00
           # Skyfield:    2025-12-10T11:46:10-07:00
@@ -175,14 +175,14 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           expect(events.rising_times.first).to be_nil
 
           expect(events.transit_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 11, 5, 45, 28, utc_offset)
+            .to eq Time.new(2025, 12, 11, 5, 45, 25, utc_offset)
           # IMCCE:       2025-12-11T05:45:25-07:00
           # Stellarium:  2025-12-11T05:45:00-07:00
           # Skyfield:    2025-12-11T05:45:24-07:00
           # Timeanddate: 2025-12-11T05:45:00-07:00
 
           expect(events.setting_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 11, 12, 8, 25, utc_offset)
+            .to eq Time.new(2025, 12, 11, 12, 8, 21, utc_offset)
           # USNO:        2025-12-11T12:08:00-07:00
           # Stellarium:  2025-12-11T12:08:00-07:00
           # Skyfield:    2025-12-11T12:08:21-07:00
@@ -223,7 +223,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
           # Timeanddate: 2025-12-12T06:26:00-07:00
 
           expect(events.setting_times.first.localtime(utc_offset))
-            .to eq Time.new(2025, 12, 12, 12, 29, 16, utc_offset)
+            .to eq Time.new(2025, 12, 12, 12, 29, 1, utc_offset)
           # USNO:        2025-12-12T12:29:00-07:00
           # Stellarium:  2025-12-12T12:29:00-07:00
           # Skyfield:    2025-12-12T12:29:01-07:00
@@ -402,6 +402,37 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
   end
 
   describe "#events_between" do
+    it "reaches the same setting from any window it is asked for" do
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.86),
+        longitude: Astronoby::Angle.from_degrees(2.35),
+        elevation: Astronoby::Distance.zero
+      )
+      date = Date.new(2025, 3, 14)
+      calculator = described_class.new(
+        body: Astronoby::Moon,
+        observer: observer,
+        ephem: ephem
+      )
+
+      from_utc_day = calculator.events_on(date).setting_times.first
+      from_local_day =
+        calculator.events_on(date, utc_offset: "+01:00").setting_times.first
+      from_single_event = calculator.event_on(date).setting_time
+      from_range = calculator.events_between(
+        Time.utc(2025, 3, 14, 3),
+        Time.utc(2025, 3, 14, 9)
+      ).setting_times.first
+
+      aggregate_failures do
+        expect(from_utc_day).to eq Time.utc(2025, 3, 14, 6, 11, 42)
+        expect(from_local_day).to eq from_utc_day
+        expect(from_single_event).to eq from_utc_day
+        expect(from_range).to eq from_utc_day
+      end
+    end
+
     it "computes lists of rising, transit and setting times" do
       ephem = test_ephem
       observer = Astronoby::Observer.new(
@@ -431,8 +462,8 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
 
         expect(events.setting_times.size).to eq 3
         expect(events.setting_times[0]).to eq Time.utc(2025, 3, 10, 18, 13, 26)
-        expect(events.setting_times[1]).to eq Time.utc(2025, 3, 11, 18, 13, 11)
-        expect(events.setting_times[2]).to eq Time.utc(2025, 3, 12, 18, 12, 55)
+        expect(events.setting_times[1]).to eq Time.utc(2025, 3, 11, 18, 13, 10)
+        expect(events.setting_times[2]).to eq Time.utc(2025, 3, 12, 18, 12, 54)
       end
     end
   end

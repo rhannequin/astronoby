@@ -18,7 +18,7 @@ module Astronoby
     TAU = Math::PI * 2
     SAMPLE_THRESHOLD = 0.8
     REFINEMENT_ITERATIONS = 3
-    MIN_TIME_ADJUSTMENT = Constants::MICROSECOND_IN_DAYS
+    CONVERGENCE_TOLERANCE_IN_DAYS = 0.5 / Constants::SECONDS_PER_DAY
     STANDARD_REFRACTION_ANGLE = -Angle.from_dms(0, 34, 0)
     SUN_REFRACTION_ANGLE = -Angle.from_dms(0, 50, 0)
     EVENT_TYPES = [:rising, :transit, :setting].freeze
@@ -260,13 +260,16 @@ module Astronoby
           .each_with_index
           .map do |angle, i|
             ratio = angle.radians / hour_angle_rates[i]
-            time_adjustment = (ratio.nan? || ratio.infinite?) ? 0 : ratio
-            [time_adjustment, MIN_TIME_ADJUSTMENT].max
+            (ratio.nan? || ratio.infinite?) ? 0.0 : ratio
           end
 
         # Apply time adjustments
         new_instants = new_instants.each_with_index.map do |instant, i|
           Instant.from_terrestrial_time(instant.tt + time_adjustments[i])
+        end
+
+        break if time_adjustments.all? do |adjustment|
+          adjustment.abs < CONVERGENCE_TOLERANCE_IN_DAYS
         end
       end
 
