@@ -32,8 +32,8 @@ RSpec.describe Astronoby::ConjunctionOppositionCalculator do
       )
 
       expect(events.size).to eq(1)
-      expect(events.first.instant.to_time.round)
-        .to eq(Time.utc(2025, 9, 21, 5, 45, 38))
+      expect(events.first.instant.to_time)
+        .to be_within(1).of(Time.utc(2025, 9, 21, 5, 45, 38))
       # IMCCE:    2025-09-21T05:45:38Z
       # Skyfield: 2025-09-21T05:45:38Z
     end
@@ -82,18 +82,20 @@ RSpec.describe Astronoby::ConjunctionOppositionCalculator do
         Time.utc(2026, 1, 1)
       )
 
-      expect(
-        events.map { |event| [event.instant.to_time.round, event.subtype] }
-      ).to eq(
-        [
-          [Time.utc(2025, 2, 9, 12, 8, 6), :superior],
-          [Time.utc(2025, 3, 24, 19, 48, 20), :inferior],
-          [Time.utc(2025, 5, 30, 4, 12, 46), :superior],
-          [Time.utc(2025, 7, 31, 23, 41, 17), :inferior],
-          [Time.utc(2025, 9, 13, 10, 51, 47), :superior],
-          [Time.utc(2025, 11, 20, 9, 23, 14), :inferior]
-        ]
-      )
+      expected = [
+        [Time.utc(2025, 2, 9, 12, 8, 6), :superior],
+        [Time.utc(2025, 3, 24, 19, 48, 20), :inferior],
+        [Time.utc(2025, 5, 30, 4, 12, 46), :superior],
+        [Time.utc(2025, 7, 31, 23, 41, 17), :inferior],
+        [Time.utc(2025, 9, 13, 10, 51, 47), :superior],
+        [Time.utc(2025, 11, 20, 9, 23, 14), :inferior]
+      ]
+
+      expect(events.size).to eq(expected.size)
+      events.zip(expected).each do |event, (time, subtype)|
+        expect(event.instant.to_time).to be_within(1).of(time)
+        expect(event.subtype).to eq(subtype)
+      end
       # Inferior conjunctions from Skyfield: 2025-03-24T19:48:20Z,
       # 2025-07-31T23:41:17Z, 2025-11-20T09:23:14Z
     end

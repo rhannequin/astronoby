@@ -3,7 +3,7 @@
 module Astronoby
   class RootFinder
     MIN_SAMPLES_PER_PERIOD = 20
-    BISECTION_TOLERANCE_DAYS = 1e-5
+    BISECTION_TOLERANCE_DAYS = 1e-8
 
     # @param value_at [#call] callable mapping a Julian Date (Terrestrial Time)
     #   to a Float
@@ -22,21 +22,28 @@ module Astronoby
     # @return [Array<Float>] root times in Julian Date (Terrestrial Time),
     #   sorted by time
     def roots(start_jd, end_jd, accept: nil)
-      brackets = find_brackets(start_jd, end_jd)
-      located = brackets.map { |a, b| bisect(a, b) }
+      samples = collect_samples(start_jd, end_jd)
+      located = (
+        samples_on_root(samples) +
+          find_brackets(samples).map { |a, b, f_a| bisect(a, b, f_a) }
+      ).sort
       located.select { |jd| accept.nil? || accept.call(jd) }
     end
 
     private
 
-    def find_brackets(start_jd, end_jd)
-      samples = collect_samples(start_jd, end_jd)
+    def samples_on_root(samples)
+      samples.filter_map { |sample| sample[:jd] if sample[:value].zero? }
+    end
 
+    def find_brackets(samples)
       (0...samples.length - 1).filter_map do |i|
         current = samples[i]
         following = samples[i + 1]
 
-        [current[:jd], following[:jd]] if sign_change?(current, following)
+        if sign_change?(current, following)
+          [current[:jd], following[:jd], current[:value]]
+        end
       end
     end
 
@@ -61,11 +68,11 @@ module Astronoby
       [base_samples, MIN_SAMPLES_PER_PERIOD].max
     end
 
-    def bisect(a, b)
-      f_a = @value_at.call(a)
-
+    def bisect(a, b, f_a)
       while (b - a).abs > BISECTION_TOLERANCE_DAYS
         midpoint = (a + b) / 2
+        break if midpoint == a || midpoint == b
+
         f_midpoint = @value_at.call(midpoint)
         return midpoint if f_midpoint.zero?
 

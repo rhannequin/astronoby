@@ -3,6 +3,42 @@
 RSpec.describe Astronoby::ReferenceFrame do
   include TestEphemHelper
 
+  describe "#epoch" do
+    it "is J2000 for the ICRS-based frames and of date for the rest" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43))
+      ephem = test_ephem
+      moon = Astronoby::Moon.new(instant: instant, ephem: ephem)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.85),
+        longitude: Astronoby::Angle.from_degrees(2.35)
+      )
+      j2000 = Astronoby::JulianDate::DEFAULT_EPOCH
+
+      expect(moon.geometric.equatorial.epoch).to eq(j2000)
+      expect(moon.astrometric.equatorial.epoch).to eq(j2000)
+      expect(moon.mean_of_date.equatorial.epoch).to eq(instant.tt)
+      expect(moon.apparent.equatorial.epoch).to eq(instant.tt)
+      expect(moon.observed_by(observer).equatorial.epoch).to eq(instant.tt)
+    end
+
+    it "lets an apparent place be precessed back to its astrometric place" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43))
+      ephem = test_ephem
+      moon = Astronoby::Moon.new(instant: instant, ephem: ephem)
+
+      precessed = Astronoby::Precession.for_equatorial_coordinates(
+        coordinates: moon.apparent.equatorial,
+        epoch: Astronoby::JulianDate::J2000
+      )
+
+      astrometric = moon.astrometric.equatorial
+      expect(precessed.right_ascension.degrees)
+        .to be_within(0.01).of(astrometric.right_ascension.degrees)
+      expect(precessed.declination.degrees)
+        .to be_within(0.01).of(astrometric.declination.degrees)
+    end
+  end
+
   describe "#separation_from" do
     context "during the 2020 Great Conjunction of Jupiter and Saturn" do
       it "returns the apparent separation" do

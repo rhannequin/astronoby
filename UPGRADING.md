@@ -27,13 +27,67 @@ Contact times may shift by a second or two, and the magnitudes in the fifth
 decimal. Greatest eclipse, `#gamma` and `#shadow_axis_distance` are unaffected,
 since they depend on neither constant.
 
-### `EclipsePhase` and `LunarEclipse` require their shadow geometry
+### `EclipsePhase` is now `LunarEclipsePhase`
 
-`Astronoby::EclipsePhase.new` now requires `starting_geometry:` and
-`ending_geometry:`, and `Astronoby::LunarEclipse.new` now requires `geometry:`,
-each an `Astronoby::LunarEclipseGeometry`. Both objects are built by
-`Astronoby::LunarEclipseCalculator`, so this only affects code constructing them
-directly.
+`Astronoby::EclipsePhase` has been renamed to `Astronoby::LunarEclipsePhase`.
+Its geometry is a `LunarEclipseGeometry`, so the class was never general to
+every kind of eclipse, and the old name reserved a place that solar eclipses
+will need.
+
+### A lunar eclipse and its phases are built from fewer values
+
+`Astronoby::LunarEclipsePhase.new` requires `starting_geometry:` and
+`ending_geometry:`, and `Astronoby::LunarEclipse.new` requires `geometry:`,
+each an `Astronoby::LunarEclipseGeometry`.
+
+`LunarEclipse.new` no longer accepts `umbral_magnitude:`,
+`penumbral_magnitude:`, `gamma:` or `shadow_axis_distance:`. All four are now
+read off the geometry at greatest eclipse, so an eclipse can no longer be
+built holding values that contradict its own geometry. The readers are
+unchanged.
+
+Both objects are built by `Astronoby::LunarEclipseCalculator`, so this only
+affects code constructing them directly.
+
+### `LunarEclipse#greatest_eclipse` is now `#greatest_eclipse_instant`
+
+The method returns an `Astronoby::Instant`, not an eclipse. `#instant` remains
+available and is the same value.
+
+### `LunarEclipsePhase#duration` is no longer rounded
+
+The duration was rounded to whole seconds. It is now measured on the
+terrestrial time scale, which is continuous, so it is unaffected by a leap
+second falling inside the phase, and it keeps the fraction of a second.
+`#duration.seconds` may now return a Float with a fractional part.
+
+### Equatorial coordinates carry the epoch of the frame they came from
+
+`#equatorial` reported the J2000 epoch on every reference frame, including
+frames referred to the equator and equinox of date. Precessing a mean of date,
+apparent, topocentric or TEME place was therefore a no operation rather than
+removing the precession accumulated since J2000, and `GeocentricParallax`
+carried the wrong epoch into anything derived from one.
+
+`MeanOfDate`, `Apparent`, `Topocentric` and `Teme` now report their own
+instant as the epoch, through a new `#epoch` reader on `ReferenceFrame`.
+`Geometric` and `Astrometric` are unchanged, since both are built on the ICRS
+and were already right.
+
+Code passing an of date coordinate to
+`Precession.for_equatorial_coordinates` will now get a precessed result where
+it previously got the coordinate back nearly unchanged.
+
+### Event times are located more precisely
+
+Bisection accepted a root once its bracket fell under 0.864 seconds, so a
+reported time could sit up to 0.43 seconds from the root of the model it came
+from. It now bisects to under a millisecond. Conjunction and opposition times
+may move by a fraction of a second, and a time that sat near a whole second
+may round to the next one.
+
+A sample landing exactly on a root is also no longer missed, and bisection
+stops if a bracket reaches the resolution of a Float rather than looping.
 
 ## Upgrading from 0.9.0 to 0.10.0
 

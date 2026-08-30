@@ -107,12 +107,32 @@ RSpec.describe Astronoby::MeanOfDate do
       mean_of_date = described_class.new(
         position: position,
         velocity: kind_of(Vector),
-        instant: kind_of(Astronoby::Instant),
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
         center: Astronoby::Center.geocentric,
         target_body: Astronoby::Jupiter
       )
 
       expect(mean_of_date.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+    end
+  end
+
+  describe "#epoch" do
+    it "is the frame's own instant, not J2000" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 3, 14))
+      mean_of_date = described_class.new(
+        position: Astronoby::Vector[
+          Astronoby::Distance.from_kilometers(1),
+          Astronoby::Distance.from_kilometers(1),
+          Astronoby::Distance.from_kilometers(1)
+        ],
+        velocity: kind_of(Vector),
+        instant: instant,
+        center: Astronoby::Center.geocentric,
+        target_body: Astronoby::Jupiter
+      )
+
+      expect(mean_of_date.epoch).to eq(instant.tt)
+      expect(mean_of_date.equatorial.epoch).to eq(instant.tt)
     end
   end
 
@@ -126,7 +146,7 @@ RSpec.describe Astronoby::MeanOfDate do
       mean_of_date = described_class.new(
         position: position,
         velocity: kind_of(Vector),
-        instant: kind_of(Astronoby::Instant),
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
         center: Astronoby::Center.geocentric,
         target_body: Astronoby::Jupiter
       )
@@ -144,7 +164,7 @@ RSpec.describe Astronoby::MeanOfDate do
         mean_of_date = described_class.new(
           position: position,
           velocity: kind_of(Vector),
-          instant: kind_of(Astronoby::Instant),
+          instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
           center: Astronoby::Center.geocentric,
           target_body: Astronoby::Jupiter
         )

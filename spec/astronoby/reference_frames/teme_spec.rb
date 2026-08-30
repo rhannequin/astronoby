@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Teme do
+  describe "#epoch" do
+    it "is the frame's own instant, the equinox TEME is referred to" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 6, 15, 12))
+      teme = described_class.new(
+        position: Astronoby::Distance.vector_from_meters(
+          [6_778_137.0, 0.0, 0.0]
+        ),
+        velocity: Astronoby::Velocity.vector_from_mps(
+          [0.0, 7_660.0, 0.0]
+        ),
+        instant: instant
+      )
+
+      expect(teme.epoch).to eq(instant.tt)
+      expect(teme.equatorial.epoch).to eq(instant.tt)
+    end
+  end
+
   describe "#equatorial" do
     # Synthetic satellite in circular orbit at ~400 km altitude (ISS-like),
     # positioned on the x-axis with velocity along y.

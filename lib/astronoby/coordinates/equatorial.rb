@@ -40,8 +40,9 @@ module Astronoby
       # Derives equatorial coordinates from a position vector.
       #
       # @param position [Astronoby::Vector<Astronoby::Distance>] position vector
+      # @param epoch [Numeric] Julian Date epoch the vector is referred to
       # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates
-      def self.from_position_vector(position)
+      def self.from_position_vector(position, epoch: JulianDate::DEFAULT_EPOCH)
         return zero if position.zero?
 
         term1 = position.z.m
@@ -58,7 +59,11 @@ module Astronoby
             angle
           )
 
-        new(declination: declination, right_ascension: right_ascension)
+        new(
+          declination: declination,
+          right_ascension: right_ascension,
+          epoch: epoch
+        )
       end
 
       # Computes the hour angle for a given time and observer longitude.

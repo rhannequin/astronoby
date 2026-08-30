@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-RSpec.describe Astronoby::EclipsePhase do
+RSpec.describe Astronoby::LunarEclipsePhase do
   def geometry
     Astronoby::LunarEclipseGeometry.new(
       axis_distance: Astronoby::Distance.from_kilometers(2219.6),
       position_angle: Astronoby::Angle.from_degrees(208.2),
       umbra_radius: Astronoby::Distance.from_kilometers(4664.4),
       penumbra_radius: Astronoby::Distance.from_kilometers(8254.0),
-      moon_distance: Astronoby::Distance.from_kilometers(382601.0)
+      moon_distance: Astronoby::Distance.from_kilometers(382601.0),
+      moon_coordinates: Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(11, 38, 22.98),
+        declination: Astronoby::Angle.from_dms(2, 40, 54.72)
+      ),
+      north_of_axis: true
     )
   end
 
@@ -24,10 +29,10 @@ RSpec.describe Astronoby::EclipsePhase do
         ending_geometry: geometry
       )
 
-      expect(phase.duration).to eq(Astronoby::Duration.from_seconds(3920))
+      expect(phase.duration.seconds).to be_within(1e-3).of(3920)
     end
 
-    it "rounds the duration to the nearest second" do
+    it "keeps the fraction of a second between the boundary instants" do
       phase = described_class.new(
         starting_instant: Astronoby::Instant.from_time(
           Time.utc(2025, 3, 14, 6, 0, 0)
@@ -39,7 +44,7 @@ RSpec.describe Astronoby::EclipsePhase do
         ending_geometry: geometry
       )
 
-      expect(phase.duration.seconds).to eq(30)
+      expect(phase.duration.seconds).to be_within(1e-3).of(30.4)
     end
   end
 

@@ -19,8 +19,8 @@ module Astronoby
     SAMPLE_THRESHOLD = 0.8
     REFINEMENT_ITERATIONS = 3
     CONVERGENCE_TOLERANCE_IN_DAYS = 0.5 / Constants::SECONDS_PER_DAY
-    STANDARD_REFRACTION_ANGLE = -Angle.from_dms(0, 34, 0)
-    SUN_REFRACTION_ANGLE = -Angle.from_dms(0, 50, 0)
+    STANDARD_REFRACTION_ANGLE = Horizon::REFRACTION_ANGLE
+    SUN_REFRACTION_ANGLE = Horizon::SUN_ANGLE
     EVENT_TYPES = [:rising, :transit, :setting].freeze
 
     # @param body [Astronoby::SolarSystemBody, Astronoby::DeepSkyObject]
@@ -359,14 +359,7 @@ module Astronoby
     end
 
     def horizon_angle(distance)
-      if @body == Astronoby::Sun
-        SUN_REFRACTION_ANGLE
-      elsif @body == Astronoby::Moon
-        STANDARD_REFRACTION_ANGLE -
-          Angle.from_radians(Moon::EQUATORIAL_RADIUS.m / distance.m)
-      else
-        STANDARD_REFRACTION_ANGLE
-      end
+      Horizon.angle_for(body: @body, distance: distance)
     end
 
     def reset_state

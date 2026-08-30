@@ -37,6 +37,12 @@ module Astronoby
       )
     end
 
+    # @return [Numeric] Julian Date epoch of the frame's coordinates, which
+    #   are referred to the mean equator and equinox of date
+    def epoch
+      instant.tt
+    end
+
     # @return [Astronoby::Coordinates::Ecliptic] ecliptic coordinates at the
     #   current instant (mean equinox of date)
     def ecliptic
