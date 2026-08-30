@@ -2,7 +2,7 @@
 
 RSpec.describe Astronoby::LunarEclipse do
   def phase_at(starting, ending)
-    Astronoby::EclipsePhase.new(
+    Astronoby::LunarEclipsePhase.new(
       starting_instant: Astronoby::Instant.from_time(starting),
       ending_instant: Astronoby::Instant.from_time(ending),
       starting_geometry: geometry,
@@ -10,26 +10,27 @@ RSpec.describe Astronoby::LunarEclipse do
     )
   end
 
-  def geometry
+  def geometry(north_of_axis: true)
     Astronoby::LunarEclipseGeometry.new(
       axis_distance: Astronoby::Distance.from_kilometers(2219.6),
       position_angle: Astronoby::Angle.from_degrees(208.2),
       umbra_radius: Astronoby::Distance.from_kilometers(4664.4),
       penumbra_radius: Astronoby::Distance.from_kilometers(8254.0),
-      moon_distance: Astronoby::Distance.from_kilometers(382601.0)
+      moon_distance: Astronoby::Distance.from_kilometers(382601.0),
+      moon_coordinates: Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(11, 38, 22.98),
+        declination: Astronoby::Angle.from_dms(2, 40, 54.72)
+      ),
+      north_of_axis: north_of_axis
     )
   end
 
   describe "#instant" do
-    it "is aliased as #greatest_eclipse" do
+    it "is aliased as #greatest_eclipse_instant" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43))
       eclipse = Astronoby::LunarEclipse.new(
         instant: instant,
         kind: :total,
-        umbral_magnitude: 1.178,
-        penumbral_magnitude: 2.261,
-        gamma: 0.348,
-        shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
         geometry: geometry,
         penumbral: phase_at(
           Time.utc(2025, 3, 14, 3, 57),
@@ -37,8 +38,8 @@ RSpec.describe Astronoby::LunarEclipse do
         )
       )
 
-      expect(eclipse.greatest_eclipse).to eq(instant)
-      expect(eclipse.greatest_eclipse).to eq(eclipse.instant)
+      expect(eclipse.greatest_eclipse_instant).to eq(instant)
+      expect(eclipse.greatest_eclipse_instant).to eq(eclipse.instant)
     end
   end
 
@@ -47,10 +48,6 @@ RSpec.describe Astronoby::LunarEclipse do
       eclipse = Astronoby::LunarEclipse.new(
         instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43)),
         kind: :total,
-        umbral_magnitude: 1.178,
-        penumbral_magnitude: 2.261,
-        gamma: 0.348,
-        shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
         geometry: geometry,
         penumbral: phase_at(
           Time.utc(2025, 3, 14, 3, 57),
@@ -63,15 +60,58 @@ RSpec.describe Astronoby::LunarEclipse do
     end
   end
 
+  describe "#gamma" do
+    it "is the axis distance in Earth radii, signed by the side of the axis" do
+      northern = Astronoby::LunarEclipse.new(
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43)),
+        kind: :total,
+        geometry: geometry(north_of_axis: true),
+        penumbral: phase_at(
+          Time.utc(2025, 3, 14, 3, 57),
+          Time.utc(2025, 3, 14, 10, 0)
+        )
+      )
+      southern = Astronoby::LunarEclipse.new(
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43)),
+        kind: :total,
+        geometry: geometry(north_of_axis: false),
+        penumbral: phase_at(
+          Time.utc(2025, 3, 14, 3, 57),
+          Time.utc(2025, 3, 14, 10, 0)
+        )
+      )
+
+      earth_radii = 2219.6 * 1000 /
+        Astronoby::Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS.to_f
+
+      expect(northern.gamma).to be_within(1e-12).of(earth_radii)
+      expect(southern.gamma).to be_within(1e-12).of(-earth_radii)
+    end
+  end
+
+  describe "magnitudes" do
+    it "comes from the geometry, so the two cannot disagree" do
+      eclipse = Astronoby::LunarEclipse.new(
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43)),
+        kind: :total,
+        geometry: geometry,
+        penumbral: phase_at(
+          Time.utc(2025, 3, 14, 3, 57),
+          Time.utc(2025, 3, 14, 10, 0)
+        )
+      )
+
+      expect(eclipse.umbral_magnitude).to eq(geometry.umbral_magnitude)
+      expect(eclipse.penumbral_magnitude).to eq(geometry.penumbral_magnitude)
+      expect(eclipse.shadow_axis_distance).to eq(geometry.axis_distance)
+    end
+  end
+
   describe "predicates" do
     it "is total and exposes the total phase" do
       eclipse = Astronoby::LunarEclipse.new(
         instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43)),
         kind: :total,
-        umbral_magnitude: 1.178,
-        penumbral_magnitude: 2.261,
-        gamma: 0.348,
-        shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
         geometry: geometry,
         penumbral: phase_at(
           Time.utc(2025, 3, 14, 3, 57),
@@ -98,10 +138,6 @@ RSpec.describe Astronoby::LunarEclipse do
       eclipse = Astronoby::LunarEclipse.new(
         instant: Astronoby::Instant.from_time(Time.utc(2024, 3, 25, 7, 12, 45)),
         kind: :penumbral,
-        umbral_magnitude: -0.13,
-        penumbral_magnitude: 0.956,
-        gamma: 1.072,
-        shadow_axis_distance: Astronoby::Distance.from_kilometers(6837.4),
         geometry: geometry,
         penumbral: phase_at(
           Time.utc(2024, 3, 25, 4, 53),
@@ -119,10 +155,6 @@ RSpec.describe Astronoby::LunarEclipse do
     eclipse = Astronoby::LunarEclipse.new(
       instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14, 6, 58, 43)),
       kind: :total,
-      umbral_magnitude: 1.178,
-      penumbral_magnitude: 2.261,
-      gamma: 0.348,
-      shadow_axis_distance: Astronoby::Distance.from_kilometers(2219.6),
       geometry: geometry,
       penumbral: phase_at(
         Time.utc(2025, 3, 14, 3, 57),

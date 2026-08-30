@@ -8,13 +8,22 @@
   correction was clamped to be positive, so an estimate that overshot its event
   could never be brought back, and settings and transits came out up to a few
   minutes late depending on the window asked for.
+* Refer equatorial coordinates to the epoch of the frame they come from
 
 ### Features
 
 * Expose lunar eclipse shadow geometry at greatest eclipse and at every contact
+* Add lunar eclipse local circumstances with `LunarEclipse#visibility_from`
+* Expose the Moon's apparent place at every lunar eclipse contact
 
 ### Improvements
 
+* Bisect to a millisecond rather than to a second when locating an event in time
+* Reduce the Moon to the observer by vectors for lunar eclipse visibility
+* Answer lunar eclipse phase coverage in the words the whole eclipse uses
+* Derive a lunar eclipse's magnitudes, axis distance and gamma from its geometry
+* Remove `LunarEclipseVisibility#altitude_at`
+* Share the rise and set horizon convention through `Astronoby::Horizon`
 * Resolve the lunar eclipse shadow axis offset with vectors
 * Reduce lunar eclipse contacts with the IAU eclipse constant k
 

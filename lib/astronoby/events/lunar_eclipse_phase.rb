@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Astronoby
-  # A bounded phase of an eclipse, delimited by its two boundary instants.
-  class EclipsePhase
+  class LunarEclipsePhase
     # @return [Astronoby::Instant] when the phase begins
     attr_reader :starting_instant
 
@@ -39,7 +38,7 @@ module Astronoby
     # @return [Astronoby::Duration] phase duration
     def duration
       Duration.from_seconds(
-        (@ending_instant.to_time - @starting_instant.to_time).round
+        (@ending_instant.tt - @starting_instant.tt) * Constants::SECONDS_PER_DAY
       )
     end
   end

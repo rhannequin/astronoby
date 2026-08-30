@@ -39,13 +39,18 @@ module Astronoby
       @target_body = target_body
     end
 
+    # @return [Numeric] Julian Date epoch
+    def epoch
+      JulianDate::DEFAULT_EPOCH
+    end
+
     # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates
-    #   derived from the position vector
+    #   derived from the position vector, referred to the frame's epoch
     def equatorial
       @equatorial ||= begin
         return Coordinates::Equatorial.zero if distance.zero?
 
-        Coordinates::Equatorial.from_position_vector(@position)
+        Coordinates::Equatorial.from_position_vector(@position, epoch: epoch)
       end
     end
 

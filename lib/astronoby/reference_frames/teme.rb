@@ -43,6 +43,12 @@ module Astronoby
       )
     end
 
+    # @return [Numeric] Julian Date epoch of the frame's coordinates, which
+    #   are referred to the true equator and mean equinox of date
+    def epoch
+      instant.tt
+    end
+
     # Converts TEME position and velocity to ECEF using the canonical
     # Vallado formulation with R₃(GMST).
     #

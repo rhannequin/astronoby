@@ -174,12 +174,32 @@ RSpec.describe Astronoby::Astrometric do
       astrometric = described_class.new(
         position: position,
         velocity: kind_of(Vector),
-        instant: kind_of(Astronoby::Instant),
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
         center: Astronoby::Center.geocentric,
         target_body: Astronoby::Jupiter
       )
 
       expect(astrometric.equatorial).to be_a(Astronoby::Coordinates::Equatorial)
+    end
+  end
+
+  describe "#epoch" do
+    it "is J2000, the epoch the ICRS-based frame is referred to" do
+      astrometric = described_class.new(
+        position: Astronoby::Vector[
+          Astronoby::Distance.from_kilometers(1),
+          Astronoby::Distance.from_kilometers(1),
+          Astronoby::Distance.from_kilometers(1)
+        ],
+        velocity: kind_of(Vector),
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
+        center: Astronoby::Center.geocentric,
+        target_body: Astronoby::Jupiter
+      )
+
+      expect(astrometric.epoch).to eq(Astronoby::JulianDate::DEFAULT_EPOCH)
+      expect(astrometric.equatorial.epoch)
+        .to eq(Astronoby::JulianDate::DEFAULT_EPOCH)
     end
   end
 
@@ -193,7 +213,7 @@ RSpec.describe Astronoby::Astrometric do
       astrometric = described_class.new(
         position: position,
         velocity: kind_of(Vector),
-        instant: kind_of(Astronoby::Instant),
+        instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
         center: Astronoby::Center.geocentric,
         target_body: Astronoby::Jupiter
       )
@@ -211,7 +231,7 @@ RSpec.describe Astronoby::Astrometric do
         astrometric = described_class.new(
           position: position,
           velocity: kind_of(Vector),
-          instant: kind_of(Astronoby::Instant),
+          instant: Astronoby::Instant.from_time(Time.utc(2025, 3, 14)),
           center: Astronoby::Center.geocentric,
           target_body: Astronoby::Jupiter
         )

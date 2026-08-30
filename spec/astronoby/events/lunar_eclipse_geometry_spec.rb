@@ -73,6 +73,34 @@ RSpec.describe Astronoby::LunarEclipseGeometry do
     end
   end
 
+  describe "#moon_coordinates" do
+    it "carries the place it was built with" do
+      place = Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(11, 38, 22.98),
+        declination: Astronoby::Angle.from_dms(2, 40, 54.72)
+      )
+
+      geometry = described_class.new(
+        axis_distance: Astronoby::Distance.from_kilometers(2401.3),
+        position_angle: Astronoby::Angle.from_degrees(208.2),
+        umbra_radius: Astronoby::Distance.from_kilometers(4664.4),
+        penumbra_radius: Astronoby::Distance.from_kilometers(8254.0),
+        moon_distance: Astronoby::Distance.from_kilometers(382_600.7),
+        moon_coordinates: place,
+        north_of_axis: true
+      )
+
+      expect(geometry.moon_coordinates).to be(place)
+    end
+  end
+
+  describe "#north_of_axis?" do
+    it "carries which side of the shadow axis the Moon is on" do
+      expect(geometry_with(north_of_axis: true).north_of_axis?).to be(true)
+      expect(geometry_with(north_of_axis: false).north_of_axis?).to be(false)
+    end
+  end
+
   it "is immutable" do
     expect(geometry_with).to be_frozen
   end
@@ -82,14 +110,20 @@ RSpec.describe Astronoby::LunarEclipseGeometry do
     position_angle: 208.2,
     umbra_radius: 4664.4,
     penumbra_radius: 8254.0,
-    moon_distance: 382_600.7
+    moon_distance: 382_600.7,
+    north_of_axis: true
   )
     described_class.new(
       axis_distance: Astronoby::Distance.from_kilometers(axis_distance),
       position_angle: Astronoby::Angle.from_degrees(position_angle),
       umbra_radius: Astronoby::Distance.from_kilometers(umbra_radius),
       penumbra_radius: Astronoby::Distance.from_kilometers(penumbra_radius),
-      moon_distance: Astronoby::Distance.from_kilometers(moon_distance)
+      moon_distance: Astronoby::Distance.from_kilometers(moon_distance),
+      moon_coordinates: Astronoby::Coordinates::Equatorial.new(
+        right_ascension: Astronoby::Angle.from_hms(11, 38, 22.98),
+        declination: Astronoby::Angle.from_dms(2, 40, 54.72)
+      ),
+      north_of_axis: north_of_axis
     )
   end
 end

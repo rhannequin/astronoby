@@ -12,7 +12,9 @@ class PerformanceBenchmark
     :rts_event_on,
     :rts_events_between,
     :twilight_event_on,
-    :moon_phases
+    :moon_phases,
+    :lunar_eclipse_events,
+    :lunar_eclipse_visibility
   ]
 
   def initialize(warmup_runs: 2, measure_runs: 3, iterations_per_run: 10)
@@ -82,6 +84,26 @@ class PerformanceBenchmark
   def time_single_run
     times = Hash.new(0)
     iterations_per_run.times do
+      eclipses = nil
+
+      times[:lunar_eclipse_events] += time_block do
+        eclipses = Astronoby::Moon.eclipse_events(
+          ephem: ephem,
+          start_time: Time.utc(2025, 1, 1),
+          end_time: Time.utc(2026, 1, 1)
+        )
+      end
+
+      times[:lunar_eclipse_visibility] += time_block do
+        observers.each do |observer|
+          eclipses.each do |eclipse|
+            visibility = eclipse.visibility_from(observer)
+            visibility.circumstance
+            visibility.coverage(:total)
+          end
+        end
+      end
+
       planets.each do |planet|
         observer = Astronoby::Observer.new(
           latitude: Astronoby::Angle.from_degrees(rand(-40..40)),
@@ -124,6 +146,15 @@ class PerformanceBenchmark
     end
 
     BENCHMARK_METRICS.map { |k| times[k] }
+  end
+
+  def observers
+    @observers ||= (-8..8).map do |step|
+      Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(step * 10),
+        longitude: Astronoby::Angle.from_degrees(step * 22)
+      )
+    end
   end
 
   def time_block

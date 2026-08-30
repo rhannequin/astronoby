@@ -4,6 +4,41 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
   include TestEphemHelper
 
   describe "#events_between" do
+    it "carries the Moon's apparent place at every contact" do
+      ephem = test_ephem_inpop_2000_2050
+      calculator = described_class.new(ephem: ephem)
+
+      eclipse = calculator.events_between(
+        Time.utc(2025, 3, 1),
+        Time.utc(2025, 4, 1)
+      ).first
+
+      contacts = [
+        [eclipse.instant, eclipse.geometry],
+        [
+          eclipse.penumbral.starting_instant,
+          eclipse.penumbral.starting_geometry
+        ],
+        [eclipse.partial.starting_instant, eclipse.partial.starting_geometry],
+        [eclipse.total.ending_instant, eclipse.total.ending_geometry],
+        [eclipse.penumbral.ending_instant, eclipse.penumbral.ending_geometry]
+      ]
+
+      contacts.each do |instant, geometry|
+        apparent = Astronoby::Moon
+          .new(ephem: ephem, instant: instant)
+          .apparent
+          .equatorial
+
+        expect(geometry.moon_coordinates.right_ascension.degrees)
+          .to be_within(1e-5).of(apparent.right_ascension.degrees)
+        expect(geometry.moon_coordinates.declination.degrees)
+          .to be_within(1e-5).of(apparent.declination.degrees)
+        expect(geometry.moon_coordinates.epoch)
+          .to be_within(1e-6).of(instant.tt)
+      end
+    end
+
     it "finds and fully describes the 2025-03-14 total lunar eclipse" do
       ephem = test_ephem_inpop_2000_2050
       calculator = described_class.new(ephem: ephem)

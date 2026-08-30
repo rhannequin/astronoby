@@ -32,24 +32,42 @@ module Astronoby
     #   distance of the plane the radii are measured in
     attr_reader :moon_distance
 
+    # @return [Astronoby::Coordinates::Equatorial] apparent geocentric place
+    #   of the Moon, referred to the true equator and equinox of date
+    attr_reader :moon_coordinates
+
+    # @return [Boolean] true when the Moon is north of the shadow axis
+    def north_of_axis?
+      @north_of_axis
+    end
+
     # @param axis_distance [Astronoby::Distance] distance from the shadow axis
     # @param position_angle [Astronoby::Angle] position angle of the contact
     #   point on the Moon's limb, from celestial north through east
     # @param umbra_radius [Astronoby::Distance] umbra radius
     # @param penumbra_radius [Astronoby::Distance] penumbra radius
     # @param moon_distance [Astronoby::Distance] geocentric distance of the Moon
+    # @param moon_coordinates [Astronoby::Coordinates::Equatorial] apparent
+    #   geocentric place of the Moon, referred to the true equator and equinox
+    #   of date
+    # @param north_of_axis [Boolean] whether the Moon is north of the shadow
+    #   axis
     def initialize(
       axis_distance:,
       position_angle:,
       umbra_radius:,
       penumbra_radius:,
-      moon_distance:
+      moon_distance:,
+      moon_coordinates:,
+      north_of_axis:
     )
       @axis_distance = axis_distance
       @position_angle = position_angle
       @umbra_radius = umbra_radius
       @penumbra_radius = penumbra_radius
       @moon_distance = moon_distance
+      @moon_coordinates = moon_coordinates
+      @north_of_axis = north_of_axis
       freeze
     end
 

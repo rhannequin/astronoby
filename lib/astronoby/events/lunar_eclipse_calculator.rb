@@ -75,8 +75,8 @@ module Astronoby
       # @return [Float] radius of the penumbra at the Moon's distance (km)
       attr_reader :penumbra_radius
 
-      # @return [Float] signed distance from the shadow axis, in Earth radii
-      attr_reader :gamma
+      # @return [Boolean] whether the Moon is north of the shadow axis
+      attr_reader :north_of_axis
 
       # @return [Float] position angle of the Moon's centre from the shadow
       #   axis, in radians from celestial north through east
@@ -85,20 +85,44 @@ module Astronoby
       # @return [Float] geocentric distance of the Moon (km)
       attr_reader :moon_distance
 
+      # @return [Float] x component of the Moon's apparent geocentric unit
+      #   vector, in the true equator and equinox of date
+      attr_reader :moon_unit_x
+
+      # @return [Float] y component of the Moon's apparent geocentric unit
+      #   vector, in the true equator and equinox of date
+      attr_reader :moon_unit_y
+
+      # @return [Float] z component of the Moon's apparent geocentric unit
+      #   vector, in the true equator and equinox of date
+      attr_reader :moon_unit_z
+
+      # @return [Numeric] Julian Date (TT) the geometry was built at, which is
+      #   the epoch its equator and equinox are referred to
+      attr_reader :epoch
+
       def initialize(
         axis_distance:,
         umbra_radius:,
         penumbra_radius:,
-        gamma:,
+        north_of_axis:,
         position_angle:,
-        moon_distance:
+        moon_distance:,
+        moon_unit_x:,
+        moon_unit_y:,
+        moon_unit_z:,
+        epoch:
       )
         @axis_distance = axis_distance
         @umbra_radius = umbra_radius
         @penumbra_radius = penumbra_radius
-        @gamma = gamma
+        @north_of_axis = north_of_axis
         @position_angle = position_angle
         @moon_distance = moon_distance
+        @moon_unit_x = moon_unit_x
+        @moon_unit_y = moon_unit_y
+        @moon_unit_z = moon_unit_z
+        @epoch = epoch
         freeze
       end
 
@@ -114,7 +138,20 @@ module Astronoby
           position_angle: Angle.from_radians(angle),
           umbra_radius: Distance.from_kilometers(umbra_radius),
           penumbra_radius: Distance.from_kilometers(penumbra_radius),
-          moon_distance: Distance.from_kilometers(moon_distance)
+          moon_distance: Distance.from_kilometers(moon_distance),
+          moon_coordinates: moon_coordinates,
+          north_of_axis: north_of_axis
+        )
+      end
+
+      def moon_coordinates
+        Coordinates::Equatorial.new(
+          right_ascension: Angle.from_radians(
+            Math.atan2(moon_unit_y, moon_unit_x) %
+              Constants::RADIANS_PER_CIRCLE
+          ),
+          declination: Angle.asin(moon_unit_z.clamp(-1.0, 1.0)),
+          epoch: epoch
         )
       end
 
@@ -234,10 +271,6 @@ module Astronoby
       LunarEclipse.new(
         instant: Instant.from_terrestrial_time(greatest_jd),
         kind: kind_for(partial, total),
-        umbral_magnitude: geometry.umbral_magnitude,
-        penumbral_magnitude: geometry.penumbral_magnitude,
-        gamma: geometry.gamma,
-        shadow_axis_distance: Distance.from_kilometers(geometry.axis_distance),
         geometry: geometry.to_lunar_eclipse_geometry(NO_TANGENCY),
         penumbral: penumbral,
         partial: partial,
@@ -280,7 +313,7 @@ module Astronoby
       starting_jd, starting_geometry = starting
       ending_jd, ending_geometry = ending
 
-      EclipsePhase.new(
+      LunarEclipsePhase.new(
         starting_instant: Instant.from_terrestrial_time(starting_jd),
         ending_instant: Instant.from_terrestrial_time(ending_jd),
         starting_geometry:
@@ -350,9 +383,13 @@ module Astronoby
           axis_distance: perpendicular_distance,
           umbra_radius: earth_radius - axial_distance * umbra_half_angle_tangent,
           penumbra_radius: earth_radius + axial_distance * penumbra_half_angle_tangent,
-          gamma: (north.negative? ? -1 : 1) * perpendicular_distance / EARTH_RADIUS_KM,
+          north_of_axis: !north.negative?,
           position_angle: Math.atan2(east, north) % Constants::RADIANS_PER_CIRCLE,
-          moon_distance: moon_distance
+          moon_distance: moon_distance,
+          moon_unit_x: moon_x,
+          moon_unit_y: moon_y,
+          moon_unit_z: moon_z,
+          epoch: jd
         )
       end
     end

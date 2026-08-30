@@ -14,64 +14,37 @@ module Astronoby
     # @return [Astronoby::Instant] greatest eclipse, when the Moon's centre is
     #   least distant from the axis of Earth's shadow
     attr_reader :instant
-    alias_method :greatest_eclipse, :instant
+    alias_method :greatest_eclipse_instant, :instant
 
     # @return [Symbol] +PENUMBRAL+, +PARTIAL+ or +TOTAL+
     attr_reader :kind
-
-    # @return [Float] fraction of the Moon's diameter immersed in the umbra at
-    #   greatest eclipse (negative when the Moon misses the umbra)
-    attr_reader :umbral_magnitude
-
-    # @return [Float] fraction of the Moon's diameter immersed in the penumbra
-    #   at greatest eclipse
-    attr_reader :penumbral_magnitude
-
-    # @return [Float] least distance of the Moon's centre from the axis of
-    #   Earth's shadow at greatest eclipse, in Earth radii, positive when the
-    #   Moon passes north of the axis
-    attr_reader :gamma
-
-    # @return [Astronoby::Distance] least distance of the Moon's centre from the
-    #   axis of Earth's shadow at greatest eclipse. This is the unsigned length
-    #   of which gamma is the value in Earth radii.
-    attr_reader :shadow_axis_distance
 
     # @return [Astronoby::LunarEclipseGeometry] the geometry of Earth's shadow
     #   and the Moon's place in it at greatest eclipse. The geometry at each
     #   contact is on the phases.
     attr_reader :geometry
 
-    # @return [Astronoby::EclipsePhase] the penumbral phase (always present)
+    # @return [Astronoby::LunarEclipsePhase] the penumbral phase (always present)
     attr_reader :penumbral
 
-    # @return [Astronoby::EclipsePhase, nil] the partial phase, present for
+    # @return [Astronoby::LunarEclipsePhase, nil] the partial phase, present for
     #   partial and total eclipses
     attr_reader :partial
 
-    # @return [Astronoby::EclipsePhase, nil] the total phase (totality),
+    # @return [Astronoby::LunarEclipsePhase, nil] the total phase (totality),
     #   present only for total eclipses
     attr_reader :total
 
     # @param instant [Astronoby::Instant] greatest eclipse
     # @param kind [Symbol] +PENUMBRAL+, +PARTIAL+ or +TOTAL+
-    # @param umbral_magnitude [Float] umbral magnitude at greatest eclipse
-    # @param penumbral_magnitude [Float] penumbral magnitude at greatest eclipse
-    # @param gamma [Float] least distance from the shadow axis, in Earth radii
-    # @param shadow_axis_distance [Astronoby::Distance] least distance from the
-    #   shadow axis
     # @param geometry [Astronoby::LunarEclipseGeometry] the shadow geometry at
     #   greatest eclipse
-    # @param penumbral [Astronoby::EclipsePhase] the penumbral phase
-    # @param partial [Astronoby::EclipsePhase, nil] the partial phase
-    # @param total [Astronoby::EclipsePhase, nil] the total phase
+    # @param penumbral [Astronoby::LunarEclipsePhase] the penumbral phase
+    # @param partial [Astronoby::LunarEclipsePhase, nil] the partial phase
+    # @param total [Astronoby::LunarEclipsePhase, nil] the total phase
     def initialize(
       instant:,
       kind:,
-      umbral_magnitude:,
-      penumbral_magnitude:,
-      gamma:,
-      shadow_axis_distance:,
       geometry:,
       penumbral:,
       partial: nil,
@@ -79,15 +52,39 @@ module Astronoby
     )
       @instant = instant
       @kind = kind
-      @umbral_magnitude = umbral_magnitude
-      @penumbral_magnitude = penumbral_magnitude
-      @gamma = gamma
-      @shadow_axis_distance = shadow_axis_distance
       @geometry = geometry
       @penumbral = penumbral
       @partial = partial
       @total = total
       freeze
+    end
+
+    # @return [Float] least distance of the Moon's centre from the axis of
+    #   Earth's shadow at greatest eclipse, in Earth radii, positive when the
+    #   Moon passes north of the axis
+    def gamma
+      sign = @geometry.north_of_axis? ? 1 : -1
+      sign * @geometry.axis_distance.m /
+        Constants::WGS84_EARTH_EQUATORIAL_RADIUS_IN_METERS
+    end
+
+    # @return [Float] fraction of the Moon's diameter immersed in the umbra at
+    #   greatest eclipse (negative when the Moon misses the umbra)
+    def umbral_magnitude
+      @geometry.umbral_magnitude
+    end
+
+    # @return [Float] fraction of the Moon's diameter immersed in the penumbra
+    #   at greatest eclipse
+    def penumbral_magnitude
+      @geometry.penumbral_magnitude
+    end
+
+    # @return [Astronoby::Distance] least distance of the Moon's centre from the
+    #   axis of Earth's shadow at greatest eclipse. This is the unsigned length
+    #   of which gamma is the value in Earth radii.
+    def shadow_axis_distance
+      @geometry.axis_distance
     end
 
     # @return [Boolean] true for a penumbral eclipse (the Moon misses the umbra)
@@ -103,6 +100,12 @@ module Astronoby
     # @return [Boolean] true for a total eclipse
     def total?
       @kind == TOTAL
+    end
+
+    # @param observer [Astronoby::Observer] the observer
+    # @return [Astronoby::LunarEclipseVisibility] the local circumstances
+    def visibility_from(observer)
+      LunarEclipseVisibility.new(eclipse: self, observer: observer)
     end
   end
 end
