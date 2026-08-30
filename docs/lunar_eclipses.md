@@ -41,7 +41,7 @@ eclipse.umbral_magnitude     # => 1.179
 eclipse.penumbral_magnitude  # => 2.26
 ```
 
-`#gamma` is the least distance of the Moon's centre from the axis of Earth's shadow at greatest eclipse, in Earth radii, positive when the Moon passes north of the axis and negative when it passes south. It is the standard, dimensionless eclipse parameter used by IMCCE and NASA. The same quantity is also available as a `Astronoby::Distance` through `#shadow_axis_distance`, and the side of the axis it takes its sign from is on the geometry as `#north_of_axis?`.
+`#gamma` is the least distance of the Moon's centre from the axis of Earth's shadow at greatest eclipse, in Earth radii, positive when the Moon passes north of the axis and negative when it passes south. It is the standard, dimensionless eclipse parameter used by IMCCE and NASA. The same quantity is also available as an `Astronoby::Distance` through `#shadow_axis_distance`, and the side of the axis it takes its sign from is on the geometry as `#north_of_axis?`.
 
 ```rb
 eclipse.gamma                       # => 0.348

@@ -48,7 +48,7 @@ module Astronoby
     #   derived from the position vector, referred to the frame's epoch
     def equatorial
       @equatorial ||= begin
-        return Coordinates::Equatorial.zero if distance.zero?
+        return Coordinates::Equatorial.zero(epoch: epoch) if distance.zero?
 
         Coordinates::Equatorial.from_position_vector(@position, epoch: epoch)
       end
