@@ -32,9 +32,14 @@ module Astronoby
         @epoch = epoch
       end
 
+      # @param epoch [Numeric] Julian Date epoch the coordinates are referred to
       # @return [Astronoby::Coordinates::Equatorial] zero coordinates
-      def self.zero
-        new(declination: Angle.zero, right_ascension: Angle.zero)
+      def self.zero(epoch: JulianDate::DEFAULT_EPOCH)
+        new(
+          declination: Angle.zero,
+          right_ascension: Angle.zero,
+          epoch: epoch
+        )
       end
 
       # Derives equatorial coordinates from a position vector.
@@ -43,7 +48,7 @@ module Astronoby
       # @param epoch [Numeric] Julian Date epoch the vector is referred to
       # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates
       def self.from_position_vector(position, epoch: JulianDate::DEFAULT_EPOCH)
-        return zero if position.zero?
+        return zero(epoch: epoch) if position.zero?
 
         term1 = position.z.m
         term2 = position.magnitude.m

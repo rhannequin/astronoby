@@ -26,7 +26,7 @@ module Astronoby
       located = (
         samples_on_root(samples) +
           find_brackets(samples).map { |a, b, f_a| bisect(a, b, f_a) }
-      ).sort
+      ).uniq.sort
       located.select { |jd| accept.nil? || accept.call(jd) }
     end
 

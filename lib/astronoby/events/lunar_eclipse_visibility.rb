@@ -138,6 +138,7 @@ module Astronoby
     def horizon_crossings
       @memo[:horizon_crossings] ||= horizon_crossing_times
         .map { |time| Instant.from_terrestrial_time(time) }
+        .freeze
     end
 
     # @return [Array<Range<Astronoby::Instant>>] the observable stretches, in
@@ -152,7 +153,7 @@ module Astronoby
             Instant.from_terrestrial_time(starting),
             Instant.from_terrestrial_time(ending)
           )
-        end
+        end.freeze
       end
     end
 
@@ -279,6 +280,7 @@ module Astronoby
           samples_per_period: 1
         )
         .roots(@window_start, @window_end)
+        .freeze
     end
 
     def within_eclipse(instant)
