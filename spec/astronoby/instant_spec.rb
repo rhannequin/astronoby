@@ -90,6 +90,30 @@ RSpec.describe Astronoby::Instant do
     end
   end
 
+  describe "#tdb" do
+    it "returns the Barycentric Dynamical Time" do
+      instant = described_class.from_time(Time.utc(2025, 1, 1))
+
+      expect(instant.tdb.to_f).to eq(2460676.5008002035)
+    end
+
+    it "differs from Terrestrial Time by the relativistic correction" do
+      instant = described_class.from_terrestrial_time(2460796)
+
+      microseconds = ((instant.tdb - instant.tt) *
+        Astronoby::Constants::SECONDS_PER_DAY * 1e6).to_f
+
+      expect(microseconds).to be_within(0.000001).of(1471.088181)
+      # ERFA eraDtdb(2460796.0, 0.0, 0, 0, 0, 0): +1471.088181 us
+    end
+
+    it "is read as a Rational, which a Float Julian Date cannot hold" do
+      instant = described_class.from_terrestrial_time(2460796)
+
+      expect(instant.tdb).to be_a(Rational)
+    end
+  end
+
   describe "#utc_offset" do
     it "returns the difference between the instance and the UTC time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "date"
+require "horologium"
 
 module Astronoby
   # Represents a specific instant in time using Terrestrial Time (TT) as its
@@ -8,8 +9,14 @@ module Astronoby
   # time scales commonly used in astronomy:
   # - Terrestrial Time (TT)
   # - International Atomic Time (TAI)
+  # - Barycentric Dynamical Time (TDB)
   # - Universal Time Coordinated (UTC)
   # - Greenwich Mean Sidereal Time (GMST)
+  #
+  # TAI and TDB are delegated to the horologium gem, which owns the scales
+  # that convert by definition or by model. UT1 is not: it rests on
+  # observations of the rotation of the Earth, and comes from
+  # {Astronoby::DeltaT}.
   #
   # @example Create an instant from the current time
   #   instant = Astronoby::Instant.from_time(Time.now)
@@ -27,6 +34,11 @@ module Astronoby
     # start at noon. `DateTime.jd` expects a day that starts at the preceding
     # midnight. This constant adds 0.5 days (12 hours) to make the conversion.
     DATETIME_JD_EPOCH_ADJUSTMENT = 0.5
+
+    # Astronoby pins the precision it asks horologium for rather than reading
+    # horologium's global default, so a host application configuring
+    # horologium for itself cannot change what Astronoby computes.
+    PRECISION = :standard
 
     class << self
       # Creates a new Instant from a Terrestrial Time value
@@ -155,21 +167,26 @@ module Astronoby
 
     # Get the International Atomic Time (TAI)
     #
-    # @return [Numeric] TAI as Julian Date
+    # Read as a Rational rather than a Float. A Julian Date is around 2.46
+    # million, so a single Float rounds to about 47 microseconds of the day,
+    # which would coarsen an instant that TT carries exactly.
+    #
+    # @return [Rational] TAI as Julian Date
     def tai
-      @memo[:tai] ||= @terrestrial_time -
-        Rational(Constants::TAI_TT_OFFSET, Constants::SECONDS_PER_DAY)
+      @memo[:tai] ||= scale_free_instant
+        .as(:julian_date, scale: :tai, as: :rational)
     end
 
     # Get the Barycentric Dynamical Time (TDB)
-    # Note: Currently approximated as equal to TT
     #
-    # @return [Numeric] TDB as Julian Date
+    # TDB - TT comes from the Fairhead and Bretagnon series ERFA uses. It
+    # peaks around 1.7 milliseconds, so a Float Julian Date would quantise
+    # most of the correction away; see {#tai} on the shape.
+    #
+    # @return [Rational] TDB as Julian Date
     def tdb
-      # This is technically false, there is a slight difference between TT and
-      # TDB. However, this difference is so small that currenly Astronoby
-      # doesn't support it and consider they are the same value.
-      @memo[:tdb] ||= @terrestrial_time
+      @memo[:tdb] ||= scale_free_instant
+        .as(:julian_date, scale: :tdb, as: :rational)
     end
 
     # Get the offset between TT and UTC for this instant
@@ -197,5 +214,21 @@ module Astronoby
       @terrestrial_time <=> other.terrestrial_time
     end
     alias_method :eql?, :==
+
+    private
+
+    # The instant as horologium holds it: a point on the timeline with no
+    # scale of its own. Building it costs more than reading a Julian Date back
+    # out of it, so it is built on the first scale conversion that needs it
+    # and never on the paths that only want TT.
+    #
+    # @return [Horologium::Instant]
+    def scale_free_instant
+      @memo[:scale_free_instant] ||= Horologium::Instant.from_julian_date(
+        @terrestrial_time,
+        scale: :tt,
+        precision: PRECISION
+      )
+    end
   end
 end
