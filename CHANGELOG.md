@@ -9,6 +9,9 @@
   could never be brought back, and settings and transits came out up to a few
   minutes late depending on the window asked for.
 * Refer equatorial coordinates to the epoch of the frame they come from
+* Return real Barycentric Dynamical Time from `Instant#tdb`, which returned
+  Terrestrial Time unchanged. The two scales differ by up to about 1.7
+  milliseconds.
 
 ### Features
 
@@ -18,6 +21,13 @@
 
 ### Improvements
 
+* Compute the TAI and TDB time scales with the horologium gem, which owns the
+  scales that convert by definition or by model. UT1 stays in Astronoby.
+* Read `Instant#tai` and `#tdb` as a `Rational`, which a `Float` Julian Date is
+  too coarse to hold
+* Evaluate `Precession` in TT, as SOFA and ERFA do
+* Remove `Constants::TAI_TT_OFFSET`
+* Raise the minimum `iers` version from 0.1 to 0.2
 * Bisect to a millisecond rather than to a second when locating an event in time
 * Reduce the Moon to the observer by vectors for lunar eclipse visibility
 * Answer lunar eclipse phase coverage in the words the whole eclipse uses

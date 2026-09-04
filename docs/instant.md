@@ -25,7 +25,10 @@ International Astronomical Union, as a [Julian Date].
 From this instant in <abbr title="Terrestrial Time">TT</abbr>, other time
 standards can be expressed, such as the
 <abbr title="International Atomic Time">TAI</abbr> or the
-<abbr title="Barycentric Dynamic Time">TDB</abbr>.
+<abbr title="Barycentric Dynamic Time">TDB</abbr>. Those two are computed by
+the [horologium] gem, which owns the time scales that convert by definition or
+by model. UT1 is not one of them: it follows the actual rotation of the Earth,
+so it stays in Astronoby, backed by [IERS data](iers.md).
 
 ## Initialization
 
@@ -93,7 +96,7 @@ instant.gmst
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.tai.to_f
-# => 2460795.9996275003
+# => 2460795.9996275
 ```
 
 - UTC offset (difference with UTC in days)
@@ -108,13 +111,16 @@ instant.utc_offset.to_f
 - Barycentric Dynamic Time
 
 ```rb
-# This is not handled for now, and returns TT
-
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
-instant.tdb
-# => 2460796
+instant.tdb.to_f
+# => 2460796.000000017
 ```
+
+`tai` and `tdb` are read as a `Rational`. A Julian Date is around 2.46
+million, so a single `Float` rounds to about 47 microseconds of the day, which
+is more than the whole TDB - TT correction. Call `to_f` when a `Float` is what
+you want.
 
 ## Value Equality
 
@@ -131,6 +137,7 @@ instant1 < instant2
 # => true
 ```
 
+[horologium]: https://github.com/rhannequin/horologium
 [Gregorian calendar]: https://en.wikipedia.org/wiki/Gregorian_calendar
 [Terrestrial Time]: https://en.wikipedia.org/wiki/Terrestrial_Time
 [Julian Date]: https://en.wikipedia.org/wiki/Julian_day

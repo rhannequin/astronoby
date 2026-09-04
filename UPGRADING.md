@@ -89,6 +89,61 @@ may round to the next one.
 A sample landing exactly on a root is also no longer missed, and bisection
 stops if a bracket reaches the resolution of a Float rather than looping.
 
+### New `horologium` dependency, and `iers` raised to 0.2
+
+The TAI and TDB time scales are now computed by the
+[`horologium`](https://github.com/rhannequin/horologium) gem, which owns the
+scales that convert by definition or by model. UT1 stays in Astronoby: it
+follows the actual rotation of the Earth rather than a definition, and comes
+from `Astronoby::DeltaT`. Nothing else about time changes, and `Instant#tt`,
+`#to_time`, `#to_date`, `#to_datetime`, `#delta_t`, `#gmst`, `#gast`, `#lmst`
+and `#last` are untouched.
+
+`horologium` requires `iers` 0.2, so the minimum `iers` version is raised from
+0.1 to 0.2. The change is additive, and no `iers` API Astronoby uses has
+changed.
+
+Astronoby pins the precision it asks `horologium` for, so an application that
+calls `Horologium.configure` for its own purposes cannot change what Astronoby
+computes.
+
+### `Instant#tdb` now returns Barycentric Dynamical Time
+
+`tdb` previously returned Terrestrial Time unchanged, documented in the source
+as an approximation. It now returns real TDB, from the Fairhead and Bretagnon
+series that ERFA uses. The two scales differ by up to about 1.7 milliseconds.
+
+```rb
+instant = Astronoby::Instant.from_terrestrial_time(2460796)
+
+# Before
+instant.tdb          # => 2460796
+
+# After
+instant.tdb.to_f     # => 2460796.000000017
+```
+
+`Precession` is now evaluated in TT, as SOFA and ERFA do. It read `tdb` before,
+which was TT under another name, so precession results are unchanged.
+
+### `Instant#tai` and `#tdb` return a `Rational`
+
+Both are read as a `Rational` rather than a `Float`. A Julian Date is around
+2.46 million, so a single `Float` rounds to about 47 microseconds of the day,
+which is more than the whole TDB - TT correction. Call `to_f` where a `Float`
+is what you want.
+
+The value of `tai` is unchanged: it was already exact for an instant built
+from an `Integer` or a `Rational`, and it is exact for one built from a `Float`
+now too. What changes is its type, and only for that last case, where `tai`
+used to come back as a `Float`. `tai.to_f` can land one `Float` step away from
+where it used to, closer to the true value.
+
+### Drop of `Constants::TAI_TT_OFFSET`
+
+`Astronoby::Constants::TAI_TT_OFFSET` has been removed. The offset between TAI
+and TT is `horologium`'s to hold now, and Astronoby no longer names it.
+
 ## Upgrading from 0.9.0 to 0.10.0
 
 ### Minimum Ruby version bumped to 3.2.0
