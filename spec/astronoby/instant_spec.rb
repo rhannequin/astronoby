@@ -88,6 +88,15 @@ RSpec.describe Astronoby::Instant do
       expect(instant.tai.to_f).to eq(2460676.500427705)
       # Skyfield: 2460676.500428240746260
     end
+
+    it "sits exactly 32.184 seconds behind Terrestrial Time" do
+      instant = described_class.from_time(Time.utc(2025, 1, 1))
+
+      offset = Rational(32_184, 1000) /
+        Astronoby::Constants::SECONDS_PER_DAY.to_i
+
+      expect(instant.tai).to eq(instant.tt.to_r - offset)
+    end
   end
 
   describe "#tdb" do

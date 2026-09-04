@@ -38,7 +38,12 @@ module Astronoby
     # Astronoby pins the precision it asks horologium for rather than reading
     # horologium's global default, so a host application configuring
     # horologium for itself cannot change what Astronoby computes.
-    PRECISION = :standard
+    #
+    # Exact rather than standard: standard would round the Julian Date into a
+    # two-part float on the way in, and TAI is a fixed offset from TT, so
+    # there is nothing to round it for. It is also the cheaper of the two
+    # here, having no conversion to make in either direction.
+    PRECISION = :exact
 
     class << self
       # Creates a new Instant from a Terrestrial Time value

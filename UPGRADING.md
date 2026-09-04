@@ -133,11 +133,12 @@ Both are read as a `Rational` rather than a `Float`. A Julian Date is around
 which is more than the whole TDB - TT correction. Call `to_f` where a `Float`
 is what you want.
 
-The value of `tai` is unchanged: it was already exact for an instant built
-from an `Integer` or a `Rational`, and it is exact for one built from a `Float`
-now too. What changes is its type, and only for that last case, where `tai`
-used to come back as a `Float`. `tai.to_f` can land one `Float` step away from
-where it used to, closer to the true value.
+`tai` is now exactly 32.184 seconds behind TT. It was within a few femtoseconds
+of that for an instant built from an `Integer` or a `Rational`, the offset
+having been built from a `Float` literal, and up to 47 microseconds off for one
+built from a `Float`, where the result came back as a `Float` too. So the type
+changes in that last case, and `tai.to_f` can land one `Float` step from where
+it used to, closer to the true value.
 
 ### Drop of `Constants::TAI_TT_OFFSET`
 
