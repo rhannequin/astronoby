@@ -25,7 +25,7 @@ International Astronomical Union, as a [Julian Date].
 From this instant in <abbr title="Terrestrial Time">TT</abbr>, other time
 standards can be expressed, such as the
 <abbr title="International Atomic Time">TAI</abbr> or the
-<abbr title="Barycentric Dynamic Time">TDB</abbr>. Those two are computed by
+<abbr title="Barycentric Dynamical Time">TDB</abbr>. Those two are computed by
 the [horologium] gem, which owns the time scales that convert by definition or
 by model. UT1 is not one of them: it follows the actual rotation of the Earth,
 so it stays in Astronoby, backed by [IERS data](iers.md).
@@ -108,7 +108,7 @@ instant.utc_offset.to_f
 # => 0.0008003974106626159
 ```
 
-- Barycentric Dynamic Time
+- Barycentric Dynamical Time
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
