@@ -163,7 +163,7 @@ module Astronoby
 
     def t
       @t ||= Rational(
-        @instant.tdb - JulianDate::DEFAULT_EPOCH,
+        @instant.tt - JulianDate::DEFAULT_EPOCH,
         Constants::DAYS_PER_JULIAN_CENTURY
       )
     end
