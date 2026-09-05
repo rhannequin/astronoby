@@ -3,7 +3,7 @@ PATH
   specs:
     astronoby (0.10.0)
       ephem (~> 0.5)
-      horologium (~> 0.0.3)
+      horologium (~> 0.0.4)
       iers (~> 0.2)
       matrix (~> 0.4.2)
 
@@ -18,7 +18,7 @@ GEM
       minitar (~> 0.12)
       zlib (~> 3.2)
     erb (6.0.4)
-    horologium (0.0.3)
+    horologium (0.0.4)
       iers (~> 0.2)
     iers (0.2.0)
     io-console (0.8.2)
