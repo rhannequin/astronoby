@@ -9,6 +9,11 @@
   could never be brought back, and settings and transits came out up to a few
   minutes late depending on the window asked for.
 * Refer equatorial coordinates to the epoch of the frame they come from
+* Keep ΔT at its last measured value past the end of the IERS series. `iers`
+  0.3.0 stopped attaching an `available_range` to the `OutOfRangeError` it
+  raises for an uncovered date, and the fallback read that absence as "no data
+  at all" and answered 0. Every date after the bundled series, currently
+  2027-09-04, was off by about 69 seconds.
 
 ### Features
 
