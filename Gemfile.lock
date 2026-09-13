@@ -1,16 +1,9 @@
-GIT
-  remote: https://github.com/rhannequin/horologium.git
-  revision: 3b9a0854eaf34d5680f98a73c95deaffab8fc54b
-  specs:
-    horologium (0.0.5)
-      iers (~> 0.3, >= 0.3.1)
-
 PATH
   remote: .
   specs:
     astronoby (0.10.0)
       ephem (~> 0.5)
-      horologium (>= 0.0.5, < 0.2)
+      horologium (~> 0.1)
       iers (~> 0.3, >= 0.3.1)
       matrix (~> 0.4.2)
 
@@ -25,6 +18,8 @@ GEM
       minitar (~> 0.12)
       zlib (~> 3.2)
     erb (6.0.4)
+    horologium (0.1.0)
+      iers (~> 0.3, >= 0.3.1)
     iers (0.3.1)
     io-console (0.8.2)
     irb (1.17.0)
@@ -118,7 +113,6 @@ PLATFORMS
 DEPENDENCIES
   astronoby!
   benchmark (~> 0.4)
-  horologium!
   irb (~> 1.14)
   rake (~> 13.0)
   rspec (~> 3.0)
