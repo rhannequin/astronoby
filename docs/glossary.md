@@ -238,6 +238,8 @@ The primary time standard used worldwide. All astronomical calculations in Astro
 
 - **Julian Day**: Continuous day count since 4713 BCE
 - **Terrestrial Time (TT)**: Astronomical time scale used for calculations
+- **International Atomic Time (TAI)**: The atomic time scale TT is defined against, 32.184 seconds behind it
+- **Barycentric Dynamical Time (TDB)**: Time at the Solar System barycentre, within about 1.7 milliseconds of TT
 - **UTC**: Coordinated Universal Time, the standard for civil time
 
 ## See also
