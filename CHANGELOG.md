@@ -4,21 +4,21 @@
 
 ### New features
 
-* Add `HorizontalTransformation`, which converts equatorial coordinates at
+- Add `HorizontalTransformation`, which converts equatorial coordinates at
   J2000 epoch into horizontal coordinates for one observer and one instant. The
   rotation and the sidereal time are computed once, which makes converting many
   points, like the stars of a catalogue, about 70 times faster than going
   through `DeepSkyObject#at(instant).observed_by(observer).horizontal`. Points
   are treated as fixed directions, as for a `DeepSkyObject` without an
   ephemeris. `refraction:` is an option.
-* Add `AltitudeCrossingCalculator`, which finds when a body reaches any
+- Add `AltitudeCrossingCalculator`, which finds when a body reaches any
   altitude, with unrounded instants, the crossing direction, a grazing flag and
   the culminations. `refraction:` and `reference:` (`:center`, `:upper_limb`,
   `:lower_limb`) are options.
 
 ### Changes
 
-* Base `TwilightCalculator` on `AltitudeCrossingCalculator`. Times change
+- Base `TwilightCalculator` on `AltitudeCrossingCalculator`. Times change
   slightly: up to about 30 seconds at the standard angles, and up to about 100
   seconds with `time_for_zenith_angle` and custom angles. The new values match
   IMCCE, Horizons and Skyfield. Twilight that exists is returned when the Sun
@@ -27,21 +27,21 @@
 
 ### Bug fixes
 
-* Apply nutation after precession for a `DeepSkyObject` without an ephemeris.
+- Apply nutation after precession for a `DeepSkyObject` without an ephemeris.
   The two rotations were composed in the wrong order, so the apparent position
   was off by up to about 0.1 arcsecond depending on the date, and the velocity
   had the same error. The rotation now matches ERFA and Skyfield, and is the
   one used when an ephemeris is given. Without an ephemeris there is still no
   aberration correction.
-* Let the rise, transit and set refinement move an estimate back in time. The
+- Let the rise, transit and set refinement move an estimate back in time. The
   correction was clamped to be positive, so an estimate that overshot its event
   could never be brought back, and settings and transits came out up to a few
   minutes late depending on the window asked for.
-* Refer equatorial coordinates to the epoch of the frame they come from
-* Return real Barycentric Dynamical Time from `Instant#tdb`, which returned
+- Refer equatorial coordinates to the epoch of the frame they come from
+- Return real Barycentric Dynamical Time from `Instant#tdb`, which returned
   Terrestrial Time unchanged. The two scales differ by up to about 1.7
   milliseconds.
-* Keep ΔT at its last measured value past the end of the IERS series. `iers`
+- Keep ΔT at its last measured value past the end of the IERS series. `iers`
   0.3.0 stopped attaching an `available_range` to the `OutOfRangeError` it
   raises for an uncovered date, and the fallback read that absence as "no data
   at all" and answered 0. Every date after the bundled series, currently
@@ -49,28 +49,28 @@
 
 ### Features
 
-* Expose lunar eclipse shadow geometry at greatest eclipse and at every contact
-* Add lunar eclipse local circumstances with `LunarEclipse#visibility_from`
-* Expose the Moon's apparent place at every lunar eclipse contact
+- Expose lunar eclipse shadow geometry at greatest eclipse and at every contact
+- Add lunar eclipse local circumstances with `LunarEclipse#visibility_from`
+- Expose the Moon's apparent place at every lunar eclipse contact
 
 ### Improvements
 
-* Compute the TAI and TDB time scales with the horologium gem, which owns the
+- Compute the TAI and TDB time scales with the horologium gem, which owns the
   scales that convert by definition or by model. UT1 stays in Astronoby.
-* Read `Instant#tai` and `#tdb` as a `Rational`, which a `Float` Julian Date is
+- Read `Instant#tai` and `#tdb` as a `Rational`, which a `Float` Julian Date is
   too coarse to hold
-* Evaluate `Precession` in TT, as SOFA and ERFA do
-* Remove `Constants::TAI_TT_OFFSET`
-* Raise the minimum `iers` version from 0.1 to 0.3.1, which `horologium`
+- Evaluate `Precession` in TT, as SOFA and ERFA do
+- Remove `Constants::TAI_TT_OFFSET`
+- Raise the minimum `iers` version from 0.1 to 0.3.1, which `horologium`
   requires
-* Bisect to a millisecond rather than to a second when locating an event in time
-* Reduce the Moon to the observer by vectors for lunar eclipse visibility
-* Answer lunar eclipse phase coverage in the words the whole eclipse uses
-* Derive a lunar eclipse's magnitudes, axis distance and gamma from its geometry
-* Remove `LunarEclipseVisibility#altitude_at`
-* Share the rise and set horizon convention through `Astronoby::Horizon`
-* Resolve the lunar eclipse shadow axis offset with vectors
-* Reduce lunar eclipse contacts with the IAU eclipse constant k
+- Bisect to a millisecond rather than to a second when locating an event in time
+- Reduce the Moon to the observer by vectors for lunar eclipse visibility
+- Answer lunar eclipse phase coverage in the words the whole eclipse uses
+- Derive a lunar eclipse's magnitudes, axis distance and gamma from its geometry
+- Remove `LunarEclipseVisibility#altitude_at`
+- Share the rise and set horizon convention through `Astronoby::Horizon`
+- Resolve the lunar eclipse shadow axis offset with vectors
+- Reduce lunar eclipse contacts with the IAU eclipse constant k
 
 ## 0.10.0 - 2026-06-26
 
@@ -78,58 +78,58 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
-* Fix constant name typo ([#245])
-* Fix matrix multiplication order in Apparent frame ([#250])
-* Remove spurious N·P from observer ECEF-to-TOD transformation ([#251])
-* Apply aberration in GCRS before precession/nutation rotation ([#253])
-* Fix Moon magnitude ([#254])
-* Fix astrometric position for Deep Sky Objects ([#272])
+- Fix constant name typo ([#245])
+- Fix matrix multiplication order in Apparent frame ([#250])
+- Remove spurious N·P from observer ECEF-to-TOD transformation ([#251])
+- Apply aberration in GCRS before precession/nutation rotation ([#253])
+- Fix Moon magnitude ([#254])
+- Fix astrometric position for Deep Sky Objects ([#272])
 
 ### Features
 
-* Defer Solar System body computations lazily ([#244])
-* Integrate `iers` gem for Delta T and GMST ([#249])
-* Add IERS polar motion correction to observer ECEF-to-TOD transformation ([#252])
-* Fall back to polynomial GMST for dates outside IERS EOP range ([#255])
-* Add ICRS frame bias to precession matrix ([#257])
-* Extract `EarthRotation` class from `Observer` ([#260])
-* Add TEME reference frame for satellite tracking ([#261])
-* Add ECEF to geodetic conversion (WGS-84) ([#262])
-* Memoize per-instant conversions on `Instant` ([#268])
-* Add `ReferenceFrame#separation_from` for angular separation ([#269])
-* Introduce `Center`, `Body` and `Position` domain objects ([#270])
-* Add planetary phenomena ([#271])
-* Add lunar libration, position angle of axis and bright limb ([#273])
-* Add `Astronoby::Orientation` for arcsecond lunar libration ([#279])
-* Add Lunar eclipses ([#280])
-* Add `Astronoby::Duration` ([#281])
+- Defer Solar System body computations lazily ([#244])
+- Integrate `iers` gem for Delta T and GMST ([#249])
+- Add IERS polar motion correction to observer ECEF-to-TOD transformation ([#252])
+- Fall back to polynomial GMST for dates outside IERS EOP range ([#255])
+- Add ICRS frame bias to precession matrix ([#257])
+- Extract `EarthRotation` class from `Observer` ([#260])
+- Add TEME reference frame for satellite tracking ([#261])
+- Add ECEF to geodetic conversion (WGS-84) ([#262])
+- Memoize per-instant conversions on `Instant` ([#268])
+- Add `ReferenceFrame#separation_from` for angular separation ([#269])
+- Introduce `Center`, `Body` and `Position` domain objects ([#270])
+- Add planetary phenomena ([#271])
+- Add lunar libration, position angle of axis and bright limb ([#273])
+- Add `Astronoby::Orientation` for arcsecond lunar libration ([#279])
+- Add Lunar eclipses ([#280])
+- Add `Astronoby::Duration` ([#281])
 
 ### Improvements
 
-* Optimize nutation loop by eliminating array allocations ([#246])
-* Reuse single Nutation instance in observer matrix computation ([#247])
-* Memoize Observer geodetic computation methods ([#248])
-* Update documentation with recent values ([#256])
-* Update referential frames documentation ([#258])
-* YARD documentation update ([#259])
-* Update zlib, JSON and ERB for security reasons
-* Add references to README
-* Bump actions/checkout from 5 to 7 by @dependabot ([#239], [#276])
-* Bump rubyzip from 3.2.1 to 3.4.0 by @dependabot ([#237], [#267], [#275])
-* Bump irb from 1.15.2 to 1.17.0 by @dependabot ([#242])
-* Bump standard from 1.51.1 to 1.55.0 by @dependabot ([#243], [#274])
-* Bump rake from 13.3.1 to 13.4.2 by @dependabot ([#264])
-* Bump ephem from 0.4.1 to 0.5.0 by @dependabot ([#278])
-* Upgrade default Ruby to 4.0.5 ([#277])
+- Optimize nutation loop by eliminating array allocations ([#246])
+- Reuse single Nutation instance in observer matrix computation ([#247])
+- Memoize Observer geodetic computation methods ([#248])
+- Update documentation with recent values ([#256])
+- Update referential frames documentation ([#258])
+- YARD documentation update ([#259])
+- Update zlib, JSON and ERB for security reasons
+- Add references to README
+- Bump actions/checkout from 5 to 7 by @dependabot ([#239], [#276])
+- Bump rubyzip from 3.2.1 to 3.4.0 by @dependabot ([#237], [#267], [#275])
+- Bump irb from 1.15.2 to 1.17.0 by @dependabot ([#242])
+- Bump standard from 1.51.1 to 1.55.0 by @dependabot ([#243], [#274])
+- Bump rake from 13.3.1 to 13.4.2 by @dependabot ([#264])
+- Bump ephem from 0.4.1 to 0.5.0 by @dependabot ([#278])
+- Upgrade default Ruby to 4.0.5 ([#277])
 
 ### Backward-incompatible changes
 
-* Minimum Ruby version bumped to 3.2.0 ([#249])
-* Delta T and GMST now use IERS data ([#249])
-* Defer Solar System body computations lazily ([#244])
-* `SolarSystemBody#ephem` is now publicly accessible ([#244])
-* `ReferenceFrame#center_identifier` replaced by `#center` ([#270])
-* `Sun#equation_of_time` now returns a `Duration` ([#281])
+- Minimum Ruby version bumped to 3.2.0 ([#249])
+- Delta T and GMST now use IERS data ([#249])
+- Defer Solar System body computations lazily ([#244])
+- `SolarSystemBody#ephem` is now publicly accessible ([#244])
+- `ReferenceFrame#center_identifier` replaced by `#center` ([#270])
+- `Sun#equation_of_time` now returns a `Duration` ([#281])
 
 **Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.9.0...v0.10.0
 
@@ -179,32 +179,32 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Features
 
-* Add `#approaching_primary?` and `#receding_from_primary?` to solar system bodies ([#211])
-* Calculate apoapsis and periapsis events ([#213])
-* Improve precision of ΔT ([#219])
-* Deep Sky Object: Compute astrometric position ([#217])
-* Deep Sky Object: Compute apparent position ([#220])
-* Deep Sky Object: Handle velocities properly ([#222])
-* Deep Sky Object: Compute topocentric position ([#226])
-* Deep Sky Object: difference between the body and the position ([#227])
-* Deep Sky Object: Add support for RiseTransitSetCalculator ([#228])
+- Add `#approaching_primary?` and `#receding_from_primary?` to solar system bodies ([#211])
+- Calculate apoapsis and periapsis events ([#213])
+- Improve precision of ΔT ([#219])
+- Deep Sky Object: Compute astrometric position ([#217])
+- Deep Sky Object: Compute apparent position ([#220])
+- Deep Sky Object: Handle velocities properly ([#222])
+- Deep Sky Object: Compute topocentric position ([#226])
+- Deep Sky Object: difference between the body and the position ([#227])
+- Deep Sky Object: Add support for RiseTransitSetCalculator ([#228])
 
 ### Improvements
 
-* Drop `Astronoby::Apparent#angular_diameter` ([#221])
-* Bump rubyzip from 3.0.2 to 3.2.1 by @dependabot ([#210], [#215], [#223], [#233])
-* Bump standard from 1.50.0 to 1.51.1 by @dependabot ([#212], [#214])
-* Be proud about the precision achieved ([#218])
-* Use local apparent instead of local mean sidereal time for hour angle ([#225])
-* Bump rspec from 3.13.1 to 3.13.2 by @dependabot ([#229])
-* Bump benchmark from 0.4.1 to 0.5.0 by @dependabot ([#230])
-* Add documentation for deep-sky objects ([#232])
-* Bump rake from 13.3.0 to 13.3.1 by @dependabot ([#235])
+- Drop `Astronoby::Apparent#angular_diameter` ([#221])
+- Bump rubyzip from 3.0.2 to 3.2.1 by @dependabot ([#210], [#215], [#223], [#233])
+- Bump standard from 1.50.0 to 1.51.1 by @dependabot ([#212], [#214])
+- Be proud about the precision achieved ([#218])
+- Use local apparent instead of local mean sidereal time for hour angle ([#225])
+- Bump rspec from 3.13.1 to 3.13.2 by @dependabot ([#229])
+- Bump benchmark from 0.4.1 to 0.5.0 by @dependabot ([#230])
+- Add documentation for deep-sky objects ([#232])
+- Bump rake from 13.3.0 to 13.3.1 by @dependabot ([#235])
 
 ### Backward-incompatible changes
 
-* Drop `Astronoby::Apparent#angular_diameter` ([#221])
-* Use local apparent instead of local mean sidereal time for hour angle ([#225])
+- Drop `Astronoby::Apparent#angular_diameter` ([#221])
+- Use local apparent instead of local mean sidereal time for hour angle ([#225])
 
 **Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.8.0...v0.9.0
 
@@ -237,49 +237,49 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
-* Fix UPGRADING documentation ([#178])
-* Fix possible division by zero in RTS ([#185])
+- Fix UPGRADING documentation ([#178])
+- Fix possible division by zero in RTS ([#185])
 
 ### Features
 
-* Introduce performance benchmark ([#183])
-* Cache positions in RTS calculator ([#182])
-* Internal global LRU cache ([#186])
-* Global configuration ([#187])
-* Compute the constellation a body is in ([#199])
-* Add `#phase_angle` and `#illuminated_fraction` to planets ([#200])
-* Apparent magnitude ([#201])
-* Add #events_between to TwilightCalculator with better accuracy ([#204])
-* `#angular_diameter` on Solar System bodies ([#207])
-* Fix constellation boundaries near 24h right ascension ([#209])
+- Introduce performance benchmark ([#183])
+- Cache positions in RTS calculator ([#182])
+- Internal global LRU cache ([#186])
+- Global configuration ([#187])
+- Compute the constellation a body is in ([#199])
+- Add `#phase_angle` and `#illuminated_fraction` to planets ([#200])
+- Apparent magnitude ([#201])
+- Add #events_between to TwilightCalculator with better accuracy ([#204])
+- `#angular_diameter` on Solar System bodies ([#207])
+- Fix constellation boundaries near 24h right ascension ([#209])
 
 ### Improvements
 
-* Bump standard from 1.49.0 to 1.50.0 by @dependabot ([#177])
-* Bump ephem from 0.3.0 to 0.4.1 by @dependabot ([#181], [#191])
-* Bump irb from 1.14.3 to 1.15.2 by @dependabot ([#184])
-* Bump rspec from 3.13.0 to 3.13.1 by @dependabot ([#188])
-* Bump benchmark from 0.4.0 to 0.4.1 by @dependabot ([#189])
-* Bump rake from 13.2.1 to 13.3.0 by @dependabot ([#190])
-* Bump matrix from 0.4.2 to 0.4.3 by @dependabot ([#193])
-* Update rubyzip requirement from ~> 2.3 to ~> 3.0 by @dependabot ([#194])
-* Bump rubyzip from 3.0.0 to 3.0.2 by @dependabot ([#202], [#206])
-* Exclude benchmarks from release ([#196])
-* `Epoch` refactoring into `JulianDate` ([#197])
-* Support Ruby 3.4.4 ([#198])
-* Bump actions/checkout from 4 to 5 ([#203])
-* Internal documentation ([#205])
+- Bump standard from 1.49.0 to 1.50.0 by @dependabot ([#177])
+- Bump ephem from 0.3.0 to 0.4.1 by @dependabot ([#181], [#191])
+- Bump irb from 1.14.3 to 1.15.2 by @dependabot ([#184])
+- Bump rspec from 3.13.0 to 3.13.1 by @dependabot ([#188])
+- Bump benchmark from 0.4.0 to 0.4.1 by @dependabot ([#189])
+- Bump rake from 13.2.1 to 13.3.0 by @dependabot ([#190])
+- Bump matrix from 0.4.2 to 0.4.3 by @dependabot ([#193])
+- Update rubyzip requirement from ~> 2.3 to ~> 3.0 by @dependabot ([#194])
+- Bump rubyzip from 3.0.0 to 3.0.2 by @dependabot ([#202], [#206])
+- Exclude benchmarks from release ([#196])
+- `Epoch` refactoring into `JulianDate` ([#197])
+- Support Ruby 3.4.4 ([#198])
+- Bump actions/checkout from 4 to 5 ([#203])
+- Internal documentation ([#205])
 
 ### Backward-incompatible changes
 
-* `Epoch` refactoring into `JulianDate` ([#197])
-* `#angular_diameter` on Solar System bodies ([#207])
-* Rename "epoch" ([#208])
+- `Epoch` refactoring into `JulianDate` ([#197])
+- `#angular_diameter` on Solar System bodies ([#207])
+- Rename "epoch" ([#208])
 
 ### Closed issues
 
-* Consider adding typical usage/deployment info ([#179])
-* Performance degradation in v0.7 ([#180])
+- Consider adding typical usage/deployment info ([#179])
+- Performance degradation in v0.7 ([#180])
 
 **Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.7.0...v0.8.0
 
@@ -321,63 +321,63 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
-* Fix Moon monthly phase events calculation by @valeriy-sokoloff in ([#124])
+- Fix Moon monthly phase events calculation by @valeriy-sokoloff in ([#124])
 
 ### Features
 
-* Add `Instant` value object ([#121])
-* Introduce barycentric position of Solar System major bodies ([#127])
-* Introduce Astrometric position for planets ([#129])
-* Rename Barycentric into Geometric ([#130])
-* Rename IRCF and remove module Position ([#131])
-* Geometric and Astrometric reference frames with coordinates ([#132])
-* Ecliptic coordinates for Geometric and Astrometric reference frames ([#134])
-* Add Geometric and Astrometric positions for `Sun` and `Moon` ([#135])
-* Implement new aberration correction ([#136])
-* Precession matrix for 2006 P03 model ([#137])
-* Introduce `MeanOfDate` reference frame ([#138])
-* New nutation model ([#141])
-* Light deflection correction ([#142])
-* Introduce `Apparent` reference frame ([#143])
-* Introduce `Topocentric` reference frame ([#145])
-* Improve Vector integration with value objects ([#146])
-* Handle refracted topocentric horizontal coordinates ([#147])
-* Add `#angular_diameter` to apparent and topocentric reference frames ([#149])
-* Introduce new calculator for rising, transit and setting times ([#148])
-* Clean code after Ephem refactoring ([#152])
-* Improve `RisingTransitSettingEventsCalculator` ([#155])
-* Simplify `RisingTransitSettingEventsCalculator` ([#156])
-* Lazy-load reference frames ([#157])
-* Overall performance improvements ([#163])
-* Add support for IMCCE INPOP by @JoelQ and @rhannequin ([#166])
-* Update INPOP excerpt in spec data ([#167])
-* Introduce a better rise/transit/set calculator ([#168])
-* Drop `Astronoby::Observer#observe` ([#174])
+- Add `Instant` value object ([#121])
+- Introduce barycentric position of Solar System major bodies ([#127])
+- Introduce Astrometric position for planets ([#129])
+- Rename Barycentric into Geometric ([#130])
+- Rename IRCF and remove module Position ([#131])
+- Geometric and Astrometric reference frames with coordinates ([#132])
+- Ecliptic coordinates for Geometric and Astrometric reference frames ([#134])
+- Add Geometric and Astrometric positions for `Sun` and `Moon` ([#135])
+- Implement new aberration correction ([#136])
+- Precession matrix for 2006 P03 model ([#137])
+- Introduce `MeanOfDate` reference frame ([#138])
+- New nutation model ([#141])
+- Light deflection correction ([#142])
+- Introduce `Apparent` reference frame ([#143])
+- Introduce `Topocentric` reference frame ([#145])
+- Improve Vector integration with value objects ([#146])
+- Handle refracted topocentric horizontal coordinates ([#147])
+- Add `#angular_diameter` to apparent and topocentric reference frames ([#149])
+- Introduce new calculator for rising, transit and setting times ([#148])
+- Clean code after Ephem refactoring ([#152])
+- Improve `RisingTransitSettingEventsCalculator` ([#155])
+- Simplify `RisingTransitSettingEventsCalculator` ([#156])
+- Lazy-load reference frames ([#157])
+- Overall performance improvements ([#163])
+- Add support for IMCCE INPOP by @JoelQ and @rhannequin ([#166])
+- Update INPOP excerpt in spec data ([#167])
+- Introduce a better rise/transit/set calculator ([#168])
+- Drop `Astronoby::Observer#observe` ([#174])
 
 ### Improvements
 
-* Bump standard from 1.42.1 to 1.49.0 by @dependabot ([#123], [#128], [#150], [#165])
-* Bump rubyzip from 2.3.2 to 2.4.1 by @dependabot ([#120])
-* Add more tests for Julian Date conversion ([#122])
-* Upgrade main Ruby version and supported ones ([#125])
-* Update email address and gem description ([#126])
-* Increase precision of mean obliquity ([#133])
-* Add supported Rubies ([#139])
-* Set Ruby 3.4.2 as default version ([#140])
-* Fix dependency secutiry patch ([#151])
-* Improve HMS/DMS formats ([#153])
-* Use excerpts ephemerides for specs of Sun and Moon ([#154])
-* Add link to deprecated documentation ([#160])
-* Default Ruby 3.4.3 and support recent rubies ([#169])
-* Better Moon phases test coverage ([#172])
-* Optimize Observer with GMST from Instant ([#173])
-* Update README about documentation location ([#175])
-* Add GitHub Actions permissions ([#176])
+- Bump standard from 1.42.1 to 1.49.0 by @dependabot ([#123], [#128], [#150], [#165])
+- Bump rubyzip from 2.3.2 to 2.4.1 by @dependabot ([#120])
+- Add more tests for Julian Date conversion ([#122])
+- Upgrade main Ruby version and supported ones ([#125])
+- Update email address and gem description ([#126])
+- Increase precision of mean obliquity ([#133])
+- Add supported Rubies ([#139])
+- Set Ruby 3.4.2 as default version ([#140])
+- Fix dependency secutiry patch ([#151])
+- Improve HMS/DMS formats ([#153])
+- Use excerpts ephemerides for specs of Sun and Moon ([#154])
+- Add link to deprecated documentation ([#160])
+- Default Ruby 3.4.3 and support recent rubies ([#169])
+- Better Moon phases test coverage ([#172])
+- Optimize Observer with GMST from Instant ([#173])
+- Update README about documentation location ([#175])
+- Add GitHub Actions permissions ([#176])
 
 ### New Contributors
 
-* @valeriy-sokoloff made their first contribution in https://github.com/rhannequin/astronoby/pull/124
-* @JoelQ made their first contribution in https://github.com/rhannequin/astronoby/pull/166
+- @valeriy-sokoloff made their first contribution in https://github.com/rhannequin/astronoby/pull/124
+- @JoelQ made their first contribution in https://github.com/rhannequin/astronoby/pull/166
 
 **Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.6.0...v0.7.0
 
@@ -439,43 +439,43 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
-* Fix `ObservationEvents` infinite loop in ([#110])
-* Fix observation events times with local time dates in ([#105])
-* Fix `IncompatibleArgumentsError` on Moon's observation events in ([#111])
+- Fix `ObservationEvents` infinite loop in ([#110])
+- Fix observation events times with local time dates in ([#105])
+- Fix `IncompatibleArgumentsError` on Moon's observation events in ([#111])
 
 ### Features
 
-* Add `Astronoby::Moon#current_phase_fraction` in ([#115])
-* Add sources and results for comparison in ([#114])
+- Add `Astronoby::Moon#current_phase_fraction` in ([#115])
+- Add sources and results for comparison in ([#114])
 
 ### Improvements
 
-* Bump standard from 1.36.0 to 1.39.2 by @dependabot in ([#95])
-* Bump standard from 1.39.2 to 1.40.0 by @dependabot in ([#96])
-* Bump dependencies in ([#100])
-* Move dependencies to development ones in ([#99])
-* Bump standard from 1.40.0 to 1.41.1 by @dependabot in ([#104])
-* Bump standard from 1.41.1 to 1.42.0 by @dependabot in ([#107])
-* Bump standard from 1.42.0 to 1.42.1 by @dependabot in ([#108])
-* Bump dependencies in ([#116])
-* Add supported Ruby versions in ([#117])
+- Bump standard from 1.36.0 to 1.39.2 by @dependabot in ([#95])
+- Bump standard from 1.39.2 to 1.40.0 by @dependabot in ([#96])
+- Bump dependencies in ([#100])
+- Move dependencies to development ones in ([#99])
+- Bump standard from 1.40.0 to 1.41.1 by @dependabot in ([#104])
+- Bump standard from 1.41.1 to 1.42.0 by @dependabot in ([#107])
+- Bump standard from 1.42.0 to 1.42.1 by @dependabot in ([#108])
+- Bump dependencies in ([#116])
+- Add supported Ruby versions in ([#117])
 
 **Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.5.0...v0.6.0
 
-[#95]: https://github\.com/rhannequin/astronoby/pull/95
-[#96]: https://github\.com/rhannequin/astronoby/pull/96
-[#99]: https://github\.com/rhannequin/astronoby/pull/99
-[#100]: https://github\.com/rhannequin/astronoby/pull/100
-[#104]: https://github\.com/rhannequin/astronoby/pull/104
-[#105]: https://github\.com/rhannequin/astronoby/pull/105
-[#107]: https://github\.com/rhannequin/astronoby/pull/107
-[#108]: https://github\.com/rhannequin/astronoby/pull/108
-[#110]: https://github\.com/rhannequin/astronoby/pull/110
-[#111]: https://github\.com/rhannequin/astronoby/pull/111
-[#114]: https://github\.com/rhannequin/astronoby/pull/114
-[#115]: https://github\.com/rhannequin/astronoby/pull/115
-[#116]: https://github\.com/rhannequin/astronoby/pull/116
-[#117]: https://github\.com/rhannequin/astronoby/pull/117
+[#95]: https://github.com/rhannequin/astronoby/pull/95
+[#96]: https://github.com/rhannequin/astronoby/pull/96
+[#99]: https://github.com/rhannequin/astronoby/pull/99
+[#100]: https://github.com/rhannequin/astronoby/pull/100
+[#104]: https://github.com/rhannequin/astronoby/pull/104
+[#105]: https://github.com/rhannequin/astronoby/pull/105
+[#107]: https://github.com/rhannequin/astronoby/pull/107
+[#108]: https://github.com/rhannequin/astronoby/pull/108
+[#110]: https://github.com/rhannequin/astronoby/pull/110
+[#111]: https://github.com/rhannequin/astronoby/pull/111
+[#114]: https://github.com/rhannequin/astronoby/pull/114
+[#115]: https://github.com/rhannequin/astronoby/pull/115
+[#116]: https://github.com/rhannequin/astronoby/pull/116
+[#117]: https://github.com/rhannequin/astronoby/pull/117
 
 ## 0.5.0 - 2024-06-11
 
@@ -485,17 +485,17 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Features
 
-* Make `Sun#mean_anomaly` public ([#72])
-* Moon ecliptic coordinates ([#73])
-* Moon apparent geocentric equatorial coordinates ([#75])
-* Moon horizontal coordinates ([#76])
-* Assume Moon's equatorial coordinates are geocentric ([#77])
-* Use observer object for geocentric parallax ([#79])
-* Moon's phase angle and illuminated fraction ([#80])
-* Monthly Moon phases ([#82])
-* Rationalize negative degree angles ([#83])
-* Factorize Moon phases periodic terms ([#85])
-* Introduce observation events for Moon ([#86])
+- Make `Sun#mean_anomaly` public ([#72])
+- Moon ecliptic coordinates ([#73])
+- Moon apparent geocentric equatorial coordinates ([#75])
+- Moon horizontal coordinates ([#76])
+- Assume Moon's equatorial coordinates are geocentric ([#77])
+- Use observer object for geocentric parallax ([#79])
+- Moon's phase angle and illuminated fraction ([#80])
+- Monthly Moon phases ([#82])
+- Rationalize negative degree angles ([#83])
+- Factorize Moon phases periodic terms ([#85])
+- Introduce observation events for Moon ([#86])
 
 [#72]: https://github.com/rhannequin/astronoby/pull/72
 [#73]: https://github.com/rhannequin/astronoby/pull/73
@@ -511,13 +511,13 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Improvements
 
-* Create FUNDING.yml ([#70])
-* Bump standard from 1.35.1 to 1.36.0 ([#71])
-* Bump rexml from 3.2.6 to 3.2.8 ([#74])
-* Expand the number of tested Ruby versions ([#84])
-* Add Ruby 3.1.6 and 3.3.2 coverage ([#88])
-* Improve and update documentation ([#87])
-* Update UPGRADING.md ([#89])
+- Create FUNDING.yml ([#70])
+- Bump standard from 1.35.1 to 1.36.0 ([#71])
+- Bump rexml from 3.2.6 to 3.2.8 ([#74])
+- Expand the number of tested Ruby versions ([#84])
+- Add Ruby 3.1.6 and 3.3.2 coverage ([#88])
+- Improve and update documentation ([#87])
+- Update UPGRADING.md ([#89])
 
 [#70]: https://github.com/rhannequin/astronoby/pull/70
 [#71]: https://github.com/rhannequin/astronoby/pull/71
@@ -529,8 +529,8 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Backward-incompatible changes
 
-* Use Observer in Horizontal coordinates ([#69])
-* Introduce `Astronoby::Distance` value object ([#78])
+- Use Observer in Horizontal coordinates ([#69])
+- Introduce `Astronoby::Distance` value object ([#78])
 
 [#69]: https://github.com/rhannequin/astronoby/pull/69
 [#78]: https://github.com/rhannequin/astronoby/pull/78
@@ -545,19 +545,19 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
-* Fix ecliptic to equatorial epoch ([#56])
+- Fix ecliptic to equatorial epoch ([#56])
 
 [#56]: https://github.com/rhannequin/astronoby/pull/56
 
 ### Features
 
-* Add twilight times ([#49])
-* Add interpolation method ([#52])
-* Add decimal_hour_to_time util ([#53])
-* Calculate leap seconds for an instant ([#54])
-* Add `Angle#-@` ([#55])
-* Enable equivalence and hash equality to `Observer` ([#57])
-* Twilight events dedicated class ([#61])
+- Add twilight times ([#49])
+- Add interpolation method ([#52])
+- Add decimal_hour_to_time util ([#53])
+- Calculate leap seconds for an instant ([#54])
+- Add `Angle#-@` ([#55])
+- Enable equivalence and hash equality to `Observer` ([#57])
+- Twilight events dedicated class ([#61])
 
 [#49]: https://github.com/rhannequin/astronoby/pull/49
 [#52]: https://github.com/rhannequin/astronoby/pull/52
@@ -569,16 +569,16 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Improvements
 
-* Upgrade bundler from 2.3.11 to 2.5.7 by @dorianmariecom ([#45])
-* Drop `BigDecimal` ([#46])
-* Bump rake from 13.1.0 to 13.2.0 ([#47])
-* Increase Ruby versions support ([#48])
-* Bump rake from 13.2.0 to 13.2.1 ([#51])
-* Dedicated constants class ([#62])
-* Improve accuracy of equation of time ([#63])
-* Twilight times better accuracy ([#65])
-* Update UPGRADING.md ([#66])
-* release: Bump version to 0.4.0 ([#67])
+- Upgrade bundler from 2.3.11 to 2.5.7 by @dorianmariecom ([#45])
+- Drop `BigDecimal` ([#46])
+- Bump rake from 13.1.0 to 13.2.0 ([#47])
+- Increase Ruby versions support ([#48])
+- Bump rake from 13.2.0 to 13.2.1 ([#51])
+- Dedicated constants class ([#62])
+- Improve accuracy of equation of time ([#63])
+- Twilight times better accuracy ([#65])
+- Update UPGRADING.md ([#66])
+- release: Bump version to 0.4.0 ([#67])
 
 [#45]: https://github.com/rhannequin/astronoby/pull/45
 [#46]: https://github.com/rhannequin/astronoby/pull/46
@@ -593,9 +593,9 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Backward-incompatible changes
 
-* More accurate rising, transit and setting times ([#50])
-* Observation events dedicated and centralized class ([#60])
-* Change `Astronoby::Sun` constructor ([#64])
+- More accurate rising, transit and setting times ([#50])
+- Observation events dedicated and centralized class ([#60])
+- Change `Astronoby::Sun` constructor ([#64])
 
 [#50]: https://github.com/rhannequin/astronoby/pull/50
 [#60]: https://github.com/rhannequin/astronoby/pull/60
@@ -603,7 +603,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### New Contributors
 
-* @dorianmariecom made their first contribution in [#45]
+- @dorianmariecom made their first contribution in [#45]
 
 [#45]: https://github.com/rhannequin/astronoby/pull/45
 
@@ -615,14 +615,14 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Improvements
 
-* Drop `Angle#==` ([#42])
-* Improved accuracy with Sun's location predictions ([#41])
+- Drop `Angle#==` ([#42])
+- Improved accuracy with Sun's location predictions ([#41])
 
 ### Breaking changes
 
-* **breaking:** Difference between true and apparent ecliptic and equatorial
+- **breaking:** Difference between true and apparent ecliptic and equatorial
   coordinates ([#41])
-* **breaking:** Rename `Angle::as_*` into `Angle::from_*` ([#43])
+- **breaking:** Rename `Angle::as_*` into `Angle::from_*` ([#43])
 
 [#41]: https://github.com/rhannequin/astronoby/pull/41
 [#42]: https://github.com/rhannequin/astronoby/pull/42
@@ -634,28 +634,28 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Features
 
-* Angle comparison ([#21])
-* Add `#distance` and `#angular_size` to `Astronoby::Sun` ([#30])
-* Add geocentric parallax `Astronoby::GeocentricParallax` ([#31])
-* Ability to calculate equinoxes and solstices times ([#32])
-* Round rising and setting times to the second ([#38])
-* Provide sunrise and sunset times ([#35])
-* Provide sunrise and sunset azimuths ([#39])
-* Ability to calculate the equation of time ([#40])
+- Angle comparison ([#21])
+- Add `#distance` and `#angular_size` to `Astronoby::Sun` ([#30])
+- Add geocentric parallax `Astronoby::GeocentricParallax` ([#31])
+- Ability to calculate equinoxes and solstices times ([#32])
+- Round rising and setting times to the second ([#38])
+- Provide sunrise and sunset times ([#35])
+- Provide sunrise and sunset azimuths ([#39])
+- Ability to calculate the equation of time ([#40])
 
 ### Breaking changes
 
-* **breaking:** Accurate setting and rising times for punctual bodies ([#29])
-* **breaking:** Drop `Astronoby::Util::Time` in favor of
+- **breaking:** Accurate setting and rising times for punctual bodies ([#29])
+- **breaking:** Drop `Astronoby::Util::Time` in favor of
   `Astronoby::GreenwichSiderealTime` and `Astonoby::LocalSiderealTime` ([#36])
 
 ### Improvements
 
-* Add Dependabot for Bundler and GitHub Actions ([#24])
-* Add bundler-audit GitHub Action ([#25])
-* Bump actions/checkout from 3 to 4 ([#26])
-* Bump standard from 1.29.0 to 1.35.1 ([#27], [#37])
-* Bump rspec from 3.12.0 to 3.13.0 ([#28])
+- Add Dependabot for Bundler and GitHub Actions ([#24])
+- Add bundler-audit GitHub Action ([#25])
+- Bump actions/checkout from 3 to 4 ([#26])
+- Bump standard from 1.29.0 to 1.35.1 ([#27], [#37])
+- Bump rspec from 3.12.0 to 3.13.0 ([#28])
 
 [#21]: https://github.com/rhannequin/astronoby/pull/21
 [#24]: https://github.com/rhannequin/astronoby/pull/24
@@ -678,27 +678,27 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Features
 
-* Support angles in hours
-* Support coordinates
-  * `Astronoby::Coordinates::Horizontal`
-  * `Astronoby::Coordinates::Equatorial`
-  * `Astronoby::Coordinates::Ecliptic`
-* Add new body `Astronoby::Sun`
-* Add `Astronoby::Aberration`
-* Add `Astronoby::Epoch`
-* Add `Astronoby::MeanObliquity`
-* Add `Astronoby::TrueObliquity`
-* Add `Astronoby::Nutation`
-* Add `Astronoby::Precession`
-* Add `Astronoby::Refraction`
-* Add utils
-  * `Astronoby::Util::Astrodynamics`
-  * `Astronoby::Util::Time`
-  * `Astronoby::Util::Trigonometry`
+- Support angles in hours
+- Support coordinates
+  - `Astronoby::Coordinates::Horizontal`
+  - `Astronoby::Coordinates::Equatorial`
+  - `Astronoby::Coordinates::Ecliptic`
+- Add new body `Astronoby::Sun`
+- Add `Astronoby::Aberration`
+- Add `Astronoby::Epoch`
+- Add `Astronoby::MeanObliquity`
+- Add `Astronoby::TrueObliquity`
+- Add `Astronoby::Nutation`
+- Add `Astronoby::Precession`
+- Add `Astronoby::Refraction`
+- Add utils
+  - `Astronoby::Util::Astrodynamics`
+  - `Astronoby::Util::Time`
+  - `Astronoby::Util::Trigonometry`
 
 ## 0.0.1 - 2022-04-20
 
-* Add `Astronoby::Angle`
-* Support angles in degrees and radians
+- Add `Astronoby::Angle`
+- Support angles in degrees and radians
 
 [UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
