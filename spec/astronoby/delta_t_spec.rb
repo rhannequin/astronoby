@@ -52,10 +52,12 @@ RSpec.describe Astronoby::DeltaT do
     context "when the date is after the available range" do
       it "returns the last known value" do
         date = Date.new(2200, 1, 1)
+        last_measured = IERS::Data.finals_entries.last.mjd
 
         delta = described_class.at(date)
 
-        expect(delta).to eq described_class.at(Date.new(2100, 1, 1))
+        expect(delta).to eq IERS::DeltaT.at(mjd: last_measured).delta_t
+        expect(delta).to be > 60
       end
     end
   end

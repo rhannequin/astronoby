@@ -20,16 +20,24 @@ module Astronoby
           raise IncompatibleArgumentsError,
             "Expected a Numeric, Time, Date or DateTime object, got #{instant.class}"
         end
-      rescue IERS::OutOfRangeError => e
-        outside_available_range(e)
+      rescue IERS::OutOfRangeError => error
+        outside_available_range(error)
       end
 
       private
 
+      # IERS covers 1800 up to the end of its EOP series, and refuses anything
+      # outside. Rather than propagate that, we answer with the closest value
+      # we have: 0 before 1800, where ΔT is small next to the uncertainty on
+      # it, and the last measured value after the series, which drifts slowly
+      # enough to beat any extrapolation we could invent.
       def outside_available_range(error)
-        return 0 unless error.available_range
+        last_measured = IERS::Data.finals_entries.last
+        return 0 if last_measured.nil?
+        return 0 if error.requested_mjd.nil?
+        return 0 if error.requested_mjd < last_measured.mjd
 
-        IERS::DeltaT.at(mjd: error.available_range.end).delta_t
+        IERS::DeltaT.at(mjd: last_measured.mjd).delta_t
       end
     end
   end
