@@ -9,14 +9,14 @@
   could never be brought back, and settings and transits came out up to a few
   minutes late depending on the window asked for.
 * Refer equatorial coordinates to the epoch of the frame they come from
+* Return real Barycentric Dynamical Time from `Instant#tdb`, which returned
+  Terrestrial Time unchanged. The two scales differ by up to about 1.7
+  milliseconds.
 * Keep ΔT at its last measured value past the end of the IERS series. `iers`
   0.3.0 stopped attaching an `available_range` to the `OutOfRangeError` it
   raises for an uncovered date, and the fallback read that absence as "no data
   at all" and answered 0. Every date after the bundled series, currently
   2027-09-04, was off by about 69 seconds.
-* Return real Barycentric Dynamical Time from `Instant#tdb`, which returned
-  Terrestrial Time unchanged. The two scales differ by up to about 1.7
-  milliseconds.
 
 ### Features
 
@@ -32,7 +32,8 @@
   too coarse to hold
 * Evaluate `Precession` in TT, as SOFA and ERFA do
 * Remove `Constants::TAI_TT_OFFSET`
-* Raise the minimum `iers` version from 0.1 to 0.2
+* Raise the minimum `iers` version from 0.1 to 0.3.1, which `horologium`
+  requires
 * Bisect to a millisecond rather than to a second when locating an event in time
 * Reduce the Moon to the observer by vectors for lunar eclipse visibility
 * Answer lunar eclipse phase coverage in the words the whole eclipse uses

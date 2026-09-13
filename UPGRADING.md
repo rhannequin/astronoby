@@ -89,7 +89,7 @@ may round to the next one.
 A sample landing exactly on a root is also no longer missed, and bisection
 stops if a bracket reaches the resolution of a Float rather than looping.
 
-### New `horologium` dependency, and `iers` raised to 0.2
+### New `horologium` dependency, and `iers` raised to 0.3.1
 
 The TAI and TDB time scales are now computed by the
 [`horologium`](https://github.com/rhannequin/horologium) gem, which owns the
@@ -99,9 +99,12 @@ from `Astronoby::DeltaT`. Nothing else about time changes, and `Instant#tt`,
 `#to_time`, `#to_date`, `#to_datetime`, `#delta_t`, `#gmst`, `#gast`, `#lmst`
 and `#last` are untouched.
 
-`horologium` requires `iers` 0.2, so the minimum `iers` version is raised from
-0.1 to 0.2. The change is additive, and no `iers` API Astronoby uses has
-changed.
+`horologium` requires `iers` 0.3.1, so the minimum `iers` version is raised
+from 0.1 to 0.3.1. One `iers` API Astronoby used did change on the way: `iers`
+0.3.0 stopped attaching an `available_range` to the `OutOfRangeError` that
+`DeltaT.at` raises for a date it cannot answer. Astronoby reads the end of the
+published series directly now, so ΔT past that end still comes back as the last
+measured value rather than 0.
 
 Astronoby pins the precision it asks `horologium` for, so an application that
 calls `Horologium.configure` for its own purposes cannot change what Astronoby
