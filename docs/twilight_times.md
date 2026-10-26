@@ -116,11 +116,21 @@ event.evening_astronomical_twilight_time
 # => 2025-05-01 18:46:47 UTC
 ```
 
+## Accuracy and polar regions
+
+Each twilight time is the moment the Sun's centre, without refraction, reaches
+the matching altitude, found by `Astronoby::AltitudeCrossingCalculator`. Times
+are rounded to the second. Twilight that exists is returned even when the Sun
+does not rise or set that day, as in a polar night. Use the [altitude crossing
+calculator](altitude_crossings.md) directly for other altitudes or for unrounded
+instants.
+
 [Ephem page]: ephem.md
 [Observer page]: observer.md
 
 ## See also
 
+- [Altitude Crossings](altitude_crossings.md) - for any altitude, unrounded
 - [Rise, Transit and Set Times](rise_transit_set_times.md) - for sun and moon events
 - [Observer](observer.md) - for location setup
 - [Ephemerides](ephem.md) - for data sources

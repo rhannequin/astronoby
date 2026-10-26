@@ -35,7 +35,7 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.morning_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 5, 33, 56)
+        .to eq Time.utc(2024, 3, 14, 5, 33, 55)
       # IMCCE:       05:33:55
       # USNO:        05:34
       # Skyfield:    05:33:54
@@ -95,7 +95,7 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.evening_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 18, 26, 14)
+        .to eq Time.utc(2024, 3, 14, 18, 26, 20)
       # IMCCE:       18:26:20
       # USNO:        18:26
       # Skyfield:    18:26:20
@@ -155,7 +155,7 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.morning_nautical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 4, 57, 16)
+        .to eq Time.utc(2024, 3, 14, 4, 57, 12)
       # IMCCE:       04:57:12
       # USNO:        04:57
       # Skyfield:    04:57:12
@@ -215,7 +215,7 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.evening_nautical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 19, 2, 55)
+        .to eq Time.utc(2024, 3, 14, 19, 3, 10)
       # IMCCE:       19:03:10
       # USNO:        19:03
       # Skyfield:    19:03:09
@@ -275,7 +275,7 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.morning_astronomical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 4, 19, 44)
+        .to eq Time.utc(2024, 3, 14, 4, 19, 38)
       # IMCCE:       04:19:38
       # USNO:        04:20
       # Skyfield:    04:19:37
@@ -335,7 +335,7 @@ RSpec.describe Astronoby::TwilightCalculator do
       event = calculator.event_on(date)
 
       expect(event.evening_astronomical_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 19, 40, 30)
+        .to eq Time.utc(2024, 3, 14, 19, 40, 54)
       # IMCCE:       19:40:54
       # USNO:        19:41
       # Skyfield:    19:40:54
@@ -378,18 +378,83 @@ RSpec.describe Astronoby::TwilightCalculator do
         event = calculator.event_on(date, utc_offset: utc_offset)
 
         expect(event.morning_civil_twilight_time.localtime(utc_offset))
-          .to eq(Time.new(2025, 1, 1, 5, 3, 18, utc_offset))
+          .to eq(Time.new(2025, 1, 1, 5, 3, 14, utc_offset))
         # IMCCE:       2025-01-01T05:03:14-10:00
         # USNO:        2025-01-01T05:03   -10:00
         # Skyfield:    2025-01-01T05:03:13-10:00
         # Timeanddate: 2025-01-01T05:03   -10:00
         expect(event.evening_civil_twilight_time.localtime(utc_offset))
-          .to eq(Time.new(2025, 1, 1, 19, 0, 14, utc_offset))
+          .to eq(Time.new(2025, 1, 1, 19, 0, 17, utc_offset))
         # IMCCE:       2025-01-01T19:00:17-10:00
         # USNO:        2025-01-01T19:00   -10:00
         # Skyfield:    2025-01-01T19:00:17-10:00
         # Timeanddate: 2025-01-01T19:00   -10:00
       end
+    end
+  end
+
+  describe "#events_between" do
+    it "returns the twilights of a polar night when the Sun does not rise" do
+      ephem = test_ephem_sun
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(75),
+        longitude: Astronoby::Angle.from_degrees(10)
+      )
+      calculator = described_class.new(observer: observer, ephem: ephem)
+
+      events = calculator.events_between(
+        Time.utc(2026, 12, 21),
+        Time.utc(2026, 12, 21, 23, 59, 59)
+      )
+
+      expect(events.morning_nautical_twilight_times)
+        .to eq [Time.utc(2026, 12, 21, 8, 29, 45)]
+      expect(events.evening_nautical_twilight_times)
+        .to eq [Time.utc(2026, 12, 21, 14, 6, 20)]
+      expect(events.morning_astronomical_twilight_times)
+        .to eq [Time.utc(2026, 12, 21, 6, 31, 48)]
+      expect(events.evening_astronomical_twilight_times)
+        .to eq [Time.utc(2026, 12, 21, 16, 4, 17)]
+      # IMCCE: nautical    08:29:45 and 14:06:20
+      #        astronomical 06:31:48 and 16:04:17
+      expect(events.morning_civil_twilight_times).to be_empty
+    end
+
+    it "agrees with IMCCE to the second at 60°N in winter" do
+      ephem = test_ephem_sun
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(60),
+        longitude: Astronoby::Angle.from_degrees(10)
+      )
+      calculator = described_class.new(observer: observer, ephem: ephem)
+
+      event = calculator.event_on(Date.new(2026, 12, 21))
+
+      expect(event.morning_astronomical_twilight_time)
+        .to eq Time.utc(2026, 12, 21, 5, 35, 40)
+      expect(event.evening_astronomical_twilight_time)
+        .to eq Time.utc(2026, 12, 21, 17, 0, 26)
+      # IMCCE: 05:35:40 and 17:00:26
+    end
+
+    it "keeps a crossing in the last second of the day in that day" do
+      ephem = test_ephem_sun
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8575),
+        longitude: Astronoby::Angle.from_degrees(2.3514)
+      )
+      calculator = described_class.new(observer: observer, ephem: ephem)
+      # Local midnight falls at 04:37:28 UTC, 0.4 s after the 04:37:27.6 UTC
+      # astronomical twilight
+      utc_offset = 24 * 3600 - (4 * 3600 + 37 * 60 + 28)
+
+      day = calculator.event_on(Date.new(2026, 10, 23), utc_offset: utc_offset)
+      next_day = calculator.event_on(Date.new(2026, 10, 24), utc_offset: utc_offset)
+
+      expect(day.morning_astronomical_twilight_time)
+        .to eq Time.utc(2026, 10, 23, 4, 37, 28)
+      expect(next_day.morning_astronomical_twilight_time)
+        .not_to eq Time.utc(2026, 10, 23, 4, 37, 28)
     end
   end
 
@@ -413,7 +478,7 @@ RSpec.describe Astronoby::TwilightCalculator do
         zenith_angle: zenith_angle
       )
 
-      expect(time).to eq(Time.utc(2025, 1, 1, 4, 50, 48))
+      expect(time).to eq(Time.utc(2025, 1, 1, 4, 49, 29))
     end
 
     context "when the period of time is incompatible" do
@@ -462,7 +527,7 @@ RSpec.describe Astronoby::TwilightCalculator do
         )
 
         expect(time.localtime(utc_offset))
-          .to eq(Time.new(2025, 1, 1, 19, 51, 35, utc_offset))
+          .to eq(Time.new(2025, 1, 1, 19, 52, 57, utc_offset))
       end
     end
   end
