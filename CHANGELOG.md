@@ -11,12 +11,12 @@
 
 ### Changes
 
-* Base `TwilightCalculator` on `AltitudeCrossingCalculator`. Times move by up
-  to about 30 seconds at the standard angles and about 100 seconds for
-  `time_for_zenith_angle` with other angles, and now agree with IMCCE to the
-  second. Twilight that exists is returned when the Sun doesn't rise or set,
-  as in a polar night, instead of `nil`. Results are still rounded to the
-  second.
+* Base `TwilightCalculator` on `AltitudeCrossingCalculator`. Times change
+  slightly: up to about 30 seconds at the standard angles, and up to about 100
+  seconds with `time_for_zenith_angle` and custom angles. The new values match
+  IMCCE, Horizons and Skyfield. Twilight that exists is returned when the Sun
+  doesn't rise or set, as in a polar night, instead of `nil`. Results are still
+  rounded to the second.
 
 ### Bug fixes
 
