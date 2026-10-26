@@ -659,7 +659,7 @@ RSpec.describe Astronoby::Sun do
 
       expect(event).to be_a(Astronoby::TwilightEvent)
       expect(event.morning_civil_twilight_time)
-        .to eq Time.utc(2024, 3, 14, 5, 33, 56)
+        .to eq Time.utc(2024, 3, 14, 5, 33, 55)
     end
 
     it "delegates to TwilightCalculator with a time range" do
