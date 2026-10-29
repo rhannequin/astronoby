@@ -96,6 +96,51 @@ event.rising_time
 # => 2025-10-01 01:31:25 UTC
 ```
 
+## Many points at once
+
+Getting the horizontal coordinates of a single object goes through the whole
+chain of reference frames. Doing so for thousands of points at the same instant
+for the same observer, like the stars of a catalogue for a sky chart, repeats
+the same work for each of them: the rotation from the ICRS to the true equator
+and equinox of date, and the sidereal time only depend on the observer and the
+instant.
+
+`Astronoby::HorizontalTransformation` computes them once, and then converts
+any equatorial coordinates at J2000 epoch into horizontal coordinates. It is
+about 70 times faster per point than going through
+`DeepSkyObject#at(instant).observed_by(observer).horizontal`.
+
+```rb
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(51.5072),
+  longitude: Astronoby::Angle.from_degrees(-0.1276)
+)
+instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1, 3))
+
+sirius = Astronoby::Coordinates::Equatorial.new(
+  right_ascension: Astronoby::Angle.from_hms(6, 45, 8.917),
+  declination: Astronoby::Angle.from_dms(-16, 42, 58.02)
+)
+
+transformation = Astronoby::HorizontalTransformation.new(
+  observer: observer,
+  instant: instant
+)
+horizontal = transformation.apply(sirius)
+
+horizontal.altitude.str(:dms, precision: 0)
+# => "+10° 36′ 27″"
+horizontal.azimuth.str(:dms, precision: 0)
+# => "+134° 56′ 25″"
+```
+
+The result is the same as the one of a `DeepSkyObject` without an ephemeris,
+which means the points are treated as fixed directions: there is no aberration,
+no proper motion and no parallax. Atmospheric refraction is not applied by
+default, and can be requested with `transformation.apply(sirius, refraction:
+true)`. The coordinates must be at J2000 epoch, otherwise an
+`Astronoby::IncompatibleArgumentsError` is raised.
+
 [ephemerides]: ephem.md
 [reference frames]: reference_frames.md
 [SIMBAD Astronomical Database]: https://simbad.u-strasbg.fr/simbad/
