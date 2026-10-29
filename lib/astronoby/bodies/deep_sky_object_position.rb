@@ -124,10 +124,10 @@ module Astronoby
         precession_matrix = Precession.matrix_for(@instant)
         nutation_matrix = Nutation.matrix_for(@instant)
         corrected_position = Distance.vector_from_meters(
-          precession_matrix * nutation_matrix * astrometric.position.map(&:m)
+          nutation_matrix * precession_matrix * astrometric.position.map(&:m)
         )
         corrected_velocity = Velocity.vector_from_mps(
-          precession_matrix * nutation_matrix * astrometric.velocity.map(&:mps)
+          nutation_matrix * precession_matrix * astrometric.velocity.map(&:mps)
         )
         Apparent.new(
           position: corrected_position,

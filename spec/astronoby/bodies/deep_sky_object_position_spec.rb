@@ -305,13 +305,50 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         apparent = dso.apparent
 
         expect(apparent.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2824s")
+          .to eq("18h 37m 48.2779s")
         expect(apparent.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.0454″")
+          .to eq("+38° 48′ 16.054″")
+        # ERFA (pnm06a): +38° 48′ 16.0542″
         expect(apparent.ecliptic.latitude.str(:dms))
-          .to eq("+61° 43′ 46.9249″")
+          .to eq("+61° 43′ 46.9405″")
+        # ERFA (pnm06a, nut06a): +61° 43′ 46.9406″
         expect(apparent.ecliptic.longitude.str(:dms))
-          .to eq("+285° 40′ 29.4732″")
+          .to eq("+285° 40′ 29.368″")
+        # ERFA (pnm06a, nut06a): +285° 40′ 29.3680″
+      end
+    end
+
+    context "when no ephemeris is given" do
+      it "rotates position and velocity by nutation * precession" do
+        instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+        equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+          epoch: Astronoby::JulianDate::J2000
+        )
+        dso = described_class.new(
+          instant: instant,
+          equatorial_coordinates: equatorial_coordinates,
+          proper_motion_ra: Astronoby::AngularVelocity
+            .from_milliarcseconds_per_year(200.94),
+          proper_motion_dec: Astronoby::AngularVelocity
+            .from_milliarcseconds_per_year(286.23),
+          parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+          radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+        )
+        astrometric = dso.astrometric
+        nutation = Astronoby::Nutation.matrix_for(instant)
+        precession = Astronoby::Precession.matrix_for(instant)
+
+        expected_position = nutation * precession *
+          astrometric.position.map(&:m)
+        expected_velocity = nutation * precession *
+          astrometric.velocity.map(&:mps)
+
+        expect(dso.apparent.position.map(&:m).to_a)
+          .to eq(expected_position.to_a)
+        expect(dso.apparent.velocity.map(&:mps).to_a)
+          .to eq(expected_velocity.to_a)
       end
     end
   end
@@ -454,13 +491,13 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2824s")
+          .to eq("18h 37m 48.2779s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.0454″")
+          .to eq("+38° 48′ 16.054″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 43.3669″")
+          .to eq("+26° 29′ 43.3349″")
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 34′ 59.1725″")
+          .to eq("+299° 34′ 59.2186″")
       end
     end
   end
