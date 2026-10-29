@@ -4,6 +4,13 @@
 
 ### New features
 
+* Add `HorizontalTransformation`, which converts equatorial coordinates at
+  J2000 epoch into horizontal coordinates for one observer and one instant. The
+  rotation and the sidereal time are computed once, which makes converting many
+  points, like the stars of a catalogue, about 70 times faster than going
+  through `DeepSkyObject#at(instant).observed_by(observer).horizontal`. Points
+  are treated as fixed directions, as for a `DeepSkyObject` without an
+  ephemeris. `refraction:` is an option.
 * Add `AltitudeCrossingCalculator`, which finds when a body reaches any
   altitude, with unrounded instants, the crossing direction, a grazing flag and
   the culminations. `refraction:` and `reference:` (`:center`, `:upper_limb`,
