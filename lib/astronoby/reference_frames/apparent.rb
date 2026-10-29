@@ -6,29 +6,35 @@ module Astronoby
   class Apparent < ReferenceFrame
     # Builds an apparent frame from an astrometric frame by applying
     # aberration in GCRS, then rotating by nutation * precession (with ICRS
-    # frame bias).
+    # frame bias). Without Earth's geometric frame there is no observer
+    # velocity to derive the aberration from, so only the rotation is applied.
     #
     # @param instant [Astronoby::Instant] the time instant
     # @param target_astrometric [Astronoby::Astrometric] target's astrometric
     #   frame
-    # @param earth_geometric [Astronoby::Geometric] Earth's geometric frame
+    # @param earth_geometric [Astronoby::Geometric, nil] Earth's geometric
+    #   frame
     # @param target_body [Astronoby::Body, nil] the target body
     # @return [Astronoby::Apparent] a new apparent frame
     def self.build_from_astrometric(
       instant:,
       target_astrometric:,
-      earth_geometric:,
-      target_body:
+      target_body:,
+      earth_geometric: nil
     )
       position = target_astrometric.position
       velocity = target_astrometric.velocity
       precession_matrix = Precession.matrix_for(instant)
       nutation_matrix = Nutation.matrix_for(instant)
 
-      corrected_position = Aberration.new(
-        astrometric_position: position,
-        observer_velocity: earth_geometric.velocity
-      ).corrected_position
+      corrected_position = if earth_geometric
+        Aberration.new(
+          astrometric_position: position,
+          observer_velocity: earth_geometric.velocity
+        ).corrected_position
+      else
+        position
+      end
 
       # In theory, here we should also apply light deflection. However, so far
       # the deflection algorithm hasn't shown any significant changes to the
