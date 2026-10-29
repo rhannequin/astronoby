@@ -113,30 +113,12 @@ module Astronoby
     end
 
     def compute_apparent
-      @apparent = if @earth_geometric
-        Apparent.build_from_astrometric(
-          instant: @instant,
-          target_astrometric: astrometric,
-          earth_geometric: @earth_geometric,
-          target_body: body
-        )
-      else
-        precession_matrix = Precession.matrix_for(@instant)
-        nutation_matrix = Nutation.matrix_for(@instant)
-        corrected_position = Distance.vector_from_meters(
-          precession_matrix * nutation_matrix * astrometric.position.map(&:m)
-        )
-        corrected_velocity = Velocity.vector_from_mps(
-          precession_matrix * nutation_matrix * astrometric.velocity.map(&:mps)
-        )
-        Apparent.new(
-          position: corrected_position,
-          velocity: corrected_velocity,
-          instant: @instant,
-          center: Center.geocentric,
-          target_body: body
-        )
-      end
+      @apparent = Apparent.build_from_astrometric(
+        instant: @instant,
+        target_astrometric: astrometric,
+        earth_geometric: @earth_geometric,
+        target_body: body
+      )
     end
   end
 end

@@ -20,6 +20,12 @@
 
 ### Bug fixes
 
+* Apply nutation after precession for a `DeepSkyObject` without an ephemeris.
+  The two rotations were composed in the wrong order, so the apparent position
+  was off by up to about 0.1 arcsecond depending on the date, and the velocity
+  had the same error. The rotation now matches ERFA and Skyfield, and is the
+  one used when an ephemeris is given. Without an ephemeris there is still no
+  aberration correction.
 * Let the rise, transit and set refinement move an estimate back in time. The
   correction was clamped to be positive, so an estimate that overshot its event
   could never be brought back, and settings and transits came out up to a few
