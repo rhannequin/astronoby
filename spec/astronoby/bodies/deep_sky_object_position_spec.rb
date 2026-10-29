@@ -306,15 +306,24 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
 
         expect(apparent.equatorial.right_ascension.str(:hms))
           .to eq("18h 37m 48.2779s")
+        # ERFA:     18h 37m 48.2780s
+        # Skyfield: 18h 37m 48.2780s
+        # Astropy:  18h 37m 48.2780s
         expect(apparent.equatorial.declination.str(:dms))
           .to eq("+38° 48′ 16.054″")
-        # ERFA (pnm06a): +38° 48′ 16.0542″
+        # ERFA:     +38° 48′ 16.0542″
+        # Skyfield: +38° 48′ 16.0542″
+        # Astropy:  +38° 48′ 16.0542″
         expect(apparent.ecliptic.latitude.str(:dms))
           .to eq("+61° 43′ 46.9405″")
-        # ERFA (pnm06a, nut06a): +61° 43′ 46.9406″
+        # ERFA:     +61° 43′ 46.9406″
+        # Skyfield: +61° 43′ 46.9407″
+        # Astropy:  +61° 43′ 46.9406″
         expect(apparent.ecliptic.longitude.str(:dms))
           .to eq("+285° 40′ 29.368″")
-        # ERFA (pnm06a, nut06a): +285° 40′ 29.3680″
+        # ERFA:     +285° 40′ 29.3680″
+        # Skyfield: +285° 40′ 29.3680″
+        # Astropy:  +285° 40′ 29.3680″
       end
     end
 
