@@ -3,7 +3,7 @@
 RSpec.describe Astronoby::MoonPhase do
   describe "::new_moon" do
     it "returns a new Moon phase" do
-      time = Time.new
+      time = Time.now
       moon_phase = described_class.new_moon(time)
 
       expect(moon_phase.phase).to eq(described_class::NEW_MOON)
@@ -13,7 +13,7 @@ RSpec.describe Astronoby::MoonPhase do
 
   describe "::first_quarter" do
     it "returns a first quarter Moon phase" do
-      time = Time.new
+      time = Time.now
       moon_phase = described_class.first_quarter(time)
 
       expect(moon_phase.phase).to eq(described_class::FIRST_QUARTER)
@@ -23,7 +23,7 @@ RSpec.describe Astronoby::MoonPhase do
 
   describe "::full_moon" do
     it "returns a full Moon phase" do
-      time = Time.new
+      time = Time.now
       moon_phase = described_class.full_moon(time)
 
       expect(moon_phase.phase).to eq(described_class::FULL_MOON)
@@ -33,7 +33,7 @@ RSpec.describe Astronoby::MoonPhase do
 
   describe "::last_quarter" do
     it "returns a last quarter Moon phase" do
-      time = Time.new
+      time = Time.now
       moon_phase = described_class.last_quarter(time)
 
       expect(moon_phase.phase).to eq(described_class::LAST_QUARTER)

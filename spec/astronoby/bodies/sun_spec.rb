@@ -430,7 +430,7 @@ RSpec.describe Astronoby::Sun do
 
   describe "#angular_diameter" do
     it "returns an Angle" do
-      time = Time.new
+      time = Time.now
       instant = Astronoby::Instant.from_time(time)
       ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
@@ -504,7 +504,7 @@ RSpec.describe Astronoby::Sun do
 
   describe "#equation_of_time" do
     it "returns a Duration" do
-      time = Time.new
+      time = Time.now
       instant = Astronoby::Instant.from_time(time)
       ephem = test_ephem_sun
       sun = described_class.new(instant: instant, ephem: ephem)
