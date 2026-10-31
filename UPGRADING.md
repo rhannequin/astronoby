@@ -93,8 +93,9 @@ When the Sun doesn't rise or set, as in a polar night, the twilight that does
 happen is now returned instead of `nil`. A twilight that never happens, such as
 astronomical twilight at high latitude in midsummer, is still `nil`.
 
-`TwilightCalculator#event_on` is about 3 times slower than before, from around
-4 to around 12 milliseconds for one day.
+`TwilightCalculator#event_on` is about 1.8 times slower than before, from around
+4 to around 7.5 milliseconds for one day, because it evaluates the Sun's real
+position a few times instead of approximating it from a single one.
 
 ### Rise, transit and set times are no longer late
 

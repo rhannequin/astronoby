@@ -27,7 +27,16 @@ module Astronoby
     # A Float Julian Date resolves about 47 µs, or 3.4e-9 rad of hour angle,
     # so a tighter tolerance could never be met.
     HOUR_ANGLE_TOLERANCE = 1e-8
+    # The ends of a segment only have to be close enough to the culminations
+    # for the altitude there to be within GRAZING_MARGIN of the extremum, which
+    # a hundred microradians of hour angle is, except for a body passing within
+    # a few thousandths of a degree of the zenith.
+    SEGMENT_HOUR_ANGLE_TOLERANCE = 1e-4
     GRAZING_MARGIN = Angle.from_degrees(0.05).radians
+    # A Newton step from an altitude this close to the target lands within
+    # {ALTITUDE_TOLERANCE} of it, for a slope that is off by up to 2%, so the
+    # step is returned without evaluating the body there.
+    NEWTON_ACCEPT = Angle.from_degrees(5e-4).radians
     MAX_ITERATIONS = 30
 
     FALLBACK_SAMPLES_PER_DAY = 288
@@ -189,7 +198,7 @@ module Astronoby
       end
 
       def extremes
-        culminations(@start_tt, @end_tt).map do |culmination|
+        culminations(@start_tt, @end_tt, HOUR_ANGLE_TOLERANCE).map do |culmination|
           AltitudeExtreme.new(
             kind: culmination.kind,
             instant: Instant.from_terrestrial_time(culmination.tt),
@@ -261,14 +270,16 @@ module Astronoby
       def segments
         culminations(
           @start_tt - CULMINATION_PADDING_IN_DAYS,
-          @end_tt + CULMINATION_PADDING_IN_DAYS
+          @end_tt + CULMINATION_PADDING_IN_DAYS,
+          SEGMENT_HOUR_ANGLE_TOLERANCE
         ).each_cons(2).select do |first, last|
           last.tt >= @start_tt && first.tt <= @end_tt
         end
       end
 
-      def culminations(start_tt, end_tt)
+      def culminations(start_tt, end_tt, tolerance)
         start_hour_angle = hour_angle_at(start_tt)
+        spacing = TAU / SIDEREAL_RATE
 
         {
           AltitudeExtreme::UPPER_CULMINATION => 0.0,
@@ -276,28 +287,33 @@ module Astronoby
         }.flat_map do |kind, hour_angle|
           tt = start_tt +
             ((hour_angle - start_hour_angle) % TAU) / SIDEREAL_RATE
+          previous = nil
           found = []
 
           while tt <= end_tt
-            tt = refine_culmination(tt, hour_angle)
+            tt = refine_culmination(tt, hour_angle, tolerance)
             found << Culmination.new(kind, tt) if tt.between?(start_tt, end_tt)
             # Step from the refined event: a sidereal day drifts from the
             # Moon's by about an hour per day, which would add up over a
-            # window.
-            tt += TAU / SIDEREAL_RATE
+            # window. Once two are known their spacing, shared by both kinds,
+            # is a closer step than a sidereal day, as it changes slowly from
+            # one day to the next.
+            spacing = tt - previous if previous
+            previous = tt
+            tt += spacing
           end
 
           found
         end.sort_by(&:tt)
       end
 
-      def refine_culmination(tt, hour_angle)
+      def refine_culmination(tt, hour_angle, tolerance)
         rate = SIDEREAL_RATE
         previous = nil
 
         MAX_ITERATIONS.times do
           residual = wrap(hour_angle_at(tt) - hour_angle)
-          return tt if residual.abs < HOUR_ANGLE_TOLERANCE
+          return tt if residual.abs < tolerance
 
           if previous
             measured_rate =
@@ -328,14 +344,53 @@ module Astronoby
         f_high = (high == last.tt) ? f_last : altitude_at(high) - target
         return [] if f_low.negative? == f_high.negative?
 
-        tt = solve(low, f_low, high, target)
+        tt = solve(Segment.new(
+          first, sample_at(first.tt), last, sample_at(last.tt)
+        ), low, f_low, high, target)
         return scan(low, high, target, grazing: false) unless tt
 
         [Crossing.new(tt, f_low.negative? ? :rising : :setting, false)]
       end
 
-      def solve(low, f_low, high, target)
-        x = initial_guess(low, high, f_low, target)
+      # Between two consecutive culminations the hour angle goes through
+      # exactly half a turn, and the declination moves from its value at one
+      # to its value at the other. That gives the rates of both over the
+      # segment, which a sidereal day and a fixed declination only approximate:
+      # the Sun's right ascension drifts by a degree per day and the Moon's by
+      # thirteen.
+      class Segment
+        attr_reader :hour_angle_rate, :declination_rate
+
+        def initialize(first, first_sample, last, last_sample)
+          @first = first
+          @first_sample = first_sample
+          span = last.tt - first.tt
+          consecutive = first.kind != last.kind && span.positive?
+
+          @hour_angle_rate = consecutive ? Math::PI / span : SIDEREAL_RATE
+          @declination_rate = if consecutive
+            (last_sample.declination - first_sample.declination) / span
+          else
+            0.0
+          end
+          @first_hour_angle =
+            (first.kind == AltitudeExtreme::UPPER_CULMINATION) ? 0.0 : Math::PI
+          @consecutive = consecutive
+        end
+
+        def consecutive? = @consecutive
+
+        def declination_at(tt)
+          @first_sample.declination + @declination_rate * (tt - @first.tt)
+        end
+
+        def time_at_hour_angle(hour_angle)
+          @first.tt + (hour_angle - @first_hour_angle) / @hour_angle_rate
+        end
+      end
+
+      def solve(segment, low, f_low, high, target)
+        x = initial_guess(segment, low, high, f_low, target)
         previous = nil
 
         MAX_ITERATIONS.times do
@@ -352,34 +407,73 @@ module Astronoby
           slope = if previous
             (f_x - previous[:f]) / (x - previous[:tt])
           else
-            analytic_slope(x)
+            analytic_slope(x, segment)
           end
           previous = {tt: x, f: f_x}
 
           step = x - f_x / slope
-          x = (step > low && step < high) ? step : (low + high) / 2
+          within = step > low && step < high
+          return step if within && f_x.abs < NEWTON_ACCEPT && segment.consecutive?
+
+          x = within ? step : (low + high) / 2
         end
 
         nil
       end
 
-      def initial_guess(low, high, f_low, target)
-        sample = sample_at(low)
-        latitude = @observer.latitude
-        ratio = (Math.sin(target) - latitude.sin * Math.sin(sample.declination)) /
-          (latitude.cos * Math.cos(sample.declination))
-        half_arc = Math.acos(ratio.clamp(-1.0, 1.0))
-        needed = f_low.negative? ? TAU - half_arc : half_arc
-        guess = low + ((needed - sample.hour_angle) % TAU) / SIDEREAL_RATE
+      def initial_guess(segment, low, high, f_low, target)
+        guess = if segment.consecutive?
+          guess_from_segment(segment, f_low, target, low)
+        else
+          guess_from_sample(low, f_low, target)
+        end
 
         (guess > low && guess < high) ? guess : (low + high) / 2
       end
 
-      def analytic_slope(tt)
-        sample = sample_at(tt)
+      def guess_from_segment(segment, f_low, target, low)
+        # The declination at the crossing depends on when it happens, so the
+        # time is refined once from the first estimate.
+        tt = low
+        2.times do
+          declination = segment.declination_at(tt)
+          half_arc = half_arc_for(target, declination)
+          needed = f_low.negative? ? TAU - half_arc : half_arc
+          tt = segment.time_at_hour_angle(needed)
+        end
+        tt
+      end
 
-        -SIDEREAL_RATE * @observer.latitude.cos * Math.cos(sample.declination) *
-          Math.sin(sample.hour_angle) / Math.cos(sample.altitude)
+      def guess_from_sample(low, f_low, target)
+        sample = sample_at(low)
+        half_arc = half_arc_for(target, sample.declination)
+        needed = f_low.negative? ? TAU - half_arc : half_arc
+
+        low + ((needed - sample.hour_angle) % TAU) / SIDEREAL_RATE
+      end
+
+      def half_arc_for(target, declination)
+        latitude = @observer.latitude
+        ratio = (Math.sin(target) - latitude.sin * Math.sin(declination)) /
+          (latitude.cos * Math.cos(declination))
+
+        Math.acos(ratio.clamp(-1.0, 1.0))
+      end
+
+      def analytic_slope(tt, segment)
+        sample = sample_at(tt)
+        latitude = @observer.latitude
+        declination = sample.declination
+        cos_hour_angle = Math.cos(sample.hour_angle)
+
+        rate_of_sine =
+          -latitude.cos * Math.cos(declination) * Math.sin(sample.hour_angle) *
+          segment.hour_angle_rate +
+          (latitude.sin * Math.cos(declination) -
+            latitude.cos * Math.sin(declination) * cos_hour_angle) *
+          segment.declination_rate
+
+        rate_of_sine / Math.cos(sample.altitude)
       end
 
       def scan(first_tt, last_tt, target, grazing:)
