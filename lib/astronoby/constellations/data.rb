@@ -31,7 +31,7 @@ module Astronoby
       end
 
       def self.read_file(filename)
-        File.readlines(data_path(filename)).map(&:strip)
+        File.readlines(data_path(filename), encoding: "UTF-8").map(&:strip)
       end
 
       def self.data_path(filename)
