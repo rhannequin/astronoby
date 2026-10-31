@@ -305,13 +305,61 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         apparent = dso.apparent
 
         expect(apparent.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2824s")
+          .to eq("18h 37m 48.2779s")
+        # Angle#str floors; the unrounded value is 18h 37m 48.2779991s
+        # ERFA:     18h 37m 48.2780s
+        # Skyfield: 18h 37m 48.2780s
+        # Astropy:  18h 37m 48.2780s
         expect(apparent.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.0454″")
+          .to eq("+38° 48′ 16.054″")
+        # ERFA:     +38° 48′ 16.0542″
+        # Skyfield: +38° 48′ 16.0542″
+        # Astropy:  +38° 48′ 16.0542″
         expect(apparent.ecliptic.latitude.str(:dms))
-          .to eq("+61° 43′ 46.9249″")
+          .to eq("+61° 43′ 46.9405″")
+        # ERFA:     +61° 43′ 46.9406″
+        # Skyfield: +61° 43′ 46.9407″
+        # Astropy:  +61° 43′ 46.9406″
         expect(apparent.ecliptic.longitude.str(:dms))
-          .to eq("+285° 40′ 29.4732″")
+          .to eq("+285° 40′ 29.368″")
+        # ERFA:     +285° 40′ 29.3680″
+        # Skyfield: +285° 40′ 29.3680″
+        # Astropy:  +285° 40′ 29.3680″
+      end
+    end
+
+    context "when no ephemeris is given" do
+      it "computes the correct velocity" do
+        time = Time.utc(2025, 10, 1)
+        instant = Astronoby::Instant.from_time(time)
+        equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802),
+          epoch: Astronoby::JulianDate::J2000
+        )
+        dso = described_class.new(
+          instant: instant,
+          equatorial_coordinates: equatorial_coordinates,
+          proper_motion_ra: Astronoby::AngularVelocity
+            .from_milliarcseconds_per_year(200.94),
+          proper_motion_dec: Astronoby::AngularVelocity
+            .from_milliarcseconds_per_year(286.23),
+          parallax: Astronoby::Angle.from_degree_arcseconds(130.23 / 1000.0),
+          radial_velocity: Astronoby::Velocity.from_kilometers_per_second(-13.5)
+        )
+        apparent = dso.apparent
+
+        expect(apparent.velocity.x.kmps.round(6)).to eq(4.380062)
+        # ERFA:     4.380062 km/s
+        # Skyfield: 4.380062 km/s
+
+        expect(apparent.velocity.y.kmps.round(6)).to eq(18.027351)
+        # ERFA:     18.027351 km/s
+        # Skyfield: 18.027351 km/s
+
+        expect(apparent.velocity.z.kmps.round(6)).to eq(-0.322438)
+        # ERFA:     -0.322438 km/s
+        # Skyfield: -0.322438 km/s
       end
     end
   end
@@ -454,13 +502,15 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2824s")
+          .to eq("18h 37m 48.2779s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.0454″")
+          .to eq("+38° 48′ 16.054″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 43.3669″")
+          .to eq("+26° 29′ 43.3349″")
+        # ERFA: +26° 29′ 43.3354″ (c2t06a, polar motion ignored)
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 34′ 59.1725″")
+          .to eq("+299° 34′ 59.2186″")
+        # ERFA: +299° 34′ 59.2184″ (c2t06a, polar motion ignored)
       end
     end
   end
