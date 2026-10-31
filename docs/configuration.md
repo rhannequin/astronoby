@@ -26,6 +26,14 @@ with default precision values:
 - [Moon phases]
 - Nutation
 - Precession
+- Greenwich mean and apparent sidereal times, which also cover the local
+  apparent sidereal time
+
+Sidereal times are cached for the exact UTC time, with no rounding. The cache
+helps when the same instant is used many times, for example when converting
+many points to horizontal coordinates for one observer. Calling
+`DeepSkyObject#at(instant).observed_by(observer).horizontal` repeatedly at one
+instant is about 2.5 times faster with the cache enabled.
 
 ## Cache precision
 

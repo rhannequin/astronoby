@@ -27,16 +27,18 @@ module Astronoby
     # @param utc [Time] the UTC time
     # @return [Astronoby::GreenwichMeanSiderealTime]
     def self.from_utc(utc)
-      date = utc.to_date
-      gmst_hours = begin
-        gmst_radians = IERS::GMST.at(utc)
-        gmst_radians * 12.0 / Math::PI
-      rescue IERS::OutOfRangeError
-        from_utc_polynomial(utc)
-      end
-      gmst_hours = normalize_time(gmst_hours)
+      Astronoby.cache.fetch(CacheKey.generate_for_utc(:gmst, utc)) do
+        date = utc.to_date
+        gmst_hours = begin
+          gmst_radians = IERS::GMST.at(utc)
+          gmst_radians * 12.0 / Math::PI
+        rescue IERS::OutOfRangeError
+          from_utc_polynomial(utc)
+        end
+        gmst_hours = normalize_time(gmst_hours)
 
-      new(date: date, time: gmst_hours)
+        new(date: date, time: gmst_hours)
+      end
     end
 
     # Polynomial fallback for dates outside the IERS EOP data range.
