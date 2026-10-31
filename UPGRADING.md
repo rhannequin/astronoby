@@ -94,8 +94,10 @@ happen is now returned instead of `nil`. A twilight that never happens, such as
 astronomical twilight at high latitude in midsummer, is still `nil`.
 
 `TwilightCalculator#event_on` is about 1.8 times slower than before, from around
-4 to around 7.5 milliseconds for one day, because it evaluates the Sun's real
-position a few times instead of approximating it from a single one.
+4 to around 7.5 milliseconds for one day. The previous version approximated the
+Sun's position from a single evaluation, which could be off by up to 30
+seconds. This one solves for the real crossing, evaluating the Sun's position
+about 20 times, and agrees with IMCCE, JPL Horizons and Skyfield to the second.
 
 ### Rise, transit and set times are no longer late
 

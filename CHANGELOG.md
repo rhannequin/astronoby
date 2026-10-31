@@ -87,8 +87,9 @@ _If you are upgrading: please see [UPGRADING.md]._
   seconds with `time_for_zenith_angle` and custom angles. The new values match
   IMCCE, Horizons and Skyfield. Twilight that exists is returned when the Sun
   doesn't rise or set, as in a polar night, instead of `nil`. Results are still
-  rounded to the second. `#event_on` is about 1.8 times slower than before
-  ([#311])
+  rounded to the second. `#event_on` is about 1.8 times slower than before,
+  because it solves for the real crossing instead of approximating the Sun's
+  position from a single evaluation ([#311])
 * Equatorial coordinates carry the epoch of the frame they come from ([#302])
 * `Instant#tdb` returns real TDB, and `#tai` and `#tdb` return a `Rational`
   ([#304])

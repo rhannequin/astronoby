@@ -125,6 +125,11 @@ does not rise or set that day, as in a polar night. Use the [altitude crossing
 calculator](altitude_crossings.md) directly for other altitudes or for unrounded
 instants.
 
+Solving for the real crossing costs more than approximating the Sun's position
+from a single evaluation, as versions before 0.11.0 did, which could be off by
+up to 30 seconds. `#event_on` takes around 7.5 milliseconds for one day, against
+around 4 before.
+
 [Ephem page]: ephem.md
 [Observer page]: observer.md
 
