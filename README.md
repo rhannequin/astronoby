@@ -73,6 +73,19 @@ automated guiding of amateur telescopes and some professional use-cases.
 The sources used for comparison are: [IMCCE], [JPL Horizons], [Stellarium],
 and the [Skyfield] library.
 
+## Performance
+
+Astronoby has an internal cache for intermediate results like nutation,
+precession and sidereal time. It is disabled by default. It helps when the same
+computation is repeated at one instant, for example for many bodies or many
+points seen by one observer, and can make it about 2.5 times faster:
+
+```rb
+Astronoby.configuration.cache_enabled = true
+```
+
+See the [configuration documentation](docs/configuration.md) for the details.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run

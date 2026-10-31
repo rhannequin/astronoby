@@ -18,6 +18,8 @@
 
 ### Changes
 
+* Cache Greenwich mean and apparent sidereal times when the cache is enabled.
+  The cache is still disabled by default, which is now stated in the README.
 * Base `TwilightCalculator` on `AltitudeCrossingCalculator`. Times change
   slightly: up to about 30 seconds at the standard angles, and up to about 100
   seconds with `time_for_zenith_angle` and custom angles. The new values match

@@ -175,6 +175,19 @@ module Astronoby
         [type, rounded_tt, *components]
       end
 
+      # Generate a cache key for a UTC time, without rounding. Sidereal time
+      # moves by about 15 arcseconds per second, so unlike nutation it can't
+      # share an entry with a nearby instant.
+      # @param type [Symbol] The calculation type (e.g., :gmst)
+      # @param utc [Time] The UTC time
+      # @param components [Array] Additional components for the key
+      # @return [Array, nil] The complete cache key, nil if cache is disabled
+      def generate_for_utc(type, utc, *components)
+        return nil unless Astronoby.configuration.cache_enabled?
+
+        [type, utc.to_r, *components]
+      end
+
       # Round terrestrial time to specified precision
       # @param tt [Numeric] Terrestrial time value
       # @param precision [Numeric] Precision in seconds

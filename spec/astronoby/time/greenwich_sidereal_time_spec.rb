@@ -117,6 +117,66 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
     end
   end
 
+  describe "caching" do
+    it "returns the same GMST from the cache when enabled" do
+      Astronoby.configuration.cache_enabled = true
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+
+      first = described_class.from_utc(utc)
+      second = described_class.from_utc(utc)
+
+      expect(second).to equal(first)
+    end
+
+    it "returns the same GAST from the cache when enabled" do
+      Astronoby.configuration.cache_enabled = true
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+
+      first = described_class.from_utc(utc, type: :apparent)
+      second = described_class.from_utc(utc, type: :apparent)
+
+      expect(second).to equal(first)
+    end
+
+    it "does not share a GMST entry between two instants a fraction of a second apart" do
+      Astronoby.configuration.cache_enabled = true
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+
+      first = described_class.from_utc(utc)
+      second = described_class.from_utc(utc + 0.1)
+
+      expect(second.time).not_to eq(first.time)
+    end
+
+    it "does not share a GAST entry between two instants a fraction of a second apart" do
+      Astronoby.configuration.cache_enabled = true
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+
+      first = described_class.from_utc(utc, type: :apparent)
+      second = described_class.from_utc(utc + 0.1, type: :apparent)
+
+      expect(second.time).not_to eq(first.time)
+    end
+
+    it "gives the same values with and without the cache" do
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+      without_cache = described_class.from_utc(utc, type: :apparent)
+
+      Astronoby.configuration.cache_enabled = true
+      with_cache = described_class.from_utc(utc, type: :apparent)
+
+      expect(with_cache.time).to eq(without_cache.time)
+    end
+
+    it "does not cache anything when disabled" do
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+
+      described_class.from_utc(utc, type: :apparent)
+
+      expect(Astronoby::Cache.instance.size).to eq(0)
+    end
+  end
+
   describe "#to_utc" do
     context "for mean sidereal time" do
       # Source:
