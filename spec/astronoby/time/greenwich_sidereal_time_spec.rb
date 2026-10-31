@@ -138,12 +138,22 @@ RSpec.describe Astronoby::GreenwichSiderealTime do
       expect(second).to equal(first)
     end
 
-    it "does not share an entry between two close instants" do
+    it "does not share a GMST entry between two instants a fraction of a second apart" do
       Astronoby.configuration.cache_enabled = true
       utc = Time.utc(2025, 5, 26, 10, 0, 0)
 
       first = described_class.from_utc(utc)
-      second = described_class.from_utc(utc + 1)
+      second = described_class.from_utc(utc + 0.1)
+
+      expect(second.time).not_to eq(first.time)
+    end
+
+    it "does not share a GAST entry between two instants a fraction of a second apart" do
+      Astronoby.configuration.cache_enabled = true
+      utc = Time.utc(2025, 5, 26, 10, 0, 0)
+
+      first = described_class.from_utc(utc, type: :apparent)
+      second = described_class.from_utc(utc + 0.1, type: :apparent)
 
       expect(second.time).not_to eq(first.time)
     end
