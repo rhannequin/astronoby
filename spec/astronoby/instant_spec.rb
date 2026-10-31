@@ -30,7 +30,7 @@ RSpec.describe Astronoby::Instant do
 
   describe ".from_time" do
     it "creates an instance of Astronoby::Instant" do
-      instant = described_class.from_time(Time.new)
+      instant = described_class.from_time(Time.now)
 
       expect(instant).to be_a(Astronoby::Instant)
     end

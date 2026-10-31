@@ -68,7 +68,7 @@ RSpec.describe Astronoby::Coordinates::Equatorial do
 
   describe "#to_horizontal" do
     it "returns a new instance of Astronoby::Coordinates::Horizontal" do
-      time = Time.new
+      time = Time.now
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.from_degrees(50),
         longitude: Astronoby::Angle.zero

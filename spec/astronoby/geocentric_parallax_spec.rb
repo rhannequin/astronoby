@@ -45,7 +45,7 @@ RSpec.describe Astronoby::GeocentricParallax do
         longitude: Astronoby::Angle.zero,
         elevation: Astronoby::Distance.zero
       )
-      time = Time.new
+      time = Time.now
       true_coordinates = Astronoby::Coordinates::Equatorial.new(
         right_ascension: Astronoby::Angle.zero,
         declination: Astronoby::Angle.zero

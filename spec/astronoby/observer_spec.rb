@@ -126,7 +126,7 @@ RSpec.describe Astronoby::Observer do
 
   describe "#earth_fixed_rotation_matrix_for" do
     it "returns a Matrix" do
-      time = Time.new
+      time = Time.now
       instant = Astronoby::Instant.from_time(time)
       observer = described_class.new(
         latitude: Astronoby::Angle.zero,
