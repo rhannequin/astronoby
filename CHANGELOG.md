@@ -1,31 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.11.0 - 2026-10-31
 
-### New features
-
-* Add `HorizontalTransformation`, which converts equatorial coordinates at
-  J2000 epoch into horizontal coordinates for one observer and one instant. The
-  rotation and the sidereal time are computed once, which makes converting many
-  points, like the stars of a catalogue, about 70 times faster than going
-  through `DeepSkyObject#at(instant).observed_by(observer).horizontal`. Points
-  are treated as fixed directions, as for a `DeepSkyObject` without an
-  ephemeris. `refraction:` is an option.
-* Add `AltitudeCrossingCalculator`, which finds when a body reaches any
-  altitude, with unrounded instants, the crossing direction, a grazing flag and
-  the culminations. `refraction:` and `reference:` (`:center`, `:upper_limb`,
-  `:lower_limb`) are options.
-
-### Changes
-
-* Cache Greenwich mean and apparent sidereal times when the cache is enabled.
-  The cache is still disabled by default, which is now stated in the README.
-* Base `TwilightCalculator` on `AltitudeCrossingCalculator`. Times change
-  slightly: up to about 30 seconds at the standard angles, and up to about 100
-  seconds with `time_for_zenith_angle` and custom angles. The new values match
-  IMCCE, Horizons and Skyfield. Twilight that exists is returned when the Sun
-  doesn't rise or set, as in a polar night, instead of `nil`. Results are still
-  rounded to the second.
+_If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
@@ -34,45 +11,128 @@
   was off by up to about 0.1 arcsecond depending on the date, and the velocity
   had the same error. The rotation now matches ERFA and Skyfield, and is the
   one used when an ephemeris is given. Without an ephemeris there is still no
-  aberration correction.
+  aberration correction ([#316])
 * Let the rise, transit and set refinement move an estimate back in time. The
   correction was clamped to be positive, so an estimate that overshot its event
   could never be brought back, and settings and transits came out up to a few
-  minutes late depending on the window asked for.
+  minutes late depending on the window asked for ([#301])
 * Refer equatorial coordinates to the epoch of the frame they come from
+  ([#302])
 * Return real Barycentric Dynamical Time from `Instant#tdb`, which returned
   Terrestrial Time unchanged. The two scales differ by up to about 1.7
-  milliseconds.
+  milliseconds ([#304])
 * Keep ΔT at its last measured value past the end of the IERS series. `iers`
   0.3.0 stopped attaching an `available_range` to the `OutOfRangeError` it
   raises for an uncovered date, and the fallback read that absence as "no data
   at all" and answered 0. Every date after the bundled series, currently
-  2027-09-04, was off by about 69 seconds.
+  2027-09-04, was off by about 69 seconds ([#304])
+* Read the constellation data files as UTF-8, so that `Constellations::Finder`
+  and `Constellations::Repository` work when the default external encoding is
+  not UTF-8, as under `LANG=C`
 
 ### Features
 
+* Add `HorizontalTransformation`, which converts equatorial coordinates at
+  J2000 epoch into horizontal coordinates for one observer and one instant. The
+  rotation and the sidereal time are computed once, which makes converting many
+  points, like the stars of a catalogue, about 70 times faster than going
+  through `DeepSkyObject#at(instant).observed_by(observer).horizontal`. Points
+  are treated as fixed directions, as for a `DeepSkyObject` without an
+  ephemeris. `refraction:` is an option ([#317])
+* Add `AltitudeCrossingCalculator`, which finds when a body reaches any
+  altitude, with unrounded instants, the crossing direction, a grazing flag and
+  the culminations. `refraction:` and `reference:` (`:center`, `:upper_limb`,
+  `:lower_limb`) are options ([#311])
 * Expose lunar eclipse shadow geometry at greatest eclipse and at every contact
+  ([#300])
 * Add lunar eclipse local circumstances with `LunarEclipse#visibility_from`
-* Expose the Moon's apparent place at every lunar eclipse contact
+  ([#302])
+* Expose the Moon's apparent place at every lunar eclipse contact ([#302])
 
 ### Improvements
 
+* Cache Greenwich mean and apparent sidereal times when the cache is enabled.
+  The cache is still disabled by default, which is now stated in the README
+  ([#320])
 * Compute the TAI and TDB time scales with the horologium gem, which owns the
-  scales that convert by definition or by model. UT1 stays in Astronoby.
+  scales that convert by definition or by model. UT1 stays in Astronoby
+  ([#304])
 * Read `Instant#tai` and `#tdb` as a `Rational`, which a `Float` Julian Date is
-  too coarse to hold
-* Evaluate `Precession` in TT, as SOFA and ERFA do
-* Remove `Constants::TAI_TT_OFFSET`
+  too coarse to hold ([#304])
+* Evaluate `Precession` in TT, as SOFA and ERFA do ([#304])
 * Raise the minimum `iers` version from 0.1 to 0.3.1, which `horologium`
-  requires
-* Bisect to a millisecond rather than to a second when locating an event in time
-* Reduce the Moon to the observer by vectors for lunar eclipse visibility
-* Answer lunar eclipse phase coverage in the words the whole eclipse uses
-* Derive a lunar eclipse's magnitudes, axis distance and gamma from its geometry
-* Remove `LunarEclipseVisibility#altitude_at`
+  requires ([#304])
 * Share the rise and set horizon convention through `Astronoby::Horizon`
-* Resolve the lunar eclipse shadow axis offset with vectors
-* Reduce lunar eclipse contacts with the IAU eclipse constant k
+  ([#311])
+* Derive a lunar eclipse's magnitudes, axis distance and gamma from its
+  geometry ([#300], [#302])
+* Resolve the lunar eclipse shadow axis offset with vectors ([#302])
+* Reduce the Moon to the observer by vectors for lunar eclipse visibility
+  ([#302])
+* Answer lunar eclipse phase coverage in the words the whole eclipse uses
+  ([#302])
+* Pin CI runner to ubuntu-24.04 ([#312])
+* Fix CI for the standard and simplecov bumps ([#319])
+* Bump rubyzip from 3.4.0 to 3.7.0 by @dependabot ([#285], [#299], [#305],
+  [#308])
+* Bump standard from 1.55.0 to 1.56.0 by @dependabot ([#288])
+* Bump simplecov from 0.22 to 1.0.3 by @dependabot ([#287], [#289], [#291])
+* Bump iers from 0.1.0 to 0.2.0 by @dependabot ([#284], [#294])
+* Update json to 2.21.2 ([#296])
+
+### Backward-incompatible changes
+
+* `TwilightCalculator` is based on `AltitudeCrossingCalculator`. Times change
+  slightly: up to about 30 seconds at the standard angles, and up to about 100
+  seconds with `time_for_zenith_angle` and custom angles. The new values match
+  IMCCE, Horizons and Skyfield. Twilight that exists is returned when the Sun
+  doesn't rise or set, as in a polar night, instead of `nil`. Results are still
+  rounded to the second. `#event_on` is about 1.8 times slower than before,
+  because it solves for the real crossing instead of approximating the Sun's
+  position from a single evaluation ([#311])
+* Equatorial coordinates carry the epoch of the frame they come from ([#302])
+* `Instant#tdb` returns real TDB, and `#tai` and `#tdb` return a `Rational`
+  ([#304])
+* Remove `Constants::TAI_TT_OFFSET` ([#304])
+* `Util::Time.terrestrial_universal_time_delta` is replaced by `DeltaT.at`
+  ([#295])
+* `EclipsePhase` is now `LunarEclipsePhase`, `LunarEclipse#greatest_eclipse` is
+  now `#greatest_eclipse_instant`, `LunarEclipse.new` no longer accepts the
+  magnitudes, gamma or shadow axis distance, and `LunarEclipsePhase#duration` is
+  no longer rounded ([#300], [#302])
+* Remove `LunarEclipseVisibility#altitude_at` ([#302])
+* Lunar eclipse contacts are reduced with the IAU eclipse constant k. Contact
+  times may shift by a second or two, and magnitudes by up to about 0.001
+  ([#302])
+* Bisect to a millisecond rather than to a second when locating an event in
+  time. Conjunction and opposition times may move by a fraction of a second, and
+  searches are about 20% slower ([#302])
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.10.0...v0.11.0
+
+[#284]: https://github.com/rhannequin/astronoby/pull/284
+[#285]: https://github.com/rhannequin/astronoby/pull/285
+[#287]: https://github.com/rhannequin/astronoby/pull/287
+[#288]: https://github.com/rhannequin/astronoby/pull/288
+[#289]: https://github.com/rhannequin/astronoby/pull/289
+[#291]: https://github.com/rhannequin/astronoby/pull/291
+[#294]: https://github.com/rhannequin/astronoby/pull/294
+[#295]: https://github.com/rhannequin/astronoby/pull/295
+[#296]: https://github.com/rhannequin/astronoby/pull/296
+[#299]: https://github.com/rhannequin/astronoby/pull/299
+[#300]: https://github.com/rhannequin/astronoby/pull/300
+[#301]: https://github.com/rhannequin/astronoby/pull/301
+[#302]: https://github.com/rhannequin/astronoby/pull/302
+[#304]: https://github.com/rhannequin/astronoby/pull/304
+[#305]: https://github.com/rhannequin/astronoby/pull/305
+[#308]: https://github.com/rhannequin/astronoby/pull/308
+[#311]: https://github.com/rhannequin/astronoby/pull/311
+[#312]: https://github.com/rhannequin/astronoby/pull/312
+[#316]: https://github.com/rhannequin/astronoby/pull/316
+[#317]: https://github.com/rhannequin/astronoby/pull/317
+[#319]: https://github.com/rhannequin/astronoby/pull/319
+[#320]: https://github.com/rhannequin/astronoby/pull/320
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
 
 ## 0.10.0 - 2026-06-26
 

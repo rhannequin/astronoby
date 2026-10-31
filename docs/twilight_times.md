@@ -77,13 +77,13 @@ events = calculator.events_between(
 
 events.morning_civil_twilight_times
 # =>
-# [2025-08-01 02:29:17 UTC,
-#  2025-08-02 02:30:21 UTC,
-#  2025-08-03 02:31:25 UTC,
-#  2025-08-04 02:32:30 UTC,
-#  2025-08-05 02:33:34 UTC,
-#  2025-08-06 02:34:39 UTC,
-#  2025-08-07 02:35:44 UTC]
+# [2025-08-01 02:29:11 UTC,
+#  2025-08-02 02:30:15 UTC,
+#  2025-08-03 02:31:20 UTC,
+#  2025-08-04 02:32:24 UTC,
+#  2025-08-05 02:33:29 UTC,
+#  2025-08-06 02:34:34 UTC,
+#  2025-08-07 02:35:39 UTC]
 ```
 
 ## `#event_on`
@@ -104,16 +104,16 @@ event.morning_astronomical_twilight_time
 # => 2025-05-01 01:16:21 UTC
 
 event.morning_nautical_twilight_time
-# => 2025-05-01 01:55:54 UTC
+# => 2025-05-01 01:55:49 UTC
 
 event.evening_civil_twilight_time
-# => 2025-05-01 17:30:45 UTC
+# => 2025-05-01 17:30:50 UTC
 
 event.evening_nautical_twilight_time
-# => 2025-05-01 18:07:13 UTC
+# => 2025-05-01 18:07:27 UTC
 
 event.evening_astronomical_twilight_time
-# => 2025-05-01 18:46:47 UTC
+# => 2025-05-01 18:47:10 UTC
 ```
 
 ## Accuracy and polar regions
@@ -124,6 +124,11 @@ are rounded to the second. Twilight that exists is returned even when the Sun
 does not rise or set that day, as in a polar night. Use the [altitude crossing
 calculator](altitude_crossings.md) directly for other altitudes or for unrounded
 instants.
+
+Solving for the real crossing costs more than approximating the Sun's position
+from a single evaluation, as versions before 0.11.0 did, which could be off by
+up to 30 seconds. `#event_on` takes around 7.5 milliseconds for one day, against
+around 4 before.
 
 [Ephem page]: ephem.md
 [Observer page]: observer.md

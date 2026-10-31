@@ -31,7 +31,12 @@ crossings = calculator.crossings_between(
   altitude: Astronoby::Angle.from_degrees(-17.5)
 )
 
-crossing = crossings.first crossing.instant   # => Astronoby::Instant, unrounded crossing.direction # => :rising or :setting crossing.grazing?  # => true when the body only just reaches the altitude ```
+crossing = crossings.first
+
+crossing.instant    # => Astronoby::Instant, unrounded
+crossing.direction  # => :rising or :setting
+crossing.grazing?   # => true when the body only just reaches the altitude
+```
 
 A crossing is `:rising` when the altitude increases through the target. It is `grazing?` when the target is within 0.05° of the body's highest or lowest altitude, where the instant is sensitive to small errors.
 
@@ -83,4 +88,5 @@ The Skyfield differences are a time-scale effect rather than a geometric one: th
 
 ## See also
 
-- [Twilight Times](twilight_times.md) - [Rise, Transit and Set Times](rise_transit_set_times.md) 
+- [Twilight Times](twilight_times.md)
+- [Rise, Transit and Set Times](rise_transit_set_times.md) 

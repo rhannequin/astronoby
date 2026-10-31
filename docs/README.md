@@ -108,25 +108,46 @@ calculator = Astronoby::TwilightCalculator.new(
 event = calculator.event_on(Date.new(2025, 5, 1))
 
 event.morning_astronomical_twilight_time
-# => 2025-05-01 02:17:07 UTC
+# => 2025-05-01 02:17:02 UTC
 
 event.morning_nautical_twilight_time
-# => 2025-05-01 03:09:44 UTC
+# => 2025-05-01 03:09:39 UTC
 
 event.morning_civil_twilight_time
-# => 2025-05-01 03:54:38 UTC
+# => 2025-05-01 03:54:36 UTC
 
 event.evening_civil_twilight_time
-# => 2025-05-01 19:41:51 UTC
+# => 2025-05-01 19:41:58 UTC
 
 event.evening_nautical_twilight_time
-# => 2025-05-01 20:26:56 UTC
+# => 2025-05-01 20:27:15 UTC
 
 event.evening_astronomical_twilight_time
-# => 2025-05-01 21:19:57 UTC
+# => 2025-05-01 21:20:32 UTC
 ```
 
 You can learn more about this calculator on the [Twilight times page].
+
+## Find when a body reaches any altitude
+
+```rb
+calculator = Astronoby::AltitudeCrossingCalculator.new(
+  body: Astronoby::Sun,
+  observer: observer,
+  ephem: ephem
+)
+
+crossing = calculator.crossings_between(
+  Time.utc(2025, 5, 1),
+  Time.utc(2025, 5, 2),
+  altitude: Astronoby::Angle.from_degrees(30)
+).first
+
+crossing.direction
+# => :rising
+```
+
+You can learn more about this calculator on the [Altitude crossings page].
 
 ## Moon phases
 
@@ -191,7 +212,7 @@ eclipses = Astronoby::Moon.eclipse_events(
 )
 
 eclipses.map { |eclipse| [eclipse.instant.to_time, eclipse.kind] }
-# => [[2025-03-14 06:58:47 UTC, :total], [2025-09-07 18:11:49 UTC, :total]]
+# => [[2025-03-14 06:58:46 UTC, :total], [2025-09-07 18:11:49 UTC, :total]]
 ```
 
 You can learn more about umbral and penumbral magnitudes, phases and contact
@@ -263,7 +284,9 @@ vega_position.apparent.equatorial.right_ascension.str(:hms)
 # => "18h 37m 48.2804s"
 ```
 
-You can learn more about deep-sky objects on the [Deep-sky Bodies page].
+You can learn more about deep-sky objects, and about converting many points to
+horizontal coordinates at once with `HorizontalTransformation`, on the
+[Deep-sky Bodies page].
 
 ## See also
 
@@ -281,6 +304,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 [Coordinates page]: coordinates.md
 [Rise, transit and setting times page]: rise_transit_set_times.md
 [Twilight times page]: twilight_times.md
+[Altitude crossings page]: altitude_crossings.md
 [Moon phases page]: moon_phases.md
 [Lunar observation page]: lunar_observation.md
 [Lunar eclipses page]: lunar_eclipses.md

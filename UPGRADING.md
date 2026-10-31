@@ -7,7 +7,7 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
-## Unreleased
+## Upgrading from 0.10.0 to 0.11.0
 
 ### Lunar eclipse contacts and magnitudes have changed slightly
 
@@ -23,8 +23,8 @@ smaller lunar radius. Together they cut the contact-time error against IMCCE by
 more than half, and the worst case over the 2026 to 2048 eclipses from 8.9
 seconds to 2.2 seconds.
 
-Contact times may shift by a second or two, and the magnitudes in the fifth
-decimal. Greatest eclipse, `#gamma` and `#shadow_axis_distance` are unaffected,
+Contact times may shift by a second or two, and the magnitudes by up to about
+0.001. Greatest eclipse, `#gamma` and `#shadow_axis_distance` are unaffected,
 since they depend on neither constant.
 
 ### `EclipsePhase` is now `LunarEclipsePhase`
@@ -77,6 +77,36 @@ and were already right.
 Code passing an of date coordinate to
 `Precession.for_equatorial_coordinates` will now get a precessed result where
 it previously got the coordinate back nearly unchanged.
+
+### Twilight times are computed from altitude crossings
+
+`TwilightCalculator` is now built on `AltitudeCrossingCalculator`, which finds
+the instant the Sun's centre reaches each altitude directly. The previous
+approach was an approximation that could be off by tens of seconds.
+
+Times change slightly: up to about 30 seconds at the standard angles, and up to
+about 100 seconds with `time_for_zenith_angle` and custom angles. The new
+values agree with IMCCE, JPL Horizons and Skyfield. Results are still rounded
+to the second.
+
+When the Sun doesn't rise or set, as in a polar night, the twilight that does
+happen is now returned instead of `nil`. A twilight that never happens, such as
+astronomical twilight at high latitude in midsummer, is still `nil`.
+
+`TwilightCalculator#event_on` is about 1.8 times slower than before, from around
+4 to around 7.5 milliseconds for one day. The previous version approximated the
+Sun's position from a single evaluation, which could be off by up to 30
+seconds. This one solves for the real crossing, evaluating the Sun's position
+about 20 times, and agrees with IMCCE, JPL Horizons and Skyfield to the second.
+
+### Rise, transit and set times are no longer late
+
+The refinement of a rise, transit or set time could only move its estimate
+forward in time. An estimate that overshot its event was never brought back, so
+settings and transits came out up to a few minutes late depending on the window
+asked for. Moon transits now agree with Skyfield to the second. Expect Moon
+times to move by up to a few minutes, and Sun and planet times by a few
+seconds.
 
 ### Event times are located more precisely
 

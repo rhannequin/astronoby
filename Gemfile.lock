@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    astronoby (0.10.0)
+    astronoby (0.11.0)
       ephem (~> 0.5)
       horologium (~> 0.1)
       iers (~> 0.3, >= 0.3.1)
