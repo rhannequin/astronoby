@@ -148,6 +148,21 @@ it used to, closer to the true value.
 `Astronoby::Constants::TAI_TT_OFFSET` has been removed. The offset between TAI
 and TT is `horologium`'s to hold now, and Astronoby no longer names it.
 
+### `Util::Time.terrestrial_universal_time_delta` replaced by `DeltaT.at`
+
+Delta T (TT - UT1) now has its own namespace instead of living in
+`Astronoby::Util::Time`. The returned value is unchanged.
+
+```rb
+# Before
+Astronoby::Util::Time.terrestrial_universal_time_delta(time)
+
+# After
+Astronoby::DeltaT.at(time)
+```
+
+`Astronoby::Util::Time` keeps `decimal_hour_to_time`.
+
 ## Upgrading from 0.9.0 to 0.10.0
 
 ### Minimum Ruby version bumped to 3.2.0
