@@ -7,7 +7,7 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
-## Unreleased
+## Upgrading from 0.11.1 to 0.12.0
 
 ### Refraction has changed near the horizon
 

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.12.0 - 2026-11-24
+
+_If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
@@ -10,30 +12,52 @@
   given the true one, so refraction was too large near the horizon, by 5′ at a
   true altitude of 0° and 2.4′ at 1°, and the apparent horizon fell at a true
   altitude of -47′ instead of the -34′ that rise and set times use. Below -1°
-  the refraction is now kept constant instead of growing up to 79′
+  the refraction is now kept constant instead of growing up to 79′ ([#324])
 * Refract the limb rather than the centre in `AltitudeCrossingCalculator` with
   `refraction: true` and a limb reference. Near the horizon, refraction changes
   by a few arcminutes across the Sun's semi-diameter, which put upper-limb
-  crossings 20 to 30 seconds away from sunrise and sunset
+  crossings 20 to 30 seconds away from sunrise and sunset ([#324])
 * Raise the minimum `ephem` version from 0.5.1 to 0.5.2. Downloading IMCCE
   kernels with `Ephem.download` or `Orientation.download` failed when
-  `Encoding.default_internal` was set, as it is in Rails apps
+  `Encoding.default_internal` was set, as it is in Rails apps ([#330])
 
 ### Features
 
 * Add `Temperature` and `Pressure` value objects, used for the observer's
-  atmospheric conditions
-* Add `Horizontal#refracted?` and `Horizontal#refract`
+  atmospheric conditions ([#324])
+* Add `Horizontal#refracted?` and `Horizontal#refract` ([#324])
 * Add `Airmass`, with `Horizontal#airmass` and `AltitudeExtreme#airmass`. It
   uses Young (1994) for a true altitude and Kasten and Young (1989) for an
-  apparent one ([#323])
-* Add `AltitudeExtreme#refracted?`
+  apparent one ([#323], [#329])
+* Add `AltitudeExtreme#refracted?` ([#329])
 
 ### Improvements
 
-* Document refraction in `docs/refraction.md`
+* Document refraction in `docs/refraction.md` ([#324])
+
+### Backward-incompatible changes
+
+* Refracted altitudes are lower than before near the horizon, by up to 5′ at a
+  true altitude of 0°. Above 5° they move by less than 10″, and rise, set and
+  twilight times are unchanged ([#324])
+* `Observer` takes a `Temperature` for `temperature:` and a `Pressure` for
+  `pressure:`, and returns them from `#temperature` and `#pressure`. Passing a
+  number raises `IncompatibleArgumentsError` ([#324])
+* Remove `Observer::PRESSURE_AT_SEA_LEVEL`, `PASCAL_PER_MILLIBAR`,
+  `EARTH_GRAVITATIONAL_ACCELERATION`, `MOLAR_MASS_OF_AIR` and
+  `UNIVERSAL_GAS_CONSTANT` ([#324])
+* `Refraction` is a module with a single method,
+  `Refraction.angle(altitude:, observer:)`. `Refraction.new`, `#refract`,
+  `#refraction_angle`, `.correct_horizontal_coordinates` and the
+  `LOW_ALTITUDE_BODY_ANGLE` and `ZENITH` constants are removed ([#324])
+
+**Full Changelog**: https://github.com/rhannequin/astronoby/compare/v0.11.1...v0.12.0
 
 [#323]: https://github.com/rhannequin/astronoby/issues/323
+[#324]: https://github.com/rhannequin/astronoby/pull/324
+[#329]: https://github.com/rhannequin/astronoby/pull/329
+[#330]: https://github.com/rhannequin/astronoby/pull/330
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
 
 ## 0.11.1 - 2026-11-24
 
