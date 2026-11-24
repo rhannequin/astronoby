@@ -9,7 +9,9 @@ module Astronoby
     # @param name [String] Name of the ephemeris file, supported by the Ephem
     #   gem
     # @param target [String] Location where to store the file
-    # @return [Boolean] true if the download was successful, false otherwise
+    # @return [Boolean] true once the file is written
+    # @raise [::Ephem::DownloadError] if the server answers with an error or
+    #   the archive does not contain the file
     #
     # @example Downloading de440t SPK from NASA JPL
     #   Astronoby::Ephem.download(name: "de440t.bsp", target: "tmp/de440t.bsp")
