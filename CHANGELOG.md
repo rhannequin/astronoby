@@ -15,6 +15,9 @@
   `refraction: true` and a limb reference. Near the horizon, refraction changes
   by a few arcminutes across the Sun's semi-diameter, which put upper-limb
   crossings 20 to 30 seconds away from sunrise and sunset
+* Raise the minimum `ephem` version from 0.5.1 to 0.5.2. Downloading IMCCE
+  kernels with `Ephem.download` or `Orientation.download` failed when
+  `Encoding.default_internal` was set, as it is in Rails apps
 
 ### Features
 
