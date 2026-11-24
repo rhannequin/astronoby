@@ -70,6 +70,52 @@ RSpec.describe Astronoby::Airmass do
 
       expect(airmass).to be_nil
     end
+
+    it "refracts an altitude below the horizon when given an observer" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        temperature: Astronoby::Temperature.from_celsius(15),
+        pressure: Astronoby::Pressure.standard_atmosphere
+      )
+      altitude = Astronoby::Angle.from_degrees(-0.3)
+
+      airmass = described_class.from_true_altitude(altitude, observer: observer)
+
+      expect(airmass.value.round(3)).to eq 34.796
+      expect(airmass).to eq described_class.from_apparent_altitude(
+        altitude +
+          Astronoby::Refraction.angle(altitude: altitude, observer: observer)
+      )
+    end
+
+    it "returns nil below the apparent horizon when given an observer" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        temperature: Astronoby::Temperature.from_celsius(15),
+        pressure: Astronoby::Pressure.standard_atmosphere
+      )
+
+      airmass = described_class.from_true_altitude(
+        Astronoby::Angle.from_degrees(-0.6),
+        observer: observer
+      )
+
+      expect(airmass).to be_nil
+    end
+
+    it "ignores the observer above the horizon" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      altitude = Astronoby::Angle.from_degrees(5)
+
+      airmass = described_class.from_true_altitude(altitude, observer: observer)
+
+      expect(airmass).to eq described_class.from_true_altitude(altitude)
+    end
   end
 
   describe "::from_apparent_altitude" do

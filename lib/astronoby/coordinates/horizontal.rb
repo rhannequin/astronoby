@@ -39,12 +39,12 @@ module Astronoby
       end
 
       # @return [Astronoby::Airmass, nil] the airmass at this altitude, or nil
-      #   below the horizon
+      #   below the apparent horizon
       def airmass
         if refracted?
           Airmass.from_apparent_altitude(@altitude)
         else
-          Airmass.from_true_altitude(@altitude)
+          Airmass.from_true_altitude(@altitude, observer: @observer)
         end
       end
 

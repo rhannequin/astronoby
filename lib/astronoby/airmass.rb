@@ -36,10 +36,25 @@ module Astronoby
     KASTEN_YOUNG_C = 1.6364
 
     class << self
+      # Young's formula only covers true altitudes down to the horizon, but a
+      # body slightly below it is still seen above it, lifted by refraction.
+      # Given an observer, such an altitude is refracted with the observer's
+      # temperature and pressure and its airmass taken from the apparent
+      # altitude.
+      #
       # @param altitude [Astronoby::Angle] true altitude, without refraction
-      # @return [Astronoby::Airmass, nil] the airmass, or nil below the horizon
-      def from_true_altitude(altitude)
-        return if altitude.negative?
+      # @param observer [Astronoby::Observer, nil] the observer, whose
+      #   atmosphere tells whether a body below the true horizon is visible
+      # @return [Astronoby::Airmass, nil] the airmass, or nil below the
+      #   horizon, the apparent one when an observer is given
+      def from_true_altitude(altitude, observer: nil)
+        if altitude.negative?
+          return unless observer
+
+          return from_apparent_altitude(
+            altitude + Refraction.angle(altitude: altitude, observer: observer)
+          )
+        end
 
         sine = altitude.sin
         new(

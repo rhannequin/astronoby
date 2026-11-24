@@ -142,6 +142,20 @@ RSpec.describe Astronoby::Coordinates::Horizontal do
       expect((apparent_airmass / true_airmass - 1).abs).to be < 0.01
     end
 
+    it "refracts a true altitude just below the horizon" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      horizontal = described_class.new(
+        azimuth: Astronoby::Angle.from_degrees(100),
+        altitude: Astronoby::Angle.from_degrees(-0.3),
+        observer: observer
+      )
+
+      expect(horizontal.airmass).to eq horizontal.refract.airmass
+    end
+
     it "is nil below the horizon" do
       observer = Astronoby::Observer.new(
         latitude: Astronoby::Angle.zero,

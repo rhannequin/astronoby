@@ -169,7 +169,7 @@ true)` gives the apparent altitude instead, with atmospheric refraction, and
 The length of the path light travels through the atmosphere, relative to the
 path at the zenith. It is 1 at the zenith, about 2 at 30° of altitude and about
 38 for a body that appears on the horizon. `#airmass` returns an
-`Astronoby::Airmass`, or `nil` below the horizon.
+`Astronoby::Airmass`, or `nil` when the body appears below the horizon.
 
 ```rb
 horizontal.airmass.value
@@ -179,6 +179,11 @@ horizontal.airmass.value
 It uses the formula that matches the altitude: Young (1994) for the true
 altitude, and Kasten and Young (1989) for the apparent altitude of a refracted
 `Horizontal`. For the same body, the two agree to within 1% down to the horizon.
+
+A body can be up to about half a degree below the true horizon and still appear
+above it, lifted by refraction. Young (1994) does not cover these altitudes, so
+for them the altitude is refracted with the observer's temperature and pressure
+and Kasten and Young (1989) is used.
 
 An airmass can also be computed from any altitude:
 

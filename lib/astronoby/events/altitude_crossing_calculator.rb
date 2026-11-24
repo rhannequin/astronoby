@@ -203,7 +203,8 @@ module Astronoby
             kind: culmination.kind,
             instant: Instant.from_terrestrial_time(culmination.tt),
             altitude: Angle.from_radians(altitude_at(culmination.tt)),
-            refracted: @refraction
+            refracted: @refraction,
+            observer: @observer
           )
         end
       end
