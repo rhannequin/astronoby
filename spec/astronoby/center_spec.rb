@@ -84,10 +84,16 @@ RSpec.describe Astronoby::Center do
         longitude: Astronoby::Angle.from_degrees(2.3522)
       }
       first = described_class.topocentric(
-        Astronoby::Observer.new(**location, temperature: 280)
+        Astronoby::Observer.new(
+          **location,
+          temperature: Astronoby::Temperature.from_kelvins(280)
+        )
       )
       second = described_class.topocentric(
-        Astronoby::Observer.new(**location, temperature: 300)
+        Astronoby::Observer.new(
+          **location,
+          temperature: Astronoby::Temperature.from_kelvins(300)
+        )
       )
 
       expect(first).to eq(second)

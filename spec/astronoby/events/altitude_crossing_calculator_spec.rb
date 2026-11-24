@@ -258,6 +258,55 @@ RSpec.describe Astronoby::AltitudeCrossingCalculator do
       expect(crossing.instant).to be < center.instant
     end
 
+    context "with refraction" do
+      # The model puts the apparent horizon at a true altitude of -34.6′, the
+      # convention at -34′, about 4 seconds apart in Paris in October.
+      it "puts the apparent horizon at the rise and set convention" do
+        refracted = sun_calculator(paris, refraction: true).crossings_between(
+          Time.utc(2026, 10, 23),
+          Time.utc(2026, 10, 24),
+          altitude: Astronoby::Angle.zero
+        )
+        convention = sun_calculator(paris).crossings_between(
+          Time.utc(2026, 10, 23),
+          Time.utc(2026, 10, 24),
+          altitude: Astronoby::Horizon::REFRACTION_ANGLE
+        )
+
+        refracted.zip(convention).each do |apparent, standard|
+          expect(apparent.instant.to_time)
+            .to be_within(5).of(standard.instant.to_time)
+        end
+      end
+
+      # Refracting the centre instead of the limb puts the upper limb 20 to 30
+      # seconds away from sunrise and sunset. The remaining gap comes from the
+      # fixed 34′ and 16′ of the convention.
+      it "refracts the limb rather than the centre" do
+        crossings = sun_calculator(
+          paris,
+          refraction: true,
+          reference: :upper_limb
+        ).crossings_between(
+          Time.utc(2026, 10, 23),
+          Time.utc(2026, 10, 24),
+          altitude: Astronoby::Angle.zero
+        )
+        events = Astronoby::RiseTransitSetCalculator.new(
+          body: Astronoby::Sun,
+          observer: paris,
+          ephem: test_ephem_sun
+        ).event_on(Date.new(2026, 10, 23))
+
+        aggregate_failures do
+          expect(crossings.first.instant.to_time)
+            .to be_within(10).of(events.rising_time)
+          expect(crossings.last.instant.to_time)
+            .to be_within(10).of(events.setting_time)
+        end
+      end
+    end
+
     it "raises when the window ends before it starts" do
       calculator = sun_calculator(paris)
 

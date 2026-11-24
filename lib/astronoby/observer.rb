@@ -3,12 +3,7 @@
 module Astronoby
   class Observer
     DEFAULT_ELEVATION = Distance.zero
-    DEFAULT_TEMPERATURE = 283.15
-    PRESSURE_AT_SEA_LEVEL = 1013.25
-    PASCAL_PER_MILLIBAR = 0.01
-    EARTH_GRAVITATIONAL_ACCELERATION = 9.80665
-    MOLAR_MASS_OF_AIR = 0.0289644
-    UNIVERSAL_GAS_CONSTANT = 8.31432
+    DEFAULT_TEMPERATURE = Temperature.from_celsius(10)
 
     # @return [Astronoby::Angle] geographic latitude
     attr_reader :latitude
@@ -22,10 +17,12 @@ module Astronoby
     # @return [Numeric, String] offset from Coordinated Universal Time
     attr_reader :utc_offset
 
-    # @return [Numeric] temperature in kelvins
+    # @return [Astronoby::Temperature] temperature of the air at the observer's
+    #   location
     attr_reader :temperature
 
-    # @return [Numeric] atmospheric pressure in millibars
+    # @return [Astronoby::Pressure] atmospheric pressure at the observer's
+    #   location
     attr_reader :pressure
 
     # @param latitude [Astronoby::Angle] geographic latitude of the observer
@@ -33,10 +30,13 @@ module Astronoby
     # @param elevation [Astronoby::Distance] geographic elevation (or altitude)
     #   of the observer above sea level
     # @param utc_offset [Numeric, String] offset from Coordinated Universal Time
-    # @param temperature [Numeric] temperature at the observer's location in
-    #   kelvins
-    # @param pressure [Numeric] atmospheric pressure at the observer's
-    #   location in millibars
+    # @param temperature [Astronoby::Temperature] temperature of the air at the
+    #   observer's location, 10 °C by default
+    # @param pressure [Astronoby::Pressure, nil] atmospheric pressure at the
+    #   observer's location, derived from the elevation and the temperature by
+    #   default
+    # @raise [Astronoby::IncompatibleArgumentsError] if the temperature or the
+    #   pressure is not a value object
     def initialize(
       latitude:,
       longitude:,
@@ -49,8 +49,12 @@ module Astronoby
       @longitude = longitude
       @elevation = elevation
       @utc_offset = utc_offset
-      @temperature = temperature
-      @pressure = pressure || compute_pressure
+      @temperature = ensure_value_object!(:temperature, temperature, Temperature)
+      @pressure = ensure_value_object!(
+        :pressure,
+        pressure || Pressure.at_elevation(elevation, temperature: temperature),
+        Pressure
+      )
     end
 
     # Returns the observer's ECEF position vector (WGS-84 geodetic to ECEF).
@@ -118,20 +122,11 @@ module Astronoby
 
     private
 
-    def compute_pressure
-      @pressure ||= PRESSURE_AT_SEA_LEVEL * pressure_ratio
-    end
+    def ensure_value_object!(name, value, klass)
+      return value if value.is_a?(klass)
 
-    # Source:
-    # Barometric formula
-    # https://en.wikipedia.org/wiki/Barometric_formula
-    def pressure_ratio
-      term1 = EARTH_GRAVITATIONAL_ACCELERATION *
-        MOLAR_MASS_OF_AIR *
-        @elevation.meters
-      term2 = UNIVERSAL_GAS_CONSTANT * @temperature
-
-      Math.exp(-term1 / term2)
+      raise IncompatibleArgumentsError,
+        "Expected #{name} to be an #{klass}, got #{value.inspect}"
     end
 
     def polar_motion_matrix_for(instant)

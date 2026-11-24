@@ -106,7 +106,7 @@ The slow, continuous change in the orientation of Earth's rotation axis, causing
 
 ### **Refraction**
 
-The bending of light as it passes through Earth's atmosphere, causing celestial objects to appear slightly higher in the sky than they actually are.
+The bending of light as it passes through Earth's atmosphere, causing celestial objects to appear slightly higher in the sky than they actually are. See the [Refraction page](refraction.md).
 
 ### **Right Ascension**
 

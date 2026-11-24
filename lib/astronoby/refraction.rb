@@ -1,92 +1,94 @@
 # frozen_string_literal: true
 
 module Astronoby
-  # Computes atmospheric refraction corrections for horizontal coordinates.
+  # Atmospheric refraction: how much higher a body appears than its true,
+  # geometric altitude, because its light is bent through the atmosphere.
+  #
+  # It uses Bennett's formula, scaled for the temperature and the pressure of
+  # the air at the observer's location, as the Explanatory Supplement to the
+  # Astronomical Almanac and the USNO's NOVAS do. Bennett's formula
+  # takes the apparent altitude, so it is inverted to start from the true one.
+  #
+  # The inversion starts from Saemundsson's formula, Meeus's direct inverse of
+  # Bennett's, which is within a few arcseconds of it. Two Newton steps then
+  # land on the exact inverse to within a microarcsecond, from -30 °C to 40 °C
+  # and from 600 hPa to 1050 hPa. A fixed number of steps keeps the result a
+  # smooth function of the altitude, which the search for altitude crossings
+  # relies on.
+  #
+  # Below {LOWEST_ALTITUDE} the refraction is kept at its value there, as the
+  # formulas are meaningless far below the horizon. The apparent altitude then
+  # still grows with the true altitude, with no gap.
   #
   # Source:
-  #  Title: Practical Astronomy with your Calculator or Spreadsheet
-  #  Authors: Peter Duffett-Smith and Jonathan Zwart
-  #  Edition: Cambridge University Press
-  #  Chapter: 37 - Refraction
-  class Refraction
-    LOW_ALTITUDE_BODY_ANGLE = Angle.from_degrees(15)
-    ZENITH = Angle.from_degrees(90)
+  #  Title: Astronomical Algorithms
+  #  Author: Jean Meeus
+  #  Edition: 2nd edition
+  #  Chapter: 16 - Atmospheric Refraction
+  #
+  # Source:
+  #  Title: The Calculation of Astronomical Refraction in Marine Navigation
+  #  Author: G. G. Bennett
+  #  Edition: Journal of Navigation, 35, 1982, pp. 255-259
+  module Refraction
+    LOWEST_ALTITUDE = Angle.from_degrees(-1)
 
-    # Computes the refraction angle for the given horizontal coordinates.
-    #
-    # @param coordinates [Astronoby::Coordinates::Horizontal] horizontal
-    #   coordinates
-    # @return [Astronoby::Angle] the refraction angle
-    def self.angle(coordinates:)
-      new(coordinates).refraction_angle
-    end
+    REFERENCE_PRESSURE = Pressure.from_millibars(1010)
+    REFERENCE_TEMPERATURE = Temperature.from_kelvins(283)
 
-    # Returns horizontal coordinates corrected for atmospheric refraction.
-    #
-    # @param coordinates [Astronoby::Coordinates::Horizontal] horizontal
-    #   coordinates
-    # @return [Astronoby::Coordinates::Horizontal] corrected coordinates
-    def self.correct_horizontal_coordinates(coordinates:)
-      new(coordinates).refract
-    end
+    NEWTON_STEPS = 2
 
-    # @param coordinates [Astronoby::Coordinates::Horizontal] horizontal
-    #   coordinates
-    def initialize(coordinates)
-      @coordinates = coordinates
-    end
+    class << self
+      # @param altitude [Astronoby::Angle] true, unrefracted altitude
+      # @param observer [Astronoby::Observer] the observer, whose temperature
+      #   and pressure scale the refraction
+      # @return [Astronoby::Angle] the refraction to add to the true altitude
+      #   to get the apparent one
+      def angle(altitude:, observer:)
+        true_altitude = [altitude.degrees, LOWEST_ALTITUDE.degrees].max
+        factor = atmospheric_factor(observer)
+        refraction = factor * saemundsson(true_altitude)
 
-    # Returns horizontal coordinates with refraction applied to the altitude.
-    #
-    # @return [Astronoby::Coordinates::Horizontal] corrected coordinates
-    def refract
-      Coordinates::Horizontal.new(
-        azimuth: @coordinates.azimuth,
-        altitude: @coordinates.altitude + refraction_angle,
-        observer: @coordinates.observer
-      )
-    end
+        NEWTON_STEPS.times do
+          refraction = newton_step(refraction, true_altitude, factor)
+        end
 
-    # Computes the refraction angle based on the observer's atmospheric
-    # conditions and the body's altitude.
-    #
-    # @return [Astronoby::Angle] the refraction angle
-    def refraction_angle
-      if @coordinates.altitude > LOW_ALTITUDE_BODY_ANGLE
-        high_altitude_angle
-      else
-        low_altitude_angle
+        Angle.from_degrees(refraction)
       end
-    end
 
-    private
+      private
 
-    def pressure
-      @_pressure ||= @coordinates.observer.pressure
-    end
+      # One Newton step towards the refraction R, in degrees, that solves
+      # R = factor * Bennett(true altitude + R).
+      def newton_step(refraction, true_altitude, factor)
+        apparent_altitude = true_altitude + refraction
+        shifted_altitude = apparent_altitude + 4.4
+        cotangent = 1.0 / tan_of_degrees(
+          apparent_altitude + 7.31 / shifted_altitude
+        )
+        bennett = cotangent / Constants::ARCMINUTES_PER_DEGREE
+        bennett_slope = -(1 + cotangent**2) *
+          (1 - 7.31 / shifted_altitude**2) *
+          Math::PI / Constants::PI_IN_DEGREES /
+          Constants::ARCMINUTES_PER_DEGREE
 
-    def temperature
-      @_temperature ||= @coordinates.observer.temperature
-    end
+        residual = refraction - factor * bennett
+        refraction - residual / (1 - factor * bennett_slope)
+      end
 
-    def altitude_in_degrees
-      @_altitude_in_degrees ||= @coordinates.altitude.degrees
-    end
+      def saemundsson(true_altitude)
+        argument = true_altitude + 10.3 / (true_altitude + 5.11)
+        1.02 / tan_of_degrees(argument) / Constants::ARCMINUTES_PER_DEGREE
+      end
 
-    def high_altitude_angle
-      zenith_angle = ZENITH - @coordinates.altitude
-      Angle.from_degrees(0.00452 * pressure * zenith_angle.tan / temperature)
-    end
+      def tan_of_degrees(degrees)
+        Math.tan(degrees * Math::PI / Constants::PI_IN_DEGREES)
+      end
 
-    def low_altitude_angle
-      term1 = pressure * (
-        0.1594 + 0.0196 * altitude_in_degrees + 0.00002 * altitude_in_degrees**2
-      )
-      term2 = temperature * (
-        1 + 0.505 * altitude_in_degrees + 0.0845 * altitude_in_degrees**2
-      )
-
-      Angle.from_degrees(term1 / term2)
+      def atmospheric_factor(observer)
+        observer.pressure.pascals.fdiv(REFERENCE_PRESSURE.pascals) *
+          REFERENCE_TEMPERATURE.kelvins.fdiv(observer.temperature.kelvins)
+      end
     end
   end
 end

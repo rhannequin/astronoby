@@ -64,11 +64,7 @@ module Astronoby
         observer: @observer
       )
 
-      if refraction
-        Refraction.correct_horizontal_coordinates(coordinates: horizontal)
-      else
-        horizontal
-      end
+      refraction ? horizontal.refract : horizontal
     end
 
     private

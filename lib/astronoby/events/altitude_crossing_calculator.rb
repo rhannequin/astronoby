@@ -232,19 +232,14 @@ module Astronoby
         latitude = @observer.latitude
         sin_altitude = latitude.sin * declination.sin +
           latitude.cos * declination.cos * hour_angle.cos
-        altitude = Angle.asin(sin_altitude.clamp(-1.0, 1.0))
+        altitude = Angle.asin(sin_altitude.clamp(-1.0, 1.0)) +
+          Angle.from_radians(limb_offset(body))
 
         if @refraction
-          altitude += Refraction.angle(
-            coordinates: Coordinates::Horizontal.new(
-              azimuth: Angle.zero,
-              altitude: altitude,
-              observer: @observer
-            )
-          )
+          altitude += Refraction.angle(altitude: altitude, observer: @observer)
         end
 
-        altitude.radians + limb_offset(body)
+        altitude.radians
       end
 
       def limb_offset(body)

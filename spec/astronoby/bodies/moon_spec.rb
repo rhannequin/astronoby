@@ -432,7 +432,7 @@ RSpec.describe Astronoby::Moon do
           # Skyfield:   +270° 40′ 41.7″
 
           expect(horizontal.altitude.str(:dms))
-            .to eq("+6° 50′ 18.3032″")
+            .to eq("+6° 50′ 17.1934″")
           # Horizons:   +6° 50′ 19.33″
           # Stellarium: +6° 50′ 0.2″
           # Skyfield:   +6° 50′ 15.7″

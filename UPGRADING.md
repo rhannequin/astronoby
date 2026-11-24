@@ -7,6 +7,73 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Unreleased
+
+### Refraction has changed near the horizon
+
+Atmospheric refraction is now computed with Bennett's formula, inverted to
+start from the true altitude, as NOVAS does. The formula used until now
+expected the apparent altitude below 15° but was given the true one.
+
+Refracted altitudes above 5° move by less than 10″. Closer to the horizon they
+are lower than before, by up to 5′ at a true altitude of 0°, and below the
+horizon the refraction is now kept at its value at -1°. This affects
+`Topocentric#horizontal(refraction: true)`,
+`HorizontalTransformation#apply(refraction: true)` and
+`AltitudeCrossingCalculator` with `refraction: true`. Rise, set and twilight
+times are unchanged.
+
+### `Observer` takes value objects for the temperature and the pressure
+
+`temperature:` is now an `Astronoby::Temperature` and `pressure:` an
+`Astronoby::Pressure`, and `Observer#temperature` and `#pressure` return them.
+Passing a number raises `Astronoby::IncompatibleArgumentsError`, and so does a
+temperature at or below absolute zero or a negative pressure.
+
+```rb
+# Before
+Astronoby::Observer.new(
+  latitude: latitude,
+  longitude: longitude,
+  temperature: 283.15,
+  pressure: 1013.25
+)
+
+# After
+Astronoby::Observer.new(
+  latitude: latitude,
+  longitude: longitude,
+  temperature: Astronoby::Temperature.from_celsius(10),
+  pressure: Astronoby::Pressure.from_millibars(1013.25)
+)
+```
+
+`Observer::DEFAULT_TEMPERATURE` is now a `Temperature`. The constants used for
+the default pressure, `Observer::PRESSURE_AT_SEA_LEVEL`,
+`PASCAL_PER_MILLIBAR`, `EARTH_GRAVITATIONAL_ACCELERATION`, `MOLAR_MASS_OF_AIR`
+and `UNIVERSAL_GAS_CONSTANT`, have been removed. The default pressure is
+`Pressure.at_elevation(elevation, temperature:)`.
+
+### `Refraction` has a single method
+
+`Astronoby::Refraction` is now a module with one method,
+`Refraction.angle(altitude:, observer:)`, which takes the true altitude as an
+`Angle` instead of horizontal coordinates.
+
+`Refraction.correct_horizontal_coordinates(coordinates:)` has been removed. Use
+`Horizontal#refract` instead:
+
+```rb
+# Before
+Astronoby::Refraction.correct_horizontal_coordinates(coordinates: horizontal)
+
+# After
+horizontal.refract
+```
+
+`Refraction.new`, `#refract` and `#refraction_angle` have been removed as well,
+along with the `LOW_ALTITUDE_BODY_ANGLE` and `ZENITH` constants.
+
 ## Upgrading from 0.11.0 to 0.11.1
 
 ### Downloads raise on failure

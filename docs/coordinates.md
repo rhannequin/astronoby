@@ -157,6 +157,13 @@ horizontal.azimuth.str(:dms)
 # => "+171° 19′ 38.2567″"
 ```
 
+### Refraction
+
+The altitude is the true, geometric one by default. `horizontal(refraction:
+true)` gives the apparent altitude instead, with atmospheric refraction, and
+`#refracted?` tells which one a `Horizontal` holds. You can learn more on the
+[Refraction page].
+
 ## Geodetic
 
 Geodetic coordinates describe a position on or above the Earth's surface using
@@ -218,6 +225,7 @@ The forward direction (geodetic → ECEF) is handled by
 [Wikipedia]: https://en.wikipedia.org/wiki/Equatorial_coordinate_system
 [Angle page]: angles.md
 [topocentric position]: reference_frames.md#topocentric
+[Refraction page]: refraction.md
 
 ## See also
 

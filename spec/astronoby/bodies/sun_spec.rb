@@ -412,6 +412,7 @@ RSpec.describe Astronoby::Sun do
         horizontal = topocentric.horizontal(refraction: true)
 
         aggregate_failures do
+          expect(horizontal).to be_refracted
           expect(horizontal.azimuth.str(:dms))
             .to eq("+93° 44′ 20.22″")
           # Horizons:   +93° 44′ 20.1644″
@@ -419,7 +420,7 @@ RSpec.describe Astronoby::Sun do
           # Skyfield:   +93° 44′ 20.2″
 
           expect(horizontal.altitude.str(:dms))
-            .to eq("+16° 19′ 39.29″")
+            .to eq("+16° 19′ 40.5766″")
           # Horizons:   +16° 19′ 42.1874″
           # Stellarium: +16° 19′ 39.8″
           # Skyfield:   +16° 19′ 39.3″

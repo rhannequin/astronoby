@@ -292,6 +292,7 @@ horizontal coordinates at once with `HorizontalTransformation`, on the
 
 - [Glossary](glossary.md) - for astronomical and technical terms
 - [IERS Data](iers.md) - for Delta T and GMST data management
+- [Refraction](refraction.md) - for apparent altitudes and atmospheric conditions
 - [Configuration](configuration.md) - for performance tuning
 - [Performance Benchmarks](../benchmarks/README.md) - for testing improvements
 
