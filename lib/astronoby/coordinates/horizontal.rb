@@ -29,7 +29,7 @@ module Astronoby
         @azimuth = azimuth
         @altitude = altitude
         @observer = observer
-        @refracted = refracted
+        @refracted = refracted ? true : false
       end
 
       # @return [Boolean] true if the altitude is the apparent one, with

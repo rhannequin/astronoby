@@ -192,10 +192,11 @@ Astronoby::Airmass.from_apparent_altitude(altitude).value
 # => 1.9942928525292503
 ```
 
-Airmasses can be compared, for example to check an observation limit:
+Airmasses can be compared with each other or with a number, for example to
+check an observation limit:
 
 ```rb
-horizontal.airmass < Astronoby::Airmass.new(2)
+horizontal.airmass < 2
 # => false
 ```
 

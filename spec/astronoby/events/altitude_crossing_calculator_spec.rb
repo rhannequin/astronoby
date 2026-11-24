@@ -432,6 +432,29 @@ RSpec.describe Astronoby::AltitudeCrossingCalculator do
         .to eq Astronoby::Airmass.from_true_altitude(upper.altitude)
     end
 
+    it "returns no airmass for a culmination below the horizon" do
+      calculator = sun_calculator(paris)
+
+      lower = calculator.extremes_between(
+        Time.utc(2026, 10, 23),
+        Time.utc(2026, 10, 24)
+      ).last
+
+      expect(lower.kind).to eq :lower_culmination
+      expect(lower.airmass).to be_nil
+    end
+
+    it "returns a Boolean for refracted? whatever refraction value is given" do
+      calculator = sun_calculator(paris, refraction: nil)
+
+      upper = calculator.extremes_between(
+        Time.utc(2026, 10, 23),
+        Time.utc(2026, 10, 24)
+      ).first
+
+      expect(upper.refracted?).to be false
+    end
+
     it "returns refracted culminations with refraction" do
       calculator = sun_calculator(paris, refraction: true)
 

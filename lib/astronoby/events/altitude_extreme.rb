@@ -29,7 +29,7 @@ module Astronoby
       @kind = kind
       @instant = instant
       @altitude = altitude
-      @refracted = refracted
+      @refracted = refracted ? true : false
     end
 
     # @return [Boolean] true if the altitude is the apparent one, with
@@ -38,8 +38,9 @@ module Astronoby
       @refracted
     end
 
-    # @return [Astronoby::Airmass, nil] the airmass at that instant, or nil
-    #   below the horizon
+    # @return [Astronoby::Airmass, nil] the airmass at {#altitude}, so at the
+    #   calculator's reference point, the limb when one is used, or nil below
+    #   the horizon
     def airmass
       if refracted?
         Airmass.from_apparent_altitude(@altitude)

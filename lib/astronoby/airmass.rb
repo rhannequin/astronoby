@@ -75,30 +75,37 @@ module Astronoby
     attr_reader :value
 
     # @param value [Numeric] the relative airmass
-    # @raise [Astronoby::IncompatibleArgumentsError] if the value is not
-    #   positive
+    # @raise [Astronoby::IncompatibleArgumentsError] if the value is not a
+    #   positive number
     def initialize(value)
-      unless value.positive?
+      unless value.is_a?(Numeric) && value.positive?
         raise IncompatibleArgumentsError,
-          "Expected a positive airmass, got #{value}"
+          "Expected a positive airmass, got #{value.inspect}"
       end
 
-      @value = value
+      @value = value.to_f
       freeze
     end
 
     # @return [Integer] hash value
     def hash
-      [value.to_f, self.class].hash
+      [value, self.class].hash
     end
 
-    # @param other [Astronoby::Airmass] airmass to compare with
+    # @param other [Astronoby::Airmass, Numeric] airmass or plain number to
+    #   compare with
     # @return [Integer, nil] -1, 0, or 1; nil if not comparable
     def <=>(other)
-      return unless other.is_a?(self.class)
-
-      value <=> other.value
+      case other
+      when self.class then value <=> other.value
+      when Numeric then value <=> other
+      end
     end
-    alias_method :eql?, :==
+
+    # @param other [Object] object to compare with
+    # @return [Boolean] true if other is an Airmass of the same value
+    def eql?(other)
+      other.is_a?(self.class) && value == other.value
+    end
   end
 end

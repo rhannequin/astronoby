@@ -15,6 +15,13 @@ RSpec.describe Astronoby::Airmass do
       )
     end
 
+    it "raises an error for a value that is not a number" do
+      expect { described_class.new(nil) }.to raise_error(
+        Astronoby::IncompatibleArgumentsError,
+        "Expected a positive airmass, got nil"
+      )
+    end
+
     it "raises an error for a negative value" do
       expect { described_class.new(-1) }
         .to raise_error(Astronoby::IncompatibleArgumentsError)
@@ -116,6 +123,13 @@ RSpec.describe Astronoby::Airmass do
     expect((from_apparent.value / from_true.value - 1).abs).to be < 0.01
   end
 
+  describe "#value" do
+    it "is a Float" do
+      expect(described_class.new(2).value).to eq 2.0
+      expect(described_class.new(2).value).to be_a Float
+    end
+  end
+
   describe "equality" do
     it "is equal to an airmass of the same value" do
       expect(described_class.new(2)).to eq described_class.new(2.0)
@@ -129,6 +143,14 @@ RSpec.describe Astronoby::Airmass do
   describe "comparison" do
     it "orders airmasses" do
       expect(described_class.new(1.5)).to be < described_class.new(2)
+    end
+
+    it "compares with a number" do
+      expect(described_class.new(1.5)).to be < 2
+    end
+
+    it "is not eql to a number of the same value" do
+      expect(described_class.new(2)).not_to eql 2.0
     end
   end
 end
