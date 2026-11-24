@@ -32,6 +32,13 @@ It is also possible to give the following optional key arguments:
   sea level
 - `utc_offset`: local time difference with UTC. Check the [timezone specifiers]
   for the format.
+- `temperature` (`Astronoby::Temperature`): the temperature of the air, 10 °C by
+  default
+- `pressure` (`Astronoby::Pressure`): the atmospheric pressure, by default the
+  standard atmosphere brought to the observer's elevation
+
+The temperature and the pressure are only used for atmospheric refraction, see
+the [Refraction page].
 
 ```rb
 # Location: Alhambra, Spain
@@ -70,6 +77,7 @@ observer1 == observer2
 [timezone specifiers]: https://ruby-doc.org/3.4.1/Time.html#class-Time-label-Timezone+Specifiers
 [Angles page]: angles.md
 [Coordinates page]: coordinates.md#geodetic
+[Refraction page]: refraction.md
 
 ## See also
 

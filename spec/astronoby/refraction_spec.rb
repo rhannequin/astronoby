@@ -3,126 +3,175 @@
 RSpec.describe Astronoby::Refraction do
   describe "::angle" do
     it "returns an Angle" do
-      observer = instance_double(
-        Astronoby::Observer,
-        latitude: Astronoby::Angle.from_degrees(50),
-        longitude: Astronoby::Angle.zero,
-        pressure: Astronoby::Observer::DEFAULT_TEMPERATURE,
-        temperature: Astronoby::Observer::PRESSURE_AT_SEA_LEVEL
-      )
-      coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.from_degrees(100),
-        altitude: Astronoby::Angle.from_degrees(80),
-        observer: observer
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
       )
 
-      angle = described_class.angle(coordinates: coordinates)
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(45),
+        observer: observer
+      )
 
       expect(angle).to be_a Astronoby::Angle
     end
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 37 - Refraction
+    it "computes the refraction at the horizon" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
 
-    # The book example expects a refraction angle of +0° 10′ 11.2464″
-    it "computes the refraction angle" do
-      time = Time.utc(1987, 3, 23, 1, 1, 24)
-      true_equatorial_coordinates = Astronoby::Coordinates::Equatorial.new(
-        right_ascension: Astronoby::Angle.from_hms(23, 14, 0),
-        declination: Astronoby::Angle.from_dms(40, 10, 0)
-      )
-      observer = instance_double(
-        Astronoby::Observer,
-        latitude: Astronoby::Angle.from_degrees(51.203611),
-        longitude: Astronoby::Angle.from_degrees(0.17),
-        pressure: 1012,
-        temperature: 294.85
-      )
-      true_horizontal_coordinates = true_equatorial_coordinates.to_horizontal(
-        time: time,
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.zero,
         observer: observer
       )
 
-      angle = described_class.angle(coordinates: true_horizontal_coordinates)
-
-      expect(angle.str(:dms)).to eq "+0° 10′ 29.4467″"
+      expect(angle.str(:dms, precision: 2)).to eq "+0° 28′ 59.98″"
+      # Skyfield: 28′ 59.75″
     end
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 37 - Refraction
-    it "computes the refraction angle" do
-      observer = instance_double(
-        Astronoby::Observer,
-        latitude: Astronoby::Angle.from_degrees(52),
-        longitude: Astronoby::Angle.zero,
-        pressure: 1008,
-        temperature: 273.15 + 13
+    it "computes the refraction close to the horizon" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
       )
-      coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.from_dms(283, 16, 15.70),
-        altitude: Astronoby::Angle.from_dms(19, 20, 3.64),
+
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(1),
         observer: observer
       )
 
-      angle = described_class.angle(coordinates: coordinates)
-
-      expect(angle.str(:dms)).to eq "+0° 2′ 43.3668″"
-    end
-  end
-
-  describe "::correct_horizontal_coordinates" do
-    it "returns horizontal coordinates" do
-      observer = instance_double(
-        Astronoby::Observer,
-        latitude: Astronoby::Angle.from_degrees(50),
-        longitude: Astronoby::Angle.zero,
-        pressure: 0,
-        temperature: 0
-      )
-      true_coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.from_degrees(100),
-        altitude: Astronoby::Angle.from_degrees(80),
-        observer: observer
-      )
-
-      apparent_coordinates = described_class
-        .correct_horizontal_coordinates(coordinates: true_coordinates)
-
-      expect(apparent_coordinates).to be_a(Astronoby::Coordinates::Horizontal)
+      expect(angle.str(:dms, precision: 2)).to eq "+0° 21′ 48.78″"
+      # Skyfield: 21′ 48.60″
     end
 
-    # Source:
-    #  Title: Practical Astronomy with your Calculator or Spreadsheet
-    #  Authors: Peter Duffett-Smith and Jonathan Zwart
-    #  Edition: Cambridge University Press
-    #  Chapter: 37 - Refraction
-    it "computes accurate apparent coordinates" do
-      observer = instance_double(
-        Astronoby::Observer,
-        latitude: Astronoby::Angle.from_degrees(52),
-        longitude: Astronoby::Angle.zero,
-        pressure: 1008,
-        temperature: 273.15 + 13
+    it "computes the refraction at low altitude" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
       )
-      true_coordinates = Astronoby::Coordinates::Horizontal.new(
-        azimuth: Astronoby::Angle.from_dms(283, 16, 15.70),
-        altitude: Astronoby::Angle.from_dms(19, 20, 3.64),
+
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(5),
         observer: observer
       )
 
-      apparent_coordinates = described_class
-        .correct_horizontal_coordinates(coordinates: true_coordinates)
+      expect(angle.str(:dms, precision: 2)).to eq "+0° 9′ 39.63″"
+      # Skyfield: 9′ 39.55″
+    end
 
-      expect(apparent_coordinates.azimuth).to eq(true_coordinates.azimuth)
-      expect(apparent_coordinates.altitude.str(:dms)).to(
-        eq("+19° 22′ 47.0068″")
+    it "computes the refraction at high altitude" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
       )
+
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(45),
+        observer: observer
+      )
+
+      expect(angle.str(:dms, precision: 2)).to eq "+0° 0′ 59.81″"
+      # Skyfield: 59.81″
+    end
+
+    it "scales the refraction with the temperature and the pressure" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        temperature: Astronoby::Temperature.from_celsius(-15),
+        pressure: Astronoby::Pressure.from_millibars(1030)
+      )
+
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(10),
+        observer: observer
+      )
+
+      expect(angle.str(:dms, precision: 2)).to eq "+0° 5′ 58.3″"
+      # Skyfield: 5′ 58.26″
+    end
+
+    it "scales the refraction the same for whole-number conditions" do
+      whole_numbers = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        temperature: Astronoby::Temperature.from_kelvins(298),
+        pressure: Astronoby::Pressure.from_millibars(990)
+      )
+      floats = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        temperature: Astronoby::Temperature.from_kelvins(298.0),
+        pressure: Astronoby::Pressure.from_millibars(990.0)
+      )
+      altitude = Astronoby::Angle.from_degrees(10)
+
+      expect(described_class.angle(altitude: altitude, observer: whole_numbers))
+        .to eq described_class.angle(altitude: altitude, observer: floats)
+    end
+
+    it "computes no refraction without an atmosphere" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        pressure: Astronoby::Pressure.from_pascals(0)
+      )
+
+      angle = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(10),
+        observer: observer
+      )
+
+      expect(angle).to eq Astronoby::Angle.zero
+    end
+
+    it "puts the apparent horizon close to the true altitude of -34′" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+      true_altitude = Astronoby::Horizon::REFRACTION_ANGLE
+
+      apparent_altitude = true_altitude +
+        described_class.angle(altitude: true_altitude, observer: observer)
+
+      expect(apparent_altitude.degrees.abs)
+        .to be < Astronoby::Angle.from_dms(0, 1, 0).degrees
+    end
+
+    it "keeps the refraction constant below the lowest altitude" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      at_limit = described_class.angle(
+        altitude: described_class::LOWEST_ALTITUDE,
+        observer: observer
+      )
+      below_limit = described_class.angle(
+        altitude: Astronoby::Angle.from_degrees(-5),
+        observer: observer
+      )
+
+      expect(below_limit).to eq at_limit
+    end
+
+    it "makes the apparent altitude grow with the true altitude" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      apparent_altitudes = (-50..50).map do |tenth_of_degree|
+        true_altitude = Astronoby::Angle.from_degrees(tenth_of_degree / 10.0)
+        true_altitude +
+          described_class.angle(altitude: true_altitude, observer: observer)
+      end
+
+      expect(apparent_altitudes.each_cons(2).all? { |a, b| b > a }).to be true
     end
   end
 end

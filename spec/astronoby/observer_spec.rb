@@ -10,16 +10,16 @@ RSpec.describe Astronoby::Observer do
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
 
       expect(observer1).to eq observer2
@@ -31,16 +31,16 @@ RSpec.describe Astronoby::Observer do
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 15
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(15)
       )
 
       expect(observer1).not_to eq observer2
@@ -54,16 +54,16 @@ RSpec.describe Astronoby::Observer do
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
       map = {observer1 => :observer}
 
@@ -76,16 +76,16 @@ RSpec.describe Astronoby::Observer do
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
       observer2 = described_class.new(
         latitude: Astronoby::Angle.from_degrees(45),
         longitude: Astronoby::Angle.from_degrees(90),
         elevation: Astronoby::Distance.from_meters(100),
         utc_offset: "+01:00",
-        temperature: 280,
-        pressure: 10
+        temperature: Astronoby::Temperature.from_kelvins(280),
+        pressure: Astronoby::Pressure.from_millibars(10)
       )
       set = Set.new([observer1])
 
@@ -93,34 +93,73 @@ RSpec.describe Astronoby::Observer do
     end
   end
 
-  describe "#pressure" do
-    it "returns the computed pression in millibars" do
-      latitude = Astronoby::Angle.from_degrees(0)
-      longitude = Astronoby::Angle.from_degrees(0)
-      elevation = Astronoby::Distance.from_meters(100)
-      temperature = 273.15 + 10
+  describe "#temperature" do
+    it "is 10 °C by default" do
+      observer = described_class.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
 
-      pressure = described_class.new(
-        latitude: latitude,
-        longitude: longitude,
-        elevation: elevation,
-        temperature: temperature
-      ).pressure
-
-      expect(pressure.ceil(4)).to eq 1001.0982
+      expect(observer.temperature).to eq Astronoby::Temperature.from_celsius(10)
     end
 
-    context "when elevation and temperature are not provided" do
-      it "returns the computed pression in millibars" do
-        latitude = Astronoby::Angle.from_degrees(0)
-        longitude = Astronoby::Angle.from_degrees(0)
+    it "raises an error when given a number" do
+      expect {
+        described_class.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero,
+          temperature: 283.15
+        )
+      }.to raise_error(
+        Astronoby::IncompatibleArgumentsError,
+        "Expected temperature to be an Astronoby::Temperature, got 283.15"
+      )
+    end
+  end
 
-        pressure = described_class
-          .new(latitude: latitude, longitude: longitude)
-          .pressure
+  describe "#pressure" do
+    it "returns the pressure at the observer's elevation" do
+      observer = described_class.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        elevation: Astronoby::Distance.from_meters(100),
+        temperature: Astronoby::Temperature.from_celsius(10)
+      )
 
-        expect(pressure).to eq described_class::PRESSURE_AT_SEA_LEVEL
-      end
+      expect(observer.pressure.millibars.ceil(4)).to eq 1001.0982
+    end
+
+    it "is the standard atmosphere at sea level by default" do
+      observer = described_class.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero
+      )
+
+      expect(observer.pressure).to eq Astronoby::Pressure.standard_atmosphere
+    end
+
+    it "returns the given pressure" do
+      pressure = Astronoby::Pressure.from_millibars(990)
+      observer = described_class.new(
+        latitude: Astronoby::Angle.zero,
+        longitude: Astronoby::Angle.zero,
+        pressure: pressure
+      )
+
+      expect(observer.pressure).to eq pressure
+    end
+
+    it "raises an error when given a number" do
+      expect {
+        described_class.new(
+          latitude: Astronoby::Angle.zero,
+          longitude: Astronoby::Angle.zero,
+          pressure: 1013.25
+        )
+      }.to raise_error(
+        Astronoby::IncompatibleArgumentsError,
+        "Expected pressure to be an Astronoby::Pressure, got 1013.25"
+      )
     end
   end
 

@@ -156,6 +156,26 @@ RSpec.describe Astronoby::HorizontalTransformation do
 
         expect(refracted.altitude).to be > unrefracted.altitude
       end
+
+      it "returns refracted coordinates" do
+        instant = Astronoby::Instant.from_time(Time.utc(2026, 9, 25, 2))
+        observer = Astronoby::Observer.new(
+          latitude: Astronoby::Angle.from_degrees(48.8566),
+          longitude: Astronoby::Angle.from_degrees(2.3522)
+        )
+        transformation = described_class
+          .new(observer: observer, instant: instant)
+        equatorial = Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(6, 45, 8.917),
+          declination: Astronoby::Angle.from_dms(-16, 42, 58.02)
+        )
+
+        aggregate_failures do
+          expect(transformation.apply(equatorial, refraction: true))
+            .to be_refracted
+          expect(transformation.apply(equatorial)).not_to be_refracted
+        end
+      end
     end
 
     context "when the coordinates are not at epoch J2000.0" do

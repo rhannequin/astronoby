@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+* Compute atmospheric refraction with Bennett's formula, inverted to start
+  from the true altitude that Astronoby gives it, as NOVAS does. The
+  low-altitude formula used until now expects the apparent altitude but was
+  given the true one, so refraction was too large near the horizon, by 5′ at a
+  true altitude of 0° and 2.4′ at 1°, and the apparent horizon fell at a true
+  altitude of -47′ instead of the -34′ that rise and set times use. Below -1°
+  the refraction is now kept constant instead of growing up to 79′
+* Refract the limb rather than the centre in `AltitudeCrossingCalculator` with
+  `refraction: true` and a limb reference. Near the horizon, refraction changes
+  by a few arcminutes across the Sun's semi-diameter, which put upper-limb
+  crossings 20 to 30 seconds away from sunrise and sunset
+
+### Features
+
+* Add `Temperature` and `Pressure` value objects, used for the observer's
+  atmospheric conditions
+* Add `Horizontal#refracted?` and `Horizontal#refract`
+
+### Improvements
+
+* Document refraction in `docs/refraction.md`
+
 ## 0.11.1 - 2026-11-24
 
 _If you are upgrading: please see [UPGRADING.md]._
