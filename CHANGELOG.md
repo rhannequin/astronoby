@@ -1,16 +1,29 @@
 # Changelog
 
-## Unreleased
+## 0.11.1 - 2026-11-24
+
+_If you are upgrading: please see [UPGRADING.md]._
 
 ### Improvements
 
-* Raise the minimum `ephem` version from 0.5.0 to 0.5.1. `Ephem.download` and
-  `Orientation.download` now raise `Ephem::DownloadError` when the server
-  answers with an error, instead of saving the error page as the kernel, and a
-  failed download no longer leaves a partial file behind or replaces an
-  existing one. The release also drops the `minitar` dependency ([#325])
+* Raise the minimum `ephem` version from 0.5.0 to 0.5.1, which drops its
+  `minitar` dependency. `bundle audit` reports GHSA-r6vf-943r-2wvw against
+  every `minitar` release Astronoby could resolve, a path traversal when
+  extracting a crafted tarball on Windows. Astronoby was not exposed, since
+  `ephem` only read one known entry from IMCCE archives and wrote it to the
+  target path, but applications depending on Astronoby no longer get the
+  warning ([#325])
+* `Ephem.download` and `Orientation.download` now raise
+  `Ephem::DownloadError` when the server answers with an error, instead of
+  saving the error page as the kernel, and a failed download no longer leaves
+  a partial file behind or replaces an existing one ([#325])
+* Use the lockfile's Bundler in CI ([#326])
+* Add recent Ruby patch releases to CI ([#327])
 
 [#325]: https://github.com/rhannequin/astronoby/pull/325
+[#326]: https://github.com/rhannequin/astronoby/pull/326
+[#327]: https://github.com/rhannequin/astronoby/pull/327
+[UPGRADING.md]: https://github.com/rhannequin/astronoby/blob/main/UPGRADING.md
 
 ## 0.11.0 - 2026-10-31
 

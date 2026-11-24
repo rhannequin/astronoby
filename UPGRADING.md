@@ -7,6 +7,17 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Upgrading from 0.11.0 to 0.11.1
+
+### Downloads raise on failure
+
+`Astronoby::Ephem.download` and `Astronoby::Orientation.download` now raise
+`Ephem::DownloadError` when the server answers with an error or an IMCCE
+archive does not contain the requested kernel. They used to return `true`
+after saving the error page in place of the kernel, which only failed later
+when loading the file. If you download kernels at runtime, rescue
+`Ephem::DownloadError` where you handle other download failures.
+
 ## Upgrading from 0.10.0 to 0.11.0
 
 ### Lunar eclipse contacts and magnitudes have changed slightly
