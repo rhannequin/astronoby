@@ -12,11 +12,13 @@ public API, please read the upgrading notes for each release.
 ### Downloads raise on failure
 
 `Astronoby::Ephem.download` and `Astronoby::Orientation.download` now raise
-`Ephem::DownloadError` when the server answers with an error or an IMCCE
+`::Ephem::DownloadError` when the server answers with an error or an IMCCE
 archive does not contain the requested kernel. They used to return `true`
-after saving the error page in place of the kernel, which only failed later
-when loading the file. If you download kernels at runtime, rescue
-`Ephem::DownloadError` where you handle other download failures.
+either way: after saving the error page in place of the kernel, which only
+failed later when loading the file, or without writing anything when the
+archive lacked the kernel. If you download kernels at runtime, rescue
+`::Ephem::DownloadError` where you handle other download failures. The leading
+`::` matters inside `module Astronoby`, where `Ephem` is `Astronoby::Ephem`.
 
 ## Upgrading from 0.10.0 to 0.11.0
 

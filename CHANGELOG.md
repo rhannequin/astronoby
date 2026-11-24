@@ -13,7 +13,7 @@ _If you are upgrading: please see [UPGRADING.md]._
   `ephem` only read one known entry from IMCCE archives and wrote it to the
   target path, but applications depending on Astronoby no longer get the
   warning ([#325])
-* `Ephem.download` and `Orientation.download` now raise
+* `Astronoby::Ephem.download` and `Astronoby::Orientation.download` now raise
   `Ephem::DownloadError` when the server answers with an error, instead of
   saving the error page as the kernel, and a failed download no longer leaves
   a partial file behind or replaces an existing one ([#325])
