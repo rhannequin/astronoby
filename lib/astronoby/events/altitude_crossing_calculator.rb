@@ -202,7 +202,8 @@ module Astronoby
           AltitudeExtreme.new(
             kind: culmination.kind,
             instant: Instant.from_terrestrial_time(culmination.tt),
-            altitude: Angle.from_radians(altitude_at(culmination.tt))
+            altitude: Angle.from_radians(altitude_at(culmination.tt)),
+            refracted: @refraction
           )
         end
       end

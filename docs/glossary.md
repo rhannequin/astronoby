@@ -8,6 +8,10 @@ This glossary defines key astronomical and technical terms used throughout the A
 
 The apparent displacement of a celestial object due to the finite speed of light and the motion of the observer. In Astronoby, this is automatically corrected in apparent reference frames.
 
+### **Airmass**
+
+The length of the path light travels through Earth's atmosphere, relative to the path at the zenith. It is 1 at the zenith and grows towards the horizon, and drives how much a body is dimmed and blurred by the atmosphere. See the [Coordinates page](coordinates.md#airmass).
+
 ### **Altitude**
 
 The angular distance of a celestial object above the observer's local horizon, measured in degrees from 0° (horizon) to 90° (zenith).

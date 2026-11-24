@@ -38,6 +38,16 @@ module Astronoby
         @refracted
       end
 
+      # @return [Astronoby::Airmass, nil] the airmass at this altitude, or nil
+      #   below the horizon
+      def airmass
+        if refracted?
+          Airmass.from_apparent_altitude(@altitude)
+        else
+          Airmass.from_true_altitude(@altitude)
+        end
+      end
+
       # Returns the same coordinates as seen through the atmosphere, with the
       # refraction for the observer's temperature and pressure added to the
       # altitude.
