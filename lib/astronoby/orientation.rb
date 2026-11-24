@@ -30,7 +30,8 @@ module Astronoby
     #
     # @param name [String] kernel name supported by the Ephem gem
     # @param target [String] destination path
-    # @return [Boolean] true if the download was successful
+    # @return [Boolean] true once the file is written
+    # @raise [::Ephem::DownloadError] if the server answers with an error
     def self.download(name:, target:)
       ::Ephem::Download.call(name: name, target: target)
     end

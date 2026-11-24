@@ -23,15 +23,14 @@ RSpec.describe Astronoby::Ephem do
       expect(result).to eq(true)
     end
 
-    it "returns false if the download is not successful" do
-      allow(::Ephem::Download).to receive(:call).and_return(false)
+    it "raises Ephem's error if the download fails" do
+      allow(::Ephem::Download)
+        .to receive(:call)
+        .and_raise(::Ephem::DownloadError, "404 Not Found")
 
-      result = described_class.download(
-        name: "de440t.bsp",
-        target: "tmp/de440t.bsp"
-      )
-
-      expect(result).to eq(false)
+      expect {
+        described_class.download(name: "de440t.bsp", target: "tmp/de440t.bsp")
+      }.to raise_error(::Ephem::DownloadError, "404 Not Found")
     end
   end
 

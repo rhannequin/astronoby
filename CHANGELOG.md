@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Improvements
+
+* Raise the minimum `ephem` version from 0.5.0 to 0.5.1. `Ephem.download` and
+  `Orientation.download` now raise `Ephem::DownloadError` when the server
+  answers with an error, instead of saving the error page as the kernel, and a
+  failed download no longer leaves a partial file behind or replaces an
+  existing one. The release also drops the `minitar` dependency
+
 ## 0.11.0 - 2026-10-31
 
 _If you are upgrading: please see [UPGRADING.md]._
