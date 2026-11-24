@@ -8,7 +8,9 @@
   `Orientation.download` now raise `Ephem::DownloadError` when the server
   answers with an error, instead of saving the error page as the kernel, and a
   failed download no longer leaves a partial file behind or replaces an
-  existing one. The release also drops the `minitar` dependency
+  existing one. The release also drops the `minitar` dependency ([#325])
+
+[#325]: https://github.com/rhannequin/astronoby/pull/325
 
 ## 0.11.0 - 2026-10-31
 
