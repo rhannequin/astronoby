@@ -418,6 +418,55 @@ RSpec.describe Astronoby::AltitudeCrossingCalculator do
       expect(upper.altitude.degrees.round(2)).to eq 29.64
       expect(extremes.last.altitude).to be < Astronoby::Angle.zero
     end
+
+    it "returns the airmass at the upper culmination" do
+      calculator = sun_calculator(paris)
+
+      upper = calculator.extremes_between(
+        Time.utc(2026, 10, 23),
+        Time.utc(2026, 10, 24)
+      ).first
+
+      expect(upper.refracted?).to be false
+      expect(upper.airmass)
+        .to eq Astronoby::Airmass.from_true_altitude(upper.altitude)
+    end
+
+    it "returns no airmass for a culmination below the horizon" do
+      calculator = sun_calculator(paris)
+
+      lower = calculator.extremes_between(
+        Time.utc(2026, 10, 23),
+        Time.utc(2026, 10, 24)
+      ).last
+
+      expect(lower.kind).to eq :lower_culmination
+      expect(lower.airmass).to be_nil
+    end
+
+    it "returns a Boolean for refracted? whatever refraction value is given" do
+      calculator = sun_calculator(paris, refraction: nil)
+
+      upper = calculator.extremes_between(
+        Time.utc(2026, 10, 23),
+        Time.utc(2026, 10, 24)
+      ).first
+
+      expect(upper.refracted?).to be false
+    end
+
+    it "returns refracted culminations with refraction" do
+      calculator = sun_calculator(paris, refraction: true)
+
+      upper = calculator.extremes_between(
+        Time.utc(2026, 10, 23),
+        Time.utc(2026, 10, 24)
+      ).first
+
+      expect(upper.refracted?).to be true
+      expect(upper.airmass)
+        .to eq Astronoby::Airmass.from_apparent_altitude(upper.altitude)
+    end
   end
 
   def paris

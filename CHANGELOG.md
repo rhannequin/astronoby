@@ -21,10 +21,16 @@
 * Add `Temperature` and `Pressure` value objects, used for the observer's
   atmospheric conditions
 * Add `Horizontal#refracted?` and `Horizontal#refract`
+* Add `Airmass`, with `Horizontal#airmass` and `AltitudeExtreme#airmass`. It
+  uses Young (1994) for a true altitude and Kasten and Young (1989) for an
+  apparent one ([#323])
+* Add `AltitudeExtreme#refracted?`
 
 ### Improvements
 
 * Document refraction in `docs/refraction.md`
+
+[#323]: https://github.com/rhannequin/astronoby/issues/323
 
 ## 0.11.1 - 2026-11-24
 

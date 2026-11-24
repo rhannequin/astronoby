@@ -29,13 +29,23 @@ module Astronoby
         @azimuth = azimuth
         @altitude = altitude
         @observer = observer
-        @refracted = refracted
+        @refracted = refracted ? true : false
       end
 
       # @return [Boolean] true if the altitude is the apparent one, with
       #   atmospheric refraction, false if it is the true, geometric one
       def refracted?
         @refracted
+      end
+
+      # @return [Astronoby::Airmass, nil] the airmass at this altitude, or nil
+      #   below the apparent horizon
+      def airmass
+        if refracted?
+          Airmass.from_apparent_altitude(@altitude)
+        else
+          Airmass.from_true_altitude(@altitude, observer: @observer)
+        end
       end
 
       # Returns the same coordinates as seen through the atmosphere, with the
