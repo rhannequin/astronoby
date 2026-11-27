@@ -40,6 +40,30 @@ RSpec.describe Astronoby::Apparent do
       end
     end
 
+    it "rotates by the given precession and nutation matrices" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      astrometric = instance_double(
+        Astronoby::Astrometric,
+        position: Astronoby::Distance.vector_from_meters(
+          [1.0e20, 2.0e20, 3.0e20]
+        ),
+        velocity: Astronoby::Velocity.vector_from_mps(
+          [1000.0, 2000.0, 3000.0]
+        )
+      )
+
+      apparent = described_class.build_from_astrometric(
+        instant: instant,
+        target_astrometric: astrometric,
+        target_body: nil,
+        precession_matrix: Matrix.identity(3),
+        nutation_matrix: Matrix.identity(3)
+      )
+
+      expect(apparent.position.map(&:m).to_a)
+        .to eq([1.0e20, 2.0e20, 3.0e20])
+    end
+
     it "does not deflect the light of the Moon" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
       ephem = test_ephem

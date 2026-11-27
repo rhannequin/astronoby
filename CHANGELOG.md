@@ -26,6 +26,15 @@ _If you are upgrading: please see [UPGRADING.md]._
   where the formula grows without bound, and return the position unchanged
   instead of raising `TypeError` for a target in line with the Sun ([#334])
 
+### Improvements
+
+* Share Earth's and the Sun's positions, precession and nutation between bodies
+  at the same instant. Elongation, phase angle and magnitude are about 30%
+  faster, conjunction and opposition searches 25% and lunar eclipse searches
+  28%. `Apparent.build_from_astrometric` accepts `precession_matrix:` and
+  `nutation_matrix:`, and `MeanOfDate.build_from_geometric` accepts
+  `precession_matrix:`
+
 ### Backward-incompatible changes
 
 * Apparent and topocentric positions of planets and deep-sky objects move by

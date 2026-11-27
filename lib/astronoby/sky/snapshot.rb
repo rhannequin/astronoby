@@ -54,6 +54,15 @@ module Astronoby
         )
       end
 
+      # Makes a body built outside the snapshot the one it returns for its
+      # class, unless it already has one.
+      #
+      # @param body [Astronoby::SolarSystemBody] a body at this instant
+      # @return [void]
+      def register(body)
+        (@bodies ||= {})[body.class] ||= body
+      end
+
       # @return [Matrix] the precession-bias matrix at this instant
       def precession_matrix
         @precession_matrix ||= Precession.matrix_for(@instant)

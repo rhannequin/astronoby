@@ -95,6 +95,30 @@ RSpec.describe Astronoby::MeanOfDate do
           ]
         )
     end
+
+    it "rotates by the given precession matrix" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      target = instance_double(
+        Astronoby::Geometric,
+        position: Astronoby::Distance.vector_from_meters([4.0, 6.0, 8.0]),
+        velocity: Astronoby::Velocity.vector_from_mps([0.0, 0.0, 0.0])
+      )
+      earth = instance_double(
+        Astronoby::Geometric,
+        position: Astronoby::Distance.vector_from_meters([1.0, 2.0, 3.0]),
+        velocity: Astronoby::Velocity.vector_from_mps([0.0, 0.0, 0.0])
+      )
+
+      mean_of_date = described_class.build_from_geometric(
+        instant: instant,
+        target_geometric: target,
+        earth_geometric: earth,
+        target_body: nil,
+        precession_matrix: Matrix.identity(3)
+      )
+
+      expect(mean_of_date.position.map(&:m).to_a).to eq([3.0, 4.0, 5.0])
+    end
   end
 
   describe "#equatorial" do

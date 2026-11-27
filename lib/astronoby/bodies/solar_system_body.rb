@@ -230,8 +230,9 @@ module Astronoby
     #   phase angle
     # @param orientation [Astronoby::Orientation, nil] Orientation kernel,
     #   enabling arcsecond-accurate lunar libration and axis position angle
-    # @param snapshot [Astronoby::Sky::Snapshot, nil] state shared with the
-    #   other bodies at the same instant (@api private)
+    # @param snapshot [Astronoby::Sky::Snapshot, nil] internal, not to be
+    #   passed by callers: state shared with the other bodies at the same
+    #   instant
     def initialize(ephem:, instant:, orientation: nil, snapshot: nil)
       @ephem = ephem
       @instant = instant
@@ -241,6 +242,7 @@ module Astronoby
         instant: instant,
         orientation: orientation
       )
+      @snapshot.register(self)
     end
 
     # @return [Astronoby::Geometric] the geometric reference frame (BCRS)

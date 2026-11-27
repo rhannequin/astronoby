@@ -45,5 +45,15 @@ RSpec.describe Astronoby::Sky::Snapshot do
       expect(shared.mean_of_date.position).to eq(alone.mean_of_date.position)
       expect(shared.elongation).to eq(alone.elongation)
     end
+
+    it "returns a body built on its own with the snapshot" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      ephem = test_ephem
+      snapshot = described_class.new(ephem: ephem, instant: instant)
+
+      sun = Astronoby::Sun.new(ephem: ephem, instant: instant, snapshot: snapshot)
+
+      expect(snapshot.body(Astronoby::Sun)).to be(sun)
+    end
   end
 end
