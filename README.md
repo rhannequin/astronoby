@@ -41,8 +41,21 @@ Since version 0.7.0, the usage documentation resides in [`docs/`]. For
 previous versions, you can access the documentation in the README for each
 [release].
 
+```rb
+sky = Astronoby::Sky.load("tmp/de440s.bsp")
+instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1, 21))
+observer = Astronoby::Observer.new(
+  latitude: Astronoby::Angle.from_degrees(48.83661378408946),
+  longitude: Astronoby::Angle.from_degrees(2.3366748126024466)
+)
+
+sky.saturn.at(instant).observed_by(observer).horizontal.altitude.str(:dms)
+# => "+31° 31′ 1.4723″"
+```
+
 ### See also
 - [Quick Start Guide](docs/README.md) - for getting started examples
+- [Sky](docs/sky.md) - for loading an ephemeris once and sharing it
 - [Solar System Bodies](docs/solar_system_bodies.md) - for understanding planets
   and objects
 - [Reference Frames](docs/reference_frames.md) - for coordinate systems

@@ -13,6 +13,17 @@ Ephemerides can be large files, but Astronoby provides a tool to drastically
 reduce the size to your needs. You can learn more about ephemerides on the
 [Ephem page].
 
+## Load a sky
+
+```rb
+sky = Astronoby::Sky.load("tmp/de421.bsp")
+```
+
+A sky holds the ephemeris so that it is not given to every call:
+`sky.jupiter.at(instant)` gives Jupiter at an instant, and bodies taken from it
+at the same instant share their common work. The rest of this guide still passes
+the ephemeris explicitly. You can learn more on the [Sky page].
+
 ## Load an ephemeris
 
 ```rb
@@ -297,6 +308,7 @@ horizontal coordinates at once with `HorizontalTransformation`, on the
 - [Performance Benchmarks](../benchmarks/README.md) - for testing improvements
 
 [Ephem page]: ephem.md
+[Sky page]: sky.md
 [Instant page]: instant.md
 [Solar System Bodies page]: solar_system_bodies.md
 [Observer page]: observer.md
