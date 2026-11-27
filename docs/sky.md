@@ -90,6 +90,79 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
 `sky.over(observer)` gives the sky as seen by an observer, with passes, risings, transits, settings, altitude crossings and twilights. You can learn more on the [Local sky page].
 
+## Events of a body
+
+Targets give the events seen from the centre of the Earth, as `Astronoby::Events::Series` objects read with `on(date)`, `between(start, finish)` or `from(start)`, as on the [Local sky page]. Each event carries an unrounded `instant`.
+
+```rb
+sky
+  .mars
+  .oppositions
+  .between(Time.utc(2025, 1, 1), Time.utc(2026, 1, 1))
+  .map { |opposition| opposition.instant.to_time.round }
+# => [2025-01-16 02:38:35 UTC]
+
+elongation = sky
+  .venus
+  .greatest_elongations
+  .from(Astronoby::Instant.from_time(Time.utc(2025, 1, 1)))
+  .first
+elongation.angle.degrees.round(2)
+# => 47.17
+
+sky
+  .moon
+  .eclipses
+  .between(Time.utc(2025, 1, 1), Time.utc(2026, 1, 1))
+  .map(&:kind)
+# => [:total, :total]
+```
+
+- `oppositions` for Mars to Neptune, as `Astronoby::Opposition`
+- `conjunctions` for the planets, as `Astronoby::Conjunction`
+- `greatest_elongations` for Mercury and Venus, as `Astronoby::GreatestElongation`
+- `eclipses` for the Moon, as `Astronoby::LunarEclipse`
+- `phases` for the Moon, as `Astronoby::MoonPhase`
+
+Other targets raise `Astronoby::UnsupportedEventError`. You can learn more about these events on the [Planetary phenomena page] and the [Lunar eclipses page].
+
+Moon phases are found where the difference between the Moon's and the Sun's apparent ecliptic longitudes reaches 0°, 90°, 180° and 270°:
+
+```rb
+sky
+  .moon
+  .phases
+  .between(Time.utc(2025, 1, 1), Time.utc(2025, 2, 1))
+  .map { |phase| [phase.phase, phase.time] }
+# => [
+#   [:first_quarter, 2025-01-06 23:56:18 UTC],
+#   [:full_moon, 2025-01-13 22:26:55 UTC],
+#   [:last_quarter, 2025-01-21 20:30:47 UTC],
+#   [:new_moon, 2025-01-29 12:35:59 UTC]
+# ]
+```
+
+## Seasons
+
+`sky.seasons` gives the equinoxes and solstices, when the Sun's apparent ecliptic longitude reaches 0°, 90°, 180° and 270°, as `Astronoby::SeasonStart` objects with a `kind`, `equinox?` and `solstice?`. `in(year)` returns the four of a year:
+
+```rb
+year = sky.seasons.in(2025)
+
+year.june_solstice.instant.to_time.round
+# => 2025-06-21 02:42:16 UTC
+```
+
+`sky.seasons` is also read with `on(date)`, `between(start, finish)` and `from(start)`:
+
+```rb
+sky
+  .seasons
+  .between(Time.utc(2025, 5, 1), Time.utc(2025, 10, 1))
+  .map(&:kind)
+# => [:june_solstice, :september_equinox]
+```
+
 ## Bodies at the same instant
 
 Every Solar System body taken from a sky at a given instant shares Earth's and the Sun's positions, the precession and nutation matrices, and the other bodies at that instant. `sky.mars.at(instant).elongation` reuses the Sun that `sky.sun.at(instant)` returns instead of computing it again, and asking twice for the same body at the same instant returns the same object.
@@ -99,3 +172,5 @@ Only the last instant asked for is kept, for each fiber, so nothing is shared be
 [Solar System Bodies page]: solar_system_bodies.md
 [Deep-sky Bodies page]: deep_sky_bodies.md
 [Local sky page]: local_sky.md
+[Planetary phenomena page]: planetary_phenomena.md
+[Lunar eclipses page]: lunar_eclipses.md

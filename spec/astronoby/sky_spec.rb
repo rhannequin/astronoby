@@ -97,6 +97,14 @@ RSpec.describe Astronoby::Sky do
     end
   end
 
+  describe "#seasons" do
+    it "returns the equinoxes and solstices of the sky" do
+      sky = described_class.new(test_ephem)
+
+      expect(sky.seasons).to be_a(Astronoby::Seasons)
+    end
+  end
+
   describe "#over" do
     it "returns the sky seen by the observer" do
       sky = described_class.new(test_ephem)

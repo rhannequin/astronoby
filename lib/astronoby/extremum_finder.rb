@@ -33,6 +33,11 @@ module Astronoby
       filter_boundary_artifacts(refined, start_jd, end_jd)
     end
 
+    # @api private
+    def brackets(start_jd, end_jd, type: :maximum)
+      find_candidates(start_jd, end_jd, type)
+    end
+
     private
 
     def find_candidates(start_jd, end_jd, type)

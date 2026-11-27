@@ -25,6 +25,10 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Fade the deflection to zero for a target hidden behind the solar disk,
   where the formula grows without bound, and return the position unchanged
   instead of raising `TypeError` for a target in line with the Sun ([#334])
+* Find greatest elongations where the elongation stops growing instead of
+  at its sampled maximum, which is too flat to locate. Their instants moved by
+  up to 17 s with the search range and no longer depend on it, and the search
+  is about 30% faster ([#349])
 
 ### Features
 
@@ -50,9 +54,21 @@ _If you are upgrading: please see [UPGRADING.md]._
   `dawn?` and `dusk?`. Crossings take an `Astronoby::Altitude`, apparent or
   true, and `sky.moon.upper_limb` and `sky.moon.lower_limb` follow a limb
   ([#347])
+* Sky targets give event series seen from the centre of the Earth:
+  `sky.mars.oppositions`, `sky.mercury.conjunctions`,
+  `sky.venus.greatest_elongations`, `sky.moon.eclipses` and
+  `sky.moon.phases`. Moon phases are searched in the ephemeris, where the
+  Moon's and the Sun's apparent ecliptic longitudes differ by 0°, 90°, 180° or
+  270°, and carry an unrounded instant. `MoonPhase#instant` is added
+  ([#349])
+* `sky.seasons` gives the equinoxes and solstices, searched in the ephemeris,
+  as `Astronoby::SeasonStart` objects with a `kind`, `equinox?` and
+  `solstice?`. `sky.seasons.in(year)` returns the four of a year, and
+  `on`, `between` and `from` read them like any event series ([#349])
 * `RiseTransitSetCalculator#events_between` and
   `AltitudeCrossingCalculator#crossings_between` accept instants as well as
-  times ([#347])
+  times ([#347]), and so do `ConjunctionOppositionCalculator`,
+  `GreatestElongationCalculator` and `LunarEclipseCalculator` ([#349])
 
 ### Improvements
 
@@ -78,6 +94,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 [#345]: https://github.com/rhannequin/astronoby/pull/345
 [#346]: https://github.com/rhannequin/astronoby/pull/346
 [#347]: https://github.com/rhannequin/astronoby/pull/347
+[#349]: https://github.com/rhannequin/astronoby/pull/349
 
 ## 0.12.0 - 2026-11-24
 

@@ -7,6 +7,7 @@ module Astronoby
   # as one ephemeris, so that a body missing from one kernel is found in
   # another.
   class Ephem
+    LIGHT_TIME_MARGIN_IN_DAYS = 0.25
     # Download an ephemeris file.
     #
     # @param name [String] Name of the ephemeris file, supported by the Ephem
@@ -88,7 +89,9 @@ module Astronoby
       @coverage ||= @pairs.values.map do |source|
         segments = source.respond_to?(:segments) ? source.segments : [source]
         [segments.map(&:start_jd).min, segments.map(&:end_jd).max]
-      end.transpose.then { |starts, ends| [starts.max, ends.min] }
+      end.transpose.then do |starts, ends|
+        [starts.max + LIGHT_TIME_MARGIN_IN_DAYS, ends.min]
+      end
     end
 
     # Closes every kernel.

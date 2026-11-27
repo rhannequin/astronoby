@@ -121,6 +121,11 @@ module Astronoby
       @instant = Instant.from_time(uncorrected_time)
     end
 
+    # @api private
+    def uncorrected_instant
+      @instant
+    end
+
     # @return [Time] the corrected UTC time of the event
     def time
       Instant.from_terrestrial_time(@instant.tt + corrected).to_time.round
