@@ -17,6 +17,8 @@ module Astronoby
   #   sky.mars.at(instant).elongation
   #   sky[vega].at(instant).apparent
   #   sky.over(observer).passes(sky.saturn).on(date)
+  #   sky.mars.oppositions.between(start, finish)
+  #   sky.seasons.in(2026).june_solstice
   class Sky
     BODIES = {
       sun: Sun,
@@ -83,6 +85,11 @@ module Astronoby
       end
 
       Target.new(sky: self, body: object)
+    end
+
+    # @return [Astronoby::Seasons] the equinoxes and solstices
+    def seasons
+      @seasons ||= Seasons.new(ephem: @ephem)
     end
 
     # @param observer [Astronoby::Observer]
