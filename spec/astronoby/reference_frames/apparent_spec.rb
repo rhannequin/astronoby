@@ -63,16 +63,17 @@ RSpec.describe Astronoby::Apparent do
         .to eq(without_sun.position.map(&:m).to_a)
     end
 
-    it "deflects the light of a planet when given the Sun" do
+    it "deflects the light of a planet away from the Sun when given the Sun" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
       ephem = test_ephem
       mars = Astronoby::Mars.new(instant: instant, ephem: ephem)
+      sun = Astronoby::Sun.new(instant: instant, ephem: ephem)
 
       with_sun = described_class.build_from_astrometric(
         instant: instant,
         target_astrometric: mars.astrometric,
         earth_geometric: mars.earth_geometric,
-        sun_geometric: Astronoby::Sun.geometric(ephem: ephem, instant: instant),
+        sun_geometric: sun.geometric,
         target_body: Astronoby::Mars
       )
       without_sun = described_class.build_from_astrometric(
@@ -82,8 +83,15 @@ RSpec.describe Astronoby::Apparent do
         target_body: Astronoby::Mars
       )
 
-      expect(with_sun.position.map(&:m).to_a)
-        .not_to eq(without_sun.position.map(&:m).to_a)
+      shift = with_sun.separation_from(without_sun)
+      elongation_gain = Astronoby::Angle.from_degrees(
+        sun.apparent.separation_from(with_sun).degrees -
+          sun.apparent.separation_from(without_sun).degrees
+      )
+
+      expect(shift.degree_milliarcseconds).to be_within(0.01).of(9.72)
+      expect(elongation_gain.degree_milliarcseconds)
+        .to be_within(0.01).of(9.72)
     end
   end
 end

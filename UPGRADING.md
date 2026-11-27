@@ -24,6 +24,27 @@ out, these positions now raise `KeyError`. Add the Sun to the targets:
 ruby-ephem excerpt --targets 4,10,399 2024-12-31 2026-01-01 inpop19a.bsp inpop19a_2025_mars.bsp
 ```
 
+### `Deflection` takes positions instead of the ephemeris
+
+`Deflection.new` takes the observer's and the Sun's barycentric positions
+instead of the instant and the ephemeris:
+
+```rb
+# Before
+Astronoby::Deflection.new(
+  instant: instant,
+  target_astrometric_position: position,
+  ephem: ephem
+)
+
+# After
+Astronoby::Deflection.new(
+  target_astrometric_position: position,
+  observer_position: Astronoby::Earth.geometric(ephem: ephem, instant: instant).position,
+  sun_position: Astronoby::Sun.geometric(ephem: ephem, instant: instant).position
+)
+```
+
 ## Upgrading from 0.11.1 to 0.12.0
 
 ### Refraction has changed near the horizon
