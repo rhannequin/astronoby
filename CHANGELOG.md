@@ -36,9 +36,9 @@ _If you are upgrading: please see [UPGRADING.md]._
   observes a deep-sky object with Earth and the Sun from the sky's ephemeris.
   Solar System bodies taken from a sky at the same instant share Earth's and
   the Sun's positions, precession and nutation. `sky.close` closes the kernels.
-  The existing `ephem:` arguments keep working
+  The existing `ephem:` arguments keep working ([#346])
 * `DeepSkyObject#equatorial_coordinates` returns the J2000 coordinates the
-  object was built with
+  object was built with ([#346])
 
 ### Improvements
 
@@ -62,6 +62,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
 [#345]: https://github.com/rhannequin/astronoby/pull/345
+[#346]: https://github.com/rhannequin/astronoby/pull/346
 
 ## 0.12.0 - 2026-11-24
 
