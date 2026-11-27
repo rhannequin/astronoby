@@ -28,7 +28,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Find greatest elongations where the elongation stops growing instead of
   at its sampled maximum, which is too flat to locate. Their instants moved by
   up to 17 s with the search range and no longer depend on it, and the search
-  is about 30% faster
+  is about 30% faster ([#349])
 
 ### Features
 
@@ -60,14 +60,15 @@ _If you are upgrading: please see [UPGRADING.md]._
   `sky.moon.phases`. Moon phases are searched in the ephemeris, where the
   Moon's and the Sun's apparent ecliptic longitudes differ by 0°, 90°, 180° or
   270°, and carry an unrounded instant. `MoonPhase#instant` is added
+  ([#349])
 * `sky.seasons` gives the equinoxes and solstices, searched in the ephemeris,
   as `Astronoby::SeasonStart` objects with a `kind`, `equinox?` and
   `solstice?`. `sky.seasons.in(year)` returns the four of a year, and
-  `on`, `between` and `from` read them like any event series
+  `on`, `between` and `from` read them like any event series ([#349])
 * `RiseTransitSetCalculator#events_between` and
   `AltitudeCrossingCalculator#crossings_between` accept instants as well as
   times ([#347]), and so do `ConjunctionOppositionCalculator`,
-  `GreatestElongationCalculator` and `LunarEclipseCalculator`
+  `GreatestElongationCalculator` and `LunarEclipseCalculator` ([#349])
 
 ### Improvements
 
@@ -93,6 +94,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 [#345]: https://github.com/rhannequin/astronoby/pull/345
 [#346]: https://github.com/rhannequin/astronoby/pull/346
 [#347]: https://github.com/rhannequin/astronoby/pull/347
+[#349]: https://github.com/rhannequin/astronoby/pull/349
 
 ## 0.12.0 - 2026-11-24
 
