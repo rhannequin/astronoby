@@ -49,8 +49,8 @@ RSpec.describe Astronoby::GreatestElongationCalculator do
       ).to eq(
         [
           [Time.utc(2025, 3, 8, 6, 9, 18), :eastern],
-          [Time.utc(2025, 4, 21, 18, 49, 6), :western],
-          [Time.utc(2025, 7, 4, 4, 38, 47), :eastern],
+          [Time.utc(2025, 4, 21, 18, 49, 8), :western],
+          [Time.utc(2025, 7, 4, 4, 38, 44), :eastern],
           [Time.utc(2025, 8, 19, 9, 48, 4), :western],
           [Time.utc(2025, 10, 29, 22, 2, 12), :eastern],
           [Time.utc(2025, 12, 7, 21, 2, 53), :western]

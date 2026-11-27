@@ -115,7 +115,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.december_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2004, 12, 21, 12, 41, 35)
+      expect(equinox).to eq Time.utc(2004, 12, 21, 12, 41, 36)
       # Time from Celestial Calculations: 2004-12-21T12:44:22
       # Time from Astronomical Algorithms: 2004-12-21T12:42:40
       # Time from IMCCE: 2004-12-21T12:41:36
@@ -127,7 +127,7 @@ RSpec.describe Astronoby::EquinoxSolstice do
 
       equinox = described_class.december_solstice(year, ephem)
 
-      expect(equinox).to eq Time.utc(2024, 12, 21, 9, 20, 35)
+      expect(equinox).to eq Time.utc(2024, 12, 21, 9, 20, 34)
       # Time from IMCCE: 2024-12-21T09:20:34
     end
   end

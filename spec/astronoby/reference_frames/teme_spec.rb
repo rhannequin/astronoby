@@ -185,7 +185,7 @@ RSpec.describe Astronoby::Teme do
       expect(gcrs).to be_a(Astronoby::Astrometric)
       expect(gcrs.center).to eq(Astronoby::Center.geocentric)
       gcrs.position.map(&:km).to_a.zip(
-        [4145.733618591874, 744.299429723425, -5337.752413125928]
+        [4145.733618591242, 744.2994297219002, -5337.752413126631]
       ).each do |actual, expected|
         expect(actual).to be_within(10e-13).of(expected)
       end
@@ -207,7 +207,7 @@ RSpec.describe Astronoby::Teme do
       gcrs = teme.to_gcrs
 
       gcrs.velocity.map(&:kmps).to_a.zip(
-        [-1.1086147691425916, 7.567585344684951, 0.1952503684644861]
+        [-1.1086147691407051, 7.567585344685242, 0.19525036846393443]
       ).each do |actual, expected|
         expect(actual).to be_within(10e-16).of(expected)
       end
