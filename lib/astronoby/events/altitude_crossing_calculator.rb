@@ -45,6 +45,7 @@ module Astronoby
 
     Sample = Struct.new(:hour_angle, :declination, :altitude)
     Culmination = Struct.new(:kind, :tt)
+    COVERAGE_EDGE = :coverage_edge
     Crossing = Struct.new(:tt, :direction, :grazing)
 
     # @param body [Class, Object] celestial body to track
@@ -147,7 +148,9 @@ module Astronoby
     private
 
     def search_between(start_time, end_time)
-      if end_time < start_time
+      start_instant = instant_for(start_time)
+      end_instant = instant_for(end_time)
+      if end_instant < start_instant
         raise IncompatibleArgumentsError,
           "The end of the window must not be before its start"
       end
@@ -158,8 +161,9 @@ module Astronoby
         ephem: @ephem,
         refraction: @refraction,
         reference: @reference,
-        start_tt: instant_for(start_time).tt.to_f,
-        end_tt: instant_for(end_time).tt.to_f
+        start_tt: start_instant.tt.to_f,
+        end_tt: end_instant.tt.to_f,
+        coverage: @ephem.respond_to?(:coverage) ? @ephem.coverage : nil
       )
     end
 
@@ -176,7 +180,8 @@ module Astronoby
         refraction:,
         reference:,
         start_tt:,
-        end_tt:
+        end_tt:,
+        coverage: nil
       )
         @body = body
         @observer = observer
@@ -185,6 +190,7 @@ module Astronoby
         @reference = reference
         @start_tt = start_tt
         @end_tt = end_tt
+        @coverage = coverage
         @samples = {}
       end
 
@@ -269,12 +275,31 @@ module Astronoby
         (radians + Math::PI) % TAU - Math::PI
       end
 
+      # Near the ends of the ephemeris the padding is cut where the coverage
+      # ends, and that edge bounds the first or last segment instead of a
+      # culmination: the altitude only goes one way up to it all the same.
       def segments
-        culminations(
-          @start_tt - CULMINATION_PADDING_IN_DAYS,
-          @end_tt + CULMINATION_PADDING_IN_DAYS,
+        padded_start = @start_tt - CULMINATION_PADDING_IN_DAYS
+        padded_end = @end_tt + CULMINATION_PADDING_IN_DAYS
+        if @coverage
+          padded_start =
+            padded_start.clamp([@coverage.first, @start_tt].min, @start_tt)
+          padded_end = padded_end.clamp(@end_tt, [@coverage.last, @end_tt].max)
+        end
+
+        bounds = culminations(
+          padded_start,
+          padded_end,
           SEGMENT_HOUR_ANGLE_TOLERANCE
-        ).each_cons(2).select do |first, last|
+        )
+        if padded_start > @start_tt - CULMINATION_PADDING_IN_DAYS
+          bounds.unshift(Culmination.new(COVERAGE_EDGE, padded_start))
+        end
+        if padded_end < @end_tt + CULMINATION_PADDING_IN_DAYS
+          bounds.push(Culmination.new(COVERAGE_EDGE, padded_end))
+        end
+
+        bounds.each_cons(2).select do |first, last|
           last.tt >= @start_tt && first.tt <= @end_tt
         end
       end
@@ -367,7 +392,8 @@ module Astronoby
           @first = first
           @first_sample = first_sample
           span = last.tt - first.tt
-          consecutive = first.kind != last.kind && span.positive?
+          consecutive = first.kind != last.kind && span.positive? &&
+            first.kind != COVERAGE_EDGE && last.kind != COVERAGE_EDGE
 
           @hour_angle_rate = consecutive ? Math::PI / span : SIDEREAL_RATE
           @declination_rate = if consecutive

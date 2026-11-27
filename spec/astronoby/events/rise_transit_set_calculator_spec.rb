@@ -549,6 +549,28 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
       expect(setting.to_time.to_date).to eq(Date.new(2025, 10, 2))
     end
 
+    it "has no rising before a transit while the body is circumpolar" do
+      ephem = test_ephem
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(64.1),
+        longitude: Astronoby::Angle.from_degrees(-21.9)
+      )
+      calculator = described_class.new(
+        body: Astronoby::Moon,
+        observer: observer,
+        ephem: ephem
+      )
+
+      rising, transit, setting = calculator.passes_between(
+        Time.utc(2025, 3, 9),
+        Time.utc(2025, 3, 10)
+      ).first
+
+      expect(transit.to_time.round).to eq(Time.utc(2025, 3, 9, 22, 27, 51))
+      expect(rising).to be_nil
+      expect(setting.to_time.round).to eq(Time.utc(2025, 3, 10, 8, 50, 49))
+    end
+
     it "converges on the Moon's risings and settings at high latitudes" do
       ephem = test_ephem
       observer = Astronoby::Observer.new(
@@ -572,6 +594,7 @@ RSpec.describe Astronoby::RiseTransitSetCalculator do
       found = passes.flat_map { |rising, _, setting| [rising, setting] }.compact
       expected = events.rising_times + events.setting_times
 
+      expect(found).not_to be_empty
       found.each do |instant|
         closest = expected.map { |time| (time - instant.to_time).abs }.min
         expect(closest).to be <= 1

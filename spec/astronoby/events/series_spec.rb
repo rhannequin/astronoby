@@ -80,6 +80,37 @@ RSpec.describe Astronoby::Events::Series do
       expect(found.size).to eq(2)
     end
 
+    it "stops at the last time the ephemeris covers" do
+      start = instant_at(Time.utc(2025, 10, 1))
+      windows = []
+      series = described_class.new(
+        window: 1,
+        horizon: 10,
+        time_of: :itself.to_proc,
+        last_tt: start.tt + 2.5
+      ) do |window_start, window_end|
+        windows << window_end.tt - window_start.tt
+        []
+      end
+
+      series.from(start).to_a
+
+      expect(windows).to eq([1, 1, 0.5])
+    end
+
+    it "raises when the start is after the last time the ephemeris covers" do
+      start = instant_at(Time.utc(2025, 10, 1))
+      series = described_class.new(
+        window: 1,
+        horizon: 10,
+        time_of: :itself.to_proc,
+        last_tt: start.tt - 1
+      ) { [] }
+
+      expect { series.from(start).first }
+        .to raise_error(::Ephem::OutOfRangeError)
+    end
+
     it "raises when the ephemeris does not cover the start" do
       series = described_class.new(window: 1, horizon: 10, time_of: :itself.to_proc) do |start, _|
         raise ::Ephem::OutOfRangeError.new("out", start.tt)

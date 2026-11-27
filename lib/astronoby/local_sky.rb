@@ -19,11 +19,10 @@ module Astronoby
       astronomical: Angle.from_degrees(-18)
     }.freeze
 
-    # Precession moves a catalogue declination by up to about a degree over a
-    # century, and refraction lifts an apparent altitude by about half a
-    # degree: an altitude further than this beyond a fixed star's reachable
-    # range is never crossed.
-    UNREACHABLE_MARGIN = Angle.from_degrees(1.5)
+    # Refraction lifts an apparent altitude by up to about 0.6° at the
+    # horizon: an altitude further than this beyond a fixed star's reachable
+    # range on a day is never crossed that day.
+    UNREACHABLE_MARGIN = Angle.from_degrees(1)
 
     # @return [Astronoby::Observer]
     attr_reader :observer
@@ -43,8 +42,6 @@ module Astronoby
     # @return [Astronoby::Events::Series] of Astronoby::AltitudeCrossing
     def crossings(target, altitude)
       body, reference = body_and_reference(target)
-      return empty_series if unreachable?(body, altitude.angle)
-
       calculator = AltitudeCrossingCalculator.new(
         body: body,
         observer: @observer,
@@ -53,6 +50,8 @@ module Astronoby
         reference: reference
       )
       series(time_of: :instant.to_proc) do |start_instant, end_instant|
+        next [] if unreachable?(body, altitude.angle, start_instant)
+
         calculator.crossings_between(
           start_instant,
           end_instant,
@@ -159,12 +158,13 @@ module Astronoby
 
     def horizon_events(target, event_type)
       body = horizon_body(target)
-      if event_type != :transit &&
-          unreachable?(body, Horizon::REFRACTION_ANGLE)
-        return empty_series
-      end
 
       series(time_of: :itself.to_proc) do |start_instant, end_instant|
+        if event_type != :transit &&
+            unreachable?(body, Horizon::REFRACTION_ANGLE, start_instant)
+          next []
+        end
+
         rise_transit_set_calculator(body)
           .instants_between(start_instant, end_instant, event_type)
       end
@@ -180,11 +180,13 @@ module Astronoby
     end
 
     # A fixed star's altitude stays between its lower and upper culminations,
-    # so an altitude outside that range is never reached.
-    def unreachable?(body, altitude)
+    # so an altitude outside that range is never reached. The declination is
+    # taken at the start of the window, as precession moves it by up to half a
+    # degree per century from the catalogue's.
+    def unreachable?(body, altitude, instant)
       return false unless body.is_a?(DeepSkyObject)
 
-      declination = body.equatorial_coordinates.declination.radians
+      declination = body.at(instant).apparent.equatorial.declination.radians
       latitude = @observer.latitude.radians
       highest = Math::PI / 2 - (latitude - declination).abs
       lowest = (latitude + declination).abs - Math::PI / 2
@@ -198,14 +200,9 @@ module Astronoby
         window: WINDOW_IN_DAYS,
         horizon: HORIZON_IN_DAYS,
         time_of: time_of,
+        last_tt: @sky.ephem.coverage.last,
         &search
       )
-    end
-
-    def empty_series
-      Events::Series.new(window: WINDOW_IN_DAYS, horizon: 0, time_of: nil) do
-        []
-      end
     end
   end
 end

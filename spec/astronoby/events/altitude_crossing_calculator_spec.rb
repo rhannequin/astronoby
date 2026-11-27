@@ -45,6 +45,26 @@ RSpec.describe Astronoby::AltitudeCrossingCalculator do
       expect(from_instants.map(&:instant)).to eq(from_times.map(&:instant))
     end
 
+    it "accepts a time and an instant together" do
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.86),
+        longitude: Astronoby::Angle.from_degrees(2.35)
+      )
+      calculator = described_class.new(
+        body: Astronoby::Sun,
+        observer: observer,
+        ephem: test_ephem
+      )
+
+      crossings = calculator.crossings_between(
+        Time.utc(2025, 10, 1),
+        Astronoby::Instant.from_time(Time.utc(2025, 10, 2)),
+        altitude: Astronoby::Angle.from_degrees(30)
+      )
+
+      expect(crossings.size).to eq(2)
+    end
+
     it "finds the twilight crossings of a day, unrounded and in order" do
       calculator = sun_calculator(paris)
 

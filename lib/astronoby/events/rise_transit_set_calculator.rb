@@ -21,6 +21,8 @@ module Astronoby
     # A rising or setting estimated from the transit starts hours away from
     # the event, and the Moon at high latitudes needs a few more steps.
     PASS_REFINEMENT_ITERATIONS = 8
+    # Days searched on each side of an estimate that did not converge
+    SAMPLED_SEARCH_HALF_WIDTH = 0.25
     CONVERGENCE_TOLERANCE_IN_DAYS = 0.5 / Constants::SECONDS_PER_DAY
     STANDARD_REFRACTION_ANGLE = Horizon::REFRACTION_ANGLE
     SUN_REFRACTION_ANGLE = Horizon::SUN_ANGLE
@@ -111,9 +113,14 @@ module Astronoby
         if rising_event.can_occur
           rising, setting = [:rising, :setting].map do |event_type|
             target = (event_type == :rising) ? rising_event : rising_event.negated
-            refine_from(event_type, position.instant, hour_angle, target.hour_angle)
+            refine_from(event_type, position, hour_angle, target.hour_angle)
           end
         end
+
+        # Where the body stops being circumpolar, the refinement can land on
+        # the next pass's rising, or the previous pass's setting.
+        rising = nil if rising && rising >= transit
+        setting = nil if setting && setting <= transit
 
         [rising, transit, setting]
       end
@@ -321,9 +328,10 @@ module Astronoby
           Instant.from_terrestrial_time(instant.tt + time_adjustments[i])
         end
 
-        break if time_adjustments.all? do |adjustment|
+        @converged = time_adjustments.all? do |adjustment|
           adjustment.abs < CONVERGENCE_TOLERANCE_IN_DAYS
         end
+        break if @converged
       end
 
       new_instants
@@ -418,8 +426,11 @@ module Astronoby
     # Estimates when the hour angle reaches the target from a position near
     # transit, at the body's own hour angle rate over the samples, then
     # refines it like the other events, with the transit as the previous point
-    # for the rate.
-    def refine_from(event_type, instant, hour_angle, target_hour_angle)
+    # for the rate. When the refinement does not settle, the event is searched
+    # by sampling around the estimate instead. An event outside the ephemeris
+    # is nil.
+    def refine_from(event_type, position, hour_angle, target_hour_angle)
+      instant = position.instant
       tt = estimate_tt(instant, hour_angle, target_hour_angle)
       # The target hour angle depends on the declination, which the samples
       # give at the estimate without computing a new position.
@@ -427,7 +438,7 @@ module Astronoby
         target = rising_hour_angle(
           @observer.latitude,
           declination,
-          horizon_angle(@refined_positions.first.distance)
+          horizon_angle(position.distance)
         )
         target = -target if event_type == :setting
         tt = estimate_tt(instant, hour_angle, target)
@@ -441,11 +452,25 @@ module Astronoby
         first_change_forward: false,
         iterations: PASS_REFINEMENT_ITERATIONS
       ).first
+      return sampled_event_near(event_type, refined) unless @converged
 
       # Near the polar circles the body can stay above or below the horizon
       # by the time it would rise or set, the refinement then converging on a
       # culmination instead.
       refined if calculate_rising_event(@refined_positions.first).can_occur
+    rescue ::Ephem::OutOfRangeError
+      nil
+    end
+
+    def sampled_event_near(event_type, estimate)
+      self.class
+        .new(body: @body, observer: @observer, ephem: @ephem)
+        .instants_between(
+          Instant.from_terrestrial_time(estimate.tt - SAMPLED_SEARCH_HALF_WIDTH),
+          Instant.from_terrestrial_time(estimate.tt + SAMPLED_SEARCH_HALF_WIDTH),
+          event_type
+        )
+        .min_by { |instant| (instant.tt - estimate.tt).abs }
     end
 
     def estimate_tt(instant, hour_angle, target_hour_angle)
@@ -500,6 +525,7 @@ module Astronoby
       @positions_cache = nil
       @sampled_hour_angle_rate = nil
       @refined_positions = nil
+      @converged = nil
     end
   end
 end

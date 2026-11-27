@@ -83,6 +83,20 @@ module Astronoby
       end
     end
 
+    # The Julian Dates that every center and target pair covers. A search
+    # that looks around its window, such as one for culminations, stays
+    # inside them.
+    #
+    # @api private
+    # @return [Array(Float, Float)] the first and last Julian Dates (TDB)
+    #   covered by all the pairs
+    def coverage
+      @coverage ||= @pairs.values.map do |source|
+        segments = source.respond_to?(:segments) ? source.segments : [source]
+        [segments.map(&:start_jd).min, segments.map(&:end_jd).max]
+      end.transpose.then { |starts, ends| [starts.max, ends.min] }
+    end
+
     # Closes every kernel.
     #
     # @return [void]

@@ -155,6 +155,24 @@ RSpec.describe Astronoby::LocalSky do
     end
   end
 
+  describe "near the ends of the ephemeris" do
+    it "finds the twilights of the first and last covered days" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+      first, last = sky.ephem.coverage
+
+      from_start = local_sky.twilights.from(
+        Astronoby::Instant.from_terrestrial_time(first)
+      ).first(6)
+      to_end = local_sky.twilights.from(
+        Astronoby::Instant.from_terrestrial_time(last - 1)
+      ).to_a
+
+      expect(from_start.size).to eq(6)
+      expect(to_end.size).to eq(6)
+    end
+  end
+
   describe "#twilights" do
     it "returns the dawns and dusks of each twilight, sorted by time" do
       sky = Astronoby::Sky.new(test_ephem)

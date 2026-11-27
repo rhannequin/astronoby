@@ -5,14 +5,14 @@ module Astronoby
   # before it and the setting after it.
   class Pass
     # @return [Astronoby::Instant, nil] when the body rises, nil when it does
-    #   not cross the horizon
+    #   not cross the horizon or rises outside the ephemeris
     attr_reader :rising
 
     # @return [Astronoby::Instant] when the body crosses the meridian
     attr_reader :transit
 
     # @return [Astronoby::Instant, nil] when the body sets, nil when it does
-    #   not cross the horizon
+    #   not cross the horizon or sets outside the ephemeris
     attr_reader :setting
 
     # @param rising [Astronoby::Instant, nil]

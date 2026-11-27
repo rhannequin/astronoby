@@ -138,6 +138,17 @@ RSpec.describe Astronoby::Ephem do
     end
   end
 
+  describe "#coverage" do
+    it "returns the dates every pair covers" do
+      ephem = described_class.new(test_ephem)
+
+      first, last = ephem.coverage
+
+      expect(first).to eq(2460676.5)
+      expect(last).to eq(2461044.5)
+    end
+  end
+
   describe "#close" do
     it "closes every kernel" do
       first = double(type: ::Ephem::SPK::JPL_DE, segments: [], close: nil)

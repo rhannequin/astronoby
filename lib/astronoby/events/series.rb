@@ -9,11 +9,14 @@ module Astronoby
       # @param window [Numeric] days searched at a time by #from
       # @param horizon [Numeric] days after which #from stops
       # @param time_of [Proc] returns an event's instant
+      # @param last_tt [Numeric, nil] the last Terrestrial Time the ephemeris
+      #   covers, where #from stops
       # @param search [Proc] called with two instants, returns the events
       #   between them
-      def initialize(window:, horizon:, time_of:, &search)
+      def initialize(window:, horizon:, time_of:, last_tt: nil, &search)
         @window = window
         @horizon = horizon
+        @last_tt = last_tt
         @time_of = time_of
         @search = search
       end
@@ -49,6 +52,15 @@ module Astronoby
       def from(start_time)
         start_tt = instant_for(start_time).tt
         limit = start_tt + @horizon
+        if @last_tt
+          if start_tt > @last_tt
+            raise ::Ephem::OutOfRangeError.new(
+              "The ephemeris ends before #{start_time}",
+              start_tt
+            )
+          end
+          limit = [limit, @last_tt].min
+        end
 
         Enumerator.new do |yielder|
           window_start = start_tt
