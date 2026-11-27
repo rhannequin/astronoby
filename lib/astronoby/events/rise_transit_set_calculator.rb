@@ -18,10 +18,15 @@ module Astronoby
     TAU = Math::PI * 2
     SAMPLE_THRESHOLD = 0.8
     REFINEMENT_ITERATIONS = 3
+    # A rising or setting estimated from the transit starts hours away from
+    # the event, and the Moon at high latitudes needs a few more steps.
+    PASS_REFINEMENT_ITERATIONS = 8
     CONVERGENCE_TOLERANCE_IN_DAYS = 0.5 / Constants::SECONDS_PER_DAY
     STANDARD_REFRACTION_ANGLE = Horizon::REFRACTION_ANGLE
     SUN_REFRACTION_ANGLE = Horizon::SUN_ANGLE
     EVENT_TYPES = [:rising, :transit, :setting].freeze
+    # Radians of hour angle per day for a fixed direction
+    SIDEREAL_RATE = TAU * 1.00273790935
 
     # @param body [Astronoby::SolarSystemBody, Astronoby::DeepSkyObject]
     #   Celestial body for which to calculate events
@@ -58,40 +63,85 @@ module Astronoby
       events_between(start_time, end_time)
     end
 
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
+    # @return [Astronoby::RiseTransitSetEvents] the events in the window,
+    #   rounded to the second
     def events_between(start_time, end_time)
       reset_state
-      @start_instant = Instant.from_time(start_time)
-      @end_instant = Instant.from_time(end_time)
+      @start_instant = instant_for(start_time)
+      @end_instant = instant_for(end_time)
       events
+    end
+
+    # @api private
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
+    # @param event_type [Symbol] +:rising+, +:transit+ or +:setting+
+    # @return [Array<Astronoby::Instant>] the events of that type in the
+    #   window, unrounded
+    def instants_between(start_time, end_time, event_type)
+      reset_state
+      @start_instant = instant_for(start_time)
+      @end_instant = instant_for(end_time)
+      event_instants(event_type)
+    end
+
+    # Transits in the window, each with the rising before it and the setting
+    # after it, even when those fall outside the window. Only the transits are
+    # searched by sampling; the rising and setting are estimated from the
+    # body's hour angle at transit and refined, which costs one position each.
+    #
+    # @api private
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
+    # @return [Array<Array(Astronoby::Instant, Astronoby::Instant,
+    #   Astronoby::Instant)>] rising, transit and setting of each pass, rising
+    #   and setting nil when the body does not cross the horizon
+    def passes_between(start_time, end_time)
+      reset_state
+      @start_instant = instant_for(start_time)
+      @end_instant = instant_for(end_time)
+
+      transits = event_instants(:transit)
+      transits.zip(@refined_positions || []).map do |transit, position|
+        hour_angle = calculate_hour_angles([position]).first
+        rising_event = calculate_rising_event(position)
+
+        if rising_event.can_occur
+          rising, setting = [:rising, :setting].map do |event_type|
+            target = (event_type == :rising) ? rising_event : rising_event.negated
+            refine_from(event_type, position.instant, hour_angle, target.hour_angle)
+          end
+        end
+
+        [rising, transit, setting]
+      end
     end
 
     private
 
     def events
-      rising_events = calculate_initial_positions.map do |position|
-        calculate_rising_event(position)
-      end
-      setting_events = rising_events.map(&:negated)
-      transit_event = PotentialEvent.new(Angle.zero, true)
+      RiseTransitSetEvents.new(
+        *EVENT_TYPES.map do |event_type|
+          event_instants(event_type).map { |instant| instant.to_time.round }
+        end
+      )
+    end
 
-      event_data = {
-        rising: rising_events,
-        transit: [transit_event],
-        setting: setting_events
-      }
-
-      results = EVENT_TYPES.each_with_object({}) do |event_type, results|
-        results[event_type] = calculate_event_times(
-          event_type,
-          event_data[event_type]
+    def event_instants(event_type)
+      if event_type == :transit
+        return calculate_event_times(
+          :transit,
+          [PotentialEvent.new(Angle.zero, true)]
         )
       end
 
-      RiseTransitSetEvents.new(
-        results[:rising],
-        results[:transit],
-        results[:setting]
-      )
+      rising_events = calculate_initial_positions.map do |position|
+        calculate_rising_event(position)
+      end
+      events = (event_type == :rising) ? rising_events : rising_events.map(&:negated)
+      calculate_event_times(event_type, events)
     end
 
     def calculate_rising_event(position)
@@ -212,11 +262,14 @@ module Astronoby
       event_type,
       new_instants,
       old_hour_angles,
-      old_instants
+      old_instants,
+      first_change_forward: true,
+      iterations: REFINEMENT_ITERATIONS
     )
-      REFINEMENT_ITERATIONS.times do |iteration|
+      iterations.times do |iteration|
         # Calculate positions at current estimates
         apparent_positions = calculate_positions_at_instants(new_instants)
+        @refined_positions = apparent_positions
 
         # Calculate current hour angles
         current_hour_angles = calculate_hour_angles(apparent_positions)
@@ -237,7 +290,7 @@ module Astronoby
         hour_angle_changes = calculate_hour_angle_changes(
           current_hour_angles,
           old_hour_angles,
-          iteration
+          first_change_forward ? iteration : 1
         )
 
         # Calculate time differences
@@ -273,7 +326,7 @@ module Astronoby
         end
       end
 
-      new_instants.map { _1.to_time.round }
+      new_instants
     end
 
     def calculate_positions_at_instants(instants)
@@ -362,6 +415,81 @@ module Astronoby
       Horizon.angle_for(body: @body, distance: distance)
     end
 
+    # Estimates when the hour angle reaches the target from a position near
+    # transit, at the body's own hour angle rate over the samples, then
+    # refines it like the other events, with the transit as the previous point
+    # for the rate.
+    def refine_from(event_type, instant, hour_angle, target_hour_angle)
+      tt = estimate_tt(instant, hour_angle, target_hour_angle)
+      # The target hour angle depends on the declination, which the samples
+      # give at the estimate without computing a new position.
+      if (declination = sampled_declination_at(tt))
+        target = rising_hour_angle(
+          @observer.latitude,
+          declination,
+          horizon_angle(@refined_positions.first.distance)
+        )
+        target = -target if event_type == :setting
+        tt = estimate_tt(instant, hour_angle, target)
+      end
+
+      refined = refine_time_estimates(
+        event_type,
+        [Instant.from_terrestrial_time(tt)],
+        [hour_angle],
+        [instant],
+        first_change_forward: false,
+        iterations: PASS_REFINEMENT_ITERATIONS
+      ).first
+
+      # Near the polar circles the body can stay above or below the horizon
+      # by the time it would rise or set, the refinement then converging on a
+      # culmination instead.
+      refined if calculate_rising_event(@refined_positions.first).can_occur
+    end
+
+    def estimate_tt(instant, hour_angle, target_hour_angle)
+      offset = ((target_hour_angle - hour_angle).radians + Math::PI) % TAU -
+        Math::PI
+      instant.tt + offset / sampled_hour_angle_rate
+    end
+
+    def sampled_declination_at(tt)
+      instants = sample_instants
+      return if instants.size < 2
+
+      # Outside the samples, the nearest interval extrapolates: a rising or
+      # setting is never more than about half a day beyond them.
+      index = instants.each_cons(2).find_index { |_, b| tt <= b.tt } ||
+        instants.size - 2
+
+      positions = calculate_initial_positions
+      a = positions[index].equatorial.declination.radians
+      b = positions[index + 1].equatorial.declination.radians
+      fraction = (tt - instants[index].tt) /
+        (instants[index + 1].tt - instants[index].tt)
+      Angle.from_radians(a + (b - a) * fraction)
+    end
+
+    def sampled_hour_angle_rate
+      @sampled_hour_angle_rate ||= begin
+        hour_angles = calculate_initial_hour_angles
+        turns = hour_angles.each_cons(2).sum do |a, b|
+          (b.radians - a.radians) % TAU
+        end
+        days = sample_instants.last.tt - sample_instants.first.tt
+        # Each sample interval is under a day, so less than one and a bit
+        # turns: the modulo loses whole turns that the sidereal rate restores.
+        whole_turns = ((SIDEREAL_RATE * days - turns) / TAU).round
+        (turns + whole_turns * TAU) / days
+      end
+    end
+
+    # Converting a Time costs a leap second lookup, which an instant skips.
+    def instant_for(time)
+      time.is_a?(Instant) ? time : Instant.from_time(time)
+    end
+
     def reset_state
       @initial_hour_angles = nil
       @initial_positions = nil
@@ -370,6 +498,8 @@ module Astronoby
       @start_instant = nil
       @end_instant = nil
       @positions_cache = nil
+      @sampled_hour_angle_rate = nil
+      @refined_positions = nil
     end
   end
 end

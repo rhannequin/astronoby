@@ -85,8 +85,8 @@ module Astronoby
       @reference = reference
     end
 
-    # @param start_time [Time] start of the window
-    # @param end_time [Time] end of the window
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
     # @param altitude [Astronoby::Angle] the altitude to reach, positive or
     #   negative
     # @return [Array<Astronoby::AltitudeCrossing>] the crossings in the window,
@@ -99,8 +99,8 @@ module Astronoby
     # Same as {#crossings_between} for several altitudes at once, sharing the
     # culminations and the evaluated positions between them.
     #
-    # @param start_time [Time] start of the window
-    # @param end_time [Time] end of the window
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
     # @param altitudes [Array<Astronoby::Angle>] the altitudes to reach
     # @return [Array<Array<Astronoby::AltitudeCrossing>>] the crossings of each
     #   altitude, in the order of +altitudes+
@@ -135,8 +135,8 @@ module Astronoby
         end
     end
 
-    # @param start_time [Time] start of the window
-    # @param end_time [Time] end of the window
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
     # @return [Array<Astronoby::AltitudeExtreme>] the upper and lower
     #   culminations in the window, sorted by time, with the altitude of the
     #   reference point at each
@@ -158,9 +158,14 @@ module Astronoby
         ephem: @ephem,
         refraction: @refraction,
         reference: @reference,
-        start_tt: Instant.from_time(start_time).tt.to_f,
-        end_tt: Instant.from_time(end_time).tt.to_f
+        start_tt: instant_for(start_time).tt.to_f,
+        end_tt: instant_for(end_time).tt.to_f
       )
+    end
+
+    # Converting a Time costs a leap second lookup, which an instant skips.
+    def instant_for(time)
+      time.is_a?(Instant) ? time : Instant.from_time(time)
     end
 
     class Search
