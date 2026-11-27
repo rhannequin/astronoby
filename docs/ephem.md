@@ -37,13 +37,15 @@ Astronoby::Ephem.download(name: "de421.bsp", target: "tmp/de421.bsp")
 
 ## Load an ephemeris
 
-To compute the position of a Solar System body, you need to provide an ephemeris
-to extract the data from. You can use `Astronoby::Ephem` to load the file you
-downloaded.
+To compute the position of a Solar System body, you need an ephemeris to
+extract the data from. A sky loads the file you downloaded and gives the bodies
+it contains:
 
 ```rb
-ephem = Astronoby::Ephem.load("tmp/de421.bsp")
+sky = Astronoby::Sky.load("tmp/de421.bsp")
 ```
+
+You can learn more on the [Sky page].
 
 ## How to choose the right ephemeris?
 
@@ -80,11 +82,13 @@ the target `399`.
 Apparent and topocentric positions of planets and deep-sky objects also need
 the Sun (target `10`), which deflects their light.
 
+[Sky page]: sky.md
 [`ephem`]: https://github.com/rhannequin/ruby-ephem
 [IMCCE]: https://www.imcce.fr
 
 ## See also
 
+- [Sky](sky.md) - for loading an ephemeris
 - [Solar System Bodies](solar_system_bodies.md) - for using ephemeris data
 - [Reference Frames](reference_frames.md) - for coordinate calculations
 - [Observer](observer.md) - for location-based calculations

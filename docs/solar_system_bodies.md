@@ -7,18 +7,18 @@ System:
 - planets from Mercury to Neptune, including the Earth (`Astronoby::Earth`, ...)
 - the Moon (`Astronoby::Moon`)
 
-Given an ephemeris (`Astronoby::Ephem`) and an instant object
-(`Astronoby::Instant`), these classes enable you to get instances which provide
-positions in different reference frames.
+A sky (`Astronoby::Sky`) loaded from an ephemeris gives each of them at an
+instant (`Astronoby::Instant`), as an instance which provides positions in
+different reference frames.
 
-You can learn more about [ephemerides] and [reference frames].
+You can learn more about the [sky], [ephemerides] and [reference frames].
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(2021, 7, 8)
 instant = Astronoby::Instant.from_time(time)
 
-venus = Astronoby::Venus.new(ephem: ephem, instant: instant)
+venus = sky.venus.at(instant)
 apparent_position = venus.apparent.position
 
 apparent_position.x.km.round
@@ -68,7 +68,7 @@ Apparent angular distance between the body and the Sun, as seen from Earth
 
 ```rb
 venus.elongation.degrees.round
-# => 41
+# => 27
 ```
 
 ### `#eastern?` and `#western?`
@@ -77,8 +77,8 @@ Whether the body lies east of the Sun (visible in the evening) or west of it
 (visible in the morning). Both return a `Boolean`.
 
 ```rb
-venus.eastern? # => false
-venus.western? # => true
+venus.eastern? # => true
+venus.western? # => false
 ```
 
 ### `#phase_angle`
@@ -118,11 +118,13 @@ Astronoby::Venus.absolute_magnitude
 # => -4.384
 ```
 
+[sky]: sky.md
 [ephemerides]: ephem.md
 [reference frames]: reference_frames.md
 
 ## See also
 
+- [Sky](sky.md) - for loading an ephemeris and getting bodies from it
 - [Ephemerides](ephem.md) - for understanding data sources
 - [Reference Frames](reference_frames.md) - for coordinate systems
 - [Observer](observer.md) - for setting up observation locations

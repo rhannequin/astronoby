@@ -30,15 +30,15 @@ celestial equator in March as it passes from the southern to the northern half
 of the sky. By convention, right ascension is usually displayed in hours.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
-saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
+saturn = sky.saturn.at(instant)
 equatorial = saturn.apparent.equatorial
 
 equatorial.right_ascension.str(:hms)
-# => "20h 45m 2.6681s"
+# => "20h 45m 2.6687s"
 ```
 
 You can learn more about angles on the [Angle page].
@@ -51,7 +51,7 @@ is at -90°.
 
 ```rb
 equatorial.declination.str(:dms)
-# => "-18° 46′ 16.0931″"
+# => "-18° 46′ 16.0992″"
 ```
 
 ### Hour angle
@@ -65,7 +65,7 @@ time. By convention, the hour angle is usually displayed in hours.
 longitude = Astronoby::Angle.from_degrees(2)
 
 equatorial.compute_hour_angle(longitude: longitude, time: time).str(:hms)
-# => "23h 27m 54.1924s"
+# => "23h 27m 54.1918s"
 ```
 
 ## Ecliptic
@@ -95,15 +95,15 @@ The ecliptic latitude measures the angular distance of an object along the
 ecliptic from the primary direction.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
-saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
+saturn = sky.saturn.at(instant)
 ecliptic = saturn.apparent.ecliptic
 
 ecliptic.latitude.str(:dms)
-# => "-0° 41′ 27.5077″"
+# => "-0° 41′ 32.2025″"
 ```
 
 ### Longitude
@@ -113,7 +113,7 @@ ecliptic towards the north (positive) or south (negative) ecliptic pole.
 
 ```rb
 ecliptic.longitude.str(:dms)
-# => "+308° 38′ 33.1535″"
+# => "+308° 38′ 33.2051″"
 ```
 
 ## Horizontal
@@ -131,7 +131,7 @@ They have two main angular attributes:
 The angle between the object and the observer's local horizon.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
@@ -140,11 +140,11 @@ observer = Astronoby::Observer.new(
   longitude: Astronoby::Angle.from_degrees(2)
 )
 
-saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
+saturn = sky.saturn.at(instant)
 horizontal = saturn.observed_by(observer).horizontal
 
 horizontal.altitude.str(:dms)
-# => "+28° 46′ 38.3398″"
+# => "+28° 46′ 38.3328″"
 ```
 
 ### Azimuth
@@ -154,7 +154,7 @@ eastward.
 
 ```rb
 horizontal.azimuth.str(:dms)
-# => "+171° 19′ 38.2567″"
+# => "+171° 19′ 38.2483″"
 ```
 
 ### Refraction
@@ -173,7 +173,7 @@ path at the zenith. It is 1 at the zenith, about 2 at 30° of altitude and about
 
 ```rb
 horizontal.airmass.value
-# => 2.0678174512396987
+# => 2.067817577178516
 ```
 
 It uses the formula that matches the altitude: Young (1994) for the true

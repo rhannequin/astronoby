@@ -35,19 +35,19 @@ vega_with_proper_motion = Astronoby::DeepSkyObject.new(
 )
 ```
 
-From a `DeepSkyObject` instance, it is possible to instantiate the position
-of the body at a given instant. If given the optional `ephem` parameter,
-precision will increase as some astronomical corrections will be
-applied.
+From a `DeepSkyObject` instance, it is possible to get the position of the
+body at a given instant. Taken from a sky (`sky[object]`), the position is more
+precise: Earth and the Sun are read from the sky's ephemeris, so that
+parallax, aberration and light deflection are applied.
 
-A `DeepSkyPosition` object exposes `astrometric`, `apparent` and `topocentric`
-reference frames.
+A `DeepSkyObjectPosition` object exposes `astrometric`, `apparent` and
+`topocentric` reference frames.
 
 ```rb
 time = Time.utc(2025, 10, 1)
 instant = Astronoby::Instant.from_time(time)
 
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 
 vega
   .at(instant)
@@ -57,8 +57,8 @@ vega
   .str(:hms)
 # => "18h 37m 48.2779s"
 
-vega_with_proper_motion
-  .at(instant, ephem: ephem)
+sky[vega_with_proper_motion]
+  .at(instant)
   .apparent
   .equatorial
   .right_ascension
@@ -66,9 +66,10 @@ vega_with_proper_motion
 # => "18h 37m 48.6972s"
 ```
 
-You can learn more about [ephemerides] and [reference frames].
+You can learn more about the [sky], [ephemerides] and [reference frames].
 
-A deep-sky body object can also be used in calculators.
+A deep-sky object can also be observed from a local sky, for its risings,
+transits, settings and altitude crossings.
 
 ```rb
 observer = Astronoby::Observer.new(
@@ -77,24 +78,18 @@ observer = Astronoby::Observer.new(
 )
 date = Date.new(2025, 10, 1)
 
-body = Astronoby::DeepSkyObject.new(
+sirius = Astronoby::DeepSkyObject.new(
   equatorial_coordinates: Astronoby::Coordinates::Equatorial.new(
     right_ascension: Astronoby::Angle.from_hms(6, 45, 8.917),
     declination: Astronoby::Angle.from_dms(-16, 42, 58.02)
   )
 )
 
-calculator = Astronoby::RiseTransitSetCalculator.new(
-  body: body,
-  observer: observer,
-  ephem: ephem
-)
-
-event = calculator.event_on(date)
-
-event.rising_time
+sky.over(observer).risings(sirius).on(date).first.to_time.round
 # => 2025-10-01 01:31:25 UTC
 ```
+
+You can learn more on the [Local sky page].
 
 ## Many points at once
 
@@ -141,6 +136,8 @@ default, and can be requested with `transformation.apply(sirius, refraction:
 true)`. The coordinates must be at J2000 epoch, otherwise an
 `Astronoby::IncompatibleArgumentsError` is raised.
 
+[sky]: sky.md
+[Local sky page]: local_sky.md
 [ephemerides]: ephem.md
 [reference frames]: reference_frames.md
 [SIMBAD Astronomical Database]: https://simbad.u-strasbg.fr/simbad/

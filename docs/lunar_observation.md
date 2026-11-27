@@ -5,9 +5,9 @@ Beyond phases and apsides, Astronoby exposes the quantities lunar observers rely
 All of these are available directly on a `Astronoby::Moon` instance.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 instant = Astronoby::Instant.from_time(Time.utc(2025, 3, 1))
-moon = Astronoby::Moon.new(instant: instant, ephem: ephem)
+moon = sky.moon.at(instant)
 ```
 
 ## Libration
@@ -25,13 +25,15 @@ By default this is the analytic optical plus physical libration from Meeus's ser
 
 ## Arcsecond accuracy with an orientation kernel
 
-For the libration and the position angle of the axis, you can reach the accuracy of JPL Horizons, Skyfield and IMCCE by also loading a binary PCK lunar orientation kernel, such as `moon_pa_de440_200625.bpc`, which carries the integrated DE440 orientation of the Moon. Load it once with `Astronoby::Orientation` and pass it to the Moon alongside the ephemeris.
+For the libration and the position angle of the axis, you can reach the accuracy of JPL Horizons, Skyfield and IMCCE by also loading a binary PCK lunar orientation kernel, such as `moon_pa_de440_200625.bpc`, which carries the integrated DE440 orientation of the Moon. Load it with the sky, which gives it to the Moon.
 
 ```rb
-ephem = Astronoby::Ephem.load("de440.bsp")
-orientation = Astronoby::Orientation.load("moon_pa_de440_200625.bpc")
+sky = Astronoby::Sky.load(
+  "tmp/de440.bsp",
+  orientation: "tmp/moon_pa_de440_200625.bpc"
+)
 
-moon = Astronoby::Moon.new(instant: instant, ephem: ephem, orientation: orientation)
+moon = sky.moon.at(instant)
 
 moon.libration.latitude.str(:dms)     # => "+0° 27′ 27.7258″"
 moon.position_angle_of_axis.str(:dms) # => "-21° 48′ 32.9625″"

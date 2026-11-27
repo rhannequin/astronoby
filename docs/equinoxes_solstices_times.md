@@ -6,27 +6,45 @@ The equinox is the time when the Sun appears directly above the equator, the
 solstice is the time when the Sun reaches its most northerly or southerly
 excursion relative to the celestial equator on the celestial sphere.
 
-Astronoby enables you to compute the time for each of these four events.
+`sky.seasons` finds these four events in the ephemeris, when the Sun's
+apparent ecliptic longitude reaches 0°, 90°, 180° and 270°. `in(year)` returns
+an `Astronoby::Seasons::Year` with the four of a year, each an
+`Astronoby::SeasonStart` with a `kind`, an unrounded `instant`, `equinox?` and
+`solstice?`.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
+year = sky.seasons.in(2025)
 
-Astronoby::EquinoxSolstice.march_equinox(2025, ephem)
+year.march_equinox.instant.to_time.round
 # => 2025-03-20 09:01:29 UTC
 
-Astronoby::EquinoxSolstice.june_solstice(2025, ephem)
+year.june_solstice.instant.to_time.round
 # => 2025-06-21 02:42:16 UTC
 
-Astronoby::EquinoxSolstice.september_equinox(2025, ephem)
+year.september_equinox.instant.to_time.round
 # => 2025-09-22 18:19:21 UTC
 
-Astronoby::EquinoxSolstice.december_solstice(2025, ephem)
+year.december_solstice.instant.to_time.round
 # => 2025-12-21 15:03:05 UTC
 ```
+
+`sky.seasons` is also read with `on(date)`, `between(start, finish)` and
+`from(start)`, as on the [Local sky page]:
+
+```rb
+sky
+  .seasons
+  .between(Time.utc(2025, 5, 1), Time.utc(2025, 10, 1))
+  .map(&:kind)
+# => [:june_solstice, :september_equinox]
+```
+
+[Local sky page]: local_sky.md
 
 ## See also
 
 - [Twilight Times](twilight_times.md) - for seasonal sun events
 - [Moon Phases](moon_phases.md) - for lunar events
-- [Ephemerides](ephem.md) - for data sources
+- [Sky](sky.md) - for loading an ephemeris
 - [Instant](instant.md) - for time handling

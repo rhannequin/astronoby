@@ -15,11 +15,11 @@ Moon. It will not give precise information about the "age" of the Moon as the
 same illumination happens twice in the same lunar month.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(2025, 5, 1)
 instant = Astronoby::Instant.from_time(time)
 
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 
 moon.illuminated_fraction.round(2)
 # => 0.15
@@ -32,45 +32,53 @@ This method is more convenient for a user interested in how far we are into the
 lunar month as it returns a fraction from 0 to 1 between two new Moons.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
-
 time = Time.utc(2025, 5, 1)
 instant = Astronoby::Instant.from_time(time)
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 
 moon.current_phase_fraction.round(2)
 # => 0.11
 
 time = Time.utc(2025, 5, 15)
 instant = Astronoby::Instant.from_time(time)
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 
 moon.current_phase_fraction.round(2)
 # => 0.59
 ```
 
-## Major Moon phases in the month
+## Major Moon phases
 
-If you are interested to know when the major Moon phases will happen during a
-civil month, you can use `Astronoby::Events::MoonPhases` and its class method
-`::phases_for` with the key arguments `year` and `month`, both `Integer`.
+`sky.moon.phases` finds the new moons, first quarters, full moons and last
+quarters in the ephemeris: when the difference between the Moon's and the
+Sun's apparent ecliptic longitudes reaches 0°, 90°, 180° or 270°. It returns
+an `Astronoby::Events::Series`, read with `on(date)`, `between(start, finish)`
+or `from(start)`, as on the [Local sky page].
 
-It returns an array of `Astronoby::MoonPhase` objects, which each expose a
-`phase` (`Symbol`) and a `time` (`Time`).
-
-Please note that because a lunar month is around 29 days, some months will have
-the same phase twice.
+Each phase is an `Astronoby::MoonPhase`, which exposes a `phase` (`Symbol`), an
+unrounded `instant` and a `time` (`Time`, rounded to the second). Because a
+lunar month is around 29 days, some months have the same phase twice.
 
 ```rb
-phases = Astronoby::Events::MoonPhases.phases_for(year: 2024, month: 5)
-
-phases.each { puts "#{_1.phase}: #{_1.time}" }
-# last_quarter: 2024-05-01 11:27:15 UTC
-# new_moon: 2024-05-08 03:21:56 UTC
-# first_quarter: 2024-05-15 11:48:02 UTC
-# full_moon: 2024-05-23 13:53:12 UTC
-# last_quarter: 2024-05-30 17:12:42 UTC
+sky
+  .moon
+  .phases
+  .between(Time.utc(2024, 5, 1), Time.utc(2024, 6, 1))
+  .map { |phase| [phase.phase, phase.time] }
+# => [
+#   [:last_quarter, 2024-05-01 11:27:16 UTC],
+#   [:new_moon, 2024-05-08 03:21:56 UTC],
+#   [:first_quarter, 2024-05-15 11:48:00 UTC],
+#   [:full_moon, 2024-05-23 13:53:09 UTC],
+#   [:last_quarter, 2024-05-30 17:12:40 UTC]
+# ]
 ```
+
+Without an ephemeris, `Astronoby::Events::MoonPhases.phases_for(year:, month:)`
+gives the phases of a civil month from the series of Jean Meeus's
+_Astronomical Algorithms_.
+
+[Local sky page]: local_sky.md
 
 ## See also
 
@@ -79,4 +87,4 @@ phases.each { puts "#{_1.phase}: #{_1.time}" }
 - [Lunar Observation](lunar_observation.md) - for libration, axis and limb angles
 - [Lunar Eclipses](lunar_eclipses.md) - for eclipses of the Moon
 - [Solar System Bodies](solar_system_bodies.md) - for moon object details
-- [Ephemerides](ephem.md) - for data sources
+- [Sky](sky.md) - for loading an ephemeris

@@ -16,23 +16,12 @@ We usually define 4 moments when talking about twilight:
 - astronomical twilight: when the horizon angle is between -12° and -18°. Some
   stars can be seen during this time.
 
-These moments change every day and depend on the observer's location. They can
-be computed using `Astronoby::TwilightCalculator`.
-
-## Initialization
-
-Once instantiated, the calculator doesn't do anything yet, it waits for your
-instruction.
-
-It takes as key arguments:
-
-- `observer` (`Astronoby::Observer`): location on Earth of the observer
-- `ephem`: ephemeris to provide the initial raw data
-
-You can learn more about ephemerides on the [Ephem page].
+These moments change every day and depend on the observer's location. A local
+sky (`Astronoby::LocalSky`) gives them with `twilights`. You can learn more
+about it on the [Local sky page], and about observers on the [Observer page].
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 
 observer = Astronoby::Observer.new(
   latitude: Astronoby::Angle.from_degrees(41.0082),
@@ -40,103 +29,60 @@ observer = Astronoby::Observer.new(
   elevation: Astronoby::Distance.from_meters(40)
 )
 
-calculator = Astronoby::TwilightCalculator.new(
-  observer: observer,
-  ephem: ephem
-)
+local_sky = sky.over(observer)
 ```
 
-You can learn more about observers on the [Observer page].
+## Twilight crossings
 
-## `events_between`
-
-This is the main method of the calculator. It provides all the twilight times
-that will happen between two dates.
-
-It returns a `Astronoby::TwilightEvents` object which exposes the 6 following
-instance methods:
-
-- `#morning_astronomical_twilight_times`: when the rising Sun reaches 18° below
-  the horizon
-- `#morning_nautical_twilight_times`: when the rising Sun reaches 12° below the
-  horizon
-- `#morning_civil_twilight_times`: when the rising Sun reaches 6° below the
-  horizon
-- `#evening_civil_twilight_times`: when the setting Sun reaches 6° below the
-  horizon
-- `#evening_nautical_twilight_times`: when the setting Sun reaches 12° below the
-  horizon
-- `#evening_astronomical_twilight_times`: when the setting Sun reaches 18° below
-  the horizon
+`twilights` returns `Astronoby::TwilightCrossing` objects, sorted by time: the
+Sun's centre crossing 6°, 12° and 18° below the horizon. Each has a `kind`
+(`:civil`, `:nautical` or `:astronomical`), an `instant`, and `dawn?` or
+`dusk?` for the rising or the setting Sun.
 
 ```rb
-events = calculator.events_between(
-  Time.utc(2025, 8, 1),
-  Time.utc(2025, 8, 8)
-)
+twilights = local_sky.twilights.on(Date.new(2025, 5, 1))
 
-events.morning_civil_twilight_times
-# =>
-# [2025-08-01 02:29:11 UTC,
-#  2025-08-02 02:30:15 UTC,
-#  2025-08-03 02:31:20 UTC,
-#  2025-08-04 02:32:24 UTC,
-#  2025-08-05 02:33:29 UTC,
-#  2025-08-06 02:34:34 UTC,
-#  2025-08-07 02:35:39 UTC]
+twilights.map { |twilight| [twilight.kind, twilight.dawn?] }
+# => [
+#   [:astronomical, true],
+#   [:nautical, true],
+#   [:civil, true],
+#   [:civil, false],
+#   [:nautical, false],
+#   [:astronomical, false]
+# ]
+
+twilights.select(&:dusk?).map { |twilight| twilight.instant.to_time.round }
+# => [2025-05-01 17:30:50 UTC, 2025-05-01 18:07:27 UTC, 2025-05-01 18:47:10 UTC]
 ```
 
-## `#event_on`
-
-The calculator exposes the instance method `#event_on` to compute the twilight
-times for a given `date` (`Date`) parameter.
-
-It returns a `Astronoby::TwilightEvent` object which exposes the 6 following
-instance methods: `#morning_astronomical_twilight_time`,
-`#morning_nautical_twilight_time`, `#morning_civil_twilight_time`,
-`#evening_civil_twilight_time`, `#evening_nautical_twilight_time` and
-`#evening_astronomical_twilight_time`.
+`between` returns the twilights between two times:
 
 ```rb
-event = calculator.event_on(Date.new(2025, 5, 1))
-
-event.morning_astronomical_twilight_time
-# => 2025-05-01 01:16:21 UTC
-
-event.morning_nautical_twilight_time
-# => 2025-05-01 01:55:49 UTC
-
-event.evening_civil_twilight_time
-# => 2025-05-01 17:30:50 UTC
-
-event.evening_nautical_twilight_time
-# => 2025-05-01 18:07:27 UTC
-
-event.evening_astronomical_twilight_time
-# => 2025-05-01 18:47:10 UTC
+local_sky
+  .twilights
+  .between(Time.utc(2025, 8, 1), Time.utc(2025, 8, 4))
+  .select { |twilight| twilight.kind == :civil && twilight.dawn? }
+  .map { |twilight| twilight.instant.to_time.round }
+# => [2025-08-01 02:29:11 UTC, 2025-08-02 02:30:15 UTC, 2025-08-03 02:31:20 UTC]
 ```
 
 ## Accuracy and polar regions
 
-Each twilight time is the moment the Sun's centre, without refraction, reaches
-the matching altitude, found by `Astronoby::AltitudeCrossingCalculator`. Times
-are rounded to the second. Twilight that exists is returned even when the Sun
-does not rise or set that day, as in a polar night. Use the [altitude crossing
-calculator](altitude_crossings.md) directly for other altitudes or for unrounded
-instants.
+Each twilight is the moment the Sun's centre, without refraction, reaches the
+matching altitude, found by the same search as altitude crossings. Instants are
+not rounded. Twilight that exists is returned even when the Sun does not rise
+or set that day, as in a polar night. Use `crossings`, described on the
+[Altitude crossings page], for other altitudes.
 
-Solving for the real crossing costs more than approximating the Sun's position
-from a single evaluation, as versions before 0.11.0 did, which could be off by
-up to 30 seconds. `#event_on` takes around 7.5 milliseconds for one day, against
-around 4 before.
-
-[Ephem page]: ephem.md
+[Local sky page]: local_sky.md
 [Observer page]: observer.md
+[Altitude crossings page]: altitude_crossings.md
 
 ## See also
 
-- [Altitude Crossings](altitude_crossings.md) - for any altitude, unrounded
+- [Local sky](local_sky.md) - for everything an observer sees
+- [Altitude Crossings](altitude_crossings.md) - for any altitude
 - [Rise, Transit and Set Times](rise_transit_set_times.md) - for sun and moon events
 - [Observer](observer.md) - for location setup
-- [Ephemerides](ephem.md) - for data sources
 - [Moon Phases](moon_phases.md) - for lunar events
