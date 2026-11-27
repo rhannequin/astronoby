@@ -9,20 +9,20 @@ RSpec.describe Astronoby::Seasons do
 
       year = sky.seasons.in(2025)
 
-      expect(year.march_equinox.instant.to_time.round)
-        .to eq(Time.utc(2025, 3, 20, 9, 1, 29))
+      expect(year.march_equinox.instant.to_time.round(2))
+        .to eq(Time.utc(2025, 3, 20, 9, 1, Rational("28.93")))
       # IMCCE:    2025-03-20T09:01:29Z
       # Skyfield: 2025-03-20T09:01:28.93Z
-      expect(year.june_solstice.instant.to_time.round)
-        .to eq(Time.utc(2025, 6, 21, 2, 42, 16))
+      expect(year.june_solstice.instant.to_time.round(2))
+        .to eq(Time.utc(2025, 6, 21, 2, 42, Rational("15.68")))
       # IMCCE:    2025-06-21T02:42:16Z
       # Skyfield: 2025-06-21T02:42:15.68Z
-      expect(year.september_equinox.instant.to_time.round)
-        .to eq(Time.utc(2025, 9, 22, 18, 19, 20))
+      expect(year.september_equinox.instant.to_time.round(2))
+        .to eq(Time.utc(2025, 9, 22, 18, 19, Rational("20.50")))
       # IMCCE:    2025-09-22T18:19:21Z
       # Skyfield: 2025-09-22T18:19:20.49Z
-      expect(year.december_solstice.instant.to_time.round)
-        .to eq(Time.utc(2025, 12, 21, 15, 3, 5))
+      expect(year.december_solstice.instant.to_time.round(2))
+        .to eq(Time.utc(2025, 12, 21, 15, 3, Rational("5.14")))
       # IMCCE:    2025-12-21T15:03:05Z
       # Skyfield: 2025-12-21T15:03:05.13Z
       expect(year.to_a.map(&:kind)).to eq(Astronoby::SeasonStart::KINDS)
