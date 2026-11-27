@@ -45,12 +45,12 @@ previous versions, you can access the documentation in the README for each
 sky = Astronoby::Sky.load("tmp/de440s.bsp")
 instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1, 21))
 observer = Astronoby::Observer.new(
-  latitude: Astronoby::Angle.from_degrees(48.83661378408946),
-  longitude: Astronoby::Angle.from_degrees(2.3366748126024466)
+  latitude: Astronoby::Angle.from_degrees(48.836614),
+  longitude: Astronoby::Angle.from_degrees(2.336675)
 )
 
 sky.saturn.at(instant).observed_by(observer).horizontal.altitude.str(:dms)
-# => "+31° 31′ 1.4723″"
+# => "+31° 31′ 1.4719″"
 ```
 
 ### See also

@@ -21,8 +21,8 @@ sky = Astronoby::Sky.load("tmp/de421.bsp")
 
 A sky holds the ephemeris so that it is not given to every call:
 `sky.jupiter.at(instant)` gives Jupiter at an instant, and bodies taken from it
-at the same instant share their common work. The rest of this guide still passes
-the ephemeris explicitly. You can learn more on the [Sky page].
+at the same instant share their common work. You can learn more on the
+[Sky page].
 
 ## Load an ephemeris
 
