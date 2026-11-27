@@ -122,6 +122,18 @@ RSpec.describe Astronoby::Sky::Target do
   end
 
   describe "#greatest_elongations" do
+    it "finds an elongation just after the start of the search" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      elongation = sky.venus.greatest_elongations
+        .from(Astronoby::Instant.from_time(Time.utc(2025, 5, 31)))
+        .first
+
+      expect(elongation).to be_western
+      expect(elongation.instant.to_time.round)
+        .to eq(Time.utc(2025, 6, 1, 3, 28, 32))
+    end
+
     it "returns the greatest elongations of an inferior planet" do
       sky = Astronoby::Sky.new(test_ephem)
 
@@ -131,7 +143,7 @@ RSpec.describe Astronoby::Sky::Target do
 
       expect(elongation).to be_eastern
       expect(elongation.instant.to_time.round)
-        .to eq(Time.utc(2025, 1, 10, 5, 1, 32))
+        .to eq(Time.utc(2025, 1, 10, 5, 1, 36))
       expect(elongation.angle.degrees).to be_within(0.01).of(47.17)
     end
 

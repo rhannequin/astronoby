@@ -215,6 +215,7 @@ module Astronoby
         .map(&:time)
         .select { |time| time.between?(padded_start, padded_end) }
         .map { |time| Instant.from_time(time).tt }
+        .select { |seed_jd| covered?(seed_jd) }
     end
 
     def year_months(from, to)
@@ -229,6 +230,14 @@ module Astronoby
     end
 
     # Resolves the eclipse for one full-moon seed, if any.
+    def covered?(seed_jd)
+      return true unless @ephem.respond_to?(:coverage)
+
+      first, last = @ephem.coverage
+      reach = GREATEST_HALF_WINDOW + CONTACT_HALF_WINDOW
+      seed_jd - reach >= first && seed_jd + reach <= last
+    end
+
     def eclipse_near(seed_jd)
       if geometry_at(seed_jd).axis_distance > MAX_ECLIPSE_GAMMA * EARTH_RADIUS_KM
         return nil

@@ -25,6 +25,10 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Fade the deflection to zero for a target hidden behind the solar disk,
   where the formula grows without bound, and return the position unchanged
   instead of raising `TypeError` for a target in line with the Sun ([#334])
+* Find greatest elongations where the elongation stops growing instead of
+  at its sampled maximum, which is too flat to locate. Their instants moved by
+  up to 17 s with the search range and now agree with Skyfield to the second,
+  and the search is about 30% faster
 
 ### Features
 

@@ -30,14 +30,15 @@ module Astronoby
 
     # @api private
     def initialize(ephem:)
-      calculator = SeasonCalculator.new(ephem: ephem)
       @series = Events::Series.new(
         window: WINDOW_IN_DAYS,
         horizon: HORIZON_IN_DAYS,
         time_of: :instant.to_proc,
         last_tt: ephem.coverage.last
       ) do |start_instant, end_instant|
-        calculator.season_starts_between(start_instant, end_instant)
+        SeasonCalculator
+          .new(ephem: ephem)
+          .season_starts_between(start_instant, end_instant)
       end
     end
 

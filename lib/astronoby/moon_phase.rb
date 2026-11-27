@@ -39,7 +39,10 @@ module Astronoby
     # @param time [Time, nil] Time of the Moon phase
     # @param instant [Astronoby::Instant, nil] Instant of the Moon phase, from
     #   which the time is derived when no time is given
+    # @raise [ArgumentError] unless a time or an instant is given
     def initialize(phase:, time: nil, instant: nil)
+      raise ArgumentError, "A time or an instant is required" unless time || instant
+
       @phase = phase
       @time = time
       @instant = instant

@@ -8,6 +8,7 @@ module Astronoby
       YEAR_IN_DAYS = 365.25
       MONTH_IN_DAYS = 31
       HORIZON_IN_DAYS = 100 * YEAR_IN_DAYS
+      EXTREMUM_PADDING_IN_DAYS = 20
       # @return [Class, Astronoby::DeepSkyObject] the body class, or the
       #   deep-sky object
       attr_reader :body
@@ -59,9 +60,9 @@ module Astronoby
           raise UnsupportedEventError, "#{name} has no oppositions with the Sun"
         end
 
-        calculator = conjunction_opposition_calculator
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          calculator.opposition_events_between(start_instant, end_instant)
+          conjunction_opposition_calculator
+            .opposition_events_between(start_instant, end_instant)
         end
       end
 
@@ -72,9 +73,9 @@ module Astronoby
           raise UnsupportedEventError, "#{name} has no conjunctions with the Sun"
         end
 
-        calculator = conjunction_opposition_calculator
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          calculator.conjunction_events_between(start_instant, end_instant)
+          conjunction_opposition_calculator
+            .conjunction_events_between(start_instant, end_instant)
         end
       end
 
@@ -87,15 +88,18 @@ module Astronoby
             "#{name} has no greatest elongations from the Sun"
         end
 
-        calculator = GreatestElongationCalculator.new(
-          body: @body,
-          ephem: @sky.ephem
-        )
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          calculator.greatest_elongation_events_between(
-            start_instant,
-            end_instant
-          )
+          first, last = @sky.ephem.coverage
+          GreatestElongationCalculator
+            .new(body: @body, ephem: @sky.ephem)
+            .greatest_elongation_events_between(
+              Instant.from_terrestrial_time(
+                [start_instant.tt - EXTREMUM_PADDING_IN_DAYS, first].max
+              ),
+              Instant.from_terrestrial_time(
+                [end_instant.tt + EXTREMUM_PADDING_IN_DAYS, last].min
+              )
+            )
         end
       end
 
@@ -104,9 +108,10 @@ module Astronoby
       #   Moon
       def eclipses
         moon_only!("eclipses")
-        calculator = LunarEclipseCalculator.new(ephem: @sky.ephem)
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          calculator.events_between(start_instant, end_instant)
+          LunarEclipseCalculator
+            .new(ephem: @sky.ephem)
+            .events_between(start_instant, end_instant)
         end
       end
 
@@ -119,9 +124,10 @@ module Astronoby
       #   Moon
       def phases
         moon_only!("phases")
-        calculator = MoonPhaseCalculator.new(ephem: @sky.ephem)
         series(window: MONTH_IN_DAYS) do |start_instant, end_instant|
-          calculator.phases_between(start_instant, end_instant)
+          MoonPhaseCalculator
+            .new(ephem: @sky.ephem)
+            .phases_between(start_instant, end_instant)
         end
       end
 

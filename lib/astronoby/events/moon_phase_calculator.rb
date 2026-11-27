@@ -12,7 +12,8 @@ module Astronoby
     MEAN_RATE_IN_DEGREES_PER_DAY = 12.190749
     TOLERANCE_IN_DAYS = 1e-8
     MAX_ITERATIONS = 10
-    SEED_MARGIN_IN_DAYS = 1
+    SEED_MARGIN_IN_DAYS = 0.1
+    FALLBACK_HALF_WIDTH_IN_DAYS = 0.5
 
     def initialize(ephem:)
       @ephem = ephem
@@ -25,6 +26,7 @@ module Astronoby
           start_instant.tt - SEED_MARGIN_IN_DAYS,
           end_instant.tt + SEED_MARGIN_IN_DAYS
         )
+        next unless covered?(seed_tt)
 
         tt = refine(seed_tt, TARGETS.fetch(seed.phase))
         next unless tt.between?(start_instant.tt, end_instant.tt)
@@ -60,6 +62,7 @@ module Astronoby
       rate = MEAN_RATE_IN_DEGREES_PER_DAY
       previous = nil
 
+      seed = tt
       MAX_ITERATIONS.times do
         residual = wrap(longitude_difference_at(tt) - target)
         if previous && tt != previous[:tt]
@@ -68,10 +71,22 @@ module Astronoby
         step = residual / rate
         previous = {tt: tt, residual: residual}
         tt -= step
-        break if step.abs < TOLERANCE_IN_DAYS
+        return tt if step.abs < TOLERANCE_IN_DAYS
       end
 
-      tt
+      bisect_near(seed) { |jd| wrap(longitude_difference_at(jd) - target) }
+    end
+
+    def bisect_near(seed, &residual)
+      RootFinder
+        .new(value_at: residual, period: 2 * FALLBACK_HALF_WIDTH_IN_DAYS)
+        .roots(seed - FALLBACK_HALF_WIDTH_IN_DAYS, seed + FALLBACK_HALF_WIDTH_IN_DAYS)
+        .min_by { |jd| (jd - seed).abs } || seed
+    end
+
+    def covered?(tt)
+      first, last = @ephem.coverage
+      tt.between?(first, last)
     end
 
     def wrap(degrees)

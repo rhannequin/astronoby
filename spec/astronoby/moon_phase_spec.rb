@@ -17,4 +17,9 @@ RSpec.describe Astronoby::MoonPhase do
 
     expect(phase.instant.to_time).to eq(time)
   end
+
+  it "raises without a time or an instant" do
+    expect { described_class.new(phase: :new_moon) }
+      .to raise_error(ArgumentError, "A time or an instant is required")
+  end
 end

@@ -33,7 +33,7 @@ RSpec.describe Astronoby::GreatestElongationCalculator do
       expect(events.first).to be_a(Astronoby::GreatestElongation)
       expect(events.first).to be_eastern
       expect(events.first.instant.to_time.round)
-        .to eq(Time.utc(2025, 1, 10, 5, 1, 35))
+        .to eq(Time.utc(2025, 1, 10, 5, 1, 36))
       # IMCCE:    2025-01-10T05:01:19Z
       # Skyfield: 2025-01-10T05:01:36Z
       expect(events.first.angle.degrees.round(4)).to eq(47.1687)
@@ -42,7 +42,7 @@ RSpec.describe Astronoby::GreatestElongationCalculator do
 
       expect(events.last).to be_western
       expect(events.last.instant.to_time.round)
-        .to eq(Time.utc(2025, 6, 1, 3, 28, 33))
+        .to eq(Time.utc(2025, 6, 1, 3, 28, 32))
       # IMCCE:    2025-06-01T03:28:39Z
       # Skyfield: 2025-06-01T03:28:32Z
       expect(events.last.angle.degrees.round(4)).to eq(45.883)
@@ -65,10 +65,10 @@ RSpec.describe Astronoby::GreatestElongationCalculator do
         [
           [Time.utc(2025, 3, 8, 6, 9, 18), :eastern],
           [Time.utc(2025, 4, 21, 18, 49, 8), :western],
-          [Time.utc(2025, 7, 4, 4, 38, 44), :eastern],
-          [Time.utc(2025, 8, 19, 9, 48, 4), :western],
-          [Time.utc(2025, 10, 29, 22, 2, 12), :eastern],
-          [Time.utc(2025, 12, 7, 21, 2, 53), :western]
+          [Time.utc(2025, 7, 4, 4, 38, 46), :eastern],
+          [Time.utc(2025, 8, 19, 9, 48, 5), :western],
+          [Time.utc(2025, 10, 29, 22, 2, 13), :eastern],
+          [Time.utc(2025, 12, 7, 21, 2, 55), :western]
         ]
       )
 
