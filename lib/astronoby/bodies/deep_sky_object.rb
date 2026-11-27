@@ -28,6 +28,12 @@ module Astronoby
       @radial_velocity = radial_velocity
     end
 
+    # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates at
+    #   epoch J2000.0
+    def equatorial_coordinates
+      @initial_equatorial_coordinates
+    end
+
     # @param instant [Astronoby::Instant] Instant of the observation
     # @param ephem [Astronoby::Ephemeris, nil] Ephemeris to use for Earth
     #   position calculation

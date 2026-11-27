@@ -11,7 +11,7 @@ module Astronoby
     class Snapshot
       attr_reader :instant
 
-      # @param ephem [::Ephem::SPK] ephemeris data source
+      # @param ephem [::Ephem::SPK, Astronoby::Ephem] ephemeris data source
       # @param instant [Astronoby::Instant] the time instant
       # @param orientation [Astronoby::Orientation, nil] orientation kernel
       #   given to the bodies built from this snapshot

@@ -26,7 +26,7 @@ module Astronoby
     # @return [Astronoby::Instant] the time instant
     attr_reader :instant
 
-    # @return [::Ephem::SPK] the ephemeris data source
+    # @return [::Ephem::SPK, Astronoby::Ephem] the ephemeris data source
     attr_reader :ephem
 
     # @return [Astronoby::Orientation, nil] the orientation kernel, if provided

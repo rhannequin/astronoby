@@ -26,6 +26,20 @@ _If you are upgrading: please see [UPGRADING.md]._
   where the formula grows without bound, and return the position unchanged
   instead of raising `TypeError` for a target in line with the Sun ([#334])
 
+### Features
+
+* `Astronoby::Sky` holds the ephemeris so that it is given once:
+  `Sky.load(*paths, orientation: nil)` or `Sky.new(*kernels, orientation: nil)`
+  reads one or several SPK kernels as a single ephemeris. `sky.sun` to
+  `sky.neptune` and `sky.planets` return `Sky::Target` objects, and
+  `sky.saturn.at(instant)` gives the body at an instant. `sky[deep_sky_object]`
+  observes a deep-sky object with Earth and the Sun from the sky's ephemeris.
+  Solar System bodies taken from a sky at the same instant share Earth's and
+  the Sun's positions, precession and nutation. `sky.close` closes the kernels.
+  The existing `ephem:` arguments keep working ([#346])
+* `DeepSkyObject#equatorial_coordinates` returns the J2000 coordinates the
+  object was built with ([#346])
+
 ### Improvements
 
 * Share Earth's and the Sun's positions, precession and nutation between bodies
@@ -48,6 +62,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
 [#345]: https://github.com/rhannequin/astronoby/pull/345
+[#346]: https://github.com/rhannequin/astronoby/pull/346
 
 ## 0.12.0 - 2026-11-24
 
