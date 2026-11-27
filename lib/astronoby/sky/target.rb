@@ -29,11 +29,38 @@ module Astronoby
         end
       end
 
+      # @return [Astronoby::Sky::TargetPoint] the target's centre
+      def center
+        TargetPoint.new(target: self, reference: :center)
+      end
+
+      # @return [Astronoby::Sky::TargetPoint] the top edge of the target's
+      #   disk, using its true semi-diameter
+      # @raise [ArgumentError] for a deep-sky object, which has no known size
+      def upper_limb
+        limb(:upper_limb)
+      end
+
+      # @return [Astronoby::Sky::TargetPoint] the bottom edge of the target's
+      #   disk, using its true semi-diameter
+      # @raise [ArgumentError] for a deep-sky object, which has no known size
+      def lower_limb
+        limb(:lower_limb)
+      end
+
       def inspect
         "#<#{self.class} #{description}>"
       end
 
       private
+
+      def limb(reference)
+        if @body.is_a?(DeepSkyObject)
+          raise ArgumentError, "A deep-sky object has no limb"
+        end
+
+        TargetPoint.new(target: self, reference: reference)
+      end
 
       def description
         return @body.name unless @body.is_a?(DeepSkyObject)

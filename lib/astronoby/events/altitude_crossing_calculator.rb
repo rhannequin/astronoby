@@ -45,6 +45,7 @@ module Astronoby
 
     Sample = Struct.new(:hour_angle, :declination, :altitude)
     Culmination = Struct.new(:kind, :tt)
+    COVERAGE_EDGE = :coverage_edge
     Crossing = Struct.new(:tt, :direction, :grazing)
 
     # @param body [Class, Object] celestial body to track
@@ -85,8 +86,8 @@ module Astronoby
       @reference = reference
     end
 
-    # @param start_time [Time] start of the window
-    # @param end_time [Time] end of the window
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
     # @param altitude [Astronoby::Angle] the altitude to reach, positive or
     #   negative
     # @return [Array<Astronoby::AltitudeCrossing>] the crossings in the window,
@@ -99,8 +100,8 @@ module Astronoby
     # Same as {#crossings_between} for several altitudes at once, sharing the
     # culminations and the evaluated positions between them.
     #
-    # @param start_time [Time] start of the window
-    # @param end_time [Time] end of the window
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
     # @param altitudes [Array<Astronoby::Angle>] the altitudes to reach
     # @return [Array<Array<Astronoby::AltitudeCrossing>>] the crossings of each
     #   altitude, in the order of +altitudes+
@@ -135,8 +136,8 @@ module Astronoby
         end
     end
 
-    # @param start_time [Time] start of the window
-    # @param end_time [Time] end of the window
+    # @param start_time [Time, Astronoby::Instant] start of the window
+    # @param end_time [Time, Astronoby::Instant] end of the window
     # @return [Array<Astronoby::AltitudeExtreme>] the upper and lower
     #   culminations in the window, sorted by time, with the altitude of the
     #   reference point at each
@@ -147,7 +148,9 @@ module Astronoby
     private
 
     def search_between(start_time, end_time)
-      if end_time < start_time
+      start_instant = instant_for(start_time)
+      end_instant = instant_for(end_time)
+      if end_instant < start_instant
         raise IncompatibleArgumentsError,
           "The end of the window must not be before its start"
       end
@@ -158,9 +161,14 @@ module Astronoby
         ephem: @ephem,
         refraction: @refraction,
         reference: @reference,
-        start_tt: Instant.from_time(start_time).tt.to_f,
-        end_tt: Instant.from_time(end_time).tt.to_f
+        start_tt: start_instant.tt.to_f,
+        end_tt: end_instant.tt.to_f,
+        coverage: @ephem.respond_to?(:coverage) ? @ephem.coverage : nil
       )
+    end
+
+    def instant_for(time)
+      time.is_a?(Instant) ? time : Instant.from_time(time)
     end
 
     class Search
@@ -171,7 +179,8 @@ module Astronoby
         refraction:,
         reference:,
         start_tt:,
-        end_tt:
+        end_tt:,
+        coverage: nil
       )
         @body = body
         @observer = observer
@@ -180,6 +189,7 @@ module Astronoby
         @reference = reference
         @start_tt = start_tt
         @end_tt = end_tt
+        @coverage = coverage
         @samples = {}
       end
 
@@ -265,11 +275,27 @@ module Astronoby
       end
 
       def segments
-        culminations(
-          @start_tt - CULMINATION_PADDING_IN_DAYS,
-          @end_tt + CULMINATION_PADDING_IN_DAYS,
+        padded_start = @start_tt - CULMINATION_PADDING_IN_DAYS
+        padded_end = @end_tt + CULMINATION_PADDING_IN_DAYS
+        if @coverage
+          padded_start =
+            padded_start.clamp([@coverage.first, @start_tt].min, @start_tt)
+          padded_end = padded_end.clamp(@end_tt, [@coverage.last, @end_tt].max)
+        end
+
+        bounds = culminations(
+          padded_start,
+          padded_end,
           SEGMENT_HOUR_ANGLE_TOLERANCE
-        ).each_cons(2).select do |first, last|
+        )
+        if padded_start > @start_tt - CULMINATION_PADDING_IN_DAYS
+          bounds.unshift(Culmination.new(COVERAGE_EDGE, padded_start))
+        end
+        if padded_end < @end_tt + CULMINATION_PADDING_IN_DAYS
+          bounds.push(Culmination.new(COVERAGE_EDGE, padded_end))
+        end
+
+        bounds.each_cons(2).select do |first, last|
           last.tt >= @start_tt && first.tt <= @end_tt
         end
       end
@@ -362,7 +388,8 @@ module Astronoby
           @first = first
           @first_sample = first_sample
           span = last.tt - first.tt
-          consecutive = first.kind != last.kind && span.positive?
+          consecutive = first.kind != last.kind && span.positive? &&
+            first.kind != COVERAGE_EDGE && last.kind != COVERAGE_EDGE
 
           @hour_angle_rate = consecutive ? Math::PI / span : SIDEREAL_RATE
           @declination_rate = if consecutive

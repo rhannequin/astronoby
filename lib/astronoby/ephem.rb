@@ -83,6 +83,14 @@ module Astronoby
       end
     end
 
+    # @api private
+    def coverage
+      @coverage ||= @pairs.values.map do |source|
+        segments = source.respond_to?(:segments) ? source.segments : [source]
+        [segments.map(&:start_jd).min, segments.map(&:end_jd).max]
+      end.transpose.then { |starts, ends| [starts.max, ends.min] }
+    end
+
     # Closes every kernel.
     #
     # @return [void]
