@@ -127,16 +127,13 @@ RSpec.describe Astronoby::Sky do
       expect(Fiber.new { sky.mars.at(instant) }.resume).not_to be(mars)
     end
 
-    it "forgets the oldest snapshots" do
+    it "keeps only the snapshot of the last instant" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      later = Astronoby::Instant.from_time(Time.utc(2025, 10, 2))
       sky = described_class.new(test_ephem)
       first = sky.snapshot_at(instant)
 
-      20.times do |day|
-        sky.snapshot_at(
-          Astronoby::Instant.from_terrestrial_time(instant.tt + day + 1)
-        )
-      end
+      sky.snapshot_at(later)
 
       expect(sky.snapshot_at(instant)).not_to be(first)
     end

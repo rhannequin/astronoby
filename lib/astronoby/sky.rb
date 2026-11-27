@@ -29,9 +29,6 @@ module Astronoby
       neptune: Neptune
     }.freeze
 
-    SNAPSHOTS_KEPT = 8
-    private_constant :SNAPSHOTS_KEPT
-
     # @param paths [Array<String>] SPK kernels; the first one wins when
     #   several have a segment for the same center and target
     # @param orientation [String, nil] binary PCK lunar orientation kernel
@@ -85,19 +82,21 @@ module Astronoby
       Target.new(sky: self, body: object)
     end
 
-    # The snapshot of this sky at the instant. The last few are kept per
-    # fiber, so that bodies asked for at the same instant share one without
+    # The snapshot of this sky at the instant. The last one is kept per
+    # fiber, so that bodies asked for at the same instant share it without
     # any lock.
     #
     # @api private
     # @param instant [Astronoby::Instant]
     # @return [Astronoby::Sky::Snapshot]
     def snapshot_at(instant)
-      recent = Thread.current[:astronoby_sky_snapshots] ||= {}
-      recent[[self, instant]] ||= begin
-        recent.shift if recent.size >= SNAPSHOTS_KEPT
+      sky, snapshot = Thread.current[:astronoby_sky_snapshot]
+      return snapshot if sky.equal?(self) && snapshot.instant == instant
+
+      snapshot =
         Snapshot.new(ephem: @ephem, instant: instant, orientation: @orientation)
-      end
+      Thread.current[:astronoby_sky_snapshot] = [self, snapshot]
+      snapshot
     end
 
     def inspect

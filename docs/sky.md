@@ -2,8 +2,6 @@
 
 `Astronoby::Sky` is an entry point that holds the ephemeris, so that it is given once instead of to every call. It gives the Solar System bodies and deep-sky objects of that ephemeris, and the bodies taken from it at the same instant share their common work.
 
-The rest of the documentation still uses `ephem:` arguments, which keep working.
-
 ## Load a sky
 
 ```rb
@@ -38,20 +36,20 @@ Loading a kernel reads its segments into memory on first use, so load a sky once
 
 ## Solar System bodies
 
-`sky.sun`, `sky.mercury`, `sky.venus`, `sky.earth`, `sky.moon`, `sky.mars`, `sky.jupiter`, `sky.saturn`, `sky.uranus` and `sky.neptune` return a `Sky::Target`. A target has no instant: `at` gives the body at an instant, the same object as `Astronoby::Saturn.new(ephem:, instant:)`.
+`sky.sun`, `sky.mercury`, `sky.venus`, `sky.earth`, `sky.moon`, `sky.mars`, `sky.jupiter`, `sky.saturn`, `sky.uranus` and `sky.neptune` return a `Sky::Target`. A target has no instant: `at` gives the body at an instant.
 
 ```rb
 instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1, 21))
 observer = Astronoby::Observer.new(
-  latitude: Astronoby::Angle.from_degrees(48.83661378408946),
-  longitude: Astronoby::Angle.from_degrees(2.3366748126024466),
+  latitude: Astronoby::Angle.from_degrees(48.836614),
+  longitude: Astronoby::Angle.from_degrees(2.336675),
   elevation: Astronoby::Distance.from_meters(65)
 )
 
 saturn = sky.saturn.at(instant)
 
 saturn.observed_by(observer).horizontal.altitude.str(:dms)
-# => "+31° 31′ 1.4722″"
+# => "+31° 31′ 1.4719″"
 
 sky.mars.at(instant).elongation.str(:dms)
 # => "+27° 31′ 17.13″"
@@ -83,7 +81,7 @@ vega = Astronoby::DeepSkyObject.new(
 )
 
 sky[vega].at(instant).observed_by(observer).horizontal.altitude.str(:dms)
-# => "+54° 6′ 32.7376″"
+# => "+54° 6′ 32.7372″"
 ```
 
 You can learn more about deep-sky objects on the [Deep-sky Bodies page].
@@ -92,7 +90,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
 Every body taken from a sky at a given instant shares Earth's and the Sun's positions, the precession and nutation matrices, and the other bodies at that instant. `sky.mars.at(instant).elongation` reuses the Sun that `sky.sun.at(instant)` returns instead of computing it again, and asking twice for the same body at the same instant returns the same object.
 
-The last few instants are kept for each fiber, so nothing is shared between threads or fibers and no lock is taken.
+Only the last instant asked for is kept, for each fiber, so nothing is shared between threads or fibers and no lock is taken. To share the work between several bodies, ask for all of them at one instant before moving to the next.
 
 [Solar System Bodies page]: solar_system_bodies.md
 [Deep-sky Bodies page]: deep_sky_bodies.md
