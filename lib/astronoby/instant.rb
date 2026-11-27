@@ -34,7 +34,9 @@ module Astronoby
     # Our internal time values are standard astronomical Julian Dates, which
     # start at noon. `DateTime.jd` expects a day that starts at the preceding
     # midnight. This constant adds 0.5 days (12 hours) to make the conversion.
-    DATETIME_JD_EPOCH_ADJUSTMENT = 0.5
+    # It is a Rational so that it keeps a Rational Julian Date exact, where a
+    # Float would round it to about 40 microseconds.
+    DATETIME_JD_EPOCH_ADJUSTMENT = Rational(1, 2)
 
     # Astronoby pins the precision it asks horologium for rather than reading
     # horologium's global default, so a host application configuring
@@ -233,15 +235,18 @@ module Astronoby
     # TT - UTC is read at UTC, which is what is being looked for, so it is
     # read once at a first guess and again at the result, which settles it
     # on either side of a leap second. Before 1961, when UTC did not run yet,
-    # this is UT1, TT - ΔT.
+    # this is UT1, TT - ΔT, with ΔT read the same way since it is read at UT1
+    # when going the other way.
     #
-    # @return [Rational] UTC as Julian Date
+    # @return [Numeric] UTC as Julian Date, a Rational when Terrestrial Time
+    #   is one
     def utc_julian_date
       @memo[:utc_julian_date] ||= begin
         guess = @terrestrial_time - self.class.tt_minus_utc_at(@terrestrial_time)
         @terrestrial_time - self.class.tt_minus_utc_at(guess)
       rescue IERS::OutOfRangeError
-        @terrestrial_time - Rational(delta_t, SECONDS_PER_DAY)
+        guess = @terrestrial_time - Rational(delta_t, SECONDS_PER_DAY)
+        @terrestrial_time - Rational(DeltaT.at(guess), SECONDS_PER_DAY)
       end
     end
 

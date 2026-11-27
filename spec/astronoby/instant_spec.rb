@@ -240,10 +240,9 @@ RSpec.describe Astronoby::Instant do
     end
 
     it "subtracts TT - UTC from Terrestrial Time" do
-      instant = described_class.from_terrestrial_time(2453647.5)
+      instant = described_class.from_terrestrial_time(2453647.5r)
 
-      expect(instant.to_time.round(3))
-        .to eq(Time.utc(2005, 10, 3, 23, 58, 55.816r))
+      expect(instant.to_time).to eq(Time.utc(2005, 10, 3, 23, 58, 55.816r))
     end
 
     it "returns the same Time before 1961, when UTC did not run yet" do
