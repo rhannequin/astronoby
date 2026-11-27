@@ -58,12 +58,14 @@ module Astronoby
       Deprecation.warn(self, :apoapsis_events) do
         ["Astronoby::Moon.apoapsis_events", "sky.moon.apogees"]
       end
-      ExtremumCalculator.new(
-        body: self,
-        primary_body: Earth,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).apoapsis_events_between(start_time, end_time)
+      Deprecation.nested do
+        ExtremumCalculator.new(
+          body: self,
+          primary_body: Earth,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).apoapsis_events_between(start_time, end_time)
+      end
     end
 
     # Finds all periapsis events between two times
@@ -81,12 +83,14 @@ module Astronoby
       Deprecation.warn(self, :periapsis_events) do
         ["Astronoby::Moon.periapsis_events", "sky.moon.perigees"]
       end
-      ExtremumCalculator.new(
-        body: self,
-        primary_body: Earth,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).periapsis_events_between(start_time, end_time)
+      Deprecation.nested do
+        ExtremumCalculator.new(
+          body: self,
+          primary_body: Earth,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).periapsis_events_between(start_time, end_time)
+      end
     end
 
     # Finds all lunar eclipses whose greatest instant falls between two times
@@ -99,9 +103,11 @@ module Astronoby
       Deprecation.warn(self, :eclipse_events) do
         ["Astronoby::Moon.eclipse_events", "sky.moon.eclipses"]
       end
-      LunarEclipseCalculator
-        .new(ephem: ephem)
-        .events_between(start_time, end_time)
+      Deprecation.nested do
+        LunarEclipseCalculator
+          .new(ephem: ephem)
+          .events_between(start_time, end_time)
+      end
     end
 
     # @return [Float] Phase fraction, from 0 to 1

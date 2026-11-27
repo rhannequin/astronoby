@@ -286,6 +286,109 @@ RSpec.describe "Deprecated entry points", :deprecations do
     ).to_stderr
   end
 
+  it "warns on the geocentric calculators' methods" do
+    ephem = test_ephem
+    start_time = Time.utc(2025, 1, 1)
+    end_time = Time.utc(2025, 2, 1)
+    conjunctions = Astronoby::ConjunctionOppositionCalculator
+      .new(body: Astronoby::Mars, ephem: ephem)
+    apsides = Astronoby::ExtremumCalculator.new(
+      body: Astronoby::Moon,
+      primary_body: Astronoby::Earth,
+      ephem: ephem
+    )
+
+    expect {
+      conjunctions.conjunction_events_between(start_time, end_time)
+    }.to output(
+      deprecation(
+        "Astronoby::ConjunctionOppositionCalculator#conjunction_events_between",
+        "sky.mars.conjunctions"
+      )
+    ).to_stderr
+    expect {
+      conjunctions.opposition_events_between(start_time, end_time)
+    }.to output(
+      deprecation(
+        "Astronoby::ConjunctionOppositionCalculator#opposition_events_between",
+        "sky.mars.oppositions"
+      )
+    ).to_stderr
+    expect {
+      Astronoby::GreatestElongationCalculator
+        .new(body: Astronoby::Venus, ephem: ephem)
+        .greatest_elongation_events_between(start_time, end_time)
+    }.to output(
+      deprecation(
+        "Astronoby::GreatestElongationCalculator" \
+          "#greatest_elongation_events_between",
+        "sky.venus.greatest_elongations"
+      )
+    ).to_stderr
+    expect {
+      Astronoby::LunarEclipseCalculator
+        .new(ephem: ephem)
+        .events_between(start_time, end_time)
+    }.to output(
+      deprecation(
+        "Astronoby::LunarEclipseCalculator#events_between",
+        "sky.moon.eclipses"
+      )
+    ).to_stderr
+    expect {
+      apsides.apoapsis_events_between(start_time, end_time)
+    }.to output(
+      deprecation(
+        "Astronoby::ExtremumCalculator#apoapsis_events_between",
+        "sky.moon.apogees"
+      )
+    ).to_stderr
+    expect {
+      apsides.periapsis_events_between(start_time, end_time)
+    }.to output(
+      deprecation(
+        "Astronoby::ExtremumCalculator#periapsis_events_between",
+        "sky.moon.perigees"
+      )
+    ).to_stderr
+  end
+
+  it "warns on an equinox or solstice time" do
+    ephem = test_ephem
+
+    expect {
+      Astronoby::EquinoxSolstice
+        .new(2025, Astronoby::EquinoxSolstice::JUNE_SOLSTICE, ephem)
+        .time
+    }.to output(
+      deprecation("Astronoby::EquinoxSolstice#time", "sky.seasons.in(year)")
+    ).to_stderr
+  end
+
+  it "warns once on a time for a zenith angle" do
+    calculator = Astronoby::TwilightCalculator.new(
+      observer: paris,
+      ephem: test_ephem
+    )
+
+    expect {
+      calculator.time_for_zenith_angle(
+        date: Date.new(2025, 10, 1),
+        period_of_the_day: :morning,
+        zenith_angle: Astronoby::Angle.from_degrees(96)
+      )
+    }.not_to output.to_stderr
+  end
+
+  it "names the parent body of a body subclass" do
+    ephem = test_ephem
+    red_planet = Class.new(Astronoby::Mars)
+
+    expect { red_planet.at(instant, ephem: ephem) }
+      .to output(/use Astronoby::Sky instead: sky\.mars\.at\(instant\)/)
+      .to_stderr
+  end
+
   it "does not warn through the sky" do
     sky = Astronoby::Sky.new(test_ephem)
     local_sky = sky.over(paris)

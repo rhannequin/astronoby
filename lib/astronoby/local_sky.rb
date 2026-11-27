@@ -61,7 +61,8 @@ module Astronoby
     #   Astronoby::DeepSkyObject] whose altitude is given, its centre unless a
     #   limb is given
     # @param refraction [Boolean] whether the altitude includes atmospheric
-    #   refraction
+    #   refraction, which is held at its value at -1° below that altitude, so
+    #   a refracted altitude far below the horizon has no physical meaning
     # @return [Astronoby::Events::Series] of Astronoby::AltitudeExtreme
     def culminations(target, refraction: false)
       body, reference = body_and_reference(target)

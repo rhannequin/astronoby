@@ -85,7 +85,7 @@ module Astronoby
           "sky.seasons.in(year).march_equinox"
         ]
       end
-      new(year, MARCH_EQUINOX, ephem).time
+      Deprecation.nested { new(year, MARCH_EQUINOX, ephem).time }
     end
 
     # @param year [Integer] the year
@@ -99,7 +99,7 @@ module Astronoby
           "sky.seasons.in(year).june_solstice"
         ]
       end
-      new(year, JUNE_SOLSTICE, ephem).time
+      Deprecation.nested { new(year, JUNE_SOLSTICE, ephem).time }
     end
 
     # @param year [Integer] the year
@@ -113,7 +113,7 @@ module Astronoby
           "sky.seasons.in(year).september_equinox"
         ]
       end
-      new(year, SEPTEMBER_EQUINOX, ephem).time
+      Deprecation.nested { new(year, SEPTEMBER_EQUINOX, ephem).time }
     end
 
     # @param year [Integer] the year
@@ -127,7 +127,7 @@ module Astronoby
           "sky.seasons.in(year).december_solstice"
         ]
       end
-      new(year, DECEMBER_SOLSTICE, ephem).time
+      Deprecation.nested { new(year, DECEMBER_SOLSTICE, ephem).time }
     end
 
     # @param year [Integer] the year
@@ -154,8 +154,12 @@ module Astronoby
       @instant
     end
 
+    # @deprecated Use {Astronoby::Seasons#in} instead
     # @return [Time] the corrected UTC time of the event
     def time
+      Deprecation.warn(self.class, :time) do
+        ["Astronoby::EquinoxSolstice#time", "sky.seasons.in(year)"]
+      end
       Instant.from_terrestrial_time(@instant.tt + corrected).to_time.round
     end
 

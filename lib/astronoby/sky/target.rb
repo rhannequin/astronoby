@@ -61,8 +61,10 @@ module Astronoby
         end
 
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          conjunction_opposition_calculator
-            .opposition_events_between(start_instant, end_instant)
+          Deprecation.nested do
+            conjunction_opposition_calculator
+              .opposition_events_between(start_instant, end_instant)
+          end
         end
       end
 
@@ -74,8 +76,10 @@ module Astronoby
         end
 
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          conjunction_opposition_calculator
-            .conjunction_events_between(start_instant, end_instant)
+          Deprecation.nested do
+            conjunction_opposition_calculator
+              .conjunction_events_between(start_instant, end_instant)
+          end
         end
       end
 
@@ -89,11 +93,13 @@ module Astronoby
         end
 
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          GreatestElongationCalculator
-            .new(body: @body, ephem: @sky.ephem)
-            .greatest_elongation_events_between(
-              *padded(start_instant, end_instant)
-            )
+          Deprecation.nested do
+            GreatestElongationCalculator
+              .new(body: @body, ephem: @sky.ephem)
+              .greatest_elongation_events_between(
+                *padded(start_instant, end_instant)
+              )
+          end
         end
       end
 
@@ -106,8 +112,10 @@ module Astronoby
       def apogees
         moon_only!("apogees")
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          apsis_calculator
-            .apoapsis_events_between(*padded(start_instant, end_instant))
+          Deprecation.nested do
+            apsis_calculator
+              .apoapsis_events_between(*padded(start_instant, end_instant))
+          end
         end
       end
 
@@ -120,8 +128,10 @@ module Astronoby
       def perigees
         moon_only!("perigees")
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          apsis_calculator
-            .periapsis_events_between(*padded(start_instant, end_instant))
+          Deprecation.nested do
+            apsis_calculator
+              .periapsis_events_between(*padded(start_instant, end_instant))
+          end
         end
       end
 
@@ -131,9 +141,11 @@ module Astronoby
       def eclipses
         moon_only!("eclipses")
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          LunarEclipseCalculator
-            .new(ephem: @sky.ephem)
-            .events_between(start_instant, end_instant)
+          Deprecation.nested do
+            LunarEclipseCalculator
+              .new(ephem: @sky.ephem)
+              .events_between(start_instant, end_instant)
+          end
         end
       end
 

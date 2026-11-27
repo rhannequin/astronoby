@@ -45,7 +45,7 @@ local_sky.crossings(sky.sun.lower_limb, Astronoby::Altitude.apparent(degrees: 10
 
 ## Culminations
 
-`culminations` returns the upper and lower culminations of a target, as `Astronoby::AltitudeExtreme` objects with `#kind`, `#instant` and `#altitude`. They are useful to explain why a crossing is absent: the body never got as high as, or as low as, the target. The altitude is the true one, unless refraction is asked for.
+`culminations` returns the upper and lower culminations of a target, as `Astronoby::AltitudeExtreme` objects with `#kind`, `#instant` and `#altitude`. They are useful to explain why a crossing is absent: the body never got as high as, or as low as, the target. The altitude is the true one, unless refraction is asked for. Refraction is held at its value at -1° below that altitude, so a refracted altitude far below the horizon has no physical meaning.
 
 ```rb
 culminations = local_sky

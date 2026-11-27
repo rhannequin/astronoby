@@ -124,12 +124,12 @@ module Astronoby
     # @return [Astronoby::AltitudeCrossing, nil] the first crossing of that
     #   direction from midnight to the next midnight, if any
     def crossing_on(date, altitude:, direction:, utc_offset: 0)
-      warn_deprecated(:crossing_on, "sky.over(observer).crossings")
       unless DIRECTIONS.include?(direction)
         raise IncompatibleArgumentsError,
           "Only #{DIRECTIONS.join(" or ")} are allowed as direction, " \
           "got #{direction}"
       end
+      warn_deprecated(:crossing_on, "sky.over(observer).crossings")
 
       start_time = Time.new(date.year, date.month, date.day, 0, 0, 0, utc_offset)
       following = date.next_day

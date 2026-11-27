@@ -101,8 +101,11 @@ will be removed in 0.14.0:
   `.opposition_events` and `.greatest_elongation_events`,
   `Moon.apoapsis_events`, `.periapsis_events` and `.eclipse_events`,
   `Sun.twilight_events`, and the equinox and solstice methods of `Sun` and
-  `EquinoxSolstice`, replaced by the event series of `Astronoby::Sky` and
-  `Astronoby::LocalSky`
+  `EquinoxSolstice` and `EquinoxSolstice#time`, replaced by the event series
+  of `Astronoby::Sky` and `Astronoby::LocalSky`
+* The searches of `ConjunctionOppositionCalculator`,
+  `GreatestElongationCalculator`, `LunarEclipseCalculator` and
+  `ExtremumCalculator`, replaced by the event series of `Sky` targets
 * `RiseTransitSetCalculator#event_on`, `#events_on` and `#events_between`,
   `TwilightCalculator`, and `AltitudeCrossingCalculator#crossings_between`,
   `#multiple_crossings_between`, `#crossing_on` and `#extremes_between`,

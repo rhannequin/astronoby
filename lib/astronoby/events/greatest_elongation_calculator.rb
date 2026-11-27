@@ -13,11 +13,19 @@ module Astronoby
       @samples_per_period = samples_per_period
     end
 
+    # @deprecated Use {Astronoby::Sky::Target#greatest_elongations} instead
     # @param start_time [Time, Astronoby::Instant] start time
     # @param end_time [Time, Astronoby::Instant] end time
     # @return [Array<Astronoby::GreatestElongation>] greatest elongations in
     #   the range
     def greatest_elongation_events_between(start_time, end_time)
+      Deprecation.warn(self.class, :greatest_elongation_events_between) do
+        [
+          "Astronoby::GreatestElongationCalculator" \
+            "#greatest_elongation_events_between",
+          "sky.#{@body.sky_name}.greatest_elongations"
+        ]
+      end
       start_jd = Instant.from(start_time).tt
       end_jd = Instant.from(end_time).tt
 

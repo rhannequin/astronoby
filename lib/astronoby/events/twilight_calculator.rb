@@ -96,12 +96,14 @@ module Astronoby
           "period_of_the_day, got #{period_of_the_day}"
       end
 
-      crossing = @crossing_calculator.crossing_on(
-        date,
-        altitude: altitude_for(zenith_angle),
-        direction: (period_of_the_day == MORNING) ? :rising : :setting,
-        utc_offset: utc_offset
-      )
+      crossing = Deprecation.nested do
+        @crossing_calculator.crossing_on(
+          date,
+          altitude: altitude_for(zenith_angle),
+          direction: (period_of_the_day == MORNING) ? :rising : :setting,
+          utc_offset: utc_offset
+        )
+      end
 
       crossing&.instant&.to_time&.round
     end

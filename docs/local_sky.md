@@ -103,7 +103,7 @@ local_sky
 # ]
 ```
 
-Like `crossings`, it accepts a limb of a Solar System body.
+Like `crossings`, it accepts a limb of a Solar System body. Refraction is held at its value at -1° below that altitude, as on the [Refraction page], so a refracted altitude far below the horizon, like most lower culminations, has no physical meaning.
 
 ## Twilights
 
@@ -128,3 +128,4 @@ Every method accepts a target of the sky (`sky.saturn`, `sky[vega]`) or a deep-s
 [Observer page]: observer.md
 [Rise, transit and setting times page]: rise_transit_set_times.md
 [Altitude crossings page]: altitude_crossings.md
+[Refraction page]: refraction.md

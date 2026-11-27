@@ -57,7 +57,8 @@ module Astronoby
 
     # @api private
     def self.sky_name
-      Sky::BODIES.key(self)
+      Sky::BODIES.key(self) ||
+        (superclass.respond_to?(:sky_name) ? superclass.sky_name : :body)
     end
 
     # Computes the geometric reference frame for this body.
@@ -201,11 +202,13 @@ module Astronoby
         ["#{name}.conjunction_events", "sky.#{sky_name}.conjunctions"]
       end
 
-      ConjunctionOppositionCalculator.new(
-        body: self,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).conjunction_events_between(start_time, end_time)
+      Deprecation.nested do
+        ConjunctionOppositionCalculator.new(
+          body: self,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).conjunction_events_between(start_time, end_time)
+      end
     end
 
     # @param ephem [::Ephem::SPK] ephemeris data source
@@ -230,11 +233,13 @@ module Astronoby
         ["#{name}.opposition_events", "sky.#{sky_name}.oppositions"]
       end
 
-      ConjunctionOppositionCalculator.new(
-        body: self,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).opposition_events_between(start_time, end_time)
+      Deprecation.nested do
+        ConjunctionOppositionCalculator.new(
+          body: self,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).opposition_events_between(start_time, end_time)
+      end
     end
 
     # @param ephem [::Ephem::SPK] ephemeris data source
@@ -263,11 +268,13 @@ module Astronoby
         ]
       end
 
-      GreatestElongationCalculator.new(
-        body: self,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).greatest_elongation_events_between(start_time, end_time)
+      Deprecation.nested do
+        GreatestElongationCalculator.new(
+          body: self,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).greatest_elongation_events_between(start_time, end_time)
+      end
     end
 
     # @deprecated Use {Astronoby::Sky}: +sky.mars.at(instant)+
