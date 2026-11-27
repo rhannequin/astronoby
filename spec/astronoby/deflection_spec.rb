@@ -10,10 +10,12 @@ RSpec.describe Astronoby::Deflection do
       ephem = test_ephem
       mars = Astronoby::Mars.new(instant: instant, ephem: ephem)
       mars_astrometric_position = mars.astrometric.position
+      earth = Astronoby::Earth.geometric(ephem: ephem, instant: instant)
+      sun = Astronoby::Sun.geometric(ephem: ephem, instant: instant)
       deflection = described_class.new(
-        instant: instant,
         target_astrometric_position: mars_astrometric_position,
-        ephem: ephem
+        observer_position: earth.position,
+        sun_position: sun.position
       )
 
       corrected_position = deflection.corrected_position
@@ -29,10 +31,12 @@ RSpec.describe Astronoby::Deflection do
       ephem = test_ephem
       neptune = Astronoby::Neptune.new(instant: instant, ephem: ephem)
       neptune_astrometric_position = neptune.astrometric.position
+      earth = Astronoby::Earth.geometric(ephem: ephem, instant: instant)
+      sun = Astronoby::Sun.geometric(ephem: ephem, instant: instant)
       deflection = described_class.new(
-        instant: instant,
         target_astrometric_position: neptune_astrometric_position,
-        ephem: ephem
+        observer_position: earth.position,
+        sun_position: sun.position
       )
 
       corrected_position = deflection.corrected_position
@@ -44,11 +48,14 @@ RSpec.describe Astronoby::Deflection do
 
     it "returns the position unchanged for a target at the observer" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 4, 1))
+      ephem = test_ephem
+      earth = Astronoby::Earth.geometric(ephem: ephem, instant: instant)
+      sun = Astronoby::Sun.geometric(ephem: ephem, instant: instant)
       position = Astronoby::Distance.vector_from_meters([0.0, 0.0, 0.0])
       deflection = described_class.new(
-        instant: instant,
         target_astrometric_position: position,
-        ephem: test_ephem
+        observer_position: earth.position,
+        sun_position: sun.position
       )
 
       corrected_position = deflection.corrected_position
@@ -65,9 +72,9 @@ RSpec.describe Astronoby::Deflection do
         (sun.position.map(&:m) - earth.position.map(&:m)) * 2.5
       )
       deflection = described_class.new(
-        instant: instant,
         target_astrometric_position: position,
-        ephem: ephem
+        observer_position: earth.position,
+        sun_position: sun.position
       )
 
       corrected_position = deflection.corrected_position
@@ -90,9 +97,9 @@ RSpec.describe Astronoby::Deflection do
         direction * to_sun.norm * 2.5
       )
       deflection = described_class.new(
-        instant: instant,
         target_astrometric_position: position,
-        ephem: ephem
+        observer_position: earth.position,
+        sun_position: sun.position
       )
 
       corrected_position = deflection.corrected_position.map(&:m)

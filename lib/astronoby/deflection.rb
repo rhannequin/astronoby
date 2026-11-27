@@ -22,22 +22,20 @@ module Astronoby
 
     SUN_RADIUS = Sun::EQUATORIAL_RADIUS.meters
 
-    # @param instant [Astronoby::Instant] the instant of the observation
     # @param target_astrometric_position [Astronoby::Vector<Distance>] the
-    #   astrometric position of the target
-    # @param ephem [::Ephem::SPK] the ephemeris to use for the computation
-    # @param earth_geometric [Astronoby::Geometric, nil] Earth's geometric
-    #   frame, computed from the ephemeris when not given
+    #   astrometric position of the target, relative to the observer
+    # @param observer_position [Astronoby::Vector<Distance>] barycentric
+    #   position of the observer
+    # @param sun_position [Astronoby::Vector<Distance>] barycentric position of
+    #   the Sun at the observation instant
     def initialize(
-      instant:,
       target_astrometric_position:,
-      ephem:,
-      earth_geometric: nil
+      observer_position:,
+      sun_position:
     )
-      @instant = instant
       @target_astrometric_position = target_astrometric_position
-      @ephem = ephem
-      @earth_geometric = earth_geometric
+      @observer_position = observer_position
+      @sun_position = sun_position
     end
 
     # @return [Astronoby::Vector<Distance>] corrected position of the target
@@ -49,10 +47,8 @@ module Astronoby
       # The Sun is taken at the observation instant rather than when the light
       # passed closest to it. Over the few minutes in between it moves by less
       # than 7 km, which changes the deflection by less than 0.0001 mas.
-      ox, oy, oz = earth_geometric.position.map(&:m).to_a
-      sx, sy, sz = Sun
-        .compute_geometric(ephem: @ephem, instant: @instant)
-        .position.map(&:m).to_a
+      ox, oy, oz = @observer_position.map(&:m).to_a
+      sx, sy, sz = @sun_position.map(&:m).to_a
 
       # Unit vectors from observer to target (u), Sun to target (q) and Sun to
       # observer (e)
@@ -104,13 +100,6 @@ module Astronoby
         py + factor * (cos_target * ey - cos_observer * qy),
         pz + factor * (cos_target * ez - cos_observer * qz)
       ])
-    end
-
-    private
-
-    def earth_geometric
-      @earth_geometric ||=
-        Earth.compute_geometric(ephem: @ephem, instant: @instant)
     end
   end
 end

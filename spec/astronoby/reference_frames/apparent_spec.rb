@@ -45,45 +45,45 @@ RSpec.describe Astronoby::Apparent do
       ephem = test_ephem
       moon = Astronoby::Moon.new(instant: instant, ephem: ephem)
 
-      with_ephem = described_class.build_from_astrometric(
+      with_sun = described_class.build_from_astrometric(
         instant: instant,
         target_astrometric: moon.astrometric,
         earth_geometric: moon.earth_geometric,
-        ephem: ephem,
+        sun_geometric: Astronoby::Sun.geometric(ephem: ephem, instant: instant),
         target_body: Astronoby::Moon
       )
-      without_ephem = described_class.build_from_astrometric(
+      without_sun = described_class.build_from_astrometric(
         instant: instant,
         target_astrometric: moon.astrometric,
         earth_geometric: moon.earth_geometric,
         target_body: Astronoby::Moon
       )
 
-      expect(with_ephem.position.map(&:m).to_a)
-        .to eq(without_ephem.position.map(&:m).to_a)
+      expect(with_sun.position.map(&:m).to_a)
+        .to eq(without_sun.position.map(&:m).to_a)
     end
 
-    it "deflects the light of a planet when given the ephemeris" do
+    it "deflects the light of a planet when given the Sun" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
       ephem = test_ephem
       mars = Astronoby::Mars.new(instant: instant, ephem: ephem)
 
-      with_ephem = described_class.build_from_astrometric(
+      with_sun = described_class.build_from_astrometric(
         instant: instant,
         target_astrometric: mars.astrometric,
         earth_geometric: mars.earth_geometric,
-        ephem: ephem,
+        sun_geometric: Astronoby::Sun.geometric(ephem: ephem, instant: instant),
         target_body: Astronoby::Mars
       )
-      without_ephem = described_class.build_from_astrometric(
+      without_sun = described_class.build_from_astrometric(
         instant: instant,
         target_astrometric: mars.astrometric,
         earth_geometric: mars.earth_geometric,
         target_body: Astronoby::Mars
       )
 
-      expect(with_ephem.position.map(&:m).to_a)
-        .not_to eq(without_ephem.position.map(&:m).to_a)
+      expect(with_sun.position.map(&:m).to_a)
+        .not_to eq(without_sun.position.map(&:m).to_a)
     end
   end
 end

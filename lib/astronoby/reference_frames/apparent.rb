@@ -14,15 +14,15 @@ module Astronoby
     # rotating by nutation * precession (with ICRS frame bias). Without Earth's
     # geometric frame there is no observer position or velocity to derive these
     # corrections from, so only the rotation is applied. Deflection also needs
-    # the ephemeris to locate the Sun.
+    # the Sun's geometric frame.
     #
     # @param instant [Astronoby::Instant] the time instant
     # @param target_astrometric [Astronoby::Astrometric] target's astrometric
     #   frame
     # @param earth_geometric [Astronoby::Geometric, nil] Earth's geometric
     #   frame
-    # @param ephem [::Ephem::SPK, nil] ephemeris data source, used to apply
-    #   light deflection
+    # @param sun_geometric [Astronoby::Geometric, nil] the Sun's geometric
+    #   frame, used to apply light deflection
     # @param target_body [Astronoby::Body, nil] the target body
     # @return [Astronoby::Apparent] a new apparent frame
     def self.build_from_astrometric(
@@ -30,19 +30,19 @@ module Astronoby
       target_astrometric:,
       target_body:,
       earth_geometric: nil,
-      ephem: nil
+      sun_geometric: nil
     )
       position = target_astrometric.position
       velocity = target_astrometric.velocity
       precession_matrix = Precession.matrix_for(instant)
       nutation_matrix = Nutation.matrix_for(instant)
 
-      if earth_geometric && ephem && !UNDEFLECTED_BODIES.include?(target_body)
+      if earth_geometric && sun_geometric &&
+          !UNDEFLECTED_BODIES.include?(target_body)
         position = Deflection.new(
-          instant: instant,
           target_astrometric_position: position,
-          ephem: ephem,
-          earth_geometric: earth_geometric
+          observer_position: earth_geometric.position,
+          sun_position: sun_geometric.position
         ).corrected_position
       end
 
