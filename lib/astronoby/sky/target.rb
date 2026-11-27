@@ -26,7 +26,11 @@ module Astronoby
       # @return [Astronoby::SolarSystemBody, Astronoby::DeepSkyObjectPosition]
       #   the body at the instant
       def at(instant)
-        @sky.snapshot_at(instant).body(@body)
+        if @body.is_a?(DeepSkyObject)
+          @body.position_at(instant, ephem: @sky.ephem)
+        else
+          @sky.snapshot_at(instant).body(@body)
+        end
       end
 
       # @return [Astronoby::Sky::TargetPoint] the target's centre

@@ -43,9 +43,16 @@ module Astronoby
       Deprecation.warn(self, :at) do
         ["#{name}.at(instant, ephem:)", "sky.#{sky_name}.at(instant)"]
       end
-      Sky::Snapshot
-        .new(ephem: ephem, instant: instant, orientation: orientation)
-        .body(self)
+      new(
+        ephem: ephem,
+        instant: instant,
+        orientation: orientation,
+        snapshot: Sky::Snapshot.new(
+          ephem: ephem,
+          instant: instant,
+          orientation: orientation
+        )
+      )
     end
 
     # @api private
