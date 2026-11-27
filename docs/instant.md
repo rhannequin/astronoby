@@ -14,9 +14,11 @@ from the irregularities in the rotation of Earth and the irregularly fluctuating
 mean solar time.
 
 Astronoby handles this situation by implementing an `Astronoby::Instant` class,
-used in most calculations instead of `Time`. Converting between UTC and
-Terrestrial Time requires knowing [Delta T (TT - UT1)][Delta T], which
-Astronoby obtains from [IERS data](iers.md).
+used in most calculations instead of `Time`. Terrestrial Time runs 32.184
+seconds ahead of International Atomic Time, which is itself ahead of UTC by the
+leap seconds, so TT - UTC is 32.184 s plus the leap seconds, which Astronoby
+reads from [IERS data](iers.md). Before 1961, when UTC did not run yet, a time
+is read as UT1, and [Delta T (TT - UT1)][Delta T] is used instead.
 
 `Astronoby::Instant` is a value object that stores an instant in time on Earth
 in [Terrestrial Time], an astronomical time standard defined by the
@@ -40,14 +42,14 @@ An `Astronoby::Instant` object can be instantiated from:
 
 ```rb
 Astronoby::Instant.from_terrestrial_time(2460796)
-# => Represents UTC time 2025-04-30 11:58:51
+# => Represents UTC time 2025-04-30 11:58:50.816
 
 Astronoby::Instant.from_time(Time.utc(2025, 5, 1))
-# => Represents terrestrial time Julian Date 2460796.500798611
+# => Represents terrestrial time Julian Date 2460796.500800741
 
 Astronoby::Instant.from_utc_julian_date(2460796)
 # => Represents UTC time 2025-04-30 12:00:00
-# => Represents terrestrial time Julian Date 2460796.000798611
+# => Represents terrestrial time Julian Date 2460796.000800741
 ```
 
 ## Time standards
@@ -69,7 +71,7 @@ instant.to_date
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.to_datetime
-# => #<DateTime: 2025-04-30T11:58:50+00:00 ((2460796j,43130s,845637619n),+0s,2299161j)>
+# => #<DateTime: 2025-04-30T11:58:50+00:00 ((2460796j,43130s,816000000n),+0s,2299161j)>
 ```
 
 - UTC `Time`
@@ -77,8 +79,8 @@ instant.to_datetime
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
-instant.to_datetime
-# => 2025-04-30T11:58:50+00:00 UTC
+instant.to_time
+# => 2025-04-30 11:58:50.816 UTC
 ```
 
 - Greenwich Sidereal Time
@@ -87,7 +89,7 @@ instant.to_datetime
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.gmst
-# => 2.5597070126923764
+# => 2.5596987535483593
 ```
 
 - International Atomic Time
@@ -99,13 +101,13 @@ instant.tai.to_f
 # => 2460795.9996275
 ```
 
-- UTC offset (difference with UTC in days)
+- UTC offset (TT - UTC in days, as a `Rational`)
 
 ```rb
 instant = Astronoby::Instant.from_terrestrial_time(2460796)
 
 instant.utc_offset.to_f
-# => 0.0008003974106626159
+# => 0.0008007407407407408
 ```
 
 - Barycentric Dynamical Time

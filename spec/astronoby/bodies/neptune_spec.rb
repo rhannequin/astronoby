@@ -55,7 +55,7 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: 0h 2m 18.96s
 
       expect(geometric.equatorial.declination.str(:dms))
-        .to eq("-1° 11′ 21.2403″")
+        .to eq("-1° 11′ 21.2402″")
       # IMCCE:    -1° 11′ 21.197″
       # Skyfield: -1° 11′ 21.2″
 
@@ -70,7 +70,7 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: +0° 24′ 59.8″
 
       expect(geometric.distance.au)
-        .to eq(29.88455020173212)
+        .to eq(29.88455020171833)
       # IMCCE:    29.884551127591
       # Skyfield: 29.88455020171849
     end
@@ -138,7 +138,7 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: +1° 58′ 46.1″
 
       expect(astrometric.distance.au)
-        .to eq(29.266429812525093)
+        .to eq(29.266429802896017)
       # IMCCE:    29.26643067546
       # Skyfield: 29.266429803007693
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Neptune do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-22823.14648, -11920.06842, -5288.91511])
+        .to eq([-22823.14626, -11920.06868, -5288.91522])
       # IMCCE:    -22823.14506 -11920.06984 -5288.91559
       # Skyfield: -22823.14626 -11920.06867 -5288.9152
     end
@@ -199,13 +199,13 @@ RSpec.describe Astronoby::Neptune do
       # IMCCE:  -1° 20′ 57.494″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 46.0674″")
+        .to eq("+1° 58′ 46.0673″")
       # IMCCE:  +1° 58′ 46.105″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(29.266441140587894)
+        .to eq(29.266441130958686)
       # IMCCE: 29.266442003616
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Neptune do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-22741.46578, -12050.3977, -5345.53569])
+        .to eq([-22741.46555, -12050.39796, -5345.5358])
       # IMCCE:  -22741.46431  -12050.39917  -5345.53618
     end
   end
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Neptune do
       # Skyfield: -1° 20′ 57.1″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+1° 58′ 58.4127″")
+        .to eq("+1° 58′ 58.4126″")
       # IMCCE:    +1° 58′ 58.450″
       # Skyfield: +1° 58′ 58.4″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(29.266429812525097)
+        .to eq(29.266429802896017)
       # IMCCE:    29.26643067546
       # Skyfield: 29.26642980300769
     end

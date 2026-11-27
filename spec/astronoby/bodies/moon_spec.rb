@@ -45,17 +45,17 @@ RSpec.describe Astronoby::Moon do
       geometric = body.geometric
 
       expect(geometric.position.to_a.map(&:km).map(&:round))
-        .to eq([-139986172, 45092086, 19573500])
+        .to eq([-139986173, 45092085, 19573500])
       # IMCCE:    -139986152 45092088 19573500
       # Skyfield: -139986173 45092085 19573500
 
       expect(geometric.equatorial.right_ascension.str(:hms))
-        .to eq("10h 48m 34.874s")
+        .to eq("10h 48m 34.8741s")
       # IMCCE:    10h 48m 34.8733s
       # Skyfield: 10h 48m 34.87s
 
       expect(geometric.equatorial.declination.str(:dms))
-        .to eq("+7° 34′ 51.4362″")
+        .to eq("+7° 34′ 51.4355″")
       # IMCCE:    +7° 34′ 51.439″
       # Skyfield: +7° 34′ 51.4″
 
@@ -65,12 +65,12 @@ RSpec.describe Astronoby::Moon do
       # Skyfield: +0° 0′ 33.1″
 
       expect(geometric.ecliptic.longitude.str(:dms))
-        .to eq("+160° 39′ 3.3756″")
+        .to eq("+160° 39′ 3.3774″")
       # IMCCE:    +160° 39′ 3.365″
       # Skyfield: +161° 0′ 10.3″
 
       expect(geometric.distance.au)
-        .to eq(0.9917671788021136)
+        .to eq(0.9917671790592346)
       # IMCCE:    0.991767054173
       # Skyfield: 0.9917671790668138
     end
@@ -84,7 +84,7 @@ RSpec.describe Astronoby::Moon do
       geometric = body.geometric
 
       expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-10408.4127, -24901.72796, -10687.38597])
+        .to eq([-10408.41257, -24901.72803, -10687.386])
       # IMCCE:    -10408.41236 -24901.72816 -10687.38603
       # Skyfield: -10408.41257 -24901.72803 -10687.38600
     end
@@ -131,27 +131,27 @@ RSpec.describe Astronoby::Moon do
       astrometric = body.astrometric
 
       expect(astrometric.equatorial.right_ascension.str(:hms))
-        .to eq("23h 36m 54.8331s")
+        .to eq("23h 36m 54.8348s")
       # IMCCE:    23h 36m 54.8384s
       # Skyfield: 23h 36m 54.83s
 
       expect(astrometric.equatorial.declination.str(:dms))
-        .to eq("-2° 50′ 44.4911″")
+        .to eq("-2° 50′ 44.4776″")
       # IMCCE:    -2° 50′ 44.459″
       # Skyfield: -2° 50′ 44.5″
 
       expect(astrometric.ecliptic.latitude.str(:dms))
-        .to eq("-0° 19′ 14.6124″")
+        .to eq("-0° 19′ 14.6099″")
       # IMCCE:    -0° 19′ 14.614″
       # Skyfield: -0° 19′ 14.9″
 
       expect(astrometric.ecliptic.longitude.str(:dms))
-        .to eq("+353° 34′ 30.5513″")
+        .to eq("+353° 34′ 30.5794″")
       # IMCCE:    +353° 34′ 30.636″
       # Skyfield: +353° 55′ 37.5″
 
       expect(astrometric.distance.au)
-        .to eq(0.00242381106137331)
+        .to eq(0.002423811056425991)
       # IMCCE:    0.002423811046
       # Skyfield: 0.002423811056514585
     end
@@ -165,7 +165,7 @@ RSpec.describe Astronoby::Moon do
       astrometric = body.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([105.49636, 948.389, 519.75461])
+        .to eq([105.49622, 948.38901, 519.75462])
       # IMCCE:    105.49594 948.38904 519.75463
       # Skyfield: 105.49622 948.38902 519.75462
     end
@@ -200,25 +200,25 @@ RSpec.describe Astronoby::Moon do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.equatorial.right_ascension.str(:hms))
-        .to eq("23h 38m 11.1818s")
+        .to eq("23h 38m 11.1834s")
       # IMCCE:  23h 38m 11.1872s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("-2° 42′ 30.267″")
+        .to eq("-2° 42′ 30.2535″")
       # IMCCE:  -2° 42′ 30.235″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
-        .to eq("-0° 19′ 14.8487″")
+        .to eq("-0° 19′ 14.8461″")
       # IMCCE:  -0° 19′ 14.850″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+353° 55′ 16.7218″")
+        .to eq("+353° 55′ 16.7499″")
       # IMCCE:  +353° 55′ 16.808″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(0.002423751961341504)
+        .to eq(0.002423751956358435)
       # IMCCE: 0.002423751946
     end
 
@@ -231,7 +231,7 @@ RSpec.describe Astronoby::Moon do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([98.89059, 948.96217, 520.00358])
+        .to eq([98.89045, 948.96218, 520.00359])
       # IMCCE:  98.89017  948.96221  520.0036
     end
   end
@@ -265,29 +265,29 @@ RSpec.describe Astronoby::Moon do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("23h 38m 11.2584s")
+        .to eq("23h 38m 11.26s")
       # IMCCE:    23h 38m 11.2637s
       # Skyfield: 23h 38m 11.26s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-2° 42′ 30.9641″")
+        .to eq("-2° 42′ 30.9506″")
       # IMCCE:    -2° 42′ 30.932″
       # Skyfield: -2° 42′ 31.0″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("-0° 19′ 14.9172″")
+        .to eq("-0° 19′ 14.9146″")
       # IMCCE:    -0° 19′ 14.911″
       # Skyfield: -0° 19′ 14.9″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+353° 55′ 17.4454″")
+        .to eq("+353° 55′ 17.4735″")
       # IMCCE:    +353° 55′ 17.473″
       # Skyfield: +353° 55′ 17.5″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(0.00242381106137331)
+        .to eq(0.0024238110564259907)
       # IMCCE:    0.002423811046
       # Skyfield: 0.002423811056514584
     end
@@ -381,28 +381,28 @@ RSpec.describe Astronoby::Moon do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("23h 42m 13.0907s")
+          .to eq("23h 42m 13.0923s")
         # IMCCE:      23h 42m 13.1008s
         # Horizons:   23h 42m 13.093946s
         # Stellarium: 23h 42m 13.16s
         # Skyfield:   23h 42m 13.10s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-2° 43′ 50.1618″")
+          .to eq("-2° 43′ 50.1482″")
         # IMCCE:      -2° 43′ 50.110″
         # Horizons:   -2° 43′ 50.12197″
         # Stellarium: -2° 43′ 49.9″
         # Skyfield:   -2° 43′ 50.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+92° 40′ 8.7755″")
+          .to eq("+92° 40′ 8.7615″")
         # IMCCE:      +92° 40′ 8.760″
         # Horizons:   +92° 40′ 8.7334″
         # Stellarium: +92° 40′ 8.7″
         # Skyfield:   +92° 40′ 8.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-2° 44′ 22.7342″")
+          .to eq("-2° 44′ 22.7586″")
         # IMCCE:      -2° 44′ 23.640″
         # Horizons:   -2° 44′ 22.8363″
         # Stellarium: -2° 44′ 24.6″
@@ -426,13 +426,13 @@ RSpec.describe Astronoby::Moon do
 
         aggregate_failures do
           expect(horizontal.azimuth.str(:dms))
-            .to eq("+270° 40′ 41.719″")
+            .to eq("+270° 40′ 41.732″")
           # Horizons:   +270° 40′ 41.7498″
           # Stellarium: +270° 40′ 42.5″
           # Skyfield:   +270° 40′ 41.7″
 
           expect(horizontal.altitude.str(:dms))
-            .to eq("+6° 50′ 17.1934″")
+            .to eq("+6° 50′ 17.2179″")
           # Horizons:   +6° 50′ 19.33″
           # Stellarium: +6° 50′ 0.2″
           # Skyfield:   +6° 50′ 15.7″
@@ -474,7 +474,7 @@ RSpec.describe Astronoby::Moon do
 
       phase_angle = moon.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+38° 15′ 23.7901″"
+      expect(phase_angle.str(:dms)).to eq "+38° 15′ 23.8188″"
       # IMCCE:    +38° 15′ 3.9599″
       # Horizons: +38° 15′ 8.64″
       # Skyfield: +38° 15′ 3.7″
@@ -710,12 +710,12 @@ RSpec.describe Astronoby::Moon do
 
       aggregate_failures do
         expect(libration.longitude.str(:dms))
-          .to eq("-2° 5′ 4.4204″")
+          .to eq("-2° 5′ 4.4175″")
         # Horizons: -2° 4′ 44.4″
         # IMCCE:    -1° 42′ 36″
 
         expect(libration.latitude.str(:dms))
-          .to eq("+0° 28′ 45.961″")
+          .to eq("+0° 28′ 45.9577″")
         # Horizons: +0° 27′ 27.7″
         # IMCCE:    +0° 27′ 36″
       end
@@ -736,7 +736,7 @@ RSpec.describe Astronoby::Moon do
         # IMCCE:    +5° 33′ 0″
 
         expect(libration.latitude.str(:dms))
-          .to eq("-5° 8′ 14.0413″")
+          .to eq("-5° 8′ 14.0396″")
         # Horizons: -5° 9′ 51.4″
         # IMCCE:    -5° 9′ 36″
       end
@@ -752,12 +752,12 @@ RSpec.describe Astronoby::Moon do
 
       aggregate_failures do
         expect(libration.longitude.str(:dms))
-          .to eq("-2° 19′ 8.0135″")
+          .to eq("-2° 19′ 8.0149″")
         # Horizons: -2° 19′ 27.6″
         # IMCCE:    -1° 56′ 24″
 
         expect(libration.latitude.str(:dms))
-          .to eq("+6° 14′ 47.9887″")
+          .to eq("+6° 14′ 47.9893″")
         # Horizons: +6° 13′ 28.3″
         # IMCCE:    +6° 13′ 12″
       end
@@ -777,10 +777,10 @@ RSpec.describe Astronoby::Moon do
 
         aggregate_failures do
           expect(libration.longitude.str(:dms))
-            .to eq("-2° 4′ 44.4397″")
+            .to eq("-2° 4′ 44.4367″")
           # Horizons: -2° 4′ 44.4396″
           expect(libration.latitude.str(:dms))
-            .to eq("+0° 27′ 27.7258″")
+            .to eq("+0° 27′ 27.7225″")
           # Horizons: +0° 27′ 27.7236″
         end
       end
@@ -797,7 +797,7 @@ RSpec.describe Astronoby::Moon do
       position_angle = moon.position_angle_of_axis
 
       expect(position_angle.str(:dms))
-        .to eq("-21° 48′ 46.6571″")
+        .to eq("-21° 48′ 46.658″")
       # Horizons: 338° 11′ 26.9″
       # IMCCE:    338° 11′ 24″
     end
@@ -811,7 +811,7 @@ RSpec.describe Astronoby::Moon do
       position_angle = moon.position_angle_of_axis
 
       expect(position_angle.str(:dms))
-        .to eq("+20° 11′ 28.0988″")
+        .to eq("+20° 11′ 28.1054″")
       # Horizons: +20° 11′ 15.7″
       # IMCCE:    +20° 11′ 24″
     end
@@ -827,7 +827,7 @@ RSpec.describe Astronoby::Moon do
         )
 
         expect(moon.position_angle_of_axis.str(:dms))
-          .to eq("+20° 11′ 15.8176″")
+          .to eq("+20° 11′ 15.8242″")
         # Horizons: +20° 11′ 15.72″
       end
     end
@@ -858,7 +858,7 @@ RSpec.describe Astronoby::Moon do
       moon = described_class.new(instant: instant, ephem: ephem)
 
       expect(moon.bright_limb_position_angle.str(:dms))
-        .to eq("+248° 1′ 57.945″")
+        .to eq("+248° 1′ 57.9302″")
     end
   end
 
@@ -874,7 +874,7 @@ RSpec.describe Astronoby::Moon do
       moon = described_class.new(instant: instant, ephem: ephem)
 
       expect(moon.parallactic_angle(observer: observer).str(:dms))
-        .to eq("+11° 42′ 47.1254″")
+        .to eq("+11° 42′ 47.144″")
     end
   end
 end

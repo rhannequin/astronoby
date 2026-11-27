@@ -35,13 +35,32 @@ RSpec.describe Astronoby::Instant do
       expect(instant).to be_a(Astronoby::Instant)
     end
 
-    it "handles the difference delta-t = TT - UT" do
+    it "adds TT - UTC, 32.184 seconds plus the leap seconds" do
       time = Time.utc(2025, 1, 1)
 
       instant = described_class.from_time(time)
 
-      expect(instant.terrestrial_time.to_f).to eq(2460676.5008002045)
+      expect(instant.terrestrial_time.to_f).to eq(2460676.500800741)
       # Skyfield: 2460676.500800740905106
+    end
+
+    it "does not take UTC for UT1" do
+      time = Time.utc(2005, 10, 3, 23, 31, 12)
+
+      instant = described_class.from_time(time)
+
+      expect((instant.terrestrial_time - time.to_datetime.ajd) * 86400)
+        .to eq(Rational("64.184"))
+      # IMCCE: 64.184 s, 32 leap seconds
+    end
+
+    it "adds delta-t = TT - UT1 before 1961, when UTC did not run yet" do
+      time = Time.utc(1950, 1, 1)
+
+      instant = described_class.from_time(time)
+
+      expect(((instant.terrestrial_time - time.to_datetime.ajd) * 86400).to_f)
+        .to eq(Astronoby::DeltaT.at(time))
     end
 
     it "handles time zones" do
@@ -49,7 +68,7 @@ RSpec.describe Astronoby::Instant do
 
       instant = described_class.from_time(time)
 
-      expect(instant.terrestrial_time.to_f).to eq(2460676.7091335375)
+      expect(instant.terrestrial_time.to_f).to eq(2460676.709134074)
       # Skyfield: 2460676.709134073927999
     end
   end
@@ -61,14 +80,19 @@ RSpec.describe Astronoby::Instant do
       expect(instant).to be_a(Astronoby::Instant)
     end
 
-    it "handles the difference delta-t = TT - UT" do
+    it "adds TT - UTC, 32.184 seconds plus the leap seconds" do
       time = Time.utc(2025, 1, 1)
       julian_date = Astronoby::JulianDate.from_time(time)
 
       instant = described_class.from_utc_julian_date(julian_date)
 
-      expect(instant.terrestrial_time.to_f).to eq(2460676.5008002045)
+      expect(instant.terrestrial_time.to_f).to eq(2460676.500800741)
       # Skyfield: 2460676.500800740905106
+    end
+
+    it "raises an error when the Julian Date is not numeric" do
+      expect { described_class.from_utc_julian_date("2460676.5") }
+        .to raise_error(Astronoby::IncompatibleArgumentsError)
     end
   end
 
@@ -85,7 +109,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the International Atomic Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.tai.to_f).to eq(2460676.500427705)
+      expect(instant.tai.to_f).to eq(2460676.5004282407)
       # Skyfield: 2460676.500428240746260
     end
 
@@ -103,7 +127,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the Barycentric Dynamical Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.tdb.to_f).to eq(2460676.5008002035)
+      expect(instant.tdb.to_f).to eq(2460676.5008007395)
     end
 
     it "differs from Terrestrial Time by the relativistic correction" do
@@ -127,8 +151,22 @@ RSpec.describe Astronoby::Instant do
     it "returns the difference between the instance and the UTC time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.utc_offset.to_f).to eq(0.0008002046030516613)
-      # Skyfield: 0.000800205394626
+      expect(instant.utc_offset).to eq(Rational("69.184") / 86400)
+      # 32.184 s + 37 leap seconds
+    end
+
+    it "is exact when Terrestrial Time is a Float" do
+      instant = described_class.from_terrestrial_time(2460796.0)
+
+      expect(instant.utc_offset).to eq(Rational("69.184") / 86400)
+    end
+
+    it "returns delta-t before 1961, when UTC did not run yet" do
+      time = Time.utc(1950, 1, 1)
+      instant = described_class.from_time(time)
+
+      expect((instant.utc_offset * 86400).to_f)
+        .to eq(Astronoby::DeltaT.at(time))
     end
   end
 
@@ -145,7 +183,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the Greenwich Apparent Sidereal Time" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.gast).to eq(6.72665311293085)
+      expect(instant.gast).to eq(6.726653112932205)
       # Skyfield: 6.726653092855316
     end
   end
@@ -164,7 +202,7 @@ RSpec.describe Astronoby::Instant do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
       longitude = Astronoby::Angle.from_degrees(-74.0060)
 
-      expect(instant.last(longitude: longitude)).to eq(1.7929197795975176)
+      expect(instant.last(longitude: longitude)).to eq(1.792919779598872)
       # Skyfield: 1.792919759521983
     end
   end
@@ -173,7 +211,7 @@ RSpec.describe Astronoby::Instant do
     it "returns the difference delta-t = TT - UT" do
       instant = described_class.from_time(Time.utc(2025, 1, 1))
 
-      expect(instant.delta_t).to eq(69.13767770366354)
+      expect(instant.delta_t).to eq(69.13767770353195)
       # USNO deltat.data: 69.1377
       # Skyfield: 69.138
     end
@@ -218,6 +256,54 @@ RSpec.describe Astronoby::Instant do
       instant = described_class.from_time(Time.utc(2025, 1, 1, 12, 0, 0))
 
       expect(instant.to_time).to eq(Time.utc(2025, 1, 1, 12, 0, 0))
+    end
+
+    it "subtracts TT - UTC from Terrestrial Time" do
+      instant = described_class.from_terrestrial_time(2453647.5r)
+
+      expect(instant.to_time).to eq(Time.utc(2005, 10, 3, 23, 58, 55.816r))
+    end
+
+    it "returns the same Time before 1961, when UTC did not run yet" do
+      time = Time.utc(1950, 1, 1, 12, 0, 0)
+      instant = described_class.from_time(time)
+
+      expect(instant.to_time).to eq(time)
+    end
+
+    it "returns the same Time on either side of a leap second" do
+      before = Time.utc(2016, 12, 31, 23, 59, 59.5r)
+      after = Time.utc(2017, 1, 1, 0, 0, 0.5r)
+
+      before_instant = described_class.from_time(before)
+      after_instant = described_class.from_time(after)
+
+      expect(before_instant.to_time).to eq(before)
+      expect(after_instant.to_time).to eq(after)
+      expect(after_instant.terrestrial_time - before_instant.terrestrial_time)
+        .to eq(Rational(2, 86400))
+    end
+
+    it "returns the same Time while UTC drifted, before 1972" do
+      time = Time.utc(1966, 6, 1, 6, 0, 0)
+      instant = described_class.from_time(time)
+
+      expect(instant.to_time).to be_within(1e-9).of(time)
+    end
+
+    it "does not move a Float instant over a leap second midnight" do
+      time = Time.utc(2016, 12, 31, 23, 59, 59.99999r)
+      terrestrial_time = described_class.from_time(time).terrestrial_time.to_f
+      instant = described_class.from_terrestrial_time(terrestrial_time)
+
+      expect(instant.to_time).to be_within(0.0001).of(time)
+    end
+
+    it "returns the first UTC instant for a TT that no UTC time maps to" do
+      terrestrial_time = Rational("2437300.5") + Rational("33.6") / 86400
+      instant = described_class.from_terrestrial_time(terrestrial_time)
+
+      expect(instant.to_time).to eq(Time.utc(1961, 1, 1))
     end
   end
 

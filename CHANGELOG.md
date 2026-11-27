@@ -6,6 +6,16 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 ### Bug fixes
 
+* Convert between UTC and Terrestrial Time with the leap seconds, TT - UTC =
+  32.184 s + TAI - UTC. `Instant.from_time` and `Instant.from_utc_julian_date`
+  added ΔT = TT - UT1 instead, taking the UTC input for UT1, and
+  `Instant#to_time`, `#to_datetime` and `#to_date` subtracted it back. TT was
+  off by UT1 - UTC, up to 0.9 s, and instants built from Terrestrial Time gave
+  sidereal time and polar motion a UT1 time in place of UTC. Against IMCCE,
+  topocentric ranges of the planets were off by up to 24 km and are now within
+  1.5 km, and the topocentric Moon goes from 758 to 480 mas at most. Before
+  1961, when UTC did not run yet, ΔT is still used ([#333])
+* `Instant#utc_offset` returns TT - UTC, as documented, instead of ΔT ([#333])
 * Apply the Sun's gravitational light deflection to apparent positions of
   solar system bodies and of deep-sky objects given an ephemeris. `Deflection`
   existed but was never called, so apparent places were off by up to 1.6″ near
@@ -22,7 +32,11 @@ _If you are upgrading: please see [UPGRADING.md]._
   up to 1.75″ near the Sun and a few milliarcseconds elsewhere ([#334])
 * The ephemeris must include the Sun (target `10`) to compute apparent and
   topocentric positions of planets and deep-sky objects ([#334])
+* `Deflection.new` takes the observer's and the Sun's barycentric positions
+  (`observer_position:`, `sun_position:`) instead of `instant:` and `ephem:`
+  ([#334])
 
+[#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
 
 ## 0.12.0 - 2026-11-24

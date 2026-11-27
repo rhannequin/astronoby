@@ -16,10 +16,10 @@ RSpec.describe Astronoby::MoonOrientationEphemeris do
 
       aggregate_failures do
         expect(libration.longitude.str(:dms))
-          .to eq("-2° 4′ 44.4397″")
+          .to eq("-2° 4′ 44.4367″")
         # Horizons: -2° 4′ 44.4396″
         expect(libration.latitude.str(:dms))
-          .to eq("+0° 27′ 27.7258″")
+          .to eq("+0° 27′ 27.7225″")
         # Horizons: +0° 27′ 27.7236″
       end
     end
@@ -36,10 +36,10 @@ RSpec.describe Astronoby::MoonOrientationEphemeris do
 
       aggregate_failures do
         expect(libration.longitude.str(:dms))
-          .to eq("+5° 26′ 26.2678″")
+          .to eq("+5° 26′ 26.2659″")
         # Horizons: +5° 26′ 26.2644″
         expect(libration.latitude.str(:dms))
-          .to eq("-1° 23′ 48.7966″")
+          .to eq("-1° 23′ 48.791″")
         # Horizons: -1° 23′ 48.7896″
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe Astronoby::MoonOrientationEphemeris do
       position_angle = described_class.new(moon).position_angle_of_axis
 
       expect(position_angle.str(:dms))
-        .to eq("+20° 11′ 15.8176″")
+        .to eq("+20° 11′ 15.8242″")
       # Horizons: +20° 11′ 15.72″
     end
   end

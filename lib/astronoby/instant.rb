@@ -10,13 +10,14 @@ module Astronoby
   # - Terrestrial Time (TT)
   # - International Atomic Time (TAI)
   # - Barycentric Dynamical Time (TDB)
-  # - Universal Time Coordinated (UTC)
+  # - Coordinated Universal Time (UTC)
   # - Greenwich Mean Sidereal Time (GMST)
   #
   # TAI and TDB are delegated to the horologium gem, which owns the scales
   # that convert by definition or by model. UT1 is not: it rests on
   # observations of the rotation of the Earth, and comes from
-  # {Astronoby::DeltaT}.
+  # {Astronoby::DeltaT}. UTC differs from TT by the leap seconds, from
+  # {Astronoby::LeapSeconds}.
   #
   # @example Create an instant from the current time
   #   instant = Astronoby::Instant.from_time(Time.now)
@@ -33,7 +34,9 @@ module Astronoby
     # Our internal time values are standard astronomical Julian Dates, which
     # start at noon. `DateTime.jd` expects a day that starts at the preceding
     # midnight. This constant adds 0.5 days (12 hours) to make the conversion.
-    DATETIME_JD_EPOCH_ADJUSTMENT = 0.5
+    # It is a Rational so that it keeps a Rational Julian Date exact, where a
+    # Float would round it to about 40 microseconds.
+    DATETIME_JD_EPOCH_ADJUSTMENT = Rational(1, 2)
 
     # Astronoby pins the precision it asks horologium for rather than reading
     # horologium's global default, so a host application configuring
@@ -44,6 +47,17 @@ module Astronoby
     # there is nothing to round it for. It is also the cheaper of the two
     # here, having no conversion to make in either direction.
     PRECISION = :exact
+
+    # Exact, unlike {Constants::SECONDS_PER_DAY}, so that a Rational Julian
+    # Date stays Rational.
+    SECONDS_PER_DAY = 86_400
+
+    # The first UTC Julian Date, 1961-01-01. A UTC time before it is read as
+    # UT1.
+    FIRST_UTC_JULIAN_DATE = Rational("2437300.5")
+
+    TT_MINUS_TAI = Horologium::Scales::TT::SECONDS_AHEAD_OF_TAI
+    private_constant :SECONDS_PER_DAY, :FIRST_UTC_JULIAN_DATE, :TT_MINUS_TAI
 
     class << self
       # Creates a new Instant from a Terrestrial Time value
@@ -61,21 +75,36 @@ module Astronoby
       # @param time [Time] a Time object to convert
       # @return [Astronoby::Instant] a new Instant object
       def from_time(time)
-        delta_t = DeltaT.at(time)
-        terrestrial_time = time.utc.to_datetime.ajd +
-          Rational(delta_t, Constants::SECONDS_PER_DAY)
-        from_terrestrial_time(terrestrial_time)
+        from_utc_julian_date(time.utc.to_datetime.ajd)
       end
 
       # Creates a new Instant from a Julian Date in UTC
       #
+      # The Julian Date counts 86,400 seconds a day, as Time#to_datetime.ajd
+      # does, including on a day that ends in a leap second, where ERFA and
+      # horologium spread the extra second over the day instead.
+      #
+      # Before 1961, when UTC did not run yet, the Julian Date is read as
+      # UT1 and ΔT is added instead of TT - UTC.
+      #
       # @param julian_date [Numeric] the Julian Date in UTC
       # @return [Astronoby::Instant] a new Instant object
+      # @raise [Astronoby::IncompatibleArgumentsError] if julian_date is not
+      #   numeric
       def from_utc_julian_date(julian_date)
-        delta_t = DeltaT.at(julian_date)
-        terrestrial_time = julian_date +
-          Rational(delta_t, Constants::SECONDS_PER_DAY)
-        from_terrestrial_time(terrestrial_time)
+        unless julian_date.is_a?(Numeric)
+          raise IncompatibleArgumentsError,
+            "Expected a Numeric, got #{julian_date.class}"
+        end
+
+        from_terrestrial_time(
+          julian_date +
+            (TT_MINUS_TAI + LeapSeconds.at(julian_date)) / SECONDS_PER_DAY
+        )
+      rescue IERS::OutOfRangeError
+        from_terrestrial_time(
+          julian_date + Rational(DeltaT.at(julian_date), SECONDS_PER_DAY)
+        )
       end
     end
 
@@ -112,9 +141,7 @@ module Astronoby
     # @return [DateTime] the UTC time as DateTime
     def to_datetime
       @memo[:to_datetime] ||= DateTime.jd(
-        @terrestrial_time -
-          Rational(delta_t, Constants::SECONDS_PER_DAY) +
-          DATETIME_JD_EPOCH_ADJUSTMENT
+        utc_julian_date + DATETIME_JD_EPOCH_ADJUSTMENT
       )
     end
 
@@ -196,9 +223,42 @@ module Astronoby
 
     # Get the offset between TT and UTC for this instant
     #
-    # @return [Numeric] the offset in days
+    # Before 1961, when UTC did not run yet, this is ΔT, TT - UT1.
+    #
+    # @return [Rational] the offset in days
     def utc_offset
-      Rational(delta_t / Constants::SECONDS_PER_DAY)
+      @memo[:utc_offset] ||= begin
+        tt_minus_utc(utc_julian_date)
+      rescue IERS::OutOfRangeError
+        Rational(DeltaT.at(utc_julian_date), SECONDS_PER_DAY)
+      end
+    end
+
+    # Get the Julian Date in Coordinated Universal Time (UTC)
+    #
+    # TT - UTC is read at UTC, which is what is being looked for, so it is
+    # read once at a first guess and again at the result, which settles it
+    # on either side of a leap second. A Terrestrial Time inside a leap
+    # second has no Time to map to, and lands on the second after it.
+    #
+    # Before 1961, when UTC did not run yet, this is UT1, TT - ΔT, with ΔT
+    # read the same way since it is read at UT1 when going the other way.
+    # ΔT and TT - UTC do not meet on 1961-01-01, which leaves 27 milliseconds
+    # of TT that no UTC time maps to; it is read as the first UTC
+    # instant.
+    #
+    # @return [Numeric] UTC as Julian Date, a Rational when Terrestrial Time
+    #   is one
+    def utc_julian_date
+      @memo[:utc_julian_date] ||= begin
+        guess = @terrestrial_time - tt_minus_utc(@terrestrial_time)
+        @terrestrial_time - tt_minus_utc(guess)
+      rescue IERS::OutOfRangeError
+        guess = @terrestrial_time - Rational(delta_t, SECONDS_PER_DAY)
+        universal_time =
+          @terrestrial_time - Rational(DeltaT.at(guess), SECONDS_PER_DAY)
+        [universal_time, FIRST_UTC_JULIAN_DATE].min
+      end
     end
 
     # Calculate hash value for the instant
@@ -221,6 +281,13 @@ module Astronoby
     alias_method :eql?, :==
 
     private
+
+    # @param utc_julian_date [Numeric] the Julian Date in UTC
+    # @return [Rational] TT - UTC in days, 32.184 seconds plus the leap seconds
+    # @raise [IERS::OutOfRangeError] before 1961
+    def tt_minus_utc(utc_julian_date)
+      (TT_MINUS_TAI + LeapSeconds.at(utc_julian_date)) / SECONDS_PER_DAY
+    end
 
     # The instant as horologium holds it: a point on the timeline with no
     # scale of its own. Building it costs more than reading a Julian Date back
