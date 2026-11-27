@@ -347,8 +347,9 @@ module Astronoby
     def geometry_at(jd)
       @geometry_cache[jd] ||= begin
         instant = Instant.from_terrestrial_time(jd)
-        moon = Moon.new(ephem: @ephem, instant: instant).apparent
-        sun = Sun.new(ephem: @ephem, instant: instant).apparent
+        snapshot = Sky::Snapshot.new(ephem: @ephem, instant: instant)
+        moon = snapshot.body(Moon).apparent
+        sun = snapshot.body(Sun).apparent
 
         moon_distance = moon.distance.km
         sun_distance = sun.distance.km

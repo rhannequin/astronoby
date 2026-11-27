@@ -26,6 +26,15 @@ _If you are upgrading: please see [UPGRADING.md]._
   where the formula grows without bound, and return the position unchanged
   instead of raising `TypeError` for a target in line with the Sun ([#334])
 
+### Improvements
+
+* Share Earth's and the Sun's positions, precession and nutation between bodies
+  at the same instant. Elongation, phase angle and magnitude are about 30%
+  faster, conjunction and opposition searches 25% and lunar eclipse searches
+  28%. `Apparent.build_from_astrometric` accepts `precession_matrix:` and
+  `nutation_matrix:`, and `MeanOfDate.build_from_geometric` accepts
+  `precession_matrix:` ([#345])
+
 ### Backward-incompatible changes
 
 * Apparent and topocentric positions of planets and deep-sky objects move by
@@ -38,6 +47,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
+[#345]: https://github.com/rhannequin/astronoby/pull/345
 
 ## 0.12.0 - 2026-11-24
 

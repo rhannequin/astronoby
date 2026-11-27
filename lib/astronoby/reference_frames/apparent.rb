@@ -24,18 +24,20 @@ module Astronoby
     # @param sun_geometric [Astronoby::Geometric, nil] the Sun's geometric
     #   frame, used to apply light deflection
     # @param target_body [Astronoby::Body, nil] the target body
+    # @param precession_matrix [Matrix] precession-bias matrix at the instant
+    # @param nutation_matrix [Matrix] nutation matrix at the instant
     # @return [Astronoby::Apparent] a new apparent frame
     def self.build_from_astrometric(
       instant:,
       target_astrometric:,
       target_body:,
       earth_geometric: nil,
-      sun_geometric: nil
+      sun_geometric: nil,
+      precession_matrix: Precession.matrix_for(instant),
+      nutation_matrix: Nutation.matrix_for(instant)
     )
       position = target_astrometric.position
       velocity = target_astrometric.velocity
-      precession_matrix = Precession.matrix_for(instant)
-      nutation_matrix = Nutation.matrix_for(instant)
 
       if earth_geometric && sun_geometric &&
           !UNDEFLECTED_BODIES.include?(target_body)

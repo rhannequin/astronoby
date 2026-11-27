@@ -230,23 +230,29 @@ module Astronoby
     #   phase angle
     # @param orientation [Astronoby::Orientation, nil] Orientation kernel,
     #   enabling arcsecond-accurate lunar libration and axis position angle
-    def initialize(ephem:, instant:, orientation: nil)
+    # @param snapshot [Astronoby::Sky::Snapshot, nil] internal, not to be
+    #   passed by callers: state shared with the other bodies at the same
+    #   instant
+    def initialize(ephem:, instant:, orientation: nil, snapshot: nil)
       @ephem = ephem
       @instant = instant
       @orientation = orientation
+      @snapshot = snapshot || Sky::Snapshot.new(
+        ephem: ephem,
+        instant: instant,
+        orientation: orientation
+      )
+      @snapshot.register(self)
     end
 
     # @return [Astronoby::Geometric] the geometric reference frame (BCRS)
     def geometric
-      @geometric ||= self.class.compute_geometric(
-        ephem: @ephem,
-        instant: @instant
-      )
+      @snapshot.geometric(self.class)
     end
 
     # @return [Astronoby::Geometric] Earth's geometric reference frame
     def earth_geometric
-      @earth_geometric ||= Earth.geometric(ephem: @ephem, instant: @instant)
+      @snapshot.earth_geometric
     end
 
     # @return [Astronoby::Astrometric] the astrometric reference frame (GCRS)
@@ -266,7 +272,8 @@ module Astronoby
         instant: @instant,
         target_geometric: geometric,
         earth_geometric: earth_geometric,
-        target_body: body
+        target_body: body,
+        precession_matrix: @snapshot.precession_matrix
       )
     end
 
@@ -277,7 +284,9 @@ module Astronoby
         target_astrometric: astrometric,
         earth_geometric: earth_geometric,
         sun_geometric: deflecting_sun_geometric,
-        target_body: body
+        target_body: body,
+        precession_matrix: @snapshot.precession_matrix,
+        nutation_matrix: @snapshot.nutation_matrix
       )
     end
 
@@ -399,15 +408,15 @@ module Astronoby
     private
 
     def sun
-      @sun ||= Sun.new(instant: @instant, ephem: @ephem)
+      @snapshot.body(Sun)
     end
 
     def primary_body_geometric
-      sun.geometric
+      @snapshot.sun_geometric
     end
 
     def deflecting_sun_geometric
-      sun.geometric unless Apparent::UNDEFLECTED_BODIES.include?(body)
+      @snapshot.sun_geometric unless Apparent::UNDEFLECTED_BODIES.include?(body)
     end
 
     def light_time_corrected_position

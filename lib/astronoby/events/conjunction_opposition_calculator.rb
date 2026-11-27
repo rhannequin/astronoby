@@ -60,14 +60,16 @@ module Astronoby
 
     def delta_longitude_at(jd)
       instant = Instant.from_terrestrial_time(jd)
-      planet = @body.new(instant: instant, ephem: @ephem)
-      sun = Sun.new(instant: instant, ephem: @ephem)
+      snapshot = Sky::Snapshot.new(ephem: @ephem, instant: instant)
+      planet = snapshot.body(@body)
+      sun = snapshot.body(Sun)
       planet.apparent.ecliptic.longitude - sun.apparent.ecliptic.longitude
     end
 
     def conjunction_at(instant)
-      planet = @body.new(instant: instant, ephem: @ephem)
-      sun = Sun.new(instant: instant, ephem: @ephem)
+      snapshot = Sky::Snapshot.new(ephem: @ephem, instant: instant)
+      planet = snapshot.body(@body)
+      sun = snapshot.body(Sun)
 
       if planet.apparent.distance < sun.apparent.distance
         Conjunction.inferior(instant: instant, body: @body)
