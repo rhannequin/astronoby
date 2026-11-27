@@ -4,6 +4,22 @@ RSpec.describe Astronoby::LunarEclipseCalculator do
   include TestEphemHelper
 
   describe "#events_between" do
+    it "accepts instants" do
+      calculator = described_class.new(ephem: test_ephem)
+
+      from_instants = calculator.events_between(
+        Astronoby::Instant.from_time(Time.utc(2025, 3, 1)),
+        Astronoby::Instant.from_time(Time.utc(2025, 4, 1))
+      )
+      from_times = calculator.events_between(
+        Time.utc(2025, 3, 1),
+        Time.utc(2025, 4, 1)
+      )
+
+      expect(from_instants.map(&:instant)).to eq(from_times.map(&:instant))
+      expect(from_instants.size).to eq(1)
+    end
+
     it "carries the Moon's apparent place at every contact" do
       ephem = test_ephem_inpop_2000_2050
       calculator = described_class.new(ephem: ephem)

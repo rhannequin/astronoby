@@ -4,6 +4,21 @@ RSpec.describe Astronoby::GreatestElongationCalculator do
   include TestEphemHelper
 
   describe "#greatest_elongation_events_between" do
+    it "accepts instants" do
+      calculator = described_class.new(body: Astronoby::Venus, ephem: test_ephem)
+
+      from_instants = calculator.greatest_elongation_events_between(
+        Astronoby::Instant.from_time(Time.utc(2025, 1, 1)),
+        Astronoby::Instant.from_time(Time.utc(2025, 2, 1))
+      )
+      from_times = calculator.greatest_elongation_events_between(
+        Time.utc(2025, 1, 1),
+        Time.utc(2025, 2, 1)
+      )
+
+      expect(from_instants.map(&:instant)).to eq(from_times.map(&:instant))
+    end
+
     it "finds Venus' 2025 morning and evening elongations" do
       ephem = test_ephem_inpop_2000_2050
       calculator = described_class.new(body: Astronoby::Venus, ephem: ephem)

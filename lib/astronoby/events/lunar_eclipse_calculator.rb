@@ -186,11 +186,13 @@ module Astronoby
       @geometry_cache = {}
     end
 
-    # @param start_time [Time] start time
-    # @param end_time [Time] end time
+    # @param start_time [Time, Astronoby::Instant] start time
+    # @param end_time [Time, Astronoby::Instant] end time
     # @return [Array<Astronoby::LunarEclipse>] eclipses whose greatest instant
     #   lies in the range, sorted by time
     def events_between(start_time, end_time)
+      start_time = start_time.to_time if start_time.is_a?(Instant)
+      end_time = end_time.to_time if end_time.is_a?(Instant)
       full_moon_seeds(start_time, end_time)
         .filter_map { |seed_jd| eclipse_near(seed_jd) }
         .select do |eclipse|

@@ -11,16 +11,16 @@ module Astronoby
       @samples_per_period = samples_per_period
     end
 
-    # @param start_time [Time] start time
-    # @param end_time [Time] end time
+    # @param start_time [Time, Astronoby::Instant] start time
+    # @param end_time [Time, Astronoby::Instant] end time
     # @return [Array<Astronoby::Conjunction>] conjunctions in the range
     def conjunction_events_between(start_time, end_time)
       roots_between(start_time, end_time, accept: method(:conjunction?))
         .map { |jd| conjunction_at(Instant.from_terrestrial_time(jd)) }
     end
 
-    # @param start_time [Time] start time
-    # @param end_time [Time] end time
+    # @param start_time [Time, Astronoby::Instant] start time
+    # @param end_time [Time, Astronoby::Instant] end time
     # @return [Array<Astronoby::Opposition>] oppositions in the range
     def opposition_events_between(start_time, end_time)
       roots_between(start_time, end_time, accept: method(:opposition?))
@@ -36,10 +36,14 @@ module Astronoby
 
     def roots_between(start_time, end_time, accept:)
       finder.roots(
-        Instant.from_time(start_time).tt,
-        Instant.from_time(end_time).tt,
+        instant_for(start_time).tt,
+        instant_for(end_time).tt,
         accept: accept
       )
+    end
+
+    def instant_for(time)
+      time.is_a?(Instant) ? time : Instant.from_time(time)
     end
 
     def finder

@@ -4,6 +4,21 @@ RSpec.describe Astronoby::ConjunctionOppositionCalculator do
   include TestEphemHelper
 
   describe "#opposition_events_between" do
+    it "accepts instants" do
+      calculator = described_class.new(body: Astronoby::Mars, ephem: test_ephem)
+
+      from_instants = calculator.opposition_events_between(
+        Astronoby::Instant.from_time(Time.utc(2025, 1, 1)),
+        Astronoby::Instant.from_time(Time.utc(2025, 2, 1))
+      )
+      from_times = calculator.opposition_events_between(
+        Time.utc(2025, 1, 1),
+        Time.utc(2025, 2, 1)
+      )
+
+      expect(from_instants.map(&:instant)).to eq(from_times.map(&:instant))
+    end
+
     it "finds Mars' 2025 opposition" do
       ephem = test_ephem_inpop_2000_2050
       calculator = described_class.new(body: Astronoby::Mars, ephem: ephem)
