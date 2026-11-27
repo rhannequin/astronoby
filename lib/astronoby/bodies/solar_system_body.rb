@@ -276,6 +276,7 @@ module Astronoby
         instant: @instant,
         target_astrometric: astrometric,
         earth_geometric: earth_geometric,
+        sun_geometric: deflecting_sun_geometric,
         target_body: body
       )
     end
@@ -403,6 +404,10 @@ module Astronoby
 
     def primary_body_geometric
       sun.geometric
+    end
+
+    def deflecting_sun_geometric
+      sun.geometric unless Apparent::UNDEFLECTED_BODIES.include?(body)
     end
 
     def light_time_corrected_position

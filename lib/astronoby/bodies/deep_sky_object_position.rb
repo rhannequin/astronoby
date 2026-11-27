@@ -20,7 +20,8 @@ module Astronoby
     # @param instant [Astronoby::Instant] Instant of the observation
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates at epoch J2000.0
-    # @param ephem [::Ephem::SPK, nil] Ephemeris data source for Earth position
+    # @param ephem [::Ephem::SPK, nil] Ephemeris data source for the Earth and
+    #   Sun positions
     # @param proper_motion_ra [Astronoby::AngularVelocity, nil] Proper motion in
     #   right ascension
     # @param proper_motion_dec [Astronoby::AngularVelocity, nil] Proper motion
@@ -47,6 +48,7 @@ module Astronoby
       @body = deep_sky_object
       if ephem
         @earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
+        @sun_geometric = Sun.geometric(ephem: ephem, instant: @instant)
       end
       compute_apparent
     end
@@ -117,6 +119,7 @@ module Astronoby
         instant: @instant,
         target_astrometric: astrometric,
         earth_geometric: @earth_geometric,
+        sun_geometric: @sun_geometric,
         target_body: body
       )
     end

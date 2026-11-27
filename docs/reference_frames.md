@@ -107,6 +107,9 @@ This frame is referred to the **true equator and true equinox of the date**. It
 represents the position of a celestial object as seen from the centre of the
 Earth. The following corrections are applied to the astrometric position:
 
+- **Light deflection**: gravitational deflection of light by the Sun
+  (Explanatory Supplement, Ch. 7.2.2), for every body except the Sun and the
+  Moon, and only when an ephemeris is available
 - **Aberration**: relativistic stellar aberration due to Earth's velocity
   (Explanatory Supplement, Ch. 7.2.3)
 - **Precession**: IAU 2006 Fukushima-Williams precession-bias matrix
@@ -268,7 +271,7 @@ reference systems and lists the corrections applied at each step.
 | Geometric       | BCRS            | Solar System barycentre | ICRS                                | None (raw ephemeris)                                                    |
 | Astrometric     | GCRS            | Earth centre            | ICRS                                | Light-time, origin shift                                                |
 | Mean of date    | —               | Earth centre            | Mean equator & equinox of date      | IAU 2006 precession (Fukushima-Williams, incl. frame bias)              |
-| Apparent        | —               | Earth centre            | True equator & equinox of date      | Aberration, precession, IAU 2000B nutation                              |
+| Apparent        | —               | Earth centre            | True equator & equinox of date      | Light deflection, aberration, precession, IAU 2000B nutation            |
 | Topocentric     | —               | Observer                | True equator & equinox of date      | GAST earth rotation, IERS polar motion, observer position (WGS-84/ITRS) |
 | TEME            | —               | Earth centre            | True equator & mean equinox of date | SGP4/SDP4 output frame; converts to ECEF, GCRS, or topocentric          |
 
@@ -279,6 +282,8 @@ reference systems and lists the corrections applied at each step.
   `eraFw2m`)
 - **Nutation**: IAU 2000B, 77-term truncation of the IAU 2000A model (IERS
   Conventions 2010, Section 5.5.2)
+- **Light deflection**: Gravitational deflection by the Sun (Explanatory
+  Supplement to the Astronomical Almanac, Ch. 7.2.2)
 - **Aberration**: Relativistic stellar aberration (Explanatory Supplement to the
   Astronomical Almanac, Ch. 7.2.3)
 - **Earth rotation**: Greenwich Apparent Sidereal Time (GAST) computed as GMST +

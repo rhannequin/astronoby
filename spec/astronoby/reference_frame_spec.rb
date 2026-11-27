@@ -49,7 +49,7 @@ RSpec.describe Astronoby::ReferenceFrame do
 
         separation = jupiter.apparent.separation_from(saturn.apparent)
 
-        expect(separation.str(:dms)).to eq "+0° 6′ 6.4252″"
+        expect(separation.str(:dms)).to eq "+0° 6′ 6.4253″"
         # Skyfield: +0° 6′ 6.4257″
       end
 

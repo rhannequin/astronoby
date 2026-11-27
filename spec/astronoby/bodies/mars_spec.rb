@@ -252,12 +252,12 @@ RSpec.describe Astronoby::Mars do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("7h 43m 50.9373s")
+        .to eq("7h 43m 50.9374s")
       # IMCCE:    7h 43m 50.9376s
       # Skyfield: 7h 43m 50.94s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("+24° 0′ 4.5784″")
+        .to eq("+24° 0′ 4.5781″")
       # IMCCE:    +24° 0′ 4.578″
       # Skyfield: +24° 0′ 4.6″
 
@@ -267,7 +267,7 @@ RSpec.describe Astronoby::Mars do
       # Skyfield: +2° 39′ 52.7″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+113° 36′ 2.3948″")
+        .to eq("+113° 36′ 2.3963″")
       # IMCCE:    +113° 36′ 2.396″
       # Skyfield: +113° 36′ 2.4″
 
@@ -277,6 +277,22 @@ RSpec.describe Astronoby::Mars do
         .to be_within(10e-16).of(1.138989251913949)
       # IMCCE:    1.138989267589
       # Skyfield: 1.1389892520926244
+    end
+
+    it "applies the Sun's light deflection near conjunction" do
+      instant = Astronoby::Instant.from_terrestrial_time(2461041.5)
+      ephem = test_ephem_inpop_2000_2050
+      planet = described_class.new(instant: instant, ephem: ephem)
+
+      apparent = planet.apparent
+
+      expect(apparent.equatorial.right_ascension.str(:hms))
+        .to eq("18h 55m 30.9497s")
+      # IMCCE: 18h 55m 30.9497s
+
+      expect(apparent.equatorial.declination.str(:dms))
+        .to eq("-23° 43′ 12.2184″")
+      # IMCCE: -23° 43′ 12.2187″
     end
 
     it "computes the correct velocity" do
@@ -368,28 +384,28 @@ RSpec.describe Astronoby::Mars do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("7h 43m 50.5769s")
+          .to eq("7h 43m 50.577s")
         # IMCCE:      7h 43m 50.5809s
         # Horizons:   7h 43m 50.577366s
         # Stellarium: 7h 43m 50.57s
         # Skyfield:   7h 43m 50.58s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+23° 59′ 59.793″")
+          .to eq("+23° 59′ 59.7927″")
         # IMCCE:      +23° 59′ 59.875″
         # Horizons:   +23° 59′ 59.87576″
         # Stellarium: +23° 59′ 59.8″
         # Skyfield:   +23° 59′ 59.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+276° 30′ 37.3433″")
+          .to eq("+276° 30′ 37.3419″")
         # IMCCE:      +276° 30′ 37.080″
         # Horizons:   +276° 30′ 37.6815″
         # Stellarium: +276° 30′ 36.9″
         # Skyfield:   +276° 30′ 37.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 51′ 15.5569″")
+          .to eq("+26° 51′ 15.5578″")
         # IMCCE:      +26° 51′ 15.840″
         # Horizons:   +26° 51′ 15.3662″
         # Stellarium: +26° 51′ 15.9″
@@ -407,7 +423,7 @@ RSpec.describe Astronoby::Mars do
 
       phase_angle = planet.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+30° 8′ 42.3902″"
+      expect(phase_angle.str(:dms)).to eq "+30° 8′ 42.3905″"
       # IMCCE:    +30° 8′ 53.88″
       # Horizons: +30° 8′ 26.52″
       # Skyfield: +30° 8′ 41.0″

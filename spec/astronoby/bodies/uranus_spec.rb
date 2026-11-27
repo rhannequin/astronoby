@@ -252,12 +252,12 @@ RSpec.describe Astronoby::Uranus do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("3h 50m 14.898s")
+        .to eq("3h 50m 14.8973s")
       # IMCCE:    3h 50m 14.8908s
       # Skyfield: 3h 50m 14.90s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("+19° 52′ 58.8603″")
+        .to eq("+19° 52′ 58.858″")
       # IMCCE:    +19° 52′ 58.833″
       # Skyfield: +19° 52′ 58.9″
 
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Uranus do
       # Skyfield: -0° 12′ 33.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+59° 42′ 27.044″")
+        .to eq("+59° 42′ 27.0335″")
       # IMCCE:    +59° 42′ 26.937″
       # Skyfield: +59° 42′ 27.0″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(20.29337405354412)
+        .to eq(20.29337405354415)
       # IMCCE:    20.293377161363
       # Skyfield: 20.29337405352995
     end
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Uranus do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("3h 50m 14.9154s")
+          .to eq("3h 50m 14.9147s")
         # IMCCE:      3h 50m 14.9269s
         # Horizons:   3h 50m 14.933300s
         # Stellarium: 3h 50m 14.84s
         # Skyfield:   3h 50m 14.93s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+19° 52′ 58.9722″")
+          .to eq("+19° 52′ 58.9699″")
         # IMCCE:      +19° 52′ 58.883″
         # Horizons:   +19° 52′ 58.92164″
         # Stellarium: +19° 52′ 58.7″
         # Skyfield:   +19° 52′ 58.9″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+58° 50′ 30.4029″")
+          .to eq("+58° 50′ 30.3993″")
         # IMCCE:      +58° 50′ 31.200″
         # Horizons:   +58° 50′ 30.7697″
         # Stellarium: +58° 50′ 30.6″
         # Skyfield:   +58° 50′ 30.6″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+51° 34′ 45.4816″")
+          .to eq("+51° 34′ 45.4919″")
         # IMCCE:      +51° 34′ 44.760″
         # Horizons:   +51° 34′ 45.1039″
         # Stellarium: +51° 34′ 46.0″
@@ -407,7 +407,7 @@ RSpec.describe Astronoby::Uranus do
 
       phase_angle = planet.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+2° 20′ 13.0037″"
+      expect(phase_angle.str(:dms)).to eq "+2° 20′ 13.0039″"
       # IMCCE:    +2° 20′ 0.5999″
       # Horizons: +2° 20′ 17.8799″
       # Skyfield: +2° 20′ 13.6″

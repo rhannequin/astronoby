@@ -22,7 +22,7 @@ venus = Astronoby::Venus.new(ephem: ephem, instant: instant)
 apparent_position = venus.apparent.position
 
 apparent_position.x.km.round
-# => -148794597
+# => -148794601
 ```
 
 Each of these bodies also provides its own equatorial radius
