@@ -301,6 +301,8 @@ horizontal coordinates at once with `HorizontalTransformation`, on the
 
 ## See also
 
+- [Local sky](local_sky.md) - for passes, risings, crossings and twilights
+  seen by an observer
 - [Glossary](glossary.md) - for astronomical and technical terms
 - [IERS Data](iers.md) - for Delta T and GMST data management
 - [Refraction](refraction.md) - for apparent altitudes and atmospheric conditions

@@ -39,6 +39,19 @@ _If you are upgrading: please see [UPGRADING.md]._
   The existing `ephem:` arguments keep working ([#346])
 * `DeepSkyObject#equatorial_coordinates` returns the J2000 coordinates the
   object was built with ([#346])
+* `sky.over(observer)` returns an `Astronoby::LocalSky` with `passes`,
+  `risings`, `transits`, `settings`, `crossings` and `twilights`. Each returns
+  an `Astronoby::Events::Series`, read with `on(date)`, `between(start,
+  finish)` or `from(start)`, the last one searching a day at a time until the
+  end of the ephemeris or a year. Events carry unrounded instants. An
+  `Astronoby::Pass` holds the rising, transit and setting of one passage,
+  found from the transit so that it is complete across midnight.
+  `Astronoby::TwilightCrossing` is a crossing of the Sun with a `kind`,
+  `dawn?` and `dusk?`. Crossings take an `Astronoby::Altitude`, apparent or
+  true, and `sky.moon.upper_limb` and `sky.moon.lower_limb` follow a limb
+* `RiseTransitSetCalculator#events_between` and
+  `AltitudeCrossingCalculator#crossings_between` accept instants as well as
+  times
 
 ### Improvements
 

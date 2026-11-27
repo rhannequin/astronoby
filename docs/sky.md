@@ -86,6 +86,10 @@ sky[vega].at(instant).observed_by(observer).horizontal.altitude.str(:dms)
 
 You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
+## Local sky
+
+`sky.over(observer)` gives the sky as seen by an observer, with passes, risings, transits, settings, altitude crossings and twilights. You can learn more on the [Local sky page].
+
 ## Bodies at the same instant
 
 Every Solar System body taken from a sky at a given instant shares Earth's and the Sun's positions, the precession and nutation matrices, and the other bodies at that instant. `sky.mars.at(instant).elongation` reuses the Sun that `sky.sun.at(instant)` returns instead of computing it again, and asking twice for the same body at the same instant returns the same object.
@@ -94,3 +98,4 @@ Only the last instant asked for is kept, for each fiber, so nothing is shared be
 
 [Solar System Bodies page]: solar_system_bodies.md
 [Deep-sky Bodies page]: deep_sky_bodies.md
+[Local sky page]: local_sky.md
