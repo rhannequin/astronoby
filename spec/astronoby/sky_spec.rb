@@ -139,6 +139,28 @@ RSpec.describe Astronoby::Sky do
     end
   end
 
+  describe "#close" do
+    it "closes the kernels" do
+      kernel = test_ephem
+      allow(kernel).to receive(:close)
+      sky = described_class.new(kernel)
+
+      sky.close
+
+      expect(kernel).to have_received(:close)
+    end
+
+    it "forgets this fiber's snapshot of the sky" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      sky = described_class.new(test_ephem)
+      sky.snapshot_at(instant)
+
+      sky.close
+
+      expect(Thread.current[:astronoby_sky_snapshot]).to be_nil
+    end
+  end
+
   describe "#inspect" do
     it "shows the ephemeris" do
       sky = described_class.new(test_ephem)

@@ -70,12 +70,30 @@ RSpec.describe Astronoby::Ephem do
       expect(ephem[0, 4]).to be(planets[0, 4])
     end
 
-    it "takes the segment from the first kernel that has it" do
+    it "reads a date covered by several kernels from the first one" do
       sun_only = test_ephem_sun
       planets = test_ephem
       ephem = described_class.new(sun_only, planets)
+      tdb = Astronoby::Instant.from_time(Time.utc(2025, 6, 1)).tt
+      allow(sun_only[0, 10]).to receive(:compute).and_call_original
+      allow(planets[0, 10]).to receive(:compute).and_call_original
 
-      expect(ephem[0, 10]).to be(sun_only[0, 10])
+      ephem[0, 10].position_at(tdb)
+
+      expect(sun_only[0, 10]).to have_received(:compute)
+      expect(planets[0, 10]).not_to have_received(:compute)
+    end
+
+    it "reads a date the first kernel does not cover from the next one" do
+      planets = test_ephem
+      sun_only = test_ephem_sun
+      ephem = described_class.new(planets, sun_only)
+      tdb = Astronoby::Instant.from_time(Time.utc(2028, 1, 1)).tt
+      allow(sun_only[0, 10]).to receive(:compute).and_call_original
+
+      ephem[0, 10].position_at(tdb)
+
+      expect(sun_only[0, 10]).to have_received(:compute)
     end
 
     it "raises KeyError when no kernel has the segment" do
@@ -108,6 +126,28 @@ RSpec.describe Astronoby::Ephem do
           ArgumentError,
           "Kernels of different types cannot be combined: JPL DE, IMCCE INPOP"
         )
+    end
+
+    it "raises when no kernel is of a supported type" do
+      untyped = double(type: nil, segments: [])
+
+      expect { described_class.new(untyped) }.to raise_error(
+        Astronoby::EphemerisError,
+        "No kernel is of a supported type. Accepted: IMCCE INPOP, JPL DE"
+      )
+    end
+  end
+
+  describe "#close" do
+    it "closes every kernel" do
+      first = double(type: ::Ephem::SPK::JPL_DE, segments: [], close: nil)
+      second = double(type: ::Ephem::SPK::JPL_DE, segments: [], close: nil)
+      ephem = described_class.new(first, second)
+
+      ephem.close
+
+      expect(first).to have_received(:close)
+      expect(second).to have_received(:close)
     end
   end
 

@@ -7,8 +7,8 @@ module Astronoby
   # share it: loading the same file twice duplicates the segment data read
   # from it.
   #
-  # Bodies taken from the same sky at the same instant share Earth's and the
-  # Sun's positions, precession and nutation.
+  # Solar System bodies taken from the same sky at the same instant share
+  # Earth's and the Sun's positions, precession and nutation.
   #
   # @example
   #   sky = Astronoby::Sky.load("inpop19a.bsp")
@@ -29,8 +29,8 @@ module Astronoby
       neptune: Neptune
     }.freeze
 
-    # @param paths [Array<String>] SPK kernels; the first one wins when
-    #   several have a segment for the same center and target
+    # @param paths [Array<String>] SPK kernels; at a date covered by several
+    #   of them, the first one wins
     # @param orientation [String, nil] binary PCK lunar orientation kernel
     # @return [Astronoby::Sky]
     def self.load(*paths, orientation: nil)
@@ -40,12 +40,13 @@ module Astronoby
       )
     end
 
-    # @param kernels [Array<::Ephem::SPK>] loaded SPK kernels; the first one
-    #   wins when several have a segment for the same center and target
+    # @param kernels [Array<::Ephem::SPK>] loaded SPK kernels; at a date
+    #   covered by several of them, the first one wins
     # @param orientation [Astronoby::Orientation, nil] lunar orientation
     #   kernel
     # @raise [ArgumentError] without kernels, or with kernels of different
     #   types
+    # @raise [Astronoby::EphemerisError] if no kernel is of a supported type
     def initialize(*kernels, orientation: nil)
       @ephem = Ephem.new(*kernels)
       @orientation = orientation
@@ -97,6 +98,17 @@ module Astronoby
         Snapshot.new(ephem: @ephem, instant: instant, orientation: @orientation)
       Thread.current[:astronoby_sky_snapshot] = [self, snapshot]
       snapshot
+    end
+
+    # Closes the kernels and forgets this fiber's snapshot of the sky. A
+    # snapshot kept by another fiber holds the sky until that fiber asks a sky
+    # for another one.
+    #
+    # @return [void]
+    def close
+      sky, _snapshot = Thread.current[:astronoby_sky_snapshot]
+      Thread.current[:astronoby_sky_snapshot] = nil if sky.equal?(self)
+      @ephem.close
     end
 
     def inspect

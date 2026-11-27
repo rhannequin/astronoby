@@ -43,10 +43,11 @@ module Astronoby
 
     # @api private
     #
-    # @param kernels [Array<::Ephem::SPK>] loaded kernels; the first one wins
-    #   when several have a segment for the same center and target
+    # @param kernels [Array<::Ephem::SPK>] loaded kernels; at a date covered
+    #   by several of them, the first one wins
     # @raise [ArgumentError] without kernels, or with kernels of different
     #   types, whose bodies are not split into the same segments
+    # @raise [Astronoby::EphemerisError] if no kernel is of a supported type
     def initialize(*kernels)
       raise ArgumentError, "At least one kernel is required" if kernels.empty?
 
@@ -55,13 +56,18 @@ module Astronoby
         raise ArgumentError,
           "Kernels of different types cannot be combined: #{types.join(", ")}"
       end
+      if types.empty?
+        raise EphemerisError,
+          "No kernel is of a supported type. Accepted: " \
+          "#{::Ephem::SPK::TYPES.join(", ")}"
+      end
 
       @type = types.first
-      @kernel_count = kernels.size
-      @pairs = kernels.reverse.map(&:pairs).reduce({}, :merge)
+      @kernels = kernels
+      @pairs = pairs_across(kernels)
     end
 
-    # @return [String, nil] the kernels' type, IMCCE INPOP or JPL DE
+    # @return [String] the kernels' type, IMCCE INPOP or JPL DE
     attr_reader :type
 
     # Same contract as ::Ephem::SPK#[], looking across every kernel.
@@ -77,9 +83,30 @@ module Astronoby
       end
     end
 
+    # Closes every kernel.
+    #
+    # @return [void]
+    def close
+      @kernels.each(&:close)
+    end
+
     def inspect
-      kernels = (@kernel_count == 1) ? "1 kernel" : "#{@kernel_count} kernels"
+      kernels = (@kernels.size == 1) ? "1 kernel" : "#{@kernels.size} kernels"
       "#<#{self.class} #{@type}, #{kernels}>"
+    end
+
+    private
+
+    # Each pair routes a date to the segment covering it. Segments of the first
+    # kernel come last, as the group picks the last segment covering the date.
+    def pairs_across(kernels)
+      kernels
+        .reverse
+        .flat_map(&:segments)
+        .group_by { |segment| [segment.center, segment.target] }
+        .transform_values do |segments|
+          ::Ephem::Segments::PositionGroup.wrap(segments)
+        end
     end
   end
 end

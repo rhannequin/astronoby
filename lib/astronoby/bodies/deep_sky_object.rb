@@ -6,10 +6,6 @@ module Astronoby
   class DeepSkyObject
     include Body
 
-    # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates at
-    #   epoch J2000.0
-    attr_reader :equatorial_coordinates
-
     # @param equatorial_coordinates [Astronoby::Coordinates::Equatorial]
     #   Equatorial coordinates at epoch J2000.0
     # @param proper_motion_ra [Astronoby::AngularVelocity, nil] Proper motion in
@@ -25,11 +21,17 @@ module Astronoby
       parallax: nil,
       radial_velocity: nil
     )
-      @equatorial_coordinates = equatorial_coordinates
+      @initial_equatorial_coordinates = equatorial_coordinates
       @proper_motion_ra = proper_motion_ra
       @proper_motion_dec = proper_motion_dec
       @parallax = parallax
       @radial_velocity = radial_velocity
+    end
+
+    # @return [Astronoby::Coordinates::Equatorial] equatorial coordinates at
+    #   epoch J2000.0
+    def equatorial_coordinates
+      @initial_equatorial_coordinates
     end
 
     # @param instant [Astronoby::Instant] Instant of the observation
@@ -40,7 +42,7 @@ module Astronoby
     def at(instant, ephem: nil)
       DeepSkyObjectPosition.new(
         instant: instant,
-        equatorial_coordinates: @equatorial_coordinates,
+        equatorial_coordinates: @initial_equatorial_coordinates,
         ephem: ephem,
         proper_motion_ra: @proper_motion_ra,
         proper_motion_dec: @proper_motion_dec,

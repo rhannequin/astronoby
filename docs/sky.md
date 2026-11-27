@@ -8,7 +8,7 @@
 sky = Astronoby::Sky.load("tmp/de440s.bsp")
 ```
 
-A sky can read several SPK kernels as one. When two kernels have a segment for the same bodies, the first one given wins.
+A sky can read several SPK kernels as one. Each date is read from the first kernel that covers it, so a short excerpt given first is completed by a longer kernel given after it.
 
 ```rb
 sky = Astronoby::Sky.load("tmp/de440s.bsp", "tmp/extra.bsp")
@@ -32,7 +32,7 @@ ephem = Astronoby::Ephem.load("tmp/de440s.bsp")
 sky = Astronoby::Sky.new(ephem)
 ```
 
-Loading a kernel reads its segments into memory on first use, so load a sky once and share it.
+Loading a kernel reads its segments into memory on first use, so load a sky once and share it. `sky.close` closes its kernels once you are done with it.
 
 ## Solar System bodies
 
@@ -88,7 +88,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
 ## Bodies at the same instant
 
-Every body taken from a sky at a given instant shares Earth's and the Sun's positions, the precession and nutation matrices, and the other bodies at that instant. `sky.mars.at(instant).elongation` reuses the Sun that `sky.sun.at(instant)` returns instead of computing it again, and asking twice for the same body at the same instant returns the same object.
+Every Solar System body taken from a sky at a given instant shares Earth's and the Sun's positions, the precession and nutation matrices, and the other bodies at that instant. `sky.mars.at(instant).elongation` reuses the Sun that `sky.sun.at(instant)` returns instead of computing it again, and asking twice for the same body at the same instant returns the same object.
 
 Only the last instant asked for is kept, for each fiber, so nothing is shared between threads or fibers and no lock is taken. To share the work between several bodies, ask for all of them at one instant before moving to the next.
 

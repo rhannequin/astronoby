@@ -34,9 +34,9 @@ _If you are upgrading: please see [UPGRADING.md]._
   `sky.neptune` and `sky.planets` return `Sky::Target` objects, and
   `sky.saturn.at(instant)` gives the body at an instant. `sky[deep_sky_object]`
   observes a deep-sky object with Earth and the Sun from the sky's ephemeris.
-  Bodies taken from a sky at the same instant share Earth's and the Sun's
-  positions, precession and nutation. The existing `ephem:` arguments keep
-  working
+  Solar System bodies taken from a sky at the same instant share Earth's and
+  the Sun's positions, precession and nutation. `sky.close` closes the kernels.
+  The existing `ephem:` arguments keep working
 * `DeepSkyObject#equatorial_coordinates` returns the J2000 coordinates the
   object was built with
 
