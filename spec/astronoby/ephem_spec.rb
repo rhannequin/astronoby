@@ -139,12 +139,12 @@ RSpec.describe Astronoby::Ephem do
   end
 
   describe "#coverage" do
-    it "returns the dates every pair covers" do
+    it "returns the dates every pair covers, after the light time" do
       ephem = described_class.new(test_ephem)
 
       first, last = ephem.coverage
 
-      expect(first).to eq(2460676.5)
+      expect(first).to eq(2460676.75)
       expect(last).to eq(2461044.5)
     end
   end
