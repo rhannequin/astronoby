@@ -2,6 +2,9 @@
 
 module Astronoby
   # Holds twilight times (civil, nautical, astronomical) for a single day.
+  #
+  # @deprecated Use {Astronoby::TwilightCrossing} from
+  #   {Astronoby::LocalSky#twilights} instead
   class TwilightEvent
     # @return [Time, nil] morning civil twilight time
     attr_reader :morning_civil_twilight_time

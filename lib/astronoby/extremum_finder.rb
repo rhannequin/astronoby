@@ -9,6 +9,9 @@ module Astronoby
     MIN_SAMPLES_PER_PERIOD = 20
     DUPLICATE_THRESHOLD_DAYS = 0.5
     BOUNDARY_BUFFER_DAYS = 0.01
+    RATE_STEP_IN_DAYS = 0.01
+    RATE_TOLERANCE_IN_DAYS = 1e-7
+    MAX_RATE_ITERATIONS = 10
 
     # @param value_at [#call] callable mapping a Julian Date (Terrestrial Time)
     #   to a comparable value
@@ -34,8 +37,13 @@ module Astronoby
     end
 
     # @api private
-    def brackets(start_jd, end_jd, type: :maximum)
-      find_candidates(start_jd, end_jd, type)
+    def extrema_by_rate(start_jd, end_jd, type:, rate_at:)
+      candidates = find_candidates(start_jd, end_jd, type)
+      refined = candidates.map do |candidate|
+        refine_by_rate(candidate, type, rate_at)
+      end
+      refined = remove_duplicates(refined.compact)
+      filter_boundary_artifacts(refined, start_jd, end_jd)
     end
 
     private
@@ -91,6 +99,30 @@ module Astronoby
 
     def refine(candidate, type)
       golden_section_search(candidate[:start_jd], candidate[:end_jd], type)
+    end
+
+    def refine_by_rate(candidate, type, rate_at)
+      start_jd = candidate[:start_jd]
+      end_jd = candidate[:end_jd]
+      previous_jd = (start_jd + end_jd) / 2
+      previous_rate = rate_at.call(previous_jd)
+      jd = previous_jd + RATE_STEP_IN_DAYS
+
+      MAX_RATE_ITERATIONS.times do
+        rate = rate_at.call(jd)
+        break if rate == previous_rate
+
+        next_jd = jd - rate * (jd - previous_jd) / (rate - previous_rate)
+        previous_jd, previous_rate = jd, rate
+        jd = next_jd
+        break unless jd.between?(start_jd, end_jd)
+
+        if (jd - previous_jd).abs < RATE_TOLERANCE_IN_DAYS
+          return {jd: jd, value: @value_at.call(jd)}
+        end
+      end
+
+      golden_section_search(start_jd, end_jd, type)
     end
 
     def golden_section_search(a, b, type)

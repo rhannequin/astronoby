@@ -2,6 +2,8 @@
 
 module Astronoby
   # Holds arrays of rising, transit, and setting times over a time range.
+  #
+  # @deprecated Use {Astronoby::Pass} from {Astronoby::LocalSky#passes} instead
   class RiseTransitSetEvents
     # @return [Array<Time>] rising times
     attr_reader :rising_times

@@ -3,6 +3,7 @@
 require "astronoby/cache"
 require "astronoby/configuration"
 require "astronoby/constants"
+require "astronoby/deprecation"
 require "astronoby/angle"
 require "astronoby/angles/dms"
 require "astronoby/angles/hms"

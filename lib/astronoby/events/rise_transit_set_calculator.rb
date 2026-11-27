@@ -36,8 +36,14 @@ module Astronoby
       @ephem = ephem
     end
 
+    # @deprecated Use {Astronoby::LocalSky#passes} instead
+    # @param date [Date] the day
+    # @param utc_offset [String, Integer] UTC offset of the day, e.g. "+02:00"
+    # @return [Astronoby::RiseTransitSetEvent] the first rising, transit and
+    #   setting of the day, rounded to the second
     def event_on(date, utc_offset: 0)
-      events = events_on(date, utc_offset: utc_offset)
+      warn_deprecated(:event_on)
+      events = rounded_events_on(date, utc_offset)
       RiseTransitSetEvent.new(
         events.rising_times.first,
         events.transit_times.first,
@@ -45,46 +51,39 @@ module Astronoby
       )
     end
 
+    # @deprecated Use {Astronoby::LocalSky#passes} instead
+    # @param date [Date] the day
+    # @param utc_offset [String, Integer] UTC offset of the day, e.g. "+02:00"
+    # @return [Astronoby::RiseTransitSetEvents] the events of the day, rounded
+    #   to the second
     def events_on(date, utc_offset: 0)
-      start_time = Time.new(
-        date.year,
-        date.month,
-        date.day,
-        0, 0, 0, utc_offset
-      )
-      end_time = Time.new(
-        date.year,
-        date.month,
-        date.day,
-        23, 59, 59, utc_offset
-      )
-      events_between(start_time, end_time)
+      warn_deprecated(:events_on)
+      rounded_events_on(date, utc_offset)
     end
 
+    # @deprecated Use {Astronoby::LocalSky#passes} instead
     # @param start_time [Time, Astronoby::Instant] start of the window
     # @param end_time [Time, Astronoby::Instant] end of the window
     # @return [Astronoby::RiseTransitSetEvents] the events in the window,
     #   rounded to the second
     def events_between(start_time, end_time)
-      reset_state
-      @start_instant = instant_for(start_time)
-      @end_instant = instant_for(end_time)
-      events
+      warn_deprecated(:events_between)
+      rounded_events_between(start_time, end_time)
     end
 
     # @api private
     def instants_between(start_time, end_time, event_type)
       reset_state
-      @start_instant = instant_for(start_time)
-      @end_instant = instant_for(end_time)
+      @start_instant = Instant.from(start_time)
+      @end_instant = Instant.from(end_time)
       event_instants(event_type)
     end
 
     # @api private
     def passes_between(start_time, end_time)
       reset_state
-      @start_instant = instant_for(start_time)
-      @end_instant = instant_for(end_time)
+      @start_instant = Instant.from(start_time)
+      @end_instant = Instant.from(end_time)
 
       transits = event_instants(:transit)
       transits.zip(@refined_positions || []).map do |transit, position|
@@ -106,6 +105,32 @@ module Astronoby
     end
 
     private
+
+    def rounded_events_on(date, utc_offset)
+      start_time = Time.new(
+        date.year, date.month, date.day, 0, 0, 0, utc_offset
+      )
+      end_time = Time.new(
+        date.year, date.month, date.day, 23, 59, 59, utc_offset
+      )
+      rounded_events_between(start_time, end_time)
+    end
+
+    def rounded_events_between(start_time, end_time)
+      reset_state
+      @start_instant = Instant.from(start_time)
+      @end_instant = Instant.from(end_time)
+      events
+    end
+
+    def warn_deprecated(method_name)
+      Deprecation.warn(self.class, method_name, uplevel: 2) do
+        [
+          "Astronoby::RiseTransitSetCalculator##{method_name}",
+          "sky.over(observer).passes(target)"
+        ]
+      end
+    end
 
     def events
       RiseTransitSetEvents.new(
@@ -326,8 +351,9 @@ module Astronoby
             @observer.hash
           )
           Astronoby.cache.fetch(cache_key) do
-            @body
-              .at(instant, ephem: @ephem)
+            Sky::Snapshot
+              .new(ephem: @ephem, instant: instant)
+              .body(@body)
               .observed_by(@observer)
           end
         end
@@ -338,8 +364,9 @@ module Astronoby
           rounded_instant = Instant.from_terrestrial_time(
             instant.tt.round(precision)
           )
-          @positions_cache[rounded_instant] ||= @body
-            .at(rounded_instant, ephem: @ephem)
+          @positions_cache[rounded_instant] ||= Sky::Snapshot
+            .new(ephem: @ephem, instant: rounded_instant)
+            .body(@body)
             .observed_by(@observer)
         end
       end
@@ -472,10 +499,6 @@ module Astronoby
         whole_turns = ((SIDEREAL_RATE * days - turns) / TAU).round
         (turns + whole_turns * TAU) / days
       end
-    end
-
-    def instant_for(time)
-      time.is_a?(Instant) ? time : Instant.from_time(time)
     end
 
     def reset_state

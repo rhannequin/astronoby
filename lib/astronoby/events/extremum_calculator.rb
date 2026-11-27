@@ -19,25 +19,25 @@ module Astronoby
     end
 
     # Finds all apoapsis events between two times
-    # @param start_time [Time] Start time
-    # @param end_time [Time] End time
+    # @param start_time [Time, Astronoby::Instant] Start time
+    # @param end_time [Time, Astronoby::Instant] End time
     # @return [Array<Astronoby::ExtremumEvent>] Array of apoapsis events
     def apoapsis_events_between(start_time, end_time)
       find_extrema(
-        Instant.from_time(start_time).tt,
-        Instant.from_time(end_time).tt,
+        Instant.from(start_time).tt,
+        Instant.from(end_time).tt,
         type: :maximum
       )
     end
 
     # Finds all periapsis events between two times
-    # @param start_time [Time] Start time
-    # @param end_time [Time] End time
+    # @param start_time [Time, Astronoby::Instant] Start time
+    # @param end_time [Time, Astronoby::Instant] End time
     # @return [Array<Astronoby::ExtremumEvent>] Array of periapsis events
     def periapsis_events_between(start_time, end_time)
       find_extrema(
-        Instant.from_time(start_time).tt,
-        Instant.from_time(end_time).tt,
+        Instant.from(start_time).tt,
+        Instant.from(end_time).tt,
         type: :minimum
       )
     end
@@ -49,7 +49,14 @@ module Astronoby
     # @param type [Symbol] :maximum or :minimum
     # @return [Array<Astronoby::ExtremumEvent>] Array of extrema events
     def find_extrema(start_jd, end_jd, type: :maximum)
-      finder.extrema(start_jd, end_jd, type: type).map do |extremum|
+      finder
+        .extrema_by_rate(
+          start_jd,
+          end_jd,
+          type: type,
+          rate_at: method(:rate_at)
+        )
+        .map do |extremum|
         ExtremumEvent.new(
           Instant.from_terrestrial_time(extremum[:jd]),
           extremum[:value]
@@ -67,14 +74,24 @@ module Astronoby
       )
     end
 
-    def distance_at(jd)
-      instant = Instant.from_terrestrial_time(jd)
-      body_geometric = @body.geometric(ephem: @ephem, instant: instant)
-      primary_geometric = @primary_body
-        .geometric(ephem: @ephem, instant: instant)
+    def rate_at(jd)
+      body, primary = geometrics_at(jd)
+      position = body.position - primary.position
+      velocity = body.velocity - primary.velocity
+      (0..2).sum { |i| position[i].meters * velocity[i].meters_per_second }
+    end
 
-      distance_vector = body_geometric.position - primary_geometric.position
-      distance_vector.magnitude
+    def distance_at(jd)
+      body, primary = geometrics_at(jd)
+      (body.position - primary.position).magnitude
+    end
+
+    def geometrics_at(jd)
+      instant = Instant.from_terrestrial_time(jd)
+      [
+        @body.geometric(ephem: @ephem, instant: instant),
+        @primary_body.geometric(ephem: @ephem, instant: instant)
+      ]
     end
   end
 end

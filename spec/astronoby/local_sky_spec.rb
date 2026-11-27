@@ -173,6 +173,38 @@ RSpec.describe Astronoby::LocalSky do
     end
   end
 
+  describe "#culminations" do
+    it "returns the upper and lower culminations with their altitude" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+
+      culminations = local_sky.culminations(sky.sun).on(Date.new(2025, 10, 1))
+
+      expect(culminations.map(&:kind))
+        .to eq([:upper_culmination, :lower_culmination])
+      expect(culminations.map { _1.instant.to_time.round }).to eq(
+        [Time.utc(2025, 10, 1, 11, 40, 15), Time.utc(2025, 10, 1, 23, 40, 5)]
+      )
+      expect(culminations.map { _1.altitude.degrees.round(4) })
+        .to eq([37.7682, -44.7519])
+    end
+
+    it "follows a limb and applies refraction when asked" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+
+      centre = local_sky.culminations(sky.moon).on(Date.new(2025, 10, 1))
+      limb = local_sky
+        .culminations(sky.moon.upper_limb, refraction: true)
+        .on(Date.new(2025, 10, 1))
+
+      expect(limb.map(&:refracted?)).to all(be(true))
+      expect(limb.map(&:instant)).to eq(centre.map(&:instant))
+      expect(limb.last.altitude.degrees)
+        .to be > centre.last.altitude.degrees + 0.25
+    end
+  end
+
   describe "#twilights" do
     it "returns the dawns and dusks of each twilight, sorted by time" do
       sky = Astronoby::Sky.new(test_ephem)

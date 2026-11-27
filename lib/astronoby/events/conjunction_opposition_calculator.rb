@@ -36,14 +36,10 @@ module Astronoby
 
     def roots_between(start_time, end_time, accept:)
       finder.roots(
-        instant_for(start_time).tt,
-        instant_for(end_time).tt,
+        Instant.from(start_time).tt,
+        Instant.from(end_time).tt,
         accept: accept
       )
-    end
-
-    def instant_for(time)
-      time.is_a?(Instant) ? time : Instant.from_time(time)
     end
 
     def finder

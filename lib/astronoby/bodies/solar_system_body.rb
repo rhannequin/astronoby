@@ -34,12 +34,23 @@ module Astronoby
 
     # Creates a new body instance at the given instant.
     #
+    # @deprecated Use {Astronoby::Sky}: +sky.mars.at(instant)+
     # @param instant [Astronoby::Instant] the time instant
     # @param ephem [::Ephem::SPK] ephemeris data source
     # @param orientation [Astronoby::Orientation, nil] orientation kernel
     # @return [Astronoby::SolarSystemBody] a new body instance
     def self.at(instant, ephem:, orientation: nil)
-      new(ephem: ephem, instant: instant, orientation: orientation)
+      Deprecation.warn(self, :at) do
+        ["#{name}.at(instant, ephem:)", "sky.#{sky_name}.at(instant)"]
+      end
+      Sky::Snapshot
+        .new(ephem: ephem, instant: instant, orientation: orientation)
+        .body(self)
+    end
+
+    # @api private
+    def self.sky_name
+      Sky::BODIES.key(self)
     end
 
     # Computes the geometric reference frame for this body.
@@ -133,6 +144,7 @@ module Astronoby
     # @return [Astronoby::RiseTransitSetEvent,
     #   Array<Astronoby::RiseTransitSetEvent>] Rise, transit, and set events for
     #   the given date or time range.
+    # @deprecated Use {Astronoby::LocalSky#passes} instead
     def self.rise_transit_set_events(
       observer:,
       ephem:,
@@ -141,15 +153,23 @@ module Astronoby
       end_time: nil,
       utc_offset: 0
     )
-      calculator = RiseTransitSetCalculator.new(
-        body: self,
-        observer: observer,
-        ephem: ephem
-      )
-      if date
-        calculator.events_on(date, utc_offset: utc_offset)
-      else
-        calculator.events_between(start_time, end_time)
+      Deprecation.warn(self, :rise_transit_set_events) do
+        [
+          "#{name}.rise_transit_set_events",
+          "sky.over(observer).passes(sky.#{sky_name})"
+        ]
+      end
+      Deprecation.nested do
+        calculator = RiseTransitSetCalculator.new(
+          body: self,
+          observer: observer,
+          ephem: ephem
+        )
+        if date
+          calculator.events_on(date, utc_offset: utc_offset)
+        else
+          calculator.events_between(start_time, end_time)
+        end
       end
     end
 
@@ -159,6 +179,7 @@ module Astronoby
     # @param samples_per_period [Integer] number of samples per synodic period
     # @return [Array<Astronoby::Conjunction>] conjunctions with the Sun
     # @raise [Astronoby::UnsupportedEventError] unless the body is a planet
+    # @deprecated Use {Astronoby::Sky::Target#conjunctions} instead
     def self.conjunction_events(
       ephem:,
       start_time:,
@@ -167,6 +188,10 @@ module Astronoby
     )
       unless planet?
         raise UnsupportedEventError, "#{self} has no conjunctions with the Sun"
+      end
+
+      Deprecation.warn(self, :conjunction_events) do
+        ["#{name}.conjunction_events", "sky.#{sky_name}.conjunctions"]
       end
 
       ConjunctionOppositionCalculator.new(
@@ -183,6 +208,7 @@ module Astronoby
     # @return [Array<Astronoby::Opposition>] oppositions with the Sun
     # @raise [Astronoby::UnsupportedEventError] unless the body is a superior
     #   planet
+    # @deprecated Use {Astronoby::Sky::Target#oppositions} instead
     def self.opposition_events(
       ephem:,
       start_time:,
@@ -191,6 +217,10 @@ module Astronoby
     )
       unless superior_planet?
         raise UnsupportedEventError, "#{self} has no oppositions with the Sun"
+      end
+
+      Deprecation.warn(self, :opposition_events) do
+        ["#{name}.opposition_events", "sky.#{sky_name}.oppositions"]
       end
 
       ConjunctionOppositionCalculator.new(
@@ -207,6 +237,7 @@ module Astronoby
     # @return [Array<Astronoby::GreatestElongation>] greatest elongations
     # @raise [Astronoby::UnsupportedEventError] unless the body is an inferior
     #   planet
+    # @deprecated Use {Astronoby::Sky::Target#greatest_elongations} instead
     def self.greatest_elongation_events(
       ephem:,
       start_time:,
@@ -218,6 +249,13 @@ module Astronoby
           "#{self} has no greatest elongations from the Sun"
       end
 
+      Deprecation.warn(self, :greatest_elongation_events) do
+        [
+          "#{name}.greatest_elongation_events",
+          "sky.#{sky_name}.greatest_elongations"
+        ]
+      end
+
       GreatestElongationCalculator.new(
         body: self,
         ephem: ephem,
@@ -225,6 +263,7 @@ module Astronoby
       ).greatest_elongation_events_between(start_time, end_time)
     end
 
+    # @deprecated Use {Astronoby::Sky}: +sky.mars.at(instant)+
     # @param ephem [::Ephem::SPK] Ephemeris data source
     # @param instant [Astronoby::Instant] Instant for which to calculate the
     #   phase angle
@@ -234,6 +273,14 @@ module Astronoby
     #   passed by callers: state shared with the other bodies at the same
     #   instant
     def initialize(ephem:, instant:, orientation: nil, snapshot: nil)
+      unless snapshot
+        Deprecation.warn(self.class, :new) do
+          [
+            "#{self.class.name}.new(ephem:, instant:)",
+            "sky.#{self.class.sky_name}.at(instant)"
+          ]
+        end
+      end
       @ephem = ephem
       @instant = instant
       @orientation = orientation

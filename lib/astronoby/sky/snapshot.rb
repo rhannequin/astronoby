@@ -43,15 +43,22 @@ module Astronoby
           Sun.compute_geometric(ephem: @ephem, instant: @instant)
       end
 
-      # @param body_class [Class] a SolarSystemBody subclass
-      # @return [Astronoby::SolarSystemBody] the body at this instant
-      def body(body_class)
-        (@bodies ||= {})[body_class] ||= body_class.new(
-          ephem: @ephem,
-          instant: @instant,
-          orientation: @orientation,
-          snapshot: self
-        )
+      # @param body [Class, Astronoby::DeepSkyObject] a SolarSystemBody
+      #   subclass or a deep-sky object
+      # @return [Astronoby::SolarSystemBody, Astronoby::DeepSkyObjectPosition]
+      #   the body at this instant
+      def body(body)
+        (@bodies ||= {})[body] ||=
+          if body.is_a?(DeepSkyObject)
+            body.position_at(@instant, ephem: @ephem)
+          else
+            body.new(
+              ephem: @ephem,
+              instant: @instant,
+              orientation: @orientation,
+              snapshot: self
+            )
+          end
       end
 
       # Makes a body built outside the snapshot the one it returns for its

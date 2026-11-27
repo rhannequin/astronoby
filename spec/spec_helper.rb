@@ -20,4 +20,12 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before do |example|
+    if example.metadata[:deprecations]
+      Astronoby::Deprecation.reset
+    else
+      allow(Astronoby::Deprecation).to receive(:warn)
+    end
+  end
 end

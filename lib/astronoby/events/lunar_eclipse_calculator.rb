@@ -191,8 +191,8 @@ module Astronoby
     # @return [Array<Astronoby::LunarEclipse>] eclipses whose greatest instant
     #   lies in the range, sorted by time
     def events_between(start_time, end_time)
-      start_instant = instant_for(start_time)
-      end_instant = instant_for(end_time)
+      start_instant = Instant.from(start_time)
+      end_instant = Instant.from(end_time)
       full_moon_seeds(start_instant, end_instant)
         .filter_map { |seed_jd| eclipse_near(seed_jd) }
         .select { |eclipse| eclipse.instant.between?(start_instant, end_instant) }
@@ -234,10 +234,6 @@ module Astronoby
       first, last = @ephem.coverage
       reach = GREATEST_HALF_WINDOW + CONTACT_HALF_WINDOW
       seed_jd - reach >= first && seed_jd + reach <= last
-    end
-
-    def instant_for(time)
-      time.is_a?(Instant) ? time : Instant.from_time(time)
     end
 
     # Resolves the eclipse for one full-moon seed, if any.

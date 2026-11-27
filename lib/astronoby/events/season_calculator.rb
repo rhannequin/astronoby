@@ -70,8 +70,9 @@ module Astronoby
     end
 
     def sun_longitude_at(tt)
-      Sun
+      Sky::Snapshot
         .new(ephem: @ephem, instant: Instant.from_terrestrial_time(tt))
+        .body(Sun)
         .apparent
         .ecliptic
         .longitude
