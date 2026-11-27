@@ -11,16 +11,17 @@ module Astronoby
     # @param target_geometric [Astronoby::Geometric] target's geometric frame
     # @param earth_geometric [Astronoby::Geometric] Earth's geometric frame
     # @param target_body [Astronoby::Body, nil] the target body
+    # @param precession_matrix [Matrix] precession-bias matrix at the instant
     # @return [Astronoby::MeanOfDate] a new mean-of-date frame
     def self.build_from_geometric(
       instant:,
       target_geometric:,
       earth_geometric:,
-      target_body:
+      target_body:,
+      precession_matrix: Precession.matrix_for(instant)
     )
       position = target_geometric.position - earth_geometric.position
       velocity = target_geometric.velocity - earth_geometric.velocity
-      precession_matrix = Precession.matrix_for(instant)
       corrected_position = Distance.vector_from_m(
         precession_matrix * position.map(&:m)
       )
