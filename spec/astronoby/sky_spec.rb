@@ -97,6 +97,21 @@ RSpec.describe Astronoby::Sky do
     end
   end
 
+  describe "#over" do
+    it "returns the sky seen by the observer" do
+      sky = described_class.new(test_ephem)
+      observer = Astronoby::Observer.new(
+        latitude: Astronoby::Angle.from_degrees(48.8),
+        longitude: Astronoby::Angle.from_degrees(2.3)
+      )
+
+      local_sky = sky.over(observer)
+
+      expect(local_sky).to be_a(Astronoby::LocalSky)
+      expect(local_sky.observer).to be(observer)
+    end
+  end
+
   describe "#snapshot_at" do
     it "shares one snapshot between bodies at the same instant" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))

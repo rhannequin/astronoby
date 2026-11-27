@@ -50,6 +50,31 @@ RSpec.describe Astronoby::Sky::Target do
     end
   end
 
+  describe "#center, #upper_limb and #lower_limb" do
+    it "return the point of the target" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      points = [sky.moon.center, sky.moon.upper_limb, sky.moon.lower_limb]
+
+      expect(points.map(&:target)).to all(be(sky.moon))
+      expect(points.map(&:reference))
+        .to eq([:center, :upper_limb, :lower_limb])
+    end
+
+    it "raises for the limb of a deep-sky object" do
+      sky = Astronoby::Sky.new(test_ephem)
+      vega = Astronoby::DeepSkyObject.new(
+        equatorial_coordinates: Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(18, 36, 56.33635),
+          declination: Astronoby::Angle.from_dms(38, 47, 1.2802)
+        )
+      )
+
+      expect { sky[vega].upper_limb }
+        .to raise_error(ArgumentError, "A deep-sky object has no limb")
+    end
+  end
+
   describe "#inspect" do
     it "names the body" do
       sky = Astronoby::Sky.new(test_ephem)

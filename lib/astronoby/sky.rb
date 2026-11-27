@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "astronoby/sky/target"
+require "astronoby/sky/target_point"
 
 module Astronoby
   # The entry point to everything computed from an ephemeris. Load it once and
@@ -15,6 +16,7 @@ module Astronoby
   #   sky.saturn.at(instant).observed_by(observer).horizontal
   #   sky.mars.at(instant).elongation
   #   sky[vega].at(instant).apparent
+  #   sky.over(observer).passes(sky.saturn).on(date)
   class Sky
     BODIES = {
       sun: Sun,
@@ -81,6 +83,12 @@ module Astronoby
       end
 
       Target.new(sky: self, body: object)
+    end
+
+    # @param observer [Astronoby::Observer]
+    # @return [Astronoby::LocalSky] the sky as seen by the observer
+    def over(observer)
+      LocalSky.new(sky: self, observer: observer)
     end
 
     # The snapshot of this sky at the instant. The last one is kept per
