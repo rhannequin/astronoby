@@ -80,7 +80,7 @@ RSpec.describe Astronoby::ReferenceFrame do
 
         separation = mars.astrometric.separation_from(antares.astrometric)
 
-        expect(separation.str(:dms)).to eq "+1° 47′ 20.8463″"
+        expect(separation.str(:dms)).to eq "+1° 47′ 20.8465″"
         # Skyfield: +1° 47′ 20.8″
       end
     end

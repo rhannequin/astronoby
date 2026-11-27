@@ -45,7 +45,7 @@ RSpec.describe Astronoby::Jupiter do
       geometric = planet.geometric
 
       expect(geometric.position.to_a.map(&:km).map(&:round))
-        .to eq([21224524, 703637652, 301087128])
+        .to eq([21224523, 703637652, 301087128])
       # IMCCE:    21224544 703637661 301087121
       # Skyfield: 21224523 703637652 301087128
 
@@ -65,12 +65,12 @@ RSpec.describe Astronoby::Jupiter do
       # Skyfield: -0° 16′ 11.1″
 
       expect(geometric.ecliptic.longitude.str(:dms))
-        .to eq("+88° 24′ 41.3029″")
+        .to eq("+88° 24′ 41.303″")
       # IMCCE:    +88° 24′ 41.297″
       # Skyfield: +88° 24′ 55.4″
 
       expect(geometric.distance.au)
-        .to eq(5.118010311224182)
+        .to eq(5.11801031134686)
       # IMCCE:    5.11801034937
       # Skyfield: 5.118010311352852
     end
@@ -133,12 +133,12 @@ RSpec.describe Astronoby::Jupiter do
       # Skyfield: -0° 14′ 15.9″
 
       expect(astrometric.ecliptic.longitude.str(:dms))
-        .to eq("+81° 1′ 11.9603″")
+        .to eq("+81° 1′ 11.9605″")
       # IMCCE:    +81° 1′ 11.962″
       # Skyfield: +81° 22′ 26.1″
 
       expect(astrometric.distance.au)
-        .to eq(5.847693001835037)
+        .to eq(5.847693005504718)
       # IMCCE:    5.847693029715
       # Skyfield: 5.847693005684235
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Jupiter do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-32111.86896, 21668.9138, 9711.35464])
+        .to eq([-32111.86909, 21668.91369, 9711.3546])
       # IMCCE:    -32111.86992 21668.91306 9711.35422
       # Skyfield: -32111.8691  21668.91368 9711.35459
     end
@@ -191,7 +191,7 @@ RSpec.describe Astronoby::Jupiter do
       # IMCCE:  5h 22m 31.4319s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("+22° 55′ 5.8597″")
+        .to eq("+22° 55′ 5.8598″")
       # IMCCE:  +22° 55′ 5.858″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
@@ -199,13 +199,13 @@ RSpec.describe Astronoby::Jupiter do
       # IMCCE:  -0° 14′ 15.705″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+81° 22′ 34.8811″")
+        .to eq("+81° 22′ 34.8813″")
       # IMCCE:  +81° 22′ 34.883″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(5.847671732159567)
+        .to eq(5.847671735829429)
       # IMCCE: 5.847671760041
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Jupiter do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([-32257.90679, 21486.00577, 9631.88916])
+        .to eq([-32257.90692, 21486.00566, 9631.88911])
       # IMCCE:  -32257.90781  21486.0049  9631.88872
     end
   end
@@ -267,14 +267,14 @@ RSpec.describe Astronoby::Jupiter do
       # Skyfield: -0° 14′ 16.0″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+81° 22′ 10.8151″")
+        .to eq("+81° 22′ 10.8153″")
       # IMCCE:    +81° 22′ 10.8235″
       # Skyfield: +81° 22′ 10.8″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(5.847693001835036)
+        .to eq(5.847693005504718)
       # IMCCE:    5.847693029715
       # Skyfield: 5.847693005684232
     end
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Jupiter do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("5h 22m 29.6078s")
+          .to eq("5h 22m 29.6079s")
         # IMCCE:      5h 22m 29.5968s
         # Horizons:   5h 22m 29.591246s
         # Stellarium: 5h 22m 29.61s
         # Skyfield:   5h 22m 29.60s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+22° 55′ 11.63″")
+          .to eq("+22° 55′ 11.6301″")
         # IMCCE:      +22° 55′ 11.680″
         # Horizons:   +22° 55′ 11.68271″
         # Stellarium: +22° 55′ 11.6″
         # Skyfield:   +22° 55′ 11.7″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+323° 49′ 59.767″")
+          .to eq("+323° 49′ 59.7667″")
         # IMCCE:      +323° 49′ 59.520″
         # Skyfield:   +323° 50′ 0.2″
         # Stellarium: +323° 49′ 59.2″
         # Horizons:   +323° 50′ 0.3937″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-10° 11′ 49.0429″")
+          .to eq("-10° 11′ 49.0428″")
         # IMCCE:      -10° 11′ 48.840″
         # Skyfield:   -10° 11′ 49.2″
         # Stellarium: -10° 11′ 48.8″
@@ -407,7 +407,7 @@ RSpec.describe Astronoby::Jupiter do
 
       phase_angle = planet.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+2° 45′ 2.236″"
+      expect(phase_angle.str(:dms)).to eq "+2° 45′ 2.2363″"
       # IMCCE:    +2° 44′ 42.7199″
       # Horizons: +2° 45′ 11.5199″
       # Skyfield: +2° 45′ 6.0″

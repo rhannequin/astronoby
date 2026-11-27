@@ -45,32 +45,32 @@ RSpec.describe Astronoby::Mercury do
       geometric = planet.geometric
 
       expect(geometric.position.to_a.map(&:km).map(&:round))
-        .to eq([-58796389, -24211919, -6830873])
+        .to eq([-58796389, -24211921, -6830874])
       # IMCCE:    -58796367 -24211916 -6830872
       # Skyfield: -58796389 -24211921 -6830874
 
       expect(geometric.equatorial.right_ascension.str(:hms))
-        .to eq("13h 29m 31.5605s")
+        .to eq("13h 29m 31.5609s")
       # IMCCE:    13h 29m 31.5617s
       # Skyfield: 13h 29m 31.56s
 
       expect(geometric.equatorial.declination.str(:dms))
-        .to eq("-6° 7′ 53.673″")
+        .to eq("-6° 7′ 53.676″")
       # IMCCE:    -6° 7′ 53.680″
       # Skyfield: -6° 7′ 53.7″
 
       expect(geometric.ecliptic.latitude.str(:dms))
-        .to eq("+3° 0′ 54.0553″")
+        .to eq("+3° 0′ 54.0546″")
       # IMCCE:    +3° 0′ 54.055″
       # Skyfield: +3° 0′ 48.5″
 
       expect(geometric.ecliptic.longitude.str(:dms))
-        .to eq("+202° 58′ 41.4545″")
+        .to eq("+202° 58′ 41.4609″")
       # IMCCE:    +202° 58′ 41.473″
       # Skyfield: +202° 58′ 39.5″
 
       expect(geometric.distance.au)
-        .to eq(0.42749454255757774)
+        .to eq(0.42749454518053087)
       # IMCCE:    0.427494398892
       # Skyfield: 0.4274945451749377
     end
@@ -84,7 +84,7 @@ RSpec.describe Astronoby::Mercury do
       geometric = planet.geometric
 
       expect(geometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([8714.1212, -37601.77078, -20988.45164])
+        .to eq([8714.12263, -37601.7702, -20988.45148])
       # IMCCE:    8714.12253 -37601.77022 -20988.45147
       # Skyfield: 8714.12263 -37601.77020 -20988.45148
     end
@@ -118,27 +118,27 @@ RSpec.describe Astronoby::Mercury do
       astrometric = planet.astrometric
 
       expect(astrometric.equatorial.right_ascension.str(:hms))
-        .to eq("17h 14m 48.5478s")
+        .to eq("17h 14m 48.548s")
       # IMCCE:    17h 14m 48.548s
       # Skyfield: 17h 14m 48.55s
 
       expect(astrometric.equatorial.declination.str(:dms))
-        .to eq("-21° 54′ 45.5567″")
+        .to eq("-21° 54′ 45.5571″")
       # IMCCE:    -21° 54′ 45.557″
       # Skyfield: -21° 54′ 45.6″
 
       expect(astrometric.ecliptic.latitude.str(:dms))
-        .to eq("+1° 7′ 0.4398″")
+        .to eq("+1° 7′ 0.4395″")
       # IMCCE:    +1° 7′ 0.440″
       # Skyfield: +1° 6′ 48.8″
 
       expect(astrometric.ecliptic.longitude.str(:dms))
-        .to eq("+259° 31′ 33.8614″")
+        .to eq("+259° 31′ 33.8639″")
       # IMCCE:    +259° 31′ 33.864″
       # Skyfield: +259° 52′ 31.4″
 
       expect(astrometric.distance.au)
-        .to eq(1.1479012158474204)
+        .to eq(1.1479012250223506)
       # IMCCE:    1.147901225109
       # Skyfield: 1.1479012250016813
     end
@@ -152,7 +152,7 @@ RSpec.describe Astronoby::Mercury do
       astrometric = planet.astrometric
 
       expect(astrometric.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([38473.18617, -32529.64656, -18788.09192])
+        .to eq([38473.18755, -32529.64572, -18788.09165])
       # IMCCE:    38473.18746 -32529.6458 -18788.09171
       # Skyfield: 38473.18754 -32529.64572 -18788.09165
     end
@@ -187,25 +187,25 @@ RSpec.describe Astronoby::Mercury do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.equatorial.right_ascension.str(:hms))
-        .to eq("17h 16m 19.4062s")
+        .to eq("17h 16m 19.4063s")
       # IMCCE:  17h 16m 19.4064s
 
       expect(mean_of_date.equatorial.declination.str(:dms))
-        .to eq("-21° 56′ 26.4253″")
+        .to eq("-21° 56′ 26.4258″")
       # IMCCE:  -21° 56′ 26.426″
 
       expect(mean_of_date.ecliptic.latitude.str(:dms))
-        .to eq("+1° 6′ 45.2517″")
+        .to eq("+1° 6′ 45.2515″")
       # IMCCE:  +1° 6′ 45.252″
 
       expect(mean_of_date.ecliptic.longitude.str(:dms))
-        .to eq("+259° 52′ 42.4422″")
+        .to eq("+259° 52′ 42.4446″")
       # IMCCE:  +259° 52′ 42.445″
 
       # Note: mean of date distance doesn't really make sense
       # Prefer astrometric.distance
       expect(mean_of_date.distance.au)
-        .to eq(1.1480561514092473)
+        .to eq(1.1480561605816997)
       # IMCCE: 1.148056160668
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Astronoby::Mercury do
       mean_of_date = planet.mean_of_date
 
       expect(mean_of_date.velocity.to_a.map(&:mps).map { _1.round(5) })
-        .to eq([38717.64652, -32306.62823, -18692.31406])
+        .to eq([38717.6479, -32306.62739, -18692.31378])
       # IMCCE:  38717.64791  -32306.62736  -18692.31383
     end
   end
@@ -252,29 +252,29 @@ RSpec.describe Astronoby::Mercury do
       apparent = planet.apparent
 
       expect(apparent.equatorial.right_ascension.str(:hms))
-        .to eq("17h 16m 17.195s")
+        .to eq("17h 16m 17.1952s")
       # IMCCE:    17h 16m 17.1948s
       # Skyfield: 17h 16m 17.19s
 
       expect(apparent.equatorial.declination.str(:dms))
-        .to eq("-21° 56′ 29.1303″")
+        .to eq("-21° 56′ 29.1307″")
       # IMCCE:    -21° 56′ 29.130″
       # Skyfield: -21° 56′ 29.1″
 
       expect(apparent.ecliptic.latitude.str(:dms))
-        .to eq("+1° 6′ 48.6067″")
+        .to eq("+1° 6′ 48.6065″")
       # IMCCE:    +1° 6′ 48.647″
       # Skyfield: +1° 6′ 48.6″
 
       expect(apparent.ecliptic.longitude.str(:dms))
-        .to eq("+259° 52′ 11.9336″")
+        .to eq("+259° 52′ 11.9361″")
       # IMCCE:    +259° 52′ 11.930″
       # Skyfield: +259° 52′ 11.9″
 
       # Note: apparent distance doesn't really make sense
       # Prefer astrometric.distance
       expect(apparent.distance.au)
-        .to eq(1.1479012158474204)
+        .to eq(1.1479012250223508)
       # IMCCE:    1.147901225109
       # Skyfield: 1.1479012250016805
     end
@@ -368,28 +368,28 @@ RSpec.describe Astronoby::Mercury do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("17h 16m 17.3437s")
+          .to eq("17h 16m 17.3438s")
         # IMCCE:      17h 16m 17.3296s
         # Horizons:   17h 16m 17.326217s
         # Stellarium: 17h 16m 17.34s
         # Skyfield:   17h 16m 17.33s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-21° 56′ 32.7344″")
+          .to eq("-21° 56′ 32.7349″")
         # IMCCE:      -21° 56′ 32.702″
         # Horizons:   -21° 56′ 32.70220″
         # Stellarium: -21° 56′ 32.7″
         # Skyfield:   -21° 56′ 32.7″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+44° 8′ 52.4893″")
+          .to eq("+44° 8′ 52.4858″")
         # IMCCE:      +44° 8′ 52.800″
         # Horizons:   +44° 8′ 53.2819″
         # Stellarium: +44° 8′ 51.3″
         # Skyfield:   +44° 8′ 52.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-56° 56′ 39.0963″")
+          .to eq("-56° 56′ 39.0979″")
         # IMCCE:      -56° 56′ 39.120″
         # Horizons:   -56° 56′ 38.8135″
         # Stellarium: -56° 56′ 39.5″
@@ -407,7 +407,7 @@ RSpec.describe Astronoby::Mercury do
 
       phase_angle = planet.phase_angle
 
-      expect(phase_angle.str(:dms)).to eq "+121° 7′ 10.7495″"
+      expect(phase_angle.str(:dms)).to eq "+121° 7′ 10.755″"
       # IMCCE:    +121° 7′ 32.16″
       # Horizons: +121° 6′ 47.16″
       # Skyfield: +121° 7′ 46.2″
