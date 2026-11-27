@@ -20,7 +20,8 @@ Each method of the local sky returns an `Astronoby::Events::Series`, which searc
 - `from(start)` returns a lazy enumerator that searches one day at a time, as events are asked for.
 
 ```rb
-local_sky.risings(sky.moon)
+local_sky
+  .risings(sky.moon)
   .from(Astronoby::Instant.from_time(Time.utc(2025, 10, 1)))
   .first(3)
   .map { |instant| instant.to_time.round }

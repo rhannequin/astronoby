@@ -19,17 +19,12 @@ module Astronoby
       astronomical: Angle.from_degrees(-18)
     }.freeze
 
-    # Refraction lifts an apparent altitude by up to about 0.6° at the
-    # horizon: an altitude further than this beyond a fixed star's reachable
-    # range on a day is never crossed that day.
     UNREACHABLE_MARGIN = Angle.from_degrees(1)
 
     # @return [Astronoby::Observer]
     attr_reader :observer
 
     # @api private
-    # @param sky [Astronoby::Sky]
-    # @param observer [Astronoby::Observer]
     def initialize(sky:, observer:)
       @sky = sky
       @observer = observer
@@ -170,7 +165,6 @@ module Astronoby
       end
     end
 
-    # The calculator keeps state during a search, so each search has its own.
     def rise_transit_set_calculator(body)
       RiseTransitSetCalculator.new(
         body: body,
@@ -179,10 +173,6 @@ module Astronoby
       )
     end
 
-    # A fixed star's altitude stays between its lower and upper culminations,
-    # so an altitude outside that range is never reached. The declination is
-    # taken at the start of the window, as precession moves it by up to half a
-    # degree per century from the catalogue's.
     def unreachable?(body, altitude, instant)
       return false unless body.is_a?(DeepSkyObject)
 

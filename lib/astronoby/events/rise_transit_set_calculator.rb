@@ -18,16 +18,12 @@ module Astronoby
     TAU = Math::PI * 2
     SAMPLE_THRESHOLD = 0.8
     REFINEMENT_ITERATIONS = 3
-    # A rising or setting estimated from the transit starts hours away from
-    # the event, and the Moon at high latitudes needs a few more steps.
     PASS_REFINEMENT_ITERATIONS = 8
-    # Days searched on each side of an estimate that did not converge
     SAMPLED_SEARCH_HALF_WIDTH = 0.25
     CONVERGENCE_TOLERANCE_IN_DAYS = 0.5 / Constants::SECONDS_PER_DAY
     STANDARD_REFRACTION_ANGLE = Horizon::REFRACTION_ANGLE
     SUN_REFRACTION_ANGLE = Horizon::SUN_ANGLE
     EVENT_TYPES = [:rising, :transit, :setting].freeze
-    # Radians of hour angle per day for a fixed direction
     SIDEREAL_RATE = TAU * 1.00273790935
 
     # @param body [Astronoby::SolarSystemBody, Astronoby::DeepSkyObject]
@@ -77,11 +73,6 @@ module Astronoby
     end
 
     # @api private
-    # @param start_time [Time, Astronoby::Instant] start of the window
-    # @param end_time [Time, Astronoby::Instant] end of the window
-    # @param event_type [Symbol] +:rising+, +:transit+ or +:setting+
-    # @return [Array<Astronoby::Instant>] the events of that type in the
-    #   window, unrounded
     def instants_between(start_time, end_time, event_type)
       reset_state
       @start_instant = instant_for(start_time)
@@ -89,17 +80,7 @@ module Astronoby
       event_instants(event_type)
     end
 
-    # Transits in the window, each with the rising before it and the setting
-    # after it, even when those fall outside the window. Only the transits are
-    # searched by sampling; the rising and setting are estimated from the
-    # body's hour angle at transit and refined, which costs one position each.
-    #
     # @api private
-    # @param start_time [Time, Astronoby::Instant] start of the window
-    # @param end_time [Time, Astronoby::Instant] end of the window
-    # @return [Array<Array(Astronoby::Instant, Astronoby::Instant,
-    #   Astronoby::Instant)>] rising, transit and setting of each pass, rising
-    #   and setting nil when the body does not cross the horizon
     def passes_between(start_time, end_time)
       reset_state
       @start_instant = instant_for(start_time)
@@ -117,8 +98,6 @@ module Astronoby
           end
         end
 
-        # Where the body stops being circumpolar, the refinement can land on
-        # the next pass's rising, or the previous pass's setting.
         rising = nil if rising && rising >= transit
         setting = nil if setting && setting <= transit
 
@@ -423,17 +402,9 @@ module Astronoby
       Horizon.angle_for(body: @body, distance: distance)
     end
 
-    # Estimates when the hour angle reaches the target from a position near
-    # transit, at the body's own hour angle rate over the samples, then
-    # refines it like the other events, with the transit as the previous point
-    # for the rate. When the refinement does not settle, the event is searched
-    # by sampling around the estimate instead. An event outside the ephemeris
-    # is nil.
     def refine_from(event_type, position, hour_angle, target_hour_angle)
       instant = position.instant
       tt = estimate_tt(instant, hour_angle, target_hour_angle)
-      # The target hour angle depends on the declination, which the samples
-      # give at the estimate without computing a new position.
       if (declination = sampled_declination_at(tt))
         target = rising_hour_angle(
           @observer.latitude,
@@ -454,9 +425,6 @@ module Astronoby
       ).first
       return sampled_event_near(event_type, refined) unless @converged
 
-      # Near the polar circles the body can stay above or below the horizon
-      # by the time it would rise or set, the refinement then converging on a
-      # culmination instead.
       refined if calculate_rising_event(@refined_positions.first).can_occur
     rescue ::Ephem::OutOfRangeError
       nil
@@ -483,8 +451,6 @@ module Astronoby
       instants = sample_instants
       return if instants.size < 2
 
-      # Outside the samples, the nearest interval extrapolates: a rising or
-      # setting is never more than about half a day beyond them.
       index = instants.each_cons(2).find_index { |_, b| tt <= b.tt } ||
         instants.size - 2
 
@@ -503,14 +469,11 @@ module Astronoby
           (b.radians - a.radians) % TAU
         end
         days = sample_instants.last.tt - sample_instants.first.tt
-        # Each sample interval is under a day, so less than one and a bit
-        # turns: the modulo loses whole turns that the sidereal rate restores.
         whole_turns = ((SIDEREAL_RATE * days - turns) / TAU).round
         (turns + whole_turns * TAU) / days
       end
     end
 
-    # Converting a Time costs a leap second lookup, which an instant skips.
     def instant_for(time)
       time.is_a?(Instant) ? time : Instant.from_time(time)
     end

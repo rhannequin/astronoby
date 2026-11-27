@@ -6,13 +6,6 @@ module Astronoby
     # #from. Nothing is searched until one of them is called.
     class Series
       # @api private
-      # @param window [Numeric] days searched at a time by #from
-      # @param horizon [Numeric] days after which #from stops
-      # @param time_of [Proc] returns an event's instant
-      # @param last_tt [Numeric, nil] the last Terrestrial Time the ephemeris
-      #   covers, where #from stops
-      # @param search [Proc] called with two instants, returns the events
-      #   between them
       def initialize(window:, horizon:, time_of:, last_tt: nil, &search)
         @window = window
         @horizon = horizon

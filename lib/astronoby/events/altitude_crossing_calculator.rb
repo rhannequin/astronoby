@@ -167,7 +167,6 @@ module Astronoby
       )
     end
 
-    # Converting a Time costs a leap second lookup, which an instant skips.
     def instant_for(time)
       time.is_a?(Instant) ? time : Instant.from_time(time)
     end
@@ -275,9 +274,6 @@ module Astronoby
         (radians + Math::PI) % TAU - Math::PI
       end
 
-      # Near the ends of the ephemeris the padding is cut where the coverage
-      # ends, and that edge bounds the first or last segment instead of a
-      # culmination: the altitude only goes one way up to it all the same.
       def segments
         padded_start = @start_tt - CULMINATION_PADDING_IN_DAYS
         padded_end = @end_tt + CULMINATION_PADDING_IN_DAYS

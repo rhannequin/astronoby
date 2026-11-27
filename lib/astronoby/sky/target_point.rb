@@ -14,8 +14,6 @@ module Astronoby
       attr_reader :reference
 
       # @api private
-      # @param target [Astronoby::Sky::Target]
-      # @param reference [Symbol] +:center+, +:upper_limb+ or +:lower_limb+
       def initialize(target:, reference:)
         @target = target
         @reference = reference
