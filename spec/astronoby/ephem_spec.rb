@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::Ephem do
+  include TestEphemHelper
+
   describe ".download" do
     it "downloads the ephemeris using Ephem" do
       allow(::Ephem::Download).to receive(:call)
@@ -56,6 +58,64 @@ RSpec.describe Astronoby::Ephem do
           "tmp/de440.bsp is not a valid type. Accepted: IMCCE INPOP, JPL DE"
         )
       end
+    end
+  end
+
+  describe "#[]" do
+    it "finds a segment in any of the kernels" do
+      sun_only = test_ephem_sun
+      planets = test_ephem
+      ephem = described_class.new(sun_only, planets)
+
+      expect(ephem[0, 4]).to be(planets[0, 4])
+    end
+
+    it "takes the segment from the first kernel that has it" do
+      sun_only = test_ephem_sun
+      planets = test_ephem
+      ephem = described_class.new(sun_only, planets)
+
+      expect(ephem[0, 10]).to be(sun_only[0, 10])
+    end
+
+    it "raises KeyError when no kernel has the segment" do
+      ephem = described_class.new(test_ephem_sun)
+
+      expect { ephem[0, 4] }.to raise_error(
+        KeyError,
+        "No kernel has a segment for center: 0, target: 4"
+      )
+    end
+  end
+
+  describe "#type" do
+    it "returns the kernels' type" do
+      ephem = described_class.new(test_ephem_sun, test_ephem)
+
+      expect(ephem.type).to eq(::Ephem::SPK::JPL_DE)
+    end
+  end
+
+  describe "#initialize" do
+    it "raises without kernels" do
+      expect { described_class.new }
+        .to raise_error(ArgumentError, "At least one kernel is required")
+    end
+
+    it "raises with kernels of different types" do
+      expect { described_class.new(test_ephem, test_ephem_inpop) }
+        .to raise_error(
+          ArgumentError,
+          "Kernels of different types cannot be combined: JPL DE, IMCCE INPOP"
+        )
+    end
+  end
+
+  describe "#inspect" do
+    it "shows the type and the number of kernels" do
+      ephem = described_class.new(test_ephem_sun, test_ephem)
+
+      expect(ephem.inspect).to eq("#<Astronoby::Ephem JPL DE, 2 kernels>")
     end
   end
 end
