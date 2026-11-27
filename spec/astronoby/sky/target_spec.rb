@@ -202,8 +202,10 @@ RSpec.describe Astronoby::Sky::Target do
       expect(perigees.first.instant.to_time)
         .to be_within(0.01).of(Time.utc(2025, 1, 8, 0, 1, 5.20))
       expect(perigees.first.value.km).to be_within(0.001).of(370170.692)
+      # IMCCE:    2025-01-21T04:54:07.5Z 404298.089 km,
+      #           2025-01-08T00:01:05.2Z 370170.692 km
       # Skyfield, zero of the geometric radial velocity:
-      #   2025-01-21T04:54:07.51Z, 2025-01-08T00:01:05.20Z
+      #           2025-01-21T04:54:07.51Z, 2025-01-08T00:01:05.20Z
     end
 
     it "do not depend on the range searched" do

@@ -182,11 +182,16 @@ RSpec.describe Astronoby::LocalSky do
 
       expect(culminations.map(&:kind))
         .to eq([:upper_culmination, :lower_culmination])
-      expect(culminations.map { _1.instant.to_time.round }).to eq(
-        [Time.utc(2025, 10, 1, 11, 40, 15), Time.utc(2025, 10, 1, 23, 40, 5)]
-      )
-      expect(culminations.map { _1.altitude.degrees.round(4) })
-        .to eq([37.7682, -44.7519])
+      expect(culminations[0].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 10, 1, 11, 40, 14.83))
+      expect(culminations[1].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 10, 1, 23, 40, 5.22))
+      expect(culminations.map { _1.altitude.str(:dms, precision: 3) })
+        .to eq(["+37° 46′ 5.691″", "-44° 45′ 6.789″"])
+      # IMCCE, true altitude at these instants: +37° 46′ 5.6912″,
+      #   -44° 45′ 6.7886″
+      # Skyfield: 2025-10-01T11:40:14.85Z +37° 46′ 5.6908″,
+      #           2025-10-01T23:40:05.20Z -44° 45′ 6.7886″
     end
 
     it "follows a limb and applies refraction when asked" do
