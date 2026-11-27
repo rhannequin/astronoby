@@ -406,7 +406,6 @@ module Astronoby
       sun.geometric
     end
 
-    # Reading the Sun is skipped for bodies whose light it does not deflect.
     def deflecting_sun_geometric
       sun.geometric unless Apparent::UNDEFLECTED_BODIES.include?(body)
     end
