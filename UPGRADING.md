@@ -7,6 +7,23 @@ changes to it as long as a major version has not been released.
 If you are already using Astronoby and wish to follow the changes to its
 public API, please read the upgrading notes for each release.
 
+## Unreleased
+
+### Apparent positions include light deflection
+
+Apparent and topocentric positions of planets and of deep-sky objects given an
+ephemeris now include the Sun's gravitational light deflection. They move by
+up to 1.75″ near the Sun and by a few milliarcseconds elsewhere. The Sun and
+the Moon are not affected.
+
+Computing them needs the Sun's position, so the ephemeris must include target
+`10`. With an excerpt built by `ruby-ephem excerpt --targets` that leaves it
+out, these positions now raise `KeyError`. Add the Sun to the targets:
+
+```
+ruby-ephem excerpt --targets 4,10,399 2024-12-31 2026-01-01 inpop19a.bsp inpop19a_2025_mars.bsp
+```
+
 ## Upgrading from 0.11.1 to 0.12.0
 
 ### Refraction has changed near the horizon

@@ -77,6 +77,9 @@ example, the excerpt file from a JPL DE kernel needs to include targets `3` and
 `399` for the Earth, while the excerpt file from a IMCCE INPOP kernel only needs
 the target `399`.
 
+Apparent and topocentric positions of planets and deep-sky objects also need
+the Sun (target `10`), which deflects their light.
+
 [`ephem`]: https://github.com/rhannequin/ruby-ephem
 [IMCCE]: https://www.imcce.fr
 

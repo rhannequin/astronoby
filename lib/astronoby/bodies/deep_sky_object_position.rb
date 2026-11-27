@@ -45,6 +45,7 @@ module Astronoby
       @parallax = parallax
       @radial_velocity = radial_velocity
       @body = deep_sky_object
+      @ephem = ephem
       if ephem
         @earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
       end
@@ -117,6 +118,7 @@ module Astronoby
         instant: @instant,
         target_astrometric: astrometric,
         earth_geometric: @earth_geometric,
+        ephem: @ephem,
         target_body: body
       )
     end

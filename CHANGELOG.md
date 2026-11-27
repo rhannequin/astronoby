@@ -2,13 +2,26 @@
 
 ## Unreleased
 
+_If you are upgrading: please see [UPGRADING.md]._
+
 ### Bug fixes
 
 * Apply the Sun's gravitational light deflection to apparent positions of
-  solar system bodies. `Deflection` existed but was never called, so apparent
-  places were off by up to 1.6″ near solar conjunction compared with IMCCE.
-  Mars on 2026-01-01, 2.3° from the Sun, goes from 122 mas to 0.3 mas off
+  solar system bodies and of deep-sky objects given an ephemeris. `Deflection`
+  existed but was never called, so apparent places were off by up to 1.6″ near
+  solar conjunction compared with IMCCE. Mars on 2026-01-01, 2.3° from the Sun,
+  goes from 122 mas to 0.3 mas off. The Sun and the Moon are not deflected
   ([#332])
+* Fade the deflection to zero for a target hidden behind the solar disk,
+  where the formula grows without bound, and return the position unchanged
+  instead of raising `TypeError` for a target in line with the Sun ([#332])
+
+### Backward-incompatible changes
+
+* Apparent and topocentric positions of planets and deep-sky objects move by
+  up to 1.75″ near the Sun and a few milliarcseconds elsewhere ([#332])
+* The ephemeris must include the Sun (target `10`) to compute apparent and
+  topocentric positions of planets and deep-sky objects ([#332])
 
 [#332]: https://github.com/rhannequin/astronoby/issues/332
 

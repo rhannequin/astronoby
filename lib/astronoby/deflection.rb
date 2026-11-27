@@ -20,11 +20,12 @@ module Astronoby
     # no correction is applied
     COLINEARITY_THRESHOLD = 0.99999999999
 
+    SUN_RADIUS = Sun::EQUATORIAL_RADIUS.meters
+
     # @param instant [Astronoby::Instant] the instant of the observation
     # @param target_astrometric_position [Astronoby::Vector<Distance>] the
     #   astrometric position of the target
-    # @param ephem [Astronoby::Ephemeris] the ephemeris to use for the
-    #   computation
+    # @param ephem [::Ephem::SPK] the ephemeris to use for the computation
     # @param earth_geometric [Astronoby::Geometric, nil] Earth's geometric
     #   frame, computed from the ephemeris when not given
     def initialize(
@@ -85,6 +86,18 @@ module Astronoby
       factor = 2.0 * SOLAR_GRAVITATION_CONSTANT /
         (LIGHT_SPEED * LIGHT_SPEED * sun_to_observer_distance) /
         (1.0 + cos_sun) * distance
+
+      # Light from a target behind the solar disk never reaches the observer,
+      # and the formula grows without bound towards the centre of the disk.
+      # Fading it to zero from the limb keeps the position continuous.
+      closest_approach = -cos_observer * sun_to_observer_distance
+      if closest_approach.positive? && distance > closest_approach
+        impact_parameter = sun_to_observer_distance *
+          Math.sqrt(1.0 - cos_observer * cos_observer)
+        if impact_parameter < SUN_RADIUS
+          factor *= (impact_parameter / SUN_RADIUS)**2
+        end
+      end
 
       Distance.vector_from_meters([
         px + factor * (cos_target * ex - cos_observer * qx),
