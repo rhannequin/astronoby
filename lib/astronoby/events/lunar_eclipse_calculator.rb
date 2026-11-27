@@ -191,36 +191,35 @@ module Astronoby
     # @return [Array<Astronoby::LunarEclipse>] eclipses whose greatest instant
     #   lies in the range, sorted by time
     def events_between(start_time, end_time)
-      start_time = start_time.to_time if start_time.is_a?(Instant)
-      end_time = end_time.to_time if end_time.is_a?(Instant)
-      full_moon_seeds(start_time, end_time)
+      start_instant = instant_for(start_time)
+      end_instant = instant_for(end_time)
+      full_moon_seeds(start_instant, end_instant)
         .filter_map { |seed_jd| eclipse_near(seed_jd) }
-        .select do |eclipse|
-          eclipse.instant.to_time.between?(start_time, end_time)
-        end
+        .select { |eclipse| eclipse.instant.between?(start_instant, end_instant) }
     end
 
     private
 
     # Full moons in the range, padded by a day so an eclipse near a boundary is
     # not missed. Seeded analytically (Meeus, chapter 49) at no ephemeris cost.
-    def full_moon_seeds(start_time, end_time)
-      padded_start = start_time - Constants::SECONDS_PER_DAY
-      padded_end = end_time + Constants::SECONDS_PER_DAY
+    def full_moon_seeds(start_instant, end_instant)
+      padded_start = start_instant.tt - 1
+      padded_end = end_instant.tt + 1
       year_months(padded_start, padded_end)
         .flat_map do |year, month|
           Events::MoonPhases.phases_for(year: year, month: month)
         end
         .select { |phase| phase.phase == :full_moon }
-        .map(&:time)
-        .select { |time| time.between?(padded_start, padded_end) }
-        .map { |time| Instant.from_time(time).tt }
+        .map { |phase| phase.instant.tt }
+        .select { |seed_jd| seed_jd.between?(padded_start, padded_end) }
         .select { |seed_jd| covered?(seed_jd) }
     end
 
-    def year_months(from, to)
-      cursor = Date.new(from.to_date.year, from.to_date.month, 1)
-      last = Date.new(to.to_date.year, to.to_date.month, 1)
+    def year_months(from_tt, to_tt)
+      from = Instant.from_terrestrial_time(from_tt).to_date
+      to = Instant.from_terrestrial_time(to_tt).to_date
+      cursor = Date.new(from.year, from.month, 1)
+      last = Date.new(to.year, to.month, 1)
       months = []
       while cursor <= last
         months << [cursor.year, cursor.month]
@@ -229,7 +228,6 @@ module Astronoby
       months
     end
 
-    # Resolves the eclipse for one full-moon seed, if any.
     def covered?(seed_jd)
       return true unless @ephem.respond_to?(:coverage)
 
@@ -238,6 +236,11 @@ module Astronoby
       seed_jd - reach >= first && seed_jd + reach <= last
     end
 
+    def instant_for(time)
+      time.is_a?(Instant) ? time : Instant.from_time(time)
+    end
+
+    # Resolves the eclipse for one full-moon seed, if any.
     def eclipse_near(seed_jd)
       if geometry_at(seed_jd).axis_distance > MAX_ECLIPSE_GAMMA * EARTH_RADIUS_KM
         return nil

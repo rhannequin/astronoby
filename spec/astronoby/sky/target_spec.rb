@@ -198,6 +198,10 @@ RSpec.describe Astronoby::Sky::Target do
           [:new_moon, Time.utc(2025, 1, 29, 12, 35, 59)]
         ]
       )
+      # IMCCE:    2025-01-06T23:56:18Z, 2025-01-13T22:26:55Z,
+      #           2025-01-21T20:30:48Z, 2025-01-29T12:35:59Z
+      # Skyfield: 2025-01-06T23:56:17.65Z, 2025-01-13T22:26:54.54Z,
+      #           2025-01-21T20:30:47.46Z, 2025-01-29T12:35:58.90Z
     end
 
     it "agrees with the apparent longitudes of the Moon and the Sun" do

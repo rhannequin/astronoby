@@ -95,18 +95,24 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 Targets give the events seen from the centre of the Earth, as `Astronoby::Events::Series` objects read with `on(date)`, `between(start, finish)` or `from(start)`, as on the [Local sky page]. Each event carries an unrounded `instant`.
 
 ```rb
-sky.mars.oppositions
+sky
+  .mars
+  .oppositions
   .between(Time.utc(2025, 1, 1), Time.utc(2026, 1, 1))
   .map { |opposition| opposition.instant.to_time.round }
 # => [2025-01-16 02:38:35 UTC]
 
-elongation = sky.venus.greatest_elongations
+elongation = sky
+  .venus
+  .greatest_elongations
   .from(Astronoby::Instant.from_time(Time.utc(2025, 1, 1)))
   .first
 elongation.angle.degrees.round(2)
 # => 47.17
 
-sky.moon.eclipses
+sky
+  .moon
+  .eclipses
   .between(Time.utc(2025, 1, 1), Time.utc(2026, 1, 1))
   .map(&:kind)
 # => [:total, :total]
@@ -123,7 +129,9 @@ Other targets raise `Astronoby::UnsupportedEventError`. You can learn more about
 Moon phases are found where the difference between the Moon's and the Sun's apparent ecliptic longitudes reaches 0°, 90°, 180° and 270°:
 
 ```rb
-sky.moon.phases
+sky
+  .moon
+  .phases
   .between(Time.utc(2025, 1, 1), Time.utc(2025, 2, 1))
   .map { |phase| [phase.phase, phase.time] }
 # => [
@@ -148,7 +156,8 @@ year.june_solstice.instant.to_time.round
 `sky.seasons` is also read with `on(date)`, `between(start, finish)` and `from(start)`:
 
 ```rb
-sky.seasons
+sky
+  .seasons
   .between(Time.utc(2025, 5, 1), Time.utc(2025, 10, 1))
   .map(&:kind)
 # => [:june_solstice, :september_equinox]

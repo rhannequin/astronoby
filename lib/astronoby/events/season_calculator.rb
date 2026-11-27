@@ -18,7 +18,7 @@ module Astronoby
       years = (start_instant.to_time.year - 1)..(end_instant.to_time.year + 1)
       years.flat_map do |year|
         KINDS.each_with_index.filter_map do |kind, index|
-          seed_tt = EquinoxSolstice.new(year, index, @ephem).estimate.tt
+          seed_tt = EquinoxSolstice.new(year, index, @ephem).uncorrected_instant.tt
           next unless seed_tt.between?(
             start_instant.tt - SEED_MARGIN_IN_DAYS,
             end_instant.tt + SEED_MARGIN_IN_DAYS

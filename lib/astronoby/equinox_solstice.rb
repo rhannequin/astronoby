@@ -122,7 +122,7 @@ module Astronoby
     end
 
     # @api private
-    def estimate
+    def uncorrected_instant
       @instant
     end
 

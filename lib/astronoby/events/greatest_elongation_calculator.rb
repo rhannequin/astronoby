@@ -6,6 +6,7 @@ module Astronoby
     TOLERANCE_IN_DAYS = 1e-7
     DUPLICATE_THRESHOLD_IN_DAYS = 0.5
     MAX_REFINEMENT_ITERATIONS = 10
+
     # @param body [Astronoby::SolarSystemBody] the planet to track
     # @param ephem [::Ephem::SPK] ephemeris data source
     # @param samples_per_period [Integer] number of samples per synodic period
