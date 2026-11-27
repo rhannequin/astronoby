@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+* Apply the Sun's gravitational light deflection to apparent positions of
+  solar system bodies. `Deflection` existed but was never called, so apparent
+  places were off by up to 1.6″ near solar conjunction compared with IMCCE.
+  Mars on 2026-01-01, 2.3° from the Sun, goes from 122 mas to 0.3 mas off
+  ([#332])
+
+[#332]: https://github.com/rhannequin/astronoby/issues/332
+
 ## 0.12.0 - 2026-11-24
 
 _If you are upgrading: please see [UPGRADING.md]._

@@ -276,6 +276,7 @@ module Astronoby
         instant: @instant,
         target_astrometric: astrometric,
         earth_geometric: earth_geometric,
+        ephem: @ephem,
         target_body: body
       )
     end

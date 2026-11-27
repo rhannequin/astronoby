@@ -41,5 +41,19 @@ RSpec.describe Astronoby::Deflection do
         .to eq([4375229342, 154618258, -45364787])
       # Skyfield: 4375229340 154618257 -45364788
     end
+
+    it "returns the position unchanged for a target at the observer" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 4, 1))
+      position = Astronoby::Distance.vector_from_meters([0.0, 0.0, 0.0])
+      deflection = described_class.new(
+        instant: instant,
+        target_astrometric_position: position,
+        ephem: test_ephem
+      )
+
+      corrected_position = deflection.corrected_position
+
+      expect(corrected_position).to eq(position)
+    end
   end
 end
