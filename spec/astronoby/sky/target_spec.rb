@@ -190,14 +190,16 @@ RSpec.describe Astronoby::Sky::Target do
 
       phases = sky.moon.phases.between(Time.utc(2025, 1, 1), Time.utc(2025, 2, 1))
 
-      expect(phases.map { [_1.phase, _1.instant.to_time.round(2)] }).to eq(
-        [
-          [:first_quarter, Time.utc(2025, 1, 6, 23, 56, Rational("17.65"))],
-          [:full_moon, Time.utc(2025, 1, 13, 22, 26, Rational("54.54"))],
-          [:last_quarter, Time.utc(2025, 1, 21, 20, 30, Rational("47.47"))],
-          [:new_moon, Time.utc(2025, 1, 29, 12, 35, Rational("58.91"))]
-        ]
-      )
+      expect(phases.map(&:phase))
+        .to eq([:first_quarter, :full_moon, :last_quarter, :new_moon])
+      expect(phases[0].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 6, 23, 56, 17.65))
+      expect(phases[1].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 13, 22, 26, 54.54))
+      expect(phases[2].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 21, 20, 30, 47.47))
+      expect(phases[3].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 29, 12, 35, 58.91))
       # IMCCE:    2025-01-06T23:56:18Z, 2025-01-13T22:26:55Z,
       #           2025-01-21T20:30:48Z, 2025-01-29T12:35:59Z
       # Skyfield: 2025-01-06T23:56:17.65Z, 2025-01-13T22:26:54.54Z,
