@@ -31,8 +31,8 @@ _If you are upgrading: please see [UPGRADING.md]._
   is about 30% faster ([#349])
 * Find the Moon's apoapsides and periapsides where its radial velocity is
   zero instead of at the sampled extremum of its distance. Their instants
-  moved by up to 0.7 s with the search range, no longer depend on it and agree
-  with Skyfield to 2 ms, and the search is about 23% faster ([#350])
+  moved by up to 0.7 s with the search range, no longer depend on it and match
+  IMCCE to the tenth of a second, and the search is about 23% faster ([#350])
 
 ### Features
 

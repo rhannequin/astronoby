@@ -73,7 +73,9 @@ means a maximum rounding of 2.4 hours.
 To set up your own precision, you can use:
 
 ```rb
-Astronoby.cache_precision(:geometric, 5)
+Astronoby.configure do |config|
+  config.cache_precision(:geometric, 5)
+end
 ```
 
 All geometric positions of the same celestial body within 0.86 seconds will be
