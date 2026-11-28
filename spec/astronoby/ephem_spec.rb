@@ -180,6 +180,17 @@ RSpec.describe Astronoby::Ephem do
 
       expect(ephem.coverage).to eq([50.25, 200.0])
     end
+
+    it "raises when the pairs have no dates in common" do
+      ephem = described_class.new(
+        kernel_with(segment(0, 10, 0.0, 100.0), segment(0, 4, 200.0, 300.0))
+      )
+
+      expect { ephem.coverage }.to raise_error(
+        Astronoby::EphemerisError,
+        "The kernels have no dates at which they cover every body they hold"
+      )
+    end
   end
 
   describe "#close" do

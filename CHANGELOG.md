@@ -36,6 +36,19 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Find the culminations of a body whose hour angle runs faster than the
   sidereal rate, such as a retrograde planet, up to the end of the search
   window. One in its last minutes was missed ([#350])
+* Find the risings and settings of `LocalSky` on the altitude crossing
+  search instead of `RiseTransitSetCalculator`. Near the polar circles, the
+  Moon that dips below the horizon for a few minutes, or rises from a lower
+  culmination just below it, lost these events, and a culmination below the
+  horizon could be taken for one. Over 2025 at 68°N, 19 Moon risings were
+  missed and 9 spurious ones returned, and `on`, `between` and `from` could
+  disagree. Risings and settings now match IMCCE's altitudes and are the same
+  whichever way they are read. A pass that dips ends with that setting and the
+  next one starts with that rising. The deprecated `RiseTransitSetCalculator`
+  keeps its behaviour ([#351])
+* Limbs in altitude crossings use the semidiameter seen by the observer
+  instead of from the centre of the Earth, which moves the Moon's limb by up
+  to 0.14″ ([#351])
 
 ### Features
 
@@ -93,6 +106,9 @@ _If you are upgrading: please see [UPGRADING.md]._
   28%. `Apparent.build_from_astrometric` accepts `precession_matrix:` and
   `nutation_matrix:`, and `MeanOfDate.build_from_geometric` accepts
   `precession_matrix:` ([#345])
+* Altitude crossings are about 35% faster and twilights 15%, as culminations
+  are searched in time order with the hour angle rate they measure. Passes
+  are about 20% faster and transits 12% ([#351])
 
 ### Deprecations
 
@@ -133,6 +149,7 @@ will be removed in 0.14.0 ([#350]):
 [#347]: https://github.com/rhannequin/astronoby/pull/347
 [#349]: https://github.com/rhannequin/astronoby/pull/349
 [#350]: https://github.com/rhannequin/astronoby/pull/350
+[#351]: https://github.com/rhannequin/astronoby/pull/351
 
 ## 0.12.0 - 2026-11-24
 

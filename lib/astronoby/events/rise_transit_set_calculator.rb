@@ -18,13 +18,10 @@ module Astronoby
     TAU = Math::PI * 2
     SAMPLE_THRESHOLD = 0.8
     REFINEMENT_ITERATIONS = 3
-    PASS_REFINEMENT_ITERATIONS = 8
-    SAMPLED_SEARCH_HALF_WIDTH = 0.25
     CONVERGENCE_TOLERANCE_IN_DAYS = 0.5 / Constants::SECONDS_PER_DAY
     STANDARD_REFRACTION_ANGLE = Horizon::REFRACTION_ANGLE
     SUN_REFRACTION_ANGLE = Horizon::SUN_ANGLE
     EVENT_TYPES = [:rising, :transit, :setting].freeze
-    SIDEREAL_RATE = TAU * 1.00273790935
 
     # @param body [Astronoby::SolarSystemBody, Astronoby::DeepSkyObject]
     #   Celestial body for which to calculate events
@@ -69,39 +66,6 @@ module Astronoby
     def events_between(start_time, end_time)
       warn_deprecated(:events_between)
       rounded_events_between(start_time, end_time)
-    end
-
-    # @api private
-    def instants_between(start_time, end_time, event_type)
-      reset_state
-      @start_instant = Instant.from(start_time)
-      @end_instant = Instant.from(end_time)
-      event_instants(event_type)
-    end
-
-    # @api private
-    def passes_between(start_time, end_time)
-      reset_state
-      @start_instant = Instant.from(start_time)
-      @end_instant = Instant.from(end_time)
-
-      transits = event_instants(:transit)
-      transits.zip(@refined_positions || []).map do |transit, position|
-        hour_angle = calculate_hour_angles([position]).first
-        rising_event = calculate_rising_event(position)
-
-        if rising_event.can_occur
-          rising, setting = [:rising, :setting].map do |event_type|
-            target = (event_type == :rising) ? rising_event : rising_event.negated
-            refine_from(event_type, position, hour_angle, target.hour_angle)
-          end
-        end
-
-        rising = nil if rising && rising >= transit
-        setting = nil if setting && setting <= transit
-
-        [rising, transit, setting]
-      end
     end
 
     private
@@ -273,14 +237,11 @@ module Astronoby
       event_type,
       new_instants,
       old_hour_angles,
-      old_instants,
-      first_change_forward: true,
-      iterations: REFINEMENT_ITERATIONS
+      old_instants
     )
-      iterations.times do |iteration|
+      REFINEMENT_ITERATIONS.times do |iteration|
         # Calculate positions at current estimates
         apparent_positions = calculate_positions_at_instants(new_instants)
-        @refined_positions = apparent_positions
 
         # Calculate current hour angles
         current_hour_angles = calculate_hour_angles(apparent_positions)
@@ -301,7 +262,7 @@ module Astronoby
         hour_angle_changes = calculate_hour_angle_changes(
           current_hour_angles,
           old_hour_angles,
-          first_change_forward ? iteration : 1
+          iteration
         )
 
         # Calculate time differences
@@ -332,10 +293,9 @@ module Astronoby
           Instant.from_terrestrial_time(instant.tt + time_adjustments[i])
         end
 
-        @converged = time_adjustments.all? do |adjustment|
+        break if time_adjustments.all? do |adjustment|
           adjustment.abs < CONVERGENCE_TOLERANCE_IN_DAYS
         end
-        break if @converged
       end
 
       new_instants
@@ -429,78 +389,6 @@ module Astronoby
       Horizon.angle_for(body: @body, distance: distance)
     end
 
-    def refine_from(event_type, position, hour_angle, target_hour_angle)
-      instant = position.instant
-      tt = estimate_tt(instant, hour_angle, target_hour_angle)
-      if (declination = sampled_declination_at(tt))
-        target = rising_hour_angle(
-          @observer.latitude,
-          declination,
-          horizon_angle(position.distance)
-        )
-        target = -target if event_type == :setting
-        tt = estimate_tt(instant, hour_angle, target)
-      end
-
-      refined = refine_time_estimates(
-        event_type,
-        [Instant.from_terrestrial_time(tt)],
-        [hour_angle],
-        [instant],
-        first_change_forward: false,
-        iterations: PASS_REFINEMENT_ITERATIONS
-      ).first
-      return sampled_event_near(event_type, refined) unless @converged
-
-      refined if calculate_rising_event(@refined_positions.first).can_occur
-    rescue ::Ephem::OutOfRangeError
-      nil
-    end
-
-    def sampled_event_near(event_type, estimate)
-      self.class
-        .new(body: @body, observer: @observer, ephem: @ephem)
-        .instants_between(
-          Instant.from_terrestrial_time(estimate.tt - SAMPLED_SEARCH_HALF_WIDTH),
-          Instant.from_terrestrial_time(estimate.tt + SAMPLED_SEARCH_HALF_WIDTH),
-          event_type
-        )
-        .min_by { |instant| (instant.tt - estimate.tt).abs }
-    end
-
-    def estimate_tt(instant, hour_angle, target_hour_angle)
-      offset = ((target_hour_angle - hour_angle).radians + Math::PI) % TAU -
-        Math::PI
-      instant.tt + offset / sampled_hour_angle_rate
-    end
-
-    def sampled_declination_at(tt)
-      instants = sample_instants
-      return if instants.size < 2
-
-      index = instants.each_cons(2).find_index { |_, b| tt <= b.tt } ||
-        instants.size - 2
-
-      positions = calculate_initial_positions
-      a = positions[index].equatorial.declination.radians
-      b = positions[index + 1].equatorial.declination.radians
-      fraction = (tt - instants[index].tt) /
-        (instants[index + 1].tt - instants[index].tt)
-      Angle.from_radians(a + (b - a) * fraction)
-    end
-
-    def sampled_hour_angle_rate
-      @sampled_hour_angle_rate ||= begin
-        hour_angles = calculate_initial_hour_angles
-        turns = hour_angles.each_cons(2).sum do |a, b|
-          (b.radians - a.radians) % TAU
-        end
-        days = sample_instants.last.tt - sample_instants.first.tt
-        whole_turns = ((SIDEREAL_RATE * days - turns) / TAU).round
-        (turns + whole_turns * TAU) / days
-      end
-    end
-
     def reset_state
       @initial_hour_angles = nil
       @initial_positions = nil
@@ -509,9 +397,6 @@ module Astronoby
       @start_instant = nil
       @end_instant = nil
       @positions_cache = nil
-      @sampled_hour_angle_rate = nil
-      @refined_positions = nil
-      @converged = nil
     end
   end
 end

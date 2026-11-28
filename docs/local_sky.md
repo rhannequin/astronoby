@@ -49,7 +49,7 @@ pass.setting.to_time.round
 # => 2025-10-02 04:50:04 UTC
 ```
 
-`rising` and `setting` are `nil` when the target does not cross the horizon, for a circumpolar star for example.
+`rising` is `nil` when the target does not rise between the previous transit and this one, and `setting` when it does not set before the next transit: for a circumpolar star, or on the first day of the midnight sun. A target that dips below the horizon for a few minutes, such as the Moon near the polar circles, ends one pass with that setting and starts the next one with that rising.
 
 Risings and settings follow each body's standard horizon, as on the [Rise, transit and setting times page]: the upper limb of the Sun and the Moon, refraction included.
 
@@ -83,7 +83,7 @@ crossings = local_sky
   .on(Date.new(2025, 10, 1))
 
 crossings.map { |crossing| [crossing.direction, crossing.instant.to_time.round] }
-# => [[:rising, 2025-10-01 16:03:59 UTC], [:setting, 2025-10-01 22:41:08 UTC]]
+# => [[:rising, 2025-10-01 16:03:58 UTC], [:setting, 2025-10-01 22:41:09 UTC]]
 ```
 
 You can learn more about crossings, and about grazing ones, on the [Altitude crossings page].

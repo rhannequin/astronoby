@@ -6,22 +6,25 @@ module Astronoby
   class Seasons
     # The equinoxes and solstices of one year.
     class Year
-      # @return [Astronoby::SeasonStart]
+      # @return [Astronoby::SeasonStart, nil] nil when the ephemeris does not
+      #   cover it
       attr_reader :march_equinox, :june_solstice, :september_equinox,
         :december_solstice
 
       # @api private
-      def initialize(march_equinox:, june_solstice:, september_equinox:,
-        december_solstice:)
+      def initialize(march_equinox: nil, june_solstice: nil,
+        september_equinox: nil, december_solstice: nil)
         @march_equinox = march_equinox
         @june_solstice = june_solstice
         @september_equinox = september_equinox
         @december_solstice = december_solstice
       end
 
-      # @return [Array<Astronoby::SeasonStart>] the four, in order
+      # @return [Array<Astronoby::SeasonStart>] the ones the ephemeris covers,
+      #   in order
       def to_a
         [march_equinox, june_solstice, september_equinox, december_solstice]
+          .compact
       end
     end
 

@@ -4,6 +4,15 @@ RSpec.describe Astronoby::Seasons do
   include TestEphemHelper
 
   describe "#in" do
+    it "leaves out what the ephemeris does not cover" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      year = sky.seasons.in(2026)
+
+      expect(year.march_equinox).to be_nil
+      expect(year.to_a).to eq([])
+    end
+
     it "returns the equinoxes and solstices of the year" do
       sky = Astronoby::Sky.new(test_ephem)
 
@@ -59,6 +68,14 @@ RSpec.describe Astronoby::Seasons do
       starts = sky.seasons.between(Time.utc(2025, 5, 1), Time.utc(2025, 10, 1))
 
       expect(starts.map(&:kind)).to eq([:june_solstice, :september_equinox])
+    end
+
+    it "returns the ones the ephemeris covers" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      starts = sky.seasons.between(Time.utc(2025, 11, 1), Time.utc(2026, 7, 1))
+
+      expect(starts.map(&:kind)).to eq([:december_solstice])
     end
   end
 
