@@ -116,6 +116,41 @@ Astronoby::Deflection.new(
 )
 ```
 
+### `Topocentric` is built from the astrometric frame
+
+Topocentric positions now include the aberration from the observer's velocity
+and take the observer's position before aberration. They move by up to 0.4″,
+and their distances by up to 600 m. Deep-sky objects without an ephemeris and
+`HorizontalTransformation` include the aberration from the observer's velocity
+as well, and move by up to 0.32″.
+
+`Topocentric.build_from_apparent` is deprecated, as it leaves this aberration
+out. `observed_by` is the usual way to get a topocentric frame and is
+unchanged, and `Topocentric.build_from_astrometric` builds one from the
+astrometric frame:
+
+```rb
+# Before
+Astronoby::Topocentric.build_from_apparent(
+  apparent: moon.apparent,
+  observer: observer,
+  instant: instant,
+  target_body: Astronoby::Moon
+)
+
+# After
+moon.observed_by(observer)
+
+# Or
+Astronoby::Topocentric.build_from_astrometric(
+  instant: instant,
+  target_astrometric: moon.astrometric,
+  observer: observer,
+  target_body: Astronoby::Moon,
+  earth_geometric: moon.earth_geometric
+)
+```
+
 ## Upgrading from 0.11.1 to 0.12.0
 
 ### Refraction has changed near the horizon

@@ -11,9 +11,6 @@ module Astronoby
     # @return [Astronoby::Instant] the time instant
     attr_reader :instant
 
-    # @return [Astronoby::Apparent] the apparent reference frame
-    attr_reader :apparent
-
     # @return [Astronoby::DeepSkyObject, nil] the body definition
     attr_reader :body
 
@@ -50,7 +47,6 @@ module Astronoby
         @earth_geometric = Earth.geometric(ephem: ephem, instant: @instant)
         @sun_geometric = Sun.geometric(ephem: ephem, instant: @instant)
       end
-      compute_apparent
     end
 
     # @return [Astronoby::Astrometric] Astrometric position of the object
@@ -64,7 +60,42 @@ module Astronoby
       )
     end
 
+    # @return [Astronoby::Apparent] the apparent reference frame
+    def apparent
+      @apparent ||= Apparent.build_from_astrometric(
+        instant: @instant,
+        target_astrometric: astrometric,
+        earth_geometric: @earth_geometric,
+        sun_geometric: @sun_geometric,
+        target_body: body,
+        precession_matrix: precession_matrix,
+        nutation_matrix: nutation_matrix
+      )
+    end
+
     private
+
+    attr_reader :earth_geometric
+
+    def deflecting_sun_geometric
+      @sun_geometric
+    end
+
+    def barycentric_velocity
+      if use_stellar_propagation?
+        stellar_propagation.barycentric_velocity
+      else
+        Velocity.vector_from_mps([0.0, 0.0, 0.0])
+      end
+    end
+
+    def precession_matrix
+      @precession_matrix ||= Precession.matrix_for(@instant)
+    end
+
+    def nutation_matrix
+      @nutation_matrix ||= Nutation.matrix_for(@instant)
+    end
 
     def astrometric_position
       @astrometric_position ||=
@@ -111,16 +142,6 @@ module Astronoby
         radial_velocity: @radial_velocity,
         instant: @instant,
         earth_geometric: @earth_geometric
-      )
-    end
-
-    def compute_apparent
-      @apparent = Apparent.build_from_astrometric(
-        instant: @instant,
-        target_astrometric: astrometric,
-        earth_geometric: @earth_geometric,
-        sun_geometric: @sun_geometric,
-        target_body: body
       )
     end
   end

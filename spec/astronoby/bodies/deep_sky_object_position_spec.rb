@@ -426,23 +426,23 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
       topocentric = dso.observed_by(observer)
 
       expect(topocentric.equatorial.right_ascension.str(:hms))
-        .to eq("18h 37m 48.6972s")
+        .to eq("18h 37m 48.6963s")
       # Skyfield: 18h 37m 48.70s
       # Astropy:  18h 37m 29.3159s
 
       expect(topocentric.equatorial.declination.str(:dms))
-        .to eq("+38° 48′ 41.4947″")
+        .to eq("+38° 48′ 41.6267″")
       # Skyfield: +38° 48′ 41.6″
       # Astropy:  +38° 48′ 41.6272″
 
       expect(topocentric.horizontal.altitude.str(:dms))
-        .to eq("+26° 30′ 4.2043″")
+        .to eq("+26° 30′ 4.2862″")
       # Skyfield:   +26° 30′ 4.2″
       # Astropy:    +26° 30′ 4.1613″
       # Stellarium: +26° 30′ 4.1″
 
       expect(topocentric.horizontal.azimuth.str(:dms))
-        .to eq("+299° 35′ 16.3737″")
+        .to eq("+299° 35′ 16.4901″")
       # Skyfield:   +299° 35′ 16.6″
       # Astropy:    +299° 35′ 16.1035″
       # Stellarium: +299° 35′ 18.7″
@@ -471,13 +471,13 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2676s")
+          .to eq("18h 37m 48.2667s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 34.1103″")
+          .to eq("+38° 48′ 34.2423″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 55.5045″")
+          .to eq("+26° 29′ 55.5863″")
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 35′ 14.1239″")
+          .to eq("+299° 35′ 14.2403″")
       end
     end
 
@@ -502,15 +502,17 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2779s")
+          .to eq("18h 37m 48.277s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.054″")
+          .to eq("+38° 48′ 16.186″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 43.3349″")
-        # ERFA: +26° 29′ 43.3354″ (c2t06a, polar motion ignored)
+          .to eq("+26° 29′ 43.4168″")
+        # ERFA: +26° 29′ 43.4173″ (c2t06a and ab with the observer's
+        #   velocity, polar motion ignored)
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 34′ 59.2186″")
-        # ERFA: +299° 34′ 59.2184″ (c2t06a, polar motion ignored)
+          .to eq("+299° 34′ 59.335″")
+        # ERFA: +299° 34′ 59.3347″ (c2t06a and ab with the observer's
+        #   velocity, polar motion ignored)
       end
     end
   end

@@ -49,7 +49,7 @@ observer = Astronoby::Observer.new(
 saturn = sky.saturn.at(instant)
 
 saturn.observed_by(observer).horizontal.altitude.str(:dms)
-# => "+31° 31′ 1.4719″"
+# => "+31° 31′ 1.4059″"
 
 sky.mars.at(instant).elongation.str(:dms)
 # => "+27° 31′ 17.13″"
@@ -81,7 +81,7 @@ vega = Astronoby::DeepSkyObject.new(
 )
 
 sky[vega].at(instant).observed_by(observer).horizontal.altitude.str(:dms)
-# => "+54° 6′ 32.7372″"
+# => "+54° 6′ 32.908″"
 ```
 
 You can learn more about deep-sky objects on the [Deep-sky Bodies page].

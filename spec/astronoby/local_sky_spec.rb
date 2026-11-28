@@ -50,7 +50,7 @@ RSpec.describe Astronoby::LocalSky do
         .on(Date.new(2025, 10, 1))
 
       expect(crossings.map { _1.instant.to_time.round }).to eq(
-        [Time.utc(2025, 10, 1, 16, 3, 58), Time.utc(2025, 10, 1, 22, 41, 9)]
+        [Time.utc(2025, 10, 1, 16, 3, 59), Time.utc(2025, 10, 1, 22, 41, 9)]
       )
       # IMCCE, upper limb at 5° apparent with Bennett's refraction:
       #   2025-10-01T16:03:58.78Z, 2025-10-01T22:41:08.38Z
@@ -116,9 +116,9 @@ RSpec.describe Astronoby::LocalSky do
         .between(Time.utc(2026, 1, 3), Time.utc(2026, 1, 5))
 
       expect(passes[0].setting.to_time)
-        .to be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.27))
+        .to be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.35))
       expect(passes[1].rising.to_time)
-        .to be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.41))
+        .to be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.33))
       # IMCCE, upper limb at -34′: 2026-01-03T18:52:25.38Z,
       #   2026-01-03T19:28:36.46Z
       # Skyfield: 2026-01-03T18:52:25.37Z, 2026-01-03T19:28:36.47Z
@@ -134,7 +134,7 @@ RSpec.describe Astronoby::LocalSky do
         .first
 
       expect(pass.rising.to_time)
-        .to be_within(0.01).of(Time.utc(2025, 1, 9, 7, 51, 51.91))
+        .to be_within(0.01).of(Time.utc(2025, 1, 9, 7, 51, 52.1))
       expect(pass.setting).to be_nil
       # IMCCE, upper limb at -34′: 2025-01-09T07:51:52.12Z
       # Skyfield: 2025-01-09T07:51:52.11Z, no setting before 2025-01-10T12:00Z
@@ -203,10 +203,10 @@ RSpec.describe Astronoby::LocalSky do
       risings = local_sky.risings(sky.moon).between(start_time, end_time)
 
       expect(settings.map(&:to_time)).to match([
-        be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.27))
+        be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.35))
       ])
       expect(risings.map(&:to_time)).to match([
-        be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.41))
+        be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.33))
       ])
       # IMCCE, upper limb at -34′: 2026-01-03T18:52:25.38Z,
       #   2026-01-03T19:28:36.46Z
@@ -223,10 +223,10 @@ RSpec.describe Astronoby::LocalSky do
       settings = local_sky.settings(sky.moon).between(start_time, end_time)
 
       expect(risings.map(&:to_time)).to match([
-        be_within(0.01).of(Time.utc(2025, 2, 19, 1, 36, 0.77))
+        be_within(0.01).of(Time.utc(2025, 2, 19, 1, 36, 0.65))
       ])
       expect(settings.map(&:to_time)).to match([
-        be_within(0.01).of(Time.utc(2025, 2, 19, 5, 30, 48.58))
+        be_within(0.01).of(Time.utc(2025, 2, 19, 5, 30, 48.7))
       ])
       # IMCCE, upper limb at -34′: 2025-02-19T01:36:00.66Z,
       #   2025-02-19T05:30:48.70Z
@@ -344,11 +344,11 @@ RSpec.describe Astronoby::LocalSky do
       expect(culminations.map(&:kind))
         .to eq([:upper_culmination, :lower_culmination])
       expect(culminations[0].instant.to_time)
-        .to be_within(0.01).of(Time.utc(2025, 10, 1, 11, 40, 14.83))
+        .to be_within(0.01).of(Time.utc(2025, 10, 1, 11, 40, 14.85))
       expect(culminations[1].instant.to_time)
-        .to be_within(0.01).of(Time.utc(2025, 10, 1, 23, 40, 5.22))
+        .to be_within(0.01).of(Time.utc(2025, 10, 1, 23, 40, 5.21))
       expect(culminations.map { _1.altitude.str(:dms, precision: 3) })
-        .to eq(["+37° 46′ 5.691″", "-44° 45′ 6.789″"])
+        .to eq(["+37° 46′ 5.69″", "-44° 45′ 6.788″"])
       # IMCCE, true altitude at these instants: +37° 46′ 5.6912″,
       #   -44° 45′ 6.7886″
       # Skyfield: 2025-10-01T11:40:14.85Z +37° 46′ 5.6908″,
@@ -380,7 +380,7 @@ RSpec.describe Astronoby::LocalSky do
 
       expect(culminations.last.kind).to eq(:upper_culmination)
       expect(culminations.last.instant.to_time)
-        .to be_within(0.01).of(Time.utc(2025, 1, 15, 0, 10, 8.75))
+        .to be_within(0.01).of(Time.utc(2025, 1, 15, 0, 10, 8.76))
     end
   end
 

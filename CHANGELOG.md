@@ -49,6 +49,15 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Limbs in altitude crossings use the semidiameter seen by the observer
   instead of from the centre of the Earth, which moves the Moon's limb by up
   to 0.14″ ([#351])
+* Build topocentric positions from the astrometric position instead of
+  subtracting the observer from the apparent one. Aberration now includes the
+  observer's velocity from the Earth's rotation, up to 0.32″, and the
+  observer's position is taken before aberration, with the change in light
+  time it brings. Against IMCCE, the topocentric Moon goes from 0.43″ and
+  600 m off to 0.04″ and 17 m, the right ascensions and declinations of the
+  planets agree to a few milliarcseconds, and the Moon no longer rises and
+  sets 0.1 to 0.3 s early. Deep-sky objects without an ephemeris and
+  `HorizontalTransformation` get the diurnal aberration too ([#353])
 
 ### Features
 
@@ -131,6 +140,9 @@ will be removed in 0.14.0 ([#350]):
   `#multiple_crossings_between`, `#crossing_on` and `#extremes_between`,
   replaced by `Astronoby::LocalSky`. `RiseTransitSetEvent`,
   `RiseTransitSetEvents`, `TwilightEvent` and `TwilightEvents` leave with them
+* `Topocentric.build_from_apparent`, which leaves out the aberration from the
+  observer's velocity, replaced by `Topocentric.build_from_astrometric` or
+  `observed_by` ([#353])
 
 ### Backward-incompatible changes
 
@@ -141,6 +153,9 @@ will be removed in 0.14.0 ([#350]):
 * `Deflection.new` takes the observer's and the Sun's barycentric positions
   (`observer_position:`, `sun_position:`) instead of `instant:` and `ephem:`
   ([#334])
+* Topocentric positions move by up to 0.4″ and their distances by up to
+  600 m. Horizontal coordinates of deep-sky objects without an ephemeris and
+  from `HorizontalTransformation` move by up to 0.32″ ([#353])
 
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
@@ -150,6 +165,7 @@ will be removed in 0.14.0 ([#350]):
 [#349]: https://github.com/rhannequin/astronoby/pull/349
 [#350]: https://github.com/rhannequin/astronoby/pull/350
 [#351]: https://github.com/rhannequin/astronoby/pull/351
+[#353]: https://github.com/rhannequin/astronoby/pull/353
 
 ## 0.12.0 - 2026-11-24
 

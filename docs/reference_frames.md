@@ -137,11 +137,16 @@ as seen from a specific location on Earth's surface. It can only be produced
 given an observer (`Astronoby::Observer`). It provides an additional set of
 coordinates: horizontal (`Astronoby::Coordinates::Horizontal`).
 
-To go from the apparent frame (true equator and equinox) to the topocentric
-frame, the observer's position must be transformed from the **International
-Terrestrial Reference System (ITRS)** into the same true-equinox frame. This is
-done by applying the **IERS polar motion matrix** (W) followed by the Earth
-rotation via **Greenwich Apparent Sidereal Time (GAST)**.
+The topocentric frame is built from the astrometric frame, like the apparent
+frame. The observer's position and velocity are transformed from the
+**International Terrestrial Reference System (ITRS)** into GCRS by applying the
+**IERS polar motion matrix** (W), the Earth rotation via **Greenwich Apparent
+Sidereal Time (GAST)**, then the inverse of nutation and precession. The
+observer's position is subtracted from the astrometric position, with the
+change in light time it brings, and the light deflection and the aberration
+are applied with the Earth's velocity plus the observer's, which adds the
+diurnal aberration of up to 0.32″. The result is rotated to the true equator
+and equinox like the apparent frame.
 
 ```rb
 sky = Astronoby::Sky.load("tmp/inpop19a.bsp")

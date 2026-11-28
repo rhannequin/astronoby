@@ -130,8 +130,9 @@ horizontal.azimuth.str(:dms, precision: 0)
 ```
 
 The result is the same as the one of a `DeepSkyObject` without an ephemeris,
-which means the points are treated as fixed directions: there is no aberration,
-no proper motion and no parallax. Atmospheric refraction is not applied by
+which means the points are treated as fixed directions: there is no proper
+motion, no parallax, and only the aberration from the observer's velocity due
+to the Earth's rotation, up to 0.32″. Atmospheric refraction is not applied by
 default, and can be requested with `transformation.apply(sirius, refraction:
 true)`. The coordinates must be at J2000 epoch, otherwise an
 `Astronoby::IncompatibleArgumentsError` is raised.

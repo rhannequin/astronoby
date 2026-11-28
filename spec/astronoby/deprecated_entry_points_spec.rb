@@ -23,8 +23,8 @@ RSpec.describe "Deprecated entry points", :deprecations do
     )
   end
 
-  def deprecation(subject, replacement)
-    /\A#{Regexp.escape(__FILE__)}:\d+: warning: #{Regexp.escape(subject)} is deprecated and will be removed in Astronoby 0\.14\.0, use Astronoby::Sky instead: #{Regexp.escape(replacement)}\n\z/
+  def deprecation(subject, replacement, instead: "Astronoby::Sky")
+    /\A#{Regexp.escape(__FILE__)}:\d+: warning: #{Regexp.escape(subject)} is deprecated and will be removed in Astronoby 0\.14\.0, use #{Regexp.escape(instead)} instead: #{Regexp.escape(replacement)}\n\z/
   end
 
   it "warns on a body built at an instant" do
@@ -32,6 +32,25 @@ RSpec.describe "Deprecated entry points", :deprecations do
 
     expect { Astronoby::Mars.at(instant, ephem: ephem) }.to output(
       deprecation("Astronoby::Mars.at(instant, ephem:)", "sky.mars.at(instant)")
+    ).to_stderr
+  end
+
+  it "warns on a topocentric frame built from the apparent frame" do
+    moon = Astronoby::Sky.new(test_ephem).moon.at(instant)
+
+    expect {
+      Astronoby::Topocentric.build_from_apparent(
+        apparent: moon.apparent,
+        observer: paris,
+        instant: instant,
+        target_body: Astronoby::Moon
+      )
+    }.to output(
+      deprecation(
+        "Astronoby::Topocentric.build_from_apparent",
+        "body.observed_by(observer)",
+        instead: "Astronoby::Topocentric.build_from_astrometric"
+      )
     ).to_stderr
   end
 

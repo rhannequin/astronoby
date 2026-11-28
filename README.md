@@ -50,7 +50,7 @@ observer = Astronoby::Observer.new(
 )
 
 sky.saturn.at(instant).observed_by(observer).horizontal.altitude.str(:dms)
-# => "+31° 31′ 1.4719″"
+# => "+31° 31′ 1.4059″"
 ```
 
 ### See also
