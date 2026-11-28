@@ -32,7 +32,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Find the Moon's apoapsides and periapsides where its radial velocity is
   zero instead of at the sampled extremum of its distance. Their instants
   moved by up to 0.7 s with the search range, no longer depend on it and agree
-  with Skyfield to 2 ms, and the search is about 23% faster
+  with Skyfield to 2 ms, and the search is about 23% faster ([#350])
 
 ### Features
 
@@ -71,11 +71,12 @@ _If you are upgrading: please see [UPGRADING.md]._
   `on`, `between` and `from` read them like any event series ([#349])
 * `sky.moon.apogees` and `sky.moon.perigees` give when the Moon is farthest
   from and closest to Earth, as `Astronoby::ExtremumEvent` objects with the
-  geometric distance as value
+  geometric distance as value ([#350])
 * `local_sky.culminations(target, refraction: false)` gives the upper and
   lower culminations of a target with its altitude, as
-  `Astronoby::AltitudeExtreme` objects, and accepts a limb
+  `Astronoby::AltitudeExtreme` objects, and accepts a limb ([#350])
 * `Instant.from(time)` returns an instant as it is and converts a `Time`
+  ([#350])
 * `RiseTransitSetCalculator#events_between` and
   `AltitudeCrossingCalculator#crossings_between` accept instants as well as
   times ([#347]), and so do `ConjunctionOppositionCalculator`,
@@ -93,7 +94,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 ### Deprecations
 
 Each of these prints a warning naming its replacement, once per process, and
-will be removed in 0.14.0:
+will be removed in 0.14.0 ([#350]):
 
 * `ephem:` in `SolarSystemBody.at` and `.new`, `DeepSkyObject#at` and
   `orientation:` in `Moon.at` and `.new`, replaced by `Astronoby::Sky`
@@ -128,6 +129,7 @@ will be removed in 0.14.0:
 [#346]: https://github.com/rhannequin/astronoby/pull/346
 [#347]: https://github.com/rhannequin/astronoby/pull/347
 [#349]: https://github.com/rhannequin/astronoby/pull/349
+[#350]: https://github.com/rhannequin/astronoby/pull/350
 
 ## 0.12.0 - 2026-11-24
 
