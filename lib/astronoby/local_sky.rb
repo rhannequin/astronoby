@@ -197,7 +197,7 @@ module Astronoby
         end
 
         search
-          .horizon_events(altitude.angle, first_tt, last_tt, [event_type])
+          .horizon_events(altitude.angle, first_tt, last_tt, [event_type], edges: true)
           .filter_map { |rising, _, setting| (event_type == :rising) ? rising : setting }
       end
     end

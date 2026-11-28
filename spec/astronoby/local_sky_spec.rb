@@ -271,6 +271,47 @@ RSpec.describe Astronoby::LocalSky do
       expect(from_start.size).to eq(6)
       expect(to_end.size).to eq(6)
     end
+
+    it "finds a rising or setting whose transit is outside the ephemeris" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(observer_at(-33.9, 151.2))
+      first, last = sky.ephem.coverage
+
+      settings = local_sky.settings(sky.sun).between(
+        Astronoby::Instant.from_terrestrial_time(first),
+        Astronoby::Instant.from_terrestrial_time(first + 0.5)
+      )
+      risings = local_sky.risings(sky.sun).between(
+        Astronoby::Instant.from_terrestrial_time(last - 0.5),
+        Astronoby::Instant.from_terrestrial_time(last)
+      )
+
+      expect(settings.map(&:to_time)).to match([
+        be_within(0.01).of(Time.utc(2025, 1, 1, 9, 9, 33.06))
+      ])
+      expect(risings.map(&:to_time)).to match([
+        be_within(0.01).of(Time.utc(2026, 1, 3, 18, 49, 46.24))
+      ])
+      # Skyfield: 2025-01-01T09:09:33.06Z, 2026-01-03T18:49:46.24Z
+    end
+
+    it "searches risings, settings, transits and passes up to the end" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+      _, last = sky.ephem.coverage
+
+      (0..12).each do |step|
+        end_instant = Astronoby::Instant.from_terrestrial_time(last - step * 0.07)
+        start_instant = Astronoby::Instant.from_terrestrial_time(
+          end_instant.tt - 1.3
+        )
+
+        [:risings, :settings, :transits, :passes].each do |series|
+          expect { local_sky.public_send(series, sky.moon).between(start_instant, end_instant) }
+            .not_to raise_error
+        end
+      end
+    end
   end
 
   describe "#culminations" do

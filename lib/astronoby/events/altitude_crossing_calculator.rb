@@ -30,8 +30,8 @@ module Astronoby
     SEGMENT_HOUR_ANGLE_TOLERANCE = 1e-4
     CULMINATION_ESTIMATE_MARGIN_IN_DAYS = 1.0 / 96
     CULMINATION_ACCEPT = 2e-3
-    MEASURED_CULMINATION_ACCEPT = 2e-2
-    EXTRAPOLATION_MARGIN = Angle.from_degrees(0.75).radians
+    MEASURED_CULMINATION_ACCEPT = 5e-3
+    EXTRAPOLATION_MARGIN = Angle.from_degrees(1.25).radians
     MIN_NEIGHBOUR_SPAN_IN_DAYS = 1e-7
     SECANT_ACCEPT = 1e-4
     BOUND_LEAD = 1.05
@@ -237,24 +237,37 @@ module Astronoby
         ).map { |culmination| Instant.from_terrestrial_time(culmination.tt) }
       end
 
-      def horizon_events(altitude, first_tt, last_tt, sides)
+      def horizon_events(altitude, first_tt, last_tt, sides, edges: false)
         target = altitude.radians
+        before_coverage = first_tt < coverage_first
+        after_coverage = last_tt > coverage_last
         first_tt = [first_tt, coverage_first].max
         last_tt = [last_tt, coverage_last].min
         return [] unless first_tt < last_tt
 
-        culminations(
+        transits = culminations(
           first_tt,
           last_tt,
           HOUR_ANGLE_TOLERANCE,
           kinds: [AltitudeExtreme::UPPER_CULMINATION]
-        ).map do |transit|
+        )
+        events = transits.map do |transit|
           rising = side_crossing(transit, target, :rising) if sides.include?(:rising)
           setting = side_crossing(transit, target, :setting) if sides.include?(:setting)
+          [rising&.tt, transit.tt, setting&.tt]
+        end
 
-          [rising&.tt, transit.tt, setting&.tt].map do |tt|
-            tt && Instant.from_terrestrial_time(tt)
-          end
+        if edges && before_coverage && sides.include?(:setting)
+          setting = edge_setting(transits.first&.tt || last_tt, target)
+          events.unshift([nil, nil, setting.tt]) if setting
+        end
+        if edges && after_coverage && sides.include?(:rising)
+          rising = edge_rising(transits.last&.tt || first_tt, target)
+          events.push([rising.tt, nil, nil]) if rising
+        end
+
+        events.map do |tts|
+          tts.map { |tt| tt && Instant.from_terrestrial_time(tt) }
         end
       end
 
@@ -360,7 +373,7 @@ module Astronoby
             limit_tt: last_tt - BOUND_MARGIN_IN_DAYS,
             measured_rate: rate
           ))
-          if found.last.tt <= @end_tt
+          if found.empty? || found.last.tt <= @end_tt
             edge_tt = [last_tt, @end_tt].max
             found << Culmination.new(COVERAGE_EDGE, edge_tt, sample_at(edge_tt))
           end
@@ -392,15 +405,19 @@ module Astronoby
           break if tt > limit_tt
           break if !beyond && tt > end_tt + CULMINATION_ESTIMATE_MARGIN_IN_DAYS
 
-          tt, sample, probes = refine_culmination(
+          refined = refine_culmination(
             tt, angle % TAU, tolerance,
             accept: accept && (measured ? MEASURED_CULMINATION_ACCEPT : CULMINATION_ACCEPT),
             rate: rate
           )
+          break unless refined
+
+          tt, sample, probes = refined
+          sample = extreme_sample(sample, angle % TAU) if accept
           kind = (angle / Math::PI).round.even? ?
             AltitudeExtreme::UPPER_CULMINATION :
             AltitudeExtreme::LOWER_CULMINATION
-          if tt >= start_tt && (beyond || tt <= end_tt)
+          if (beyond && found.empty?) || (tt >= start_tt && (beyond || tt <= end_tt))
             found << Culmination.new(kind, tt, sample, probes)
           end
           break if beyond && tt > end_tt
@@ -427,6 +444,8 @@ module Astronoby
         previous = nil
 
         MAX_ITERATIONS.times do
+          return unless covered?(tt)
+
           sample = sample_at(tt)
           residual = wrap(sample.hour_angle - hour_angle)
           probes = previous && [[previous[:tt], previous[:sample]], [tt, sample]]
@@ -450,7 +469,56 @@ module Astronoby
           tt -= step
         end
 
-        [tt, sample_at(tt)]
+        [tt, sample_at(tt)] if covered?(tt)
+      end
+
+      def covered?(tt)
+        tt.between?(coverage_first, coverage_last)
+      end
+
+      def extreme_sample(sample, hour_angle)
+        altitude = geometric_altitude(sample.declination, hour_angle) + sample.limb
+        if @refraction
+          altitude += Refraction
+            .angle(altitude: Angle.from_radians(altitude), observer: @observer)
+            .radians
+        end
+
+        Sample.new(hour_angle, sample.declination, altitude, sample.limb)
+      end
+
+      def edge_rising(after_tt, target)
+        lower = culminations(
+          after_tt,
+          coverage_last,
+          SEGMENT_HOUR_ANGLE_TOLERANCE,
+          kinds: [AltitudeExtreme::LOWER_CULMINATION],
+          accept: true
+        ).last
+        return unless lower
+
+        edge = Culmination.new(COVERAGE_EDGE, coverage_last, sample_at(coverage_last))
+        segment_crossings(
+          lower, edge, target,
+          direction: :rising, low: lower.tt, high: edge.tt
+        ).last
+      end
+
+      def edge_setting(before_tt, target)
+        lower = culminations(
+          coverage_first,
+          before_tt,
+          SEGMENT_HOUR_ANGLE_TOLERANCE,
+          kinds: [AltitudeExtreme::LOWER_CULMINATION],
+          accept: true
+        ).first
+        return unless lower
+
+        edge = Culmination.new(COVERAGE_EDGE, coverage_first, sample_at(coverage_first))
+        segment_crossings(
+          edge, lower, target,
+          direction: :setting, low: edge.tt, high: lower.tt
+        ).first
       end
 
       def side_crossing(transit, target, side)
@@ -460,7 +528,7 @@ module Astronoby
         lower_tt, lower_sample = estimate
         f_transit = transit.sample.altitude - target
         f_lower = lower_sample.altitude - target
-        if [f_transit.abs, f_lower.abs].min <= EXTRAPOLATION_MARGIN
+        if f_transit.abs <= GRAZING_MARGIN || f_lower.abs <= EXTRAPOLATION_MARGIN
           return exact_side_crossing(transit, target, side)
         end
         return if f_transit.negative? || f_lower.positive?
@@ -508,14 +576,17 @@ module Astronoby
         direction = (side == :rising) ? -1 : 1
         estimate = transit.tt + direction * Math::PI / SIDEREAL_RATE
         edge = (side == :rising) ? coverage_first : coverage_last
-        lower = if (side == :rising) ? estimate <= edge : estimate >= edge
-          Culmination.new(COVERAGE_EDGE, edge, sample_at(edge))
-        else
-          tt, sample = refine_culmination(
-            estimate, Math::PI, SEGMENT_HOUR_ANGLE_TOLERANCE,
-            accept: CULMINATION_ACCEPT
+        refined = refine_culmination(
+          estimate, Math::PI, SEGMENT_HOUR_ANGLE_TOLERANCE,
+          accept: CULMINATION_ACCEPT
+        )
+        lower = if refined
+          tt, sample = refined
+          Culmination.new(
+            AltitudeExtreme::LOWER_CULMINATION, tt, extreme_sample(sample, Math::PI)
           )
-          Culmination.new(AltitudeExtreme::LOWER_CULMINATION, tt, sample)
+        else
+          Culmination.new(COVERAGE_EDGE, edge, sample_at(edge))
         end
 
         if side == :rising
