@@ -33,6 +33,9 @@ _If you are upgrading: please see [UPGRADING.md]._
   zero instead of at the sampled extremum of its distance. Their instants
   moved by up to 0.7 s with the search range, no longer depend on it and match
   IMCCE to the tenth of a second, and the search is about 23% faster ([#350])
+* Find the culminations of a body whose hour angle runs faster than the
+  sidereal rate, such as a retrograde planet, up to the end of the search
+  window. One in its last minutes was missed ([#350])
 
 ### Features
 

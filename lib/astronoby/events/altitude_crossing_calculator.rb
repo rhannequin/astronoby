@@ -32,7 +32,7 @@ module Astronoby
     # a hundred microradians of hour angle is, except for a body passing within
     # a few thousandths of a degree of the zenith.
     SEGMENT_HOUR_ANGLE_TOLERANCE = 1e-4
-    CULMINATION_ESTIMATE_MARGIN_IN_DAYS = 1.0 / 24
+    CULMINATION_ESTIMATE_MARGIN_IN_DAYS = 1.0 / 96
     GRAZING_MARGIN = Angle.from_degrees(0.05).radians
     # A Newton step from an altitude this close to the target lands within
     # {ALTITUDE_TOLERANCE} of it, for a slope that is off by up to 2%, so the
