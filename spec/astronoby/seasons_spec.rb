@@ -28,6 +28,17 @@ RSpec.describe Astronoby::Seasons do
       expect(year.to_a.map(&:kind)).to eq(Astronoby::SeasonStart::KINDS)
     end
 
+    it "finds them with geometric positions rounded by the cache" do
+      Astronoby.configuration.cache_enabled = true
+      Astronoby.configuration.cache_precision(:geometric, 5)
+      sky = Astronoby::Sky.new(test_ephem)
+
+      year = sky.seasons.in(2025)
+
+      expect(year.june_solstice.instant.to_time)
+        .to be_within(1).of(Time.utc(2025, 6, 21, 2, 42, 15.68))
+    end
+
     it "agrees with the Sun's apparent longitude" do
       ephem = test_ephem
       sky = Astronoby::Sky.new(ephem)

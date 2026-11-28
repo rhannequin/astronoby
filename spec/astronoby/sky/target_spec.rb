@@ -256,6 +256,17 @@ RSpec.describe Astronoby::Sky::Target do
       #           2025-01-21T20:30:47.46Z, 2025-01-29T12:35:58.90Z
     end
 
+    it "finds them with geometric positions rounded by the cache" do
+      Astronoby.configuration.cache_enabled = true
+      Astronoby.configuration.cache_precision(:geometric, 5)
+      sky = Astronoby::Sky.new(test_ephem)
+
+      phases = sky.moon.phases.between(Time.utc(2025, 1, 1), Time.utc(2025, 2, 1))
+
+      expect(phases[1].instant.to_time)
+        .to be_within(1).of(Time.utc(2025, 1, 13, 22, 26, 54.54))
+    end
+
     it "agrees with the apparent longitudes of the Moon and the Sun" do
       ephem = test_ephem
       sky = Astronoby::Sky.new(ephem)

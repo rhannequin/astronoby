@@ -69,6 +69,8 @@ module Astronoby
           rate = (residual - previous[:residual]) / (tt - previous[:tt])
         end
         step = residual / rate
+        break unless step.abs <= FALLBACK_HALF_WIDTH_IN_DAYS
+
         previous = {tt: tt, residual: residual}
         tt -= step
         return tt if step.abs < TOLERANCE_IN_DAYS
