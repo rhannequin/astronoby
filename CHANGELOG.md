@@ -56,7 +56,8 @@ _If you are upgrading: please see [UPGRADING.md]._
   time it brings. Against IMCCE, the topocentric Moon goes from 0.43″ and
   600 m off to 0.04″ and 17 m, the right ascensions and declinations of the
   planets agree to a few milliarcseconds, and the Moon no longer rises and
-  sets 0.1 to 0.3 s early ([#352])
+  sets 0.1 to 0.3 s early. Deep-sky objects without an ephemeris and
+  `HorizontalTransformation` get the diurnal aberration too ([#352])
 
 ### Features
 
@@ -139,6 +140,9 @@ will be removed in 0.14.0 ([#350]):
   `#multiple_crossings_between`, `#crossing_on` and `#extremes_between`,
   replaced by `Astronoby::LocalSky`. `RiseTransitSetEvent`,
   `RiseTransitSetEvents`, `TwilightEvent` and `TwilightEvents` leave with them
+* `Topocentric.build_from_apparent`, which leaves out the aberration from the
+  observer's velocity, replaced by `Topocentric.build_from_astrometric` or
+  `observed_by` ([#352])
 
 ### Backward-incompatible changes
 
@@ -150,11 +154,8 @@ will be removed in 0.14.0 ([#350]):
   (`observer_position:`, `sun_position:`) instead of `instant:` and `ephem:`
   ([#334])
 * Topocentric positions move by up to 0.4″ and their distances by up to
-  600 m ([#352])
-* `Topocentric.build_from_apparent` is replaced by
-  `Topocentric.build_from_astrometric`, which takes the astrometric frame,
-  Earth's and the Sun's geometric frames and the precession and nutation
-  matrices, as `Apparent.build_from_astrometric` does ([#352])
+  600 m. Horizontal coordinates of deep-sky objects without an ephemeris and
+  from `HorizontalTransformation` move by up to 0.32″ ([#352])
 
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334

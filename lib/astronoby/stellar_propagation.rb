@@ -89,6 +89,12 @@ module Astronoby
       end
     end
 
+    # @return [Astronoby::Vector<Astronoby::Velocity>] velocity of the star
+    #   relative to the solar system barycentre
+    def barycentric_velocity
+      tangential_velocity
+    end
+
     private
 
     def distance

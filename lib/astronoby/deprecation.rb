@@ -8,7 +8,7 @@ module Astronoby
 
     @warned = {}
 
-    def self.warn(owner, name, uplevel: 1)
+    def self.warn(owner, name, uplevel: 1, instead: "Astronoby::Sky")
       warned = (@warned[owner] ||= {})
       return if warned.key?(name) || Thread.current[NESTED_KEY]
 
@@ -16,7 +16,7 @@ module Astronoby
       subject, replacement = yield
       Kernel.warn(
         "#{subject} is deprecated and will be removed in Astronoby " \
-        "#{REMOVAL_VERSION}, use Astronoby::Sky instead: #{replacement}",
+        "#{REMOVAL_VERSION}, use #{instead} instead: #{replacement}",
         uplevel: uplevel + 1
       )
     end

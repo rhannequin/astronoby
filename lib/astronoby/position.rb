@@ -12,6 +12,7 @@ module Astronoby
         target_body: body,
         earth_geometric: earth_geometric,
         sun_geometric: deflecting_sun_geometric,
+        target_barycentric_velocity: barycentric_velocity,
         precession_matrix: precession_matrix,
         nutation_matrix: nutation_matrix
       )

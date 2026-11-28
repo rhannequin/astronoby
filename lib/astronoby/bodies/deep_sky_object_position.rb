@@ -81,6 +81,14 @@ module Astronoby
       @sun_geometric
     end
 
+    def barycentric_velocity
+      if use_stellar_propagation?
+        stellar_propagation.barycentric_velocity
+      else
+        Velocity.vector_from_mps([0.0, 0.0, 0.0])
+      end
+    end
+
     def precession_matrix
       @precession_matrix ||= Precession.matrix_for(@instant)
     end

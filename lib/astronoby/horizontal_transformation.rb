@@ -6,8 +6,9 @@ module Astronoby
   #
   # Everything that depends only on the observer and the instant is computed
   # once at construction: the rotation from the ICRS to the true equator and
-  # equinox of date (nutation * precession, with the ICRS frame bias), and the
-  # local apparent sidereal time. Converting a point then costs a matrix
+  # equinox of date (nutation * precession, with the ICRS frame bias), the
+  # observer's velocity from the Earth's rotation, and the local apparent
+  # sidereal time. Converting a point then costs a matrix
   # product and a few trigonometric functions, instead of rebuilding the
   # reference frame chain for each point. It is meant for converting many
   # points for the same observer and instant, such as the stars of a catalogue
@@ -17,9 +18,10 @@ module Astronoby
   # and ERFA, restricted to what Astronoby applies without an ephemeris. The
   # result is the same as
   # `DeepSkyObject#at(instant).observed_by(observer).horizontal`, but the
-  # points are treated as fixed directions: no aberration, no proper motion and
-  # no parallax. The topocentric correction is not applied either, as it is
-  # nil for objects at stellar distances. Atmospheric refraction is optional.
+  # points are treated as fixed directions: no annual aberration, no proper
+  # motion and no parallax. The topocentric correction is not applied either,
+  # as it is nil for objects at stellar distances, but the diurnal aberration
+  # from the observer's velocity is. Atmospheric refraction is optional.
   #
   # @example Convert the stars of a catalogue for one observer and instant
   #   transformation = Astronoby::HorizontalTransformation.new(
@@ -28,6 +30,8 @@ module Astronoby
   #   )
   #   horizontals = catalogue.map { |star| transformation.apply(star) }
   class HorizontalTransformation
+    LIGHT_SPEED = Velocity.light_speed.mps
+
     # @return [Astronoby::Observer] the observer
     attr_reader :observer
 
@@ -41,6 +45,10 @@ module Astronoby
       @instant = instant
       @rotation_rows = (
         Nutation.matrix_for(instant) * Precession.matrix_for(instant)
+      ).to_a.freeze
+      @observer_beta = (
+        observer.earth_fixed_rotation_matrix_for(instant) *
+          observer.geocentric_velocity.map(&:mps) / LIGHT_SPEED
       ).to_a.freeze
       @local_apparent_sidereal_time = LocalApparentSiderealTime.from_utc(
         instant.to_time,
@@ -80,16 +88,21 @@ module Astronoby
       z = declination.sin
 
       row_x, row_y, row_z = @rotation_rows
-      apparent_x = row_x[0] * x + row_x[1] * y + row_x[2] * z
-      apparent_y = row_y[0] * x + row_y[1] * y + row_y[2] * z
-      apparent_z = row_z[0] * x + row_z[1] * y + row_z[2] * z
+      beta_x, beta_y, beta_z = @observer_beta
+      apparent_x = row_x[0] * x + row_x[1] * y + row_x[2] * z + beta_x
+      apparent_y = row_y[0] * x + row_y[1] * y + row_y[2] * z + beta_y
+      apparent_z = row_z[0] * x + row_z[1] * y + row_z[2] * z + beta_z
+      norm = Math.sqrt(
+        apparent_x * apparent_x + apparent_y * apparent_y +
+          apparent_z * apparent_z
+      )
 
       apparent_right_ascension =
         Angle.from_radians(Math.atan2(apparent_y, apparent_x))
 
       Coordinates::Equatorial.new(
         right_ascension: apparent_right_ascension,
-        declination: Angle.asin(apparent_z.clamp(-1.0, 1.0)),
+        declination: Angle.asin((apparent_z / norm).clamp(-1.0, 1.0)),
         hour_angle:
           Angle.from_hours(@local_apparent_sidereal_time) -
             apparent_right_ascension,

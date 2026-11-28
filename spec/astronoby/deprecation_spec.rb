@@ -18,6 +18,18 @@ RSpec.describe Astronoby::Deprecation, :deprecations do
       ).to_stderr
     end
 
+    it "names another replacement than Sky" do
+      owner = Class.new
+
+      expect {
+        described_class.warn(owner, :call, instead: "Old.new_call") do
+          ["Old.call", "Old.new_call(argument)"]
+        end
+      }.to output(
+        /use Old\.new_call instead: Old\.new_call\(argument\)\n\z/
+      ).to_stderr
+    end
+
     it "warns again for another entry point of the same owner" do
       owner = Class.new
 

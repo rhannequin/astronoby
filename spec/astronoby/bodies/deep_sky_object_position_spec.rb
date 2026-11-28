@@ -502,15 +502,17 @@ RSpec.describe Astronoby::DeepSkyObjectPosition do
         topocentric = dso.observed_by(observer)
 
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("18h 37m 48.2779s")
+          .to eq("18h 37m 48.277s")
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("+38° 48′ 16.054″")
+          .to eq("+38° 48′ 16.186″")
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("+26° 29′ 43.3349″")
-        # ERFA: +26° 29′ 43.3354″ (c2t06a, polar motion ignored)
+          .to eq("+26° 29′ 43.4168″")
+        # ERFA: +26° 29′ 43.4173″ (c2t06a and ab with the observer's
+        #   velocity, polar motion ignored)
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+299° 34′ 59.2186″")
-        # ERFA: +299° 34′ 59.2184″ (c2t06a, polar motion ignored)
+          .to eq("+299° 34′ 59.335″")
+        # ERFA: +299° 34′ 59.3347″ (c2t06a and ab with the observer's
+        #   velocity, polar motion ignored)
       end
     end
   end

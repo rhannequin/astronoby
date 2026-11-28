@@ -120,11 +120,14 @@ Astronoby::Deflection.new(
 
 Topocentric positions now include the aberration from the observer's velocity
 and take the observer's position before aberration. They move by up to 0.4″,
-and their distances by up to 600 m.
+and their distances by up to 600 m. Deep-sky objects without an ephemeris and
+`HorizontalTransformation` include the aberration from the observer's velocity
+as well, and move by up to 0.32″.
 
-`Topocentric.build_from_apparent` is replaced by
-`Topocentric.build_from_astrometric`. `observed_by` is the usual way to get a
-topocentric frame and is unchanged:
+`Topocentric.build_from_apparent` is deprecated, as it leaves this aberration
+out. `observed_by` is the usual way to get a topocentric frame and is
+unchanged, and `Topocentric.build_from_astrometric` builds one from the
+astrometric frame:
 
 ```rb
 # Before

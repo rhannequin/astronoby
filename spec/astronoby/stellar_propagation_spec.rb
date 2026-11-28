@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Astronoby::StellarPropagation do
+  include TestEphemHelper
+
   describe ".equatorial_coordinates_for" do
     it "returns propagated coordinates for Aldebaran on 1991-01-01" do
       time = Time.utc(1991, 1, 1)
@@ -105,6 +107,37 @@ RSpec.describe Astronoby::StellarPropagation do
         radial_velocity: radial_velocity,
         instant: instant
       )
+    end
+  end
+
+  describe "#barycentric_velocity" do
+    it "does not depend on Earth's motion" do
+      ephem = test_ephem
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      arguments = {
+        equatorial_coordinates: Astronoby::Coordinates::Equatorial.new(
+          right_ascension: Astronoby::Angle.from_hms(4, 35, 55.23907),
+          declination: Astronoby::Angle.from_dms(16, 30, 33.4885),
+          epoch: Astronoby::JulianDate::J2000
+        ),
+        proper_motion_ra: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(63.45),
+        proper_motion_dec: Astronoby::AngularVelocity
+          .from_milliarcseconds_per_year(-188.94),
+        parallax: Astronoby::Angle.from_degree_arcseconds(48.94 / 1000.0),
+        radial_velocity: Astronoby::Velocity.from_kilometers_per_second(54.398),
+        instant: instant
+      }
+      earth_geometric = Astronoby::Earth.geometric(ephem: ephem, instant: instant)
+
+      without_earth = described_class.new(**arguments).barycentric_velocity
+      with_earth = described_class
+        .new(**arguments, earth_geometric: earth_geometric)
+        .barycentric_velocity
+
+      expect(with_earth.map(&:mps)).to eq(without_earth.map(&:mps))
+      expect(without_earth.map(&:mps))
+        .to eq(described_class.new(**arguments).velocity_vector.map(&:mps))
     end
   end
 end

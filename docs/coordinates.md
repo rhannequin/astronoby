@@ -173,7 +173,7 @@ path at the zenith. It is 1 at the zenith, about 2 at 30° of altitude and about
 
 ```rb
 horizontal.airmass.value
-# => 2.067817889129236
+# => 2.0678178891280257
 ```
 
 It uses the formula that matches the altitude: Young (1994) for the true

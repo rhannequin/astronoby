@@ -480,6 +480,10 @@ module Astronoby
       @snapshot.sun_geometric unless Apparent::UNDEFLECTED_BODIES.include?(body)
     end
 
+    def barycentric_velocity
+      light_time_corrected_velocity
+    end
+
     def precession_matrix
       @snapshot.precession_matrix
     end
