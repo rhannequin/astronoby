@@ -42,7 +42,7 @@ local_sky = sky.over(observer)
 | `RiseTransitSetCalculator#event_on`, `#events_on`, `#events_between` | `local_sky.passes(target)`, or `risings`, `transits` and `settings` |
 | `Astronoby::Sun.twilight_events(observer:, ephem:, date:)` | `local_sky.twilights.on(date)` |
 | `TwilightCalculator#event_on`, `#events_between` | `local_sky.twilights` |
-| `TwilightCalculator#time_for_zenith_angle(date:, period_of_the_day: :morning, zenith_angle:)` | `local_sky.crossings(sky.sun, Astronoby::Altitude.true(degrees: 90 - zenith_angle.degrees)).on(date).find { _1.direction == :rising }` |
+| `TwilightCalculator#time_for_zenith_angle(date:, period_of_the_day:, zenith_angle:)` | `local_sky.crossings(sky.sun, Astronoby::Altitude.true(degrees: 90 - zenith_angle.degrees)).on(date).find { _1.direction == :rising }`, or `:setting` for `:evening` |
 | `AltitudeCrossingCalculator#crossings_between`, `#crossing_on` | `local_sky.crossings(target, altitude)` |
 | `AltitudeCrossingCalculator#multiple_crossings_between` | one `local_sky.crossings` per altitude, each running its own search |
 | `AltitudeCrossingCalculator#extremes_between` | `local_sky.culminations(target)` |

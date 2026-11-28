@@ -28,7 +28,7 @@ local_sky
 # => [2025-10-01 15:17:42 UTC, 2025-10-02 15:43:31 UTC, 2025-10-03 16:04:03 UTC]
 ```
 
-`from` stops at the end of the ephemeris or after a year, whichever comes first, and right away when a fixed star never reaches the altitude. It raises `Ephem::OutOfRangeError` when the ephemeris does not cover its start.
+`from` stops at the end of the ephemeris or after a year, whichever comes first, and returns nothing when a fixed star never reaches the altitude. It raises `Ephem::OutOfRangeError` when the ephemeris does not cover its start.
 
 Events come sorted by time, and their instants are not rounded.
 

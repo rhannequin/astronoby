@@ -40,7 +40,8 @@ module Astronoby
       end
 
       # Searches one window at a time, as the events are asked for. Stops at
-      # the end of the ephemeris or after the horizon, about a year.
+      # the end of the ephemeris or after the horizon: a year for a local sky,
+      # a hundred years for the events seen from the centre of the Earth.
       #
       # @param start_time [Astronoby::Instant, Time] start of the search
       # @return [Enumerator::Lazy] the events from that time on

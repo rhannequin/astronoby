@@ -92,7 +92,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
 ## Events of a body
 
-Targets give the events seen from the centre of the Earth, as `Astronoby::Events::Series` objects read with `on(date)`, `between(start, finish)` or `from(start)`, as on the [Local sky page]. Each event carries an unrounded `instant`.
+Targets give the events seen from the centre of the Earth, as `Astronoby::Events::Series` objects read with `on(date)`, `between(start, finish)` or `from(start)`, as on the [Local sky page]. `from` stops at the end of the ephemeris or after a hundred years. Each event carries an unrounded `instant`.
 
 ```rb
 sky
