@@ -346,8 +346,8 @@ module Astronoby
         earth_geometric: earth_geometric,
         sun_geometric: deflecting_sun_geometric,
         target_body: body,
-        precession_matrix: @snapshot.precession_matrix,
-        nutation_matrix: @snapshot.nutation_matrix
+        precession_matrix: precession_matrix,
+        nutation_matrix: nutation_matrix
       )
     end
 
@@ -478,6 +478,14 @@ module Astronoby
 
     def deflecting_sun_geometric
       @snapshot.sun_geometric unless Apparent::UNDEFLECTED_BODIES.include?(body)
+    end
+
+    def precession_matrix
+      @snapshot.precession_matrix
+    end
+
+    def nutation_matrix
+      @snapshot.nutation_matrix
     end
 
     def light_time_corrected_position

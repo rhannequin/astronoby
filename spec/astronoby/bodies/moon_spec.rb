@@ -381,28 +381,28 @@ RSpec.describe Astronoby::Moon do
 
       aggregate_failures do
         expect(topocentric.equatorial.right_ascension.str(:hms))
-          .to eq("23h 42m 13.0923s")
+          .to eq("23h 42m 13.097s")
         # IMCCE:      23h 42m 13.1008s
         # Horizons:   23h 42m 13.093946s
         # Stellarium: 23h 42m 13.16s
         # Skyfield:   23h 42m 13.10s
 
         expect(topocentric.equatorial.declination.str(:dms))
-          .to eq("-2° 43′ 50.1482″")
+          .to eq("-2° 43′ 50.1363″")
         # IMCCE:      -2° 43′ 50.110″
         # Horizons:   -2° 43′ 50.12197″
         # Stellarium: -2° 43′ 49.9″
         # Skyfield:   -2° 43′ 50.1″
 
         expect(topocentric.horizontal.azimuth.str(:dms))
-          .to eq("+92° 40′ 8.7615″")
+          .to eq("+92° 40′ 8.748″")
         # IMCCE:      +92° 40′ 8.760″
         # Horizons:   +92° 40′ 8.7334″
         # Stellarium: +92° 40′ 8.7″
         # Skyfield:   +92° 40′ 8.5″
 
         expect(topocentric.horizontal.altitude.str(:dms))
-          .to eq("-2° 44′ 22.7586″")
+          .to eq("-2° 44′ 22.8283″")
         # IMCCE:      -2° 44′ 23.640″
         # Horizons:   -2° 44′ 22.8363″
         # Stellarium: -2° 44′ 24.6″
@@ -426,13 +426,13 @@ RSpec.describe Astronoby::Moon do
 
         aggregate_failures do
           expect(horizontal.azimuth.str(:dms))
-            .to eq("+270° 40′ 41.732″")
+            .to eq("+270° 40′ 41.7355″")
           # Horizons:   +270° 40′ 41.7498″
           # Stellarium: +270° 40′ 42.5″
           # Skyfield:   +270° 40′ 41.7″
 
           expect(horizontal.altitude.str(:dms))
-            .to eq("+6° 50′ 17.2179″")
+            .to eq("+6° 50′ 17.126″")
           # Horizons:   +6° 50′ 19.33″
           # Stellarium: +6° 50′ 0.2″
           # Skyfield:   +6° 50′ 15.7″
@@ -874,7 +874,7 @@ RSpec.describe Astronoby::Moon do
       moon = described_class.new(instant: instant, ephem: ephem)
 
       expect(moon.parallactic_angle(observer: observer).str(:dms))
-        .to eq("+11° 42′ 47.144″")
+        .to eq("+11° 42′ 46.9613″")
     end
   end
 end

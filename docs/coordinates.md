@@ -144,7 +144,7 @@ saturn = sky.saturn.at(instant)
 horizontal = saturn.observed_by(observer).horizontal
 
 horizontal.altitude.str(:dms)
-# => "+28° 46′ 38.3328″"
+# => "+28° 46′ 38.3155″"
 ```
 
 ### Azimuth
@@ -154,7 +154,7 @@ eastward.
 
 ```rb
 horizontal.azimuth.str(:dms)
-# => "+171° 19′ 38.2483″"
+# => "+171° 19′ 37.9797″"
 ```
 
 ### Refraction
@@ -173,7 +173,7 @@ path at the zenith. It is 1 at the zenith, about 2 at 30° of altitude and about
 
 ```rb
 horizontal.airmass.value
-# => 2.067817577178516
+# => 2.067817889129236
 ```
 
 It uses the formula that matches the altitude: Young (1994) for the true

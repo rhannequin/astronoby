@@ -49,6 +49,14 @@ _If you are upgrading: please see [UPGRADING.md]._
 * Limbs in altitude crossings use the semidiameter seen by the observer
   instead of from the centre of the Earth, which moves the Moon's limb by up
   to 0.14″ ([#351])
+* Build topocentric positions from the astrometric position instead of
+  subtracting the observer from the apparent one. Aberration now includes the
+  observer's velocity from the Earth's rotation, up to 0.32″, and the
+  observer's position is taken before aberration, with the change in light
+  time it brings. Against IMCCE, the topocentric Moon goes from 0.43″ and
+  600 m off to 0.04″ and 17 m, the right ascensions and declinations of the
+  planets agree to a few milliarcseconds, and the Moon no longer rises and
+  sets 0.1 to 0.3 s early ([#352])
 
 ### Features
 
@@ -141,6 +149,12 @@ will be removed in 0.14.0 ([#350]):
 * `Deflection.new` takes the observer's and the Sun's barycentric positions
   (`observer_position:`, `sun_position:`) instead of `instant:` and `ephem:`
   ([#334])
+* Topocentric positions move by up to 0.4″ and their distances by up to
+  600 m ([#352])
+* `Topocentric.build_from_apparent` is replaced by
+  `Topocentric.build_from_astrometric`, which takes the astrometric frame,
+  Earth's and the Sun's geometric frames and the precession and nutation
+  matrices, as `Apparent.build_from_astrometric` does ([#352])
 
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
@@ -150,6 +164,7 @@ will be removed in 0.14.0 ([#350]):
 [#349]: https://github.com/rhannequin/astronoby/pull/349
 [#350]: https://github.com/rhannequin/astronoby/pull/350
 [#351]: https://github.com/rhannequin/astronoby/pull/351
+[#352]: https://github.com/rhannequin/astronoby/issues/352
 
 ## 0.12.0 - 2026-11-24
 

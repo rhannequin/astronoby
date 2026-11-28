@@ -66,10 +66,10 @@ You can learn more about reference frames and positions on the
 
 ```rb
 topocentric.horizontal.azimuth.str(:dms)
-# => "+175° 34′ 32.9837″"
+# => "+175° 34′ 32.4967″"
 
 topocentric.horizontal.altitude.str(:dms)
-# => "+64° 22′ 58.2109″"
+# => "+64° 22′ 58.1962″"
 ```
 
 You can learn more about coordinates on the [Coordinates page].

@@ -3,36 +3,93 @@
 module Astronoby
   # Topocentric reference frame. Represents a body's position as seen from a
   # specific observer on Earth's surface, accounting for the observer's
-  # geocentric position and Earth rotation.
+  # geocentric position, its velocity from the Earth's rotation, and the
+  # Earth's rotation itself.
   class Topocentric < ReferenceFrame
-    # Builds a topocentric frame from an apparent frame and observer.
+    LIGHT_SPEED = Velocity.light_speed.mps
+
+    # Builds a topocentric frame from an astrometric frame and an observer.
+    # The observer's position is subtracted from the astrometric position, with
+    # the change in light time it brings, then the Sun's gravitational light
+    # deflection and the aberration from the Earth's velocity and the
+    # observer's own are applied in GCRS, before rotating by nutation *
+    # precession (with ICRS frame bias). Without Earth's geometric frame only
+    # the observer's position and the rotation are applied, and deflection
+    # also needs the Sun's geometric frame.
     #
-    # @param apparent [Astronoby::Apparent] the apparent frame
-    # @param observer [Astronoby::Observer] the observer
     # @param instant [Astronoby::Instant] the time instant
+    # @param target_astrometric [Astronoby::Astrometric] target's astrometric
+    #   frame
+    # @param observer [Astronoby::Observer] the observer
     # @param target_body [Astronoby::Body, nil] the target body
+    # @param earth_geometric [Astronoby::Geometric, nil] Earth's geometric
+    #   frame
+    # @param sun_geometric [Astronoby::Geometric, nil] the Sun's geometric
+    #   frame, used to apply light deflection
+    # @param precession_matrix [Matrix] precession-bias matrix at the instant
+    # @param nutation_matrix [Matrix] nutation matrix at the instant
     # @return [Astronoby::Topocentric] a new topocentric frame
-    def self.build_from_apparent(
-      apparent:,
-      observer:,
+    def self.build_from_astrometric(
       instant:,
-      target_body:
+      target_astrometric:,
+      observer:,
+      target_body:,
+      earth_geometric: nil,
+      sun_geometric: nil,
+      precession_matrix: Precession.matrix_for(instant),
+      nutation_matrix: Nutation.matrix_for(instant)
     )
-      matrix = observer.earth_fixed_rotation_matrix_for(instant)
+      true_of_date = nutation_matrix * precession_matrix
+      to_gcrs = true_of_date.transpose *
+        observer.earth_fixed_rotation_matrix_for(instant)
+      observer_position = to_gcrs * observer.geocentric_position.map(&:m)
+      observer_velocity = to_gcrs * observer.geocentric_velocity.map(&:mps)
 
-      observer_position = Distance.vector_from_meters(
-        matrix * observer.geocentric_position.map(&:m)
-      )
-      observer_velocity = Velocity.vector_from_mps(
-        matrix * observer.geocentric_velocity.map(&:mps)
+      target_position = target_astrometric.position.map(&:m)
+      target_velocity = target_astrometric.velocity.map(&:mps)
+      barycentric_velocity = if earth_geometric
+        target_velocity + earth_geometric.velocity.map(&:mps)
+      else
+        target_velocity
+      end
+      distance = target_position.r
+      light_time_change = if distance.zero?
+        0.0
+      else
+        target_position.inner_product(observer_position) /
+          (distance * LIGHT_SPEED)
+      end
+
+      position = Distance.vector_from_meters(
+        target_position - observer_position +
+          barycentric_velocity * light_time_change
       )
 
-      position = apparent.position - observer_position
-      velocity = apparent.velocity - observer_velocity
+      if earth_geometric && sun_geometric &&
+          !Apparent::UNDEFLECTED_BODIES.include?(target_body)
+        position = Deflection.new(
+          target_astrometric_position: position,
+          observer_position: earth_geometric.position,
+          sun_position: sun_geometric.position
+        ).corrected_position
+      end
+
+      if earth_geometric
+        position = Aberration.new(
+          astrometric_position: position,
+          observer_velocity: Velocity.vector_from_mps(
+            earth_geometric.velocity.map(&:mps) + observer_velocity
+          )
+        ).corrected_position
+      end
 
       new(
-        position: position,
-        velocity: velocity,
+        position: Distance.vector_from_meters(
+          true_of_date * position.map(&:m)
+        ),
+        velocity: Velocity.vector_from_mps(
+          true_of_date * (target_velocity - observer_velocity)
+        ),
         instant: instant,
         center: Center.topocentric(observer),
         target_body: target_body,

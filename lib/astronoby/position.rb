@@ -5,11 +5,15 @@ module Astronoby
     # @param observer [Astronoby::Observer] the observer
     # @return [Astronoby::Topocentric] the topocentric reference frame
     def observed_by(observer)
-      Topocentric.build_from_apparent(
-        apparent: apparent,
-        observer: observer,
+      Topocentric.build_from_astrometric(
         instant: instant,
-        target_body: body
+        target_astrometric: astrometric,
+        observer: observer,
+        target_body: body,
+        earth_geometric: earth_geometric,
+        sun_geometric: deflecting_sun_geometric,
+        precession_matrix: precession_matrix,
+        nutation_matrix: nutation_matrix
       )
     end
   end
