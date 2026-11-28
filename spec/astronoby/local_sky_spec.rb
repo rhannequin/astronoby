@@ -10,6 +10,13 @@ RSpec.describe Astronoby::LocalSky do
     )
   end
 
+  def observer_at(latitude, longitude)
+    Astronoby::Observer.new(
+      latitude: Astronoby::Angle.from_degrees(latitude),
+      longitude: Astronoby::Angle.from_degrees(longitude)
+    )
+  end
+
   def vega
     Astronoby::DeepSkyObject.new(
       equatorial_coordinates: Astronoby::Coordinates::Equatorial.new(
@@ -43,8 +50,10 @@ RSpec.describe Astronoby::LocalSky do
         .on(Date.new(2025, 10, 1))
 
       expect(crossings.map { _1.instant.to_time.round }).to eq(
-        [Time.utc(2025, 10, 1, 16, 3, 59), Time.utc(2025, 10, 1, 22, 41, 8)]
+        [Time.utc(2025, 10, 1, 16, 3, 58), Time.utc(2025, 10, 1, 22, 41, 9)]
       )
+      # IMCCE: upper limb at a true altitude of 4.83474° at both instants,
+      #   5° apparent with a refraction of 0.16515°
     end
 
     it "finds nothing for an altitude a fixed star never reaches" do
@@ -97,6 +106,50 @@ RSpec.describe Astronoby::LocalSky do
       expect(pass.setting).to be_nil
     end
 
+    it "ends a pass and starts the next one around a short dip below the horizon" do
+      sky = Astronoby::Sky.new(test_ephem_inpop_2000_2050)
+      local_sky = sky.over(observer_at(64, -99))
+
+      passes = local_sky
+        .passes(sky.moon)
+        .between(Time.utc(2026, 1, 3), Time.utc(2026, 1, 5))
+
+      expect(passes[0].setting.to_time)
+        .to be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.27))
+      expect(passes[1].rising.to_time)
+        .to be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.41))
+      # IMCCE: upper limb at -34′ within 0.05″ at both instants
+      # Skyfield: 2026-01-03T18:52:25.36Z, 2026-01-03T19:28:36.47Z
+    end
+
+    it "has a rising and no setting when the body stays up after rising" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(observer_at(68, 15))
+
+      pass = local_sky
+        .passes(sky.moon)
+        .between(Time.utc(2025, 1, 9), Time.utc(2025, 1, 10))
+        .first
+
+      expect(pass.rising.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 9, 7, 51, 51.91))
+      expect(pass.setting).to be_nil
+      # IMCCE: upper limb 0.33″ below -34′ at that instant
+      # Skyfield: 2025-01-09T07:51:52.11Z, no setting before 2025-01-10T12:00Z
+    end
+
+    it "has a rising and no setting on the first day of the midnight sun" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(observer_at(78.2, 15.6))
+
+      pass = local_sky.passes(sky.sun).on(Date.new(2025, 4, 18)).first
+
+      expect(pass.rising.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 4, 17, 23, 32, 28.87))
+      expect(pass.setting).to be_nil
+      # Skyfield: 2025-04-17T23:32:28.86Z, no setting after it
+    end
+
     it "raises for a limb" do
       sky = Astronoby::Sky.new(test_ephem)
       local_sky = sky.over(paris)
@@ -135,6 +188,53 @@ RSpec.describe Astronoby::LocalSky do
 
       expect(risings.map { _1.to_time.round })
         .to eq([Time.utc(2025, 10, 1, 7, 7, 41)])
+    end
+
+    it "finds both events of a short dip below the horizon" do
+      sky = Astronoby::Sky.new(test_ephem_inpop_2000_2050)
+      local_sky = sky.over(observer_at(64, -99))
+      start_time = Time.utc(2026, 1, 3)
+      end_time = Time.utc(2026, 1, 4)
+
+      settings = local_sky.settings(sky.moon).between(start_time, end_time)
+      risings = local_sky.risings(sky.moon).between(start_time, end_time)
+
+      expect(settings.map(&:to_time)).to match([
+        be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.27))
+      ])
+      expect(risings.map(&:to_time)).to match([
+        be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.41))
+      ])
+      # IMCCE: upper limb at -34′ within 0.05″ at both instants
+      # Skyfield: 2026-01-03T18:52:25.36Z, 2026-01-03T19:28:36.47Z
+    end
+
+    it "finds nothing at a culmination below the horizon" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(observer_at(68, 15))
+      start_time = Time.utc(2025, 2, 19)
+      end_time = Time.utc(2025, 2, 21, 12)
+
+      risings = local_sky.risings(sky.moon).between(start_time, end_time)
+      settings = local_sky.settings(sky.moon).between(start_time, end_time)
+
+      expect(risings.map(&:to_time)).to match([
+        be_within(0.01).of(Time.utc(2025, 2, 19, 1, 36, 0.77))
+      ])
+      expect(settings.map(&:to_time)).to match([
+        be_within(0.01).of(Time.utc(2025, 2, 19, 5, 30, 48.58))
+      ])
+      # Skyfield: 2025-02-19T01:36:00.65Z, 2025-02-19T05:30:48.70Z, and
+      #   nothing else until 2025-02-21T12:00Z
+    end
+
+    it "finds no setting during the midnight sun" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(observer_at(78.2, 15.6))
+
+      settings = local_sky.settings(sky.sun).on(Date.new(2025, 4, 18))
+
+      expect(settings).to be_empty
     end
 
     it "finds no risings for a star that never sets" do

@@ -36,7 +36,7 @@ crossing.grazing?   # => true when the body only just reaches the altitude
 
 A crossing is `:rising` when the altitude increases through the target. It is `grazing?` when the target is within 0.05° of the body's highest or lowest altitude, where the instant is sensitive to small errors.
 
-The centre of the body reaches the altitude, unless one of its limbs is given. The limbs use the body's true semi-diameter and need a Solar System body:
+The centre of the body reaches the altitude, unless one of its limbs is given. The limbs use the body's semi-diameter as seen by the observer and need a Solar System body:
 
 ```rb
 local_sky.crossings(sky.moon.upper_limb, Astronoby::Altitude.apparent(degrees: 0))

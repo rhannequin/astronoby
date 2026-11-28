@@ -20,6 +20,7 @@ module Astronoby
     }.freeze
 
     UNREACHABLE_MARGIN = Angle.from_degrees(1)
+    HORIZON_EVENT_PADDING_IN_DAYS = 0.55
 
     # @return [Astronoby::Observer]
     attr_reader :observer
@@ -86,11 +87,17 @@ module Astronoby
     # @param target [Astronoby::Sky::Target, Astronoby::DeepSkyObject]
     # @return [Astronoby::Events::Series] of Astronoby::Pass
     def passes(target)
-      body = horizon_body(target)
+      calculator, altitude = horizon_search(horizon_body(target))
 
       series(time_of: :transit.to_proc) do |start_instant, end_instant|
-        rise_transit_set_calculator(body)
-          .passes_between(start_instant, end_instant)
+        calculator
+          .search_between(start_instant, end_instant)
+          .horizon_events(
+            altitude.angle,
+            start_instant.tt.to_f,
+            end_instant.tt.to_f,
+            [:rising, :setting]
+          )
           .map do |rising, transit, setting|
             Pass.new(rising: rising, transit: transit, setting: setting)
           end
@@ -174,24 +181,43 @@ module Astronoby
 
     def horizon_events(target, event_type)
       body = horizon_body(target)
+      calculator, altitude = horizon_search(body)
 
       series(time_of: :itself.to_proc) do |start_instant, end_instant|
-        if event_type != :transit &&
-            unreachable?(body, Horizon::REFRACTION_ANGLE, start_instant)
-          next []
+        search = calculator.search_between(start_instant, end_instant)
+        next search.transits if event_type == :transit
+        next [] if unreachable?(body, altitude.angle, start_instant)
+
+        first_tt = start_instant.tt.to_f
+        last_tt = end_instant.tt.to_f
+        if event_type == :rising
+          last_tt += HORIZON_EVENT_PADDING_IN_DAYS
+        else
+          first_tt -= HORIZON_EVENT_PADDING_IN_DAYS
         end
 
-        rise_transit_set_calculator(body)
-          .instants_between(start_instant, end_instant, event_type)
+        search
+          .horizon_events(altitude.angle, first_tt, last_tt, [event_type])
+          .filter_map { |rising, _, setting| (event_type == :rising) ? rising : setting }
       end
     end
 
-    def rise_transit_set_calculator(body)
-      RiseTransitSetCalculator.new(
+    def horizon_search(body)
+      reference, altitude = if body == Sun
+        [:center, Altitude.true(degrees: Horizon::SUN_ANGLE.degrees)]
+      elsif body == Moon
+        [:upper_limb, Altitude.true(degrees: Horizon::REFRACTION_ANGLE.degrees)]
+      else
+        [:center, Altitude.true(degrees: Horizon::REFRACTION_ANGLE.degrees)]
+      end
+
+      calculator = AltitudeCrossingCalculator.new(
         body: body,
         observer: @observer,
-        ephem: @sky.ephem
+        ephem: @sky.ephem,
+        reference: reference
       )
+      [calculator, altitude]
     end
 
     def unreachable?(body, altitude, instant)
