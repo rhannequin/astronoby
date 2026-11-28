@@ -45,10 +45,10 @@ _If you are upgrading: please see [UPGRADING.md]._
   disagree. Risings and settings now match IMCCE's altitudes and are the same
   whichever way they are read. A pass that dips ends with that setting and the
   next one starts with that rising. The deprecated `RiseTransitSetCalculator`
-  keeps its behaviour ([#336])
+  keeps its behaviour ([#351])
 * Limbs in altitude crossings use the semidiameter seen by the observer
   instead of from the centre of the Earth, which moves the Moon's limb by up
-  to 0.14″ ([#336])
+  to 0.14″ ([#351])
 
 ### Features
 
@@ -108,7 +108,7 @@ _If you are upgrading: please see [UPGRADING.md]._
   `precession_matrix:` ([#345])
 * Altitude crossings are about 35% faster and twilights 15%, as culminations
   are searched in time order with the hour angle rate they measure. Passes
-  are about 20% faster and transits 12% ([#336])
+  are about 20% faster and transits 12% ([#351])
 
 ### Deprecations
 
@@ -144,12 +144,12 @@ will be removed in 0.14.0 ([#350]):
 
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
-[#336]: https://github.com/rhannequin/astronoby/issues/336
 [#345]: https://github.com/rhannequin/astronoby/pull/345
 [#346]: https://github.com/rhannequin/astronoby/pull/346
 [#347]: https://github.com/rhannequin/astronoby/pull/347
 [#349]: https://github.com/rhannequin/astronoby/pull/349
 [#350]: https://github.com/rhannequin/astronoby/pull/350
+[#351]: https://github.com/rhannequin/astronoby/pull/351
 
 ## 0.12.0 - 2026-11-24
 
