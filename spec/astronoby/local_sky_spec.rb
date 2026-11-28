@@ -52,8 +52,9 @@ RSpec.describe Astronoby::LocalSky do
       expect(crossings.map { _1.instant.to_time.round }).to eq(
         [Time.utc(2025, 10, 1, 16, 3, 58), Time.utc(2025, 10, 1, 22, 41, 9)]
       )
-      # IMCCE: upper limb at a true altitude of 4.83474° at both instants,
-      #   5° apparent with a refraction of 0.16515°
+      # IMCCE, upper limb at 5° apparent with Bennett's refraction:
+      #   2025-10-01T16:03:58.78Z, 2025-10-01T22:41:08.38Z
+      # Skyfield: 2025-10-01T16:03:58.78Z, 2025-10-01T22:41:08.38Z
     end
 
     it "finds nothing for an altitude a fixed star never reaches" do
@@ -118,8 +119,9 @@ RSpec.describe Astronoby::LocalSky do
         .to be_within(0.01).of(Time.utc(2026, 1, 3, 18, 52, 25.27))
       expect(passes[1].rising.to_time)
         .to be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.41))
-      # IMCCE: upper limb at -34′ within 0.05″ at both instants
-      # Skyfield: 2026-01-03T18:52:25.36Z, 2026-01-03T19:28:36.47Z
+      # IMCCE, upper limb at -34′: 2026-01-03T18:52:25.38Z,
+      #   2026-01-03T19:28:36.46Z
+      # Skyfield: 2026-01-03T18:52:25.37Z, 2026-01-03T19:28:36.47Z
     end
 
     it "has a rising and no setting when the body stays up after rising" do
@@ -134,7 +136,7 @@ RSpec.describe Astronoby::LocalSky do
       expect(pass.rising.to_time)
         .to be_within(0.01).of(Time.utc(2025, 1, 9, 7, 51, 51.91))
       expect(pass.setting).to be_nil
-      # IMCCE: upper limb 0.33″ below -34′ at that instant
+      # IMCCE, upper limb at -34′: 2025-01-09T07:51:52.12Z
       # Skyfield: 2025-01-09T07:51:52.11Z, no setting before 2025-01-10T12:00Z
     end
 
@@ -147,6 +149,7 @@ RSpec.describe Astronoby::LocalSky do
       expect(pass.rising.to_time)
         .to be_within(0.01).of(Time.utc(2025, 4, 17, 23, 32, 28.87))
       expect(pass.setting).to be_nil
+      # IMCCE, centre at -50′: 2025-04-17T23:32:28.87Z
       # Skyfield: 2025-04-17T23:32:28.86Z, no setting after it
     end
 
@@ -205,8 +208,9 @@ RSpec.describe Astronoby::LocalSky do
       expect(risings.map(&:to_time)).to match([
         be_within(0.01).of(Time.utc(2026, 1, 3, 19, 28, 36.41))
       ])
-      # IMCCE: upper limb at -34′ within 0.05″ at both instants
-      # Skyfield: 2026-01-03T18:52:25.36Z, 2026-01-03T19:28:36.47Z
+      # IMCCE, upper limb at -34′: 2026-01-03T18:52:25.38Z,
+      #   2026-01-03T19:28:36.46Z
+      # Skyfield: 2026-01-03T18:52:25.37Z, 2026-01-03T19:28:36.47Z
     end
 
     it "finds nothing at a culmination below the horizon" do
@@ -224,6 +228,8 @@ RSpec.describe Astronoby::LocalSky do
       expect(settings.map(&:to_time)).to match([
         be_within(0.01).of(Time.utc(2025, 2, 19, 5, 30, 48.58))
       ])
+      # IMCCE, upper limb at -34′: 2025-02-19T01:36:00.66Z,
+      #   2025-02-19T05:30:48.70Z
       # Skyfield: 2025-02-19T01:36:00.65Z, 2025-02-19T05:30:48.70Z, and
       #   nothing else until 2025-02-21T12:00Z
     end
@@ -292,6 +298,8 @@ RSpec.describe Astronoby::LocalSky do
       expect(risings.map(&:to_time)).to match([
         be_within(0.01).of(Time.utc(2026, 1, 3, 18, 49, 46.24))
       ])
+      # IMCCE, centre at -50′: 2025-01-01T09:09:33.07Z,
+      #   2026-01-03T18:49:46.24Z
       # Skyfield: 2025-01-01T09:09:33.06Z, 2026-01-03T18:49:46.24Z
     end
 
