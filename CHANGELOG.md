@@ -57,7 +57,7 @@ _If you are upgrading: please see [UPGRADING.md]._
   600 m off to 0.04″ and 17 m, the right ascensions and declinations of the
   planets agree to a few milliarcseconds, and the Moon no longer rises and
   sets 0.1 to 0.3 s early. Deep-sky objects without an ephemeris and
-  `HorizontalTransformation` get the diurnal aberration too ([#352])
+  `HorizontalTransformation` get the diurnal aberration too ([#353])
 
 ### Features
 
@@ -142,7 +142,7 @@ will be removed in 0.14.0 ([#350]):
   `RiseTransitSetEvents`, `TwilightEvent` and `TwilightEvents` leave with them
 * `Topocentric.build_from_apparent`, which leaves out the aberration from the
   observer's velocity, replaced by `Topocentric.build_from_astrometric` or
-  `observed_by` ([#352])
+  `observed_by` ([#353])
 
 ### Backward-incompatible changes
 
@@ -155,7 +155,7 @@ will be removed in 0.14.0 ([#350]):
   ([#334])
 * Topocentric positions move by up to 0.4″ and their distances by up to
   600 m. Horizontal coordinates of deep-sky objects without an ephemeris and
-  from `HorizontalTransformation` move by up to 0.32″ ([#352])
+  from `HorizontalTransformation` move by up to 0.32″ ([#353])
 
 [#333]: https://github.com/rhannequin/astronoby/pull/333
 [#334]: https://github.com/rhannequin/astronoby/pull/334
@@ -165,7 +165,7 @@ will be removed in 0.14.0 ([#350]):
 [#349]: https://github.com/rhannequin/astronoby/pull/349
 [#350]: https://github.com/rhannequin/astronoby/pull/350
 [#351]: https://github.com/rhannequin/astronoby/pull/351
-[#352]: https://github.com/rhannequin/astronoby/issues/352
+[#353]: https://github.com/rhannequin/astronoby/pull/353
 
 ## 0.12.0 - 2026-11-24
 
