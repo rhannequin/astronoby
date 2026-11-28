@@ -320,6 +320,18 @@ RSpec.describe Astronoby::LocalSky do
         end
       end
     end
+
+    it "raises when the ephemeris starts after the search" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+      first, _ = sky.ephem.coverage
+      start = Astronoby::Instant.from_terrestrial_time(first - 3)
+
+      [:risings, :settings, :transits, :passes].each do |series|
+        expect { local_sky.public_send(series, sky.sun).from(start).first(1) }
+          .to raise_error(::Ephem::OutOfRangeError)
+      end
+    end
   end
 
   describe "#culminations" do

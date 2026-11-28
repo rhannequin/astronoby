@@ -238,6 +238,7 @@ module Astronoby
       end
 
       def horizon_events(altitude, first_tt, last_tt, sides, edges: false)
+        ensure_start_covered
         target = altitude.radians
         before_coverage = first_tt < coverage_first
         after_coverage = last_tt > coverage_last
@@ -474,6 +475,16 @@ module Astronoby
 
       def covered?(tt)
         tt.between?(coverage_first, coverage_last)
+      end
+
+      def ensure_start_covered
+        return if @start_tt >= coverage_first
+
+        raise ::Ephem::OutOfRangeError.new(
+          "The ephemeris starts after " \
+            "#{Instant.from_terrestrial_time(@start_tt).to_time}",
+          @start_tt
+        )
       end
 
       def extreme_sample(sample, hour_angle)
@@ -797,8 +808,9 @@ module Astronoby
         )
 
         finder.roots(first_tt, last_tt).map do |tt|
-          rising = altitude_at(tt + DIRECTION_PROBE_IN_DAYS) >
-            altitude_at(tt - DIRECTION_PROBE_IN_DAYS)
+          after = [tt + DIRECTION_PROBE_IN_DAYS, coverage_last].min
+          before = [tt - DIRECTION_PROBE_IN_DAYS, coverage_first].max
+          rising = altitude_at(after) > altitude_at(before)
           Crossing.new(tt, rising ? :rising : :setting, grazing)
         end
       end

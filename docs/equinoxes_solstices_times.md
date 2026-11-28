@@ -10,7 +10,7 @@ excursion relative to the celestial equator on the celestial sphere.
 apparent ecliptic longitude reaches 0°, 90°, 180° and 270°. `in(year)` returns
 an `Astronoby::Seasons::Year` with the four of a year, each an
 `Astronoby::SeasonStart` with a `kind`, an unrounded `instant`, `equinox?` and
-`solstice?`.
+`solstice?`. One that the ephemeris does not cover is `nil`.
 
 ```rb
 sky = Astronoby::Sky.load("tmp/inpop19a.bsp")

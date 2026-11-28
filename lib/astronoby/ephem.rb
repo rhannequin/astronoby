@@ -84,7 +84,12 @@ module Astronoby
         first, last = read_pairs
           .map { |pair| spans_of(@pairs[pair]) }
           .reduce { |spans, others| intersect(spans, others) }
-          .max_by { |first, last| last - first }
+          &.max_by { |first, last| last - first }
+        unless first
+          raise EphemerisError,
+            "The kernels have no dates at which they cover every body they hold"
+        end
+
         [first + LIGHT_TIME_MARGIN_IN_DAYS, last]
       end
     end

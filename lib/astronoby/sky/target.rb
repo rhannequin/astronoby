@@ -36,14 +36,14 @@ module Astronoby
       end
 
       # @return [Astronoby::Sky::TargetPoint] the top edge of the target's
-      #   disk, using its true semi-diameter
+      #   disk, using its semi-diameter as seen by the observer
       # @raise [ArgumentError] for a deep-sky object, which has no known size
       def upper_limb
         limb(:upper_limb)
       end
 
       # @return [Astronoby::Sky::TargetPoint] the bottom edge of the target's
-      #   disk, using its true semi-diameter
+      #   disk, using its semi-diameter as seen by the observer
       # @raise [ArgumentError] for a deep-sky object, which has no known size
       def lower_limb
         limb(:lower_limb)
@@ -198,10 +198,16 @@ module Astronoby
         first, last = @sky.ephem.coverage
         [
           Instant.from_terrestrial_time(
-            [start_instant.tt - EXTREMUM_PADDING_IN_DAYS, first].max
+            [
+              start_instant.tt - EXTREMUM_PADDING_IN_DAYS,
+              first + GreatestElongationCalculator::RATE_STEP_IN_DAYS
+            ].max
           ),
           Instant.from_terrestrial_time(
-            [end_instant.tt + EXTREMUM_PADDING_IN_DAYS, last].min
+            [
+              end_instant.tt + EXTREMUM_PADDING_IN_DAYS,
+              last - GreatestElongationCalculator::RATE_STEP_IN_DAYS
+            ].min
           )
         ]
       end

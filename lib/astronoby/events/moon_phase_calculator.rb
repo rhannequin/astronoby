@@ -29,7 +29,7 @@ module Astronoby
         next unless covered?(seed_tt)
 
         tt = refine(seed_tt, TARGETS.fetch(seed.phase))
-        next unless tt.between?(start_instant.tt, end_instant.tt)
+        next unless tt&.between?(start_instant.tt, end_instant.tt)
 
         MoonPhase.new(
           instant: Instant.from_terrestrial_time(tt),
@@ -70,6 +70,7 @@ module Astronoby
         end
         step = residual / rate
         break unless step.abs <= FALLBACK_HALF_WIDTH_IN_DAYS
+        break unless covered?(tt - step)
 
         previous = {tt: tt, residual: residual}
         tt -= step
@@ -80,10 +81,14 @@ module Astronoby
     end
 
     def bisect_near(seed, &residual)
+      first, last = @ephem.coverage
       RootFinder
         .new(value_at: residual, period: 2 * FALLBACK_HALF_WIDTH_IN_DAYS)
-        .roots(seed - FALLBACK_HALF_WIDTH_IN_DAYS, seed + FALLBACK_HALF_WIDTH_IN_DAYS)
-        .min_by { |jd| (jd - seed).abs } || seed
+        .roots(
+          [seed - FALLBACK_HALF_WIDTH_IN_DAYS, first].max,
+          [seed + FALLBACK_HALF_WIDTH_IN_DAYS, last].min
+        )
+        .min_by { |jd| (jd - seed).abs }
     end
 
     def covered?(tt)
