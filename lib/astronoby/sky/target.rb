@@ -14,9 +14,6 @@ module Astronoby
       attr_reader :body
 
       # @api private
-      # @param sky [Astronoby::Sky]
-      # @param body [Class, Astronoby::DeepSkyObject] a SolarSystemBody
-      #   subclass or a deep-sky object
       def initialize(sky:, body:)
         @sky = sky
         @body = body
