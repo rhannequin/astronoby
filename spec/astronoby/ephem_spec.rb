@@ -147,6 +147,39 @@ RSpec.describe Astronoby::Ephem do
       expect(first).to eq(2460676.75)
       expect(last).to eq(2461044.5)
     end
+
+    it "ignores the pairs no body reads" do
+      kernel = kernel_with(segment(0, 10, 0.0, 300.0), segment(4, 499, 0.0, 100.0))
+      ephem = described_class.new(kernel)
+
+      expect(ephem.coverage).to eq([0.25, 300.0])
+    end
+
+    it "joins the kernels that cover a pair one after the other" do
+      ephem = described_class.new(
+        kernel_with(segment(0, 10, 0.0, 100.0)),
+        kernel_with(segment(0, 10, 100.0, 300.0))
+      )
+
+      expect(ephem.coverage).to eq([0.25, 300.0])
+    end
+
+    it "keeps the longest span when the kernels leave a gap" do
+      ephem = described_class.new(
+        kernel_with(segment(0, 10, 0.0, 100.0)),
+        kernel_with(segment(0, 10, 200.0, 500.0))
+      )
+
+      expect(ephem.coverage).to eq([200.25, 500.0])
+    end
+
+    it "keeps the dates every pair read covers" do
+      ephem = described_class.new(
+        kernel_with(segment(0, 10, 0.0, 300.0), segment(0, 4, 50.0, 200.0))
+      )
+
+      expect(ephem.coverage).to eq([50.25, 200.0])
+    end
   end
 
   describe "#close" do
@@ -168,5 +201,13 @@ RSpec.describe Astronoby::Ephem do
 
       expect(ephem.inspect).to eq("#<Astronoby::Ephem JPL DE, 2 kernels>")
     end
+  end
+
+  def kernel_with(*segments)
+    double(type: ::Ephem::SPK::JPL_DE, segments: segments)
+  end
+
+  def segment(center, target, start_jd, end_jd)
+    double(center: center, target: target, start_jd: start_jd, end_jd: end_jd)
   end
 end

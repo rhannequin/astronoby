@@ -48,18 +48,24 @@ module Astronoby
     # @param start_time [Time] Start time
     # @param end_time [Time] End time
     # @return [Array<Astronoby::ExtremumEvent>] Array of apoapsis events
+    # @deprecated Use {Astronoby::Sky::Target#apogees} instead
     def self.apoapsis_events(
       ephem:,
       start_time:,
       end_time:,
       samples_per_period: 60
     )
-      ExtremumCalculator.new(
-        body: self,
-        primary_body: Earth,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).apoapsis_events_between(start_time, end_time)
+      Deprecation.warn(self, :apoapsis_events) do
+        ["Astronoby::Moon.apoapsis_events", "sky.moon.apogees"]
+      end
+      Deprecation.nested do
+        ExtremumCalculator.new(
+          body: self,
+          primary_body: Earth,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).apoapsis_events_between(start_time, end_time)
+      end
     end
 
     # Finds all periapsis events between two times
@@ -67,18 +73,24 @@ module Astronoby
     # @param start_time [Time] Start time
     # @param end_time [Time] End time
     # @return [Array<Astronoby::ExtremumEvent>] Array of periapsis events
+    # @deprecated Use {Astronoby::Sky::Target#perigees} instead
     def self.periapsis_events(
       ephem:,
       start_time:,
       end_time:,
       samples_per_period: 60
     )
-      ExtremumCalculator.new(
-        body: self,
-        primary_body: Earth,
-        ephem: ephem,
-        samples_per_period: samples_per_period
-      ).periapsis_events_between(start_time, end_time)
+      Deprecation.warn(self, :periapsis_events) do
+        ["Astronoby::Moon.periapsis_events", "sky.moon.perigees"]
+      end
+      Deprecation.nested do
+        ExtremumCalculator.new(
+          body: self,
+          primary_body: Earth,
+          ephem: ephem,
+          samples_per_period: samples_per_period
+        ).periapsis_events_between(start_time, end_time)
+      end
     end
 
     # Finds all lunar eclipses whose greatest instant falls between two times
@@ -86,10 +98,16 @@ module Astronoby
     # @param start_time [Time] Start time
     # @param end_time [Time] End time
     # @return [Array<Astronoby::LunarEclipse>] Lunar eclipses in the range
+    # @deprecated Use {Astronoby::Sky::Target#eclipses} instead
     def self.eclipse_events(ephem:, start_time:, end_time:)
-      LunarEclipseCalculator
-        .new(ephem: ephem)
-        .events_between(start_time, end_time)
+      Deprecation.warn(self, :eclipse_events) do
+        ["Astronoby::Moon.eclipse_events", "sky.moon.eclipses"]
+      end
+      Deprecation.nested do
+        LunarEclipseCalculator
+          .new(ephem: ephem)
+          .events_between(start_time, end_time)
+      end
     end
 
     # @return [Float] Phase fraction, from 0 to 1

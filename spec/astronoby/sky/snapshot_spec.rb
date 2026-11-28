@@ -13,6 +13,19 @@ RSpec.describe Astronoby::Sky::Snapshot do
       expect(snapshot.body(Astronoby::Mars)).to be(mars)
     end
 
+    it "asks any other body for its position at the instant" do
+      instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
+      ephem = test_ephem
+      snapshot = described_class.new(ephem: ephem, instant: instant)
+      position = Object.new
+      body = Object.new
+      body.define_singleton_method(:at) do |at_instant, ephem:|
+        position if at_instant == instant && ephem
+      end
+
+      expect(snapshot.body(body)).to be(position)
+    end
+
     it "shares Earth's geometric frame between bodies" do
       instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1))
       snapshot = described_class.new(ephem: test_ephem, instant: instant)

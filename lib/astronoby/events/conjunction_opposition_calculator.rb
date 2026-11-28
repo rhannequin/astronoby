@@ -11,18 +11,22 @@ module Astronoby
       @samples_per_period = samples_per_period
     end
 
+    # @deprecated Use {Astronoby::Sky::Target#conjunctions} instead
     # @param start_time [Time, Astronoby::Instant] start time
     # @param end_time [Time, Astronoby::Instant] end time
     # @return [Array<Astronoby::Conjunction>] conjunctions in the range
     def conjunction_events_between(start_time, end_time)
+      warn_deprecated(:conjunction_events_between, "conjunctions")
       roots_between(start_time, end_time, accept: method(:conjunction?))
         .map { |jd| conjunction_at(Instant.from_terrestrial_time(jd)) }
     end
 
+    # @deprecated Use {Astronoby::Sky::Target#oppositions} instead
     # @param start_time [Time, Astronoby::Instant] start time
     # @param end_time [Time, Astronoby::Instant] end time
     # @return [Array<Astronoby::Opposition>] oppositions in the range
     def opposition_events_between(start_time, end_time)
+      warn_deprecated(:opposition_events_between, "oppositions")
       roots_between(start_time, end_time, accept: method(:opposition?))
         .map do |jd|
           Opposition.new(
@@ -34,16 +38,21 @@ module Astronoby
 
     private
 
-    def roots_between(start_time, end_time, accept:)
-      finder.roots(
-        instant_for(start_time).tt,
-        instant_for(end_time).tt,
-        accept: accept
-      )
+    def warn_deprecated(method_name, series)
+      Deprecation.warn(self.class, method_name, uplevel: 2) do
+        [
+          "Astronoby::ConjunctionOppositionCalculator##{method_name}",
+          "sky.#{@body.sky_name}.#{series}"
+        ]
+      end
     end
 
-    def instant_for(time)
-      time.is_a?(Instant) ? time : Instant.from_time(time)
+    def roots_between(start_time, end_time, accept:)
+      finder.roots(
+        Instant.from(start_time).tt,
+        Instant.from(end_time).tt,
+        accept: accept
+      )
     end
 
     def finder

@@ -184,6 +184,56 @@ RSpec.describe Astronoby::Sky::Target do
     end
   end
 
+  describe "#apogees and #perigees" do
+    it "return when the Moon is farthest from and closest to Earth" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      start_time = Time.utc(2025, 1, 1)
+      end_time = Time.utc(2025, 2, 1)
+
+      apogees = sky.moon.apogees.between(start_time, end_time)
+      perigees = sky.moon.perigees.between(start_time, end_time)
+
+      expect(apogees.size).to eq(1)
+      expect(apogees.first.instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 21, 4, 54, 7.51))
+      expect(apogees.first.value.km).to be_within(0.001).of(404298.089)
+      expect(perigees.size).to eq(1)
+      expect(perigees.first.instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 8, 0, 1, 5.20))
+      expect(perigees.first.value.km).to be_within(0.001).of(370170.692)
+      # IMCCE:    2025-01-21T04:54:07.5Z 404298.089 km,
+      #           2025-01-08T00:01:05.2Z 370170.692 km
+      # Skyfield, zero of the geometric radial velocity:
+      #           2025-01-21T04:54:07.51Z, 2025-01-08T00:01:05.20Z
+    end
+
+    it "do not depend on the range searched" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      within_month = sky.moon.perigees
+        .between(Time.utc(2025, 1, 1), Time.utc(2025, 2, 1))
+      within_year = sky.moon.perigees
+        .from(Astronoby::Instant.from_time(Time.utc(2025, 1, 1)))
+        .first
+
+      expect(within_year.instant).to eq(within_month.first.instant)
+    end
+
+    it "raise for anything but the Moon" do
+      sky = Astronoby::Sky.new(test_ephem)
+
+      expect { sky.mars.apogees }.to raise_error(
+        Astronoby::UnsupportedEventError,
+        "Only the Moon has apogees"
+      )
+      expect { sky.mars.perigees }.to raise_error(
+        Astronoby::UnsupportedEventError,
+        "Only the Moon has perigees"
+      )
+    end
+  end
+
   describe "#phases" do
     it "returns the phases of the Moon from the ephemeris" do
       sky = Astronoby::Sky.new(test_ephem)
@@ -204,6 +254,17 @@ RSpec.describe Astronoby::Sky::Target do
       #           2025-01-21T20:30:48Z, 2025-01-29T12:35:59Z
       # Skyfield: 2025-01-06T23:56:17.65Z, 2025-01-13T22:26:54.54Z,
       #           2025-01-21T20:30:47.46Z, 2025-01-29T12:35:58.90Z
+    end
+
+    it "finds them with geometric positions rounded by the cache" do
+      Astronoby.configuration.cache_enabled = true
+      Astronoby.configuration.cache_precision(:geometric, 5)
+      sky = Astronoby::Sky.new(test_ephem)
+
+      phases = sky.moon.phases.between(Time.utc(2025, 1, 1), Time.utc(2025, 2, 1))
+
+      expect(phases[1].instant.to_time)
+        .to be_within(1).of(Time.utc(2025, 1, 13, 22, 26, 54.54))
     end
 
     it "agrees with the apparent longitudes of the Moon and the Sun" do

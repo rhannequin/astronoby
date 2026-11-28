@@ -9,9 +9,9 @@ Astronoby gives true altitudes by default. Refraction is applied on request, wit
 The places that return or search altitudes take a `refraction:` option, `false` by default:
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 instant = Astronoby::Instant.from_time(Time.utc(2025, 10, 1, 20))
-saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
+saturn = sky.saturn.at(instant)
 
 observer = Astronoby::Observer.new(
   latitude: Astronoby::Angle.from_degrees(48.8566),
@@ -24,7 +24,7 @@ horizontal.refracted?
 # => true
 ```
 
-`HorizontalTransformation#apply` takes the same option, as described on the [Deep-sky Bodies page], and so does `AltitudeCrossingCalculator.new`, on the [Altitude crossings page]. With it, the altitudes the calculator searches for and returns are apparent ones.
+`HorizontalTransformation#apply` takes the same option, as described on the [Deep-sky Bodies page]. A local sky searches for apparent altitudes given as `Astronoby::Altitude.apparent(degrees:)`, as described on the [Altitude crossings page].
 
 ## Refracting horizontal coordinates
 

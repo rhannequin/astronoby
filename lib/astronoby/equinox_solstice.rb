@@ -77,29 +77,57 @@ module Astronoby
     # @param year [Integer] the year
     # @param ephem [::Ephem::SPK] ephemeris data source
     # @return [Time] time of the March equinox
+    # @deprecated Use {Astronoby::Seasons#in} instead
     def self.march_equinox(year, ephem)
-      new(year, MARCH_EQUINOX, ephem).time
+      Deprecation.warn(self, :march_equinox) do
+        [
+          "Astronoby::EquinoxSolstice.march_equinox",
+          "sky.seasons.in(year).march_equinox"
+        ]
+      end
+      Deprecation.nested { new(year, MARCH_EQUINOX, ephem).time }
     end
 
     # @param year [Integer] the year
     # @param ephem [::Ephem::SPK] ephemeris data source
     # @return [Time] time of the June solstice
+    # @deprecated Use {Astronoby::Seasons#in} instead
     def self.june_solstice(year, ephem)
-      new(year, JUNE_SOLSTICE, ephem).time
+      Deprecation.warn(self, :june_solstice) do
+        [
+          "Astronoby::EquinoxSolstice.june_solstice",
+          "sky.seasons.in(year).june_solstice"
+        ]
+      end
+      Deprecation.nested { new(year, JUNE_SOLSTICE, ephem).time }
     end
 
     # @param year [Integer] the year
     # @param ephem [::Ephem::SPK] ephemeris data source
     # @return [Time] time of the September equinox
+    # @deprecated Use {Astronoby::Seasons#in} instead
     def self.september_equinox(year, ephem)
-      new(year, SEPTEMBER_EQUINOX, ephem).time
+      Deprecation.warn(self, :september_equinox) do
+        [
+          "Astronoby::EquinoxSolstice.september_equinox",
+          "sky.seasons.in(year).september_equinox"
+        ]
+      end
+      Deprecation.nested { new(year, SEPTEMBER_EQUINOX, ephem).time }
     end
 
     # @param year [Integer] the year
     # @param ephem [::Ephem::SPK] ephemeris data source
     # @return [Time] time of the December solstice
+    # @deprecated Use {Astronoby::Seasons#in} instead
     def self.december_solstice(year, ephem)
-      new(year, DECEMBER_SOLSTICE, ephem).time
+      Deprecation.warn(self, :december_solstice) do
+        [
+          "Astronoby::EquinoxSolstice.december_solstice",
+          "sky.seasons.in(year).december_solstice"
+        ]
+      end
+      Deprecation.nested { new(year, DECEMBER_SOLSTICE, ephem).time }
     end
 
     # @param year [Integer] the year
@@ -126,8 +154,12 @@ module Astronoby
       @instant
     end
 
+    # @deprecated Use {Astronoby::Seasons#in} instead
     # @return [Time] the corrected UTC time of the event
     def time
+      Deprecation.warn(self.class, :time) do
+        ["Astronoby::EquinoxSolstice#time", "sky.seasons.in(year)"]
+      end
       Instant.from_terrestrial_time(@instant.tt + corrected).to_time.round
     end
 
@@ -160,7 +192,7 @@ module Astronoby
     end
 
     def sun
-      @sun ||= Sun.new(ephem: @ephem, instant: @instant)
+      @sun ||= Sky::Snapshot.new(ephem: @ephem, instant: @instant).body(Sun)
     end
 
     def corrected

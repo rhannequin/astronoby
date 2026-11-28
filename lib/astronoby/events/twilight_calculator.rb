@@ -19,7 +19,13 @@ module Astronoby
       EVENING = :evening
     ].freeze
 
+    # @deprecated Use {Astronoby::LocalSky#twilights} instead
+    # @param observer [Astronoby::Observer] the observer
+    # @param ephem [::Ephem::SPK] ephemeris data source
     def initialize(observer:, ephem:)
+      Deprecation.warn(self.class, :new) do
+        ["Astronoby::TwilightCalculator", "sky.over(observer).twilights"]
+      end
       @observer = observer
       @ephem = ephem
       @crossing_calculator = AltitudeCrossingCalculator.new(
@@ -57,11 +63,9 @@ module Astronoby
     end
 
     def events_between(start_time, end_time)
-      crossings = @crossing_calculator.multiple_crossings_between(
-        start_time,
-        end_time,
-        altitudes: TWILIGHT_ANGLES.values.map { |angle| altitude_for(angle) }
-      )
+      crossings = @crossing_calculator
+        .search_between(start_time, end_time)
+        .crossings(TWILIGHT_ANGLES.values.map { |angle| altitude_for(angle) })
       times = TWILIGHT_ANGLES.keys.zip(crossings).to_h do |twilight, found|
         [twilight, [:rising, :setting].map do |direction|
           found
@@ -92,12 +96,14 @@ module Astronoby
           "period_of_the_day, got #{period_of_the_day}"
       end
 
-      crossing = @crossing_calculator.crossing_on(
-        date,
-        altitude: altitude_for(zenith_angle),
-        direction: (period_of_the_day == MORNING) ? :rising : :setting,
-        utc_offset: utc_offset
-      )
+      crossing = Deprecation.nested do
+        @crossing_calculator.crossing_on(
+          date,
+          altitude: altitude_for(zenith_angle),
+          direction: (period_of_the_day == MORNING) ? :rising : :setting,
+          utc_offset: utc_offset
+        )
+      end
 
       crossing&.instant&.to_time&.round
     end

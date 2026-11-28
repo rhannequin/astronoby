@@ -173,6 +173,56 @@ RSpec.describe Astronoby::LocalSky do
     end
   end
 
+  describe "#culminations" do
+    it "returns the upper and lower culminations with their altitude" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+
+      culminations = local_sky.culminations(sky.sun).on(Date.new(2025, 10, 1))
+
+      expect(culminations.map(&:kind))
+        .to eq([:upper_culmination, :lower_culmination])
+      expect(culminations[0].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 10, 1, 11, 40, 14.83))
+      expect(culminations[1].instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 10, 1, 23, 40, 5.22))
+      expect(culminations.map { _1.altitude.str(:dms, precision: 3) })
+        .to eq(["+37° 46′ 5.691″", "-44° 45′ 6.789″"])
+      # IMCCE, true altitude at these instants: +37° 46′ 5.6912″,
+      #   -44° 45′ 6.7886″
+      # Skyfield: 2025-10-01T11:40:14.85Z +37° 46′ 5.6908″,
+      #           2025-10-01T23:40:05.20Z -44° 45′ 6.7886″
+    end
+
+    it "follows a limb and applies refraction when asked" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+
+      centre = local_sky.culminations(sky.moon).on(Date.new(2025, 10, 1))
+      limb = local_sky
+        .culminations(sky.moon.upper_limb, refraction: true)
+        .on(Date.new(2025, 10, 1))
+
+      expect(limb.map(&:refracted?)).to all(be(true))
+      expect(limb.map(&:instant)).to eq(centre.map(&:instant))
+      expect(limb.last.altitude.degrees)
+        .to be > centre.last.altitude.degrees + 0.25
+    end
+
+    it "finds a retrograde planet culminating just before the end" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+
+      culminations = local_sky
+        .culminations(sky.mars)
+        .between(Time.utc(2025, 1, 14), Time.utc(2025, 1, 15, 0, 10, 15))
+
+      expect(culminations.last.kind).to eq(:upper_culmination)
+      expect(culminations.last.instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 15, 0, 10, 8.75))
+    end
+  end
+
   describe "#twilights" do
     it "returns the dawns and dusks of each twilight, sorted by time" do
       sky = Astronoby::Sky.new(test_ephem)

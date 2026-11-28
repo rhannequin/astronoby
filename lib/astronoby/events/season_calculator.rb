@@ -45,6 +45,8 @@ module Astronoby
           rate = (residual - previous[:residual]) / (tt - previous[:tt])
         end
         step = residual / rate
+        break unless step.abs <= FALLBACK_HALF_WIDTH_IN_DAYS
+
         previous = {tt: tt, residual: residual}
         tt -= step
         return tt if step.abs < TOLERANCE_IN_DAYS
@@ -70,8 +72,9 @@ module Astronoby
     end
 
     def sun_longitude_at(tt)
-      Sun
+      Sky::Snapshot
         .new(ephem: @ephem, instant: Instant.from_terrestrial_time(tt))
+        .body(Sun)
         .apparent
         .ecliptic
         .longitude

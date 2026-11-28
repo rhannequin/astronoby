@@ -47,11 +47,34 @@ module Astronoby
       series(time_of: :instant.to_proc) do |start_instant, end_instant|
         next [] if unreachable?(body, altitude.angle, start_instant)
 
-        calculator.crossings_between(
-          start_instant,
-          end_instant,
-          altitude: altitude.angle
-        )
+        calculator
+          .search_between(start_instant, end_instant)
+          .crossings([altitude.angle])
+          .first
+      end
+    end
+
+    # Upper and lower culminations of the target: its highest and lowest
+    # points as it crosses the meridian, with its altitude at each.
+    #
+    # @param target [Astronoby::Sky::Target, Astronoby::Sky::TargetPoint,
+    #   Astronoby::DeepSkyObject] whose altitude is given, its centre unless a
+    #   limb is given
+    # @param refraction [Boolean] whether the altitude includes atmospheric
+    #   refraction, which is held at its value at -1° below that altitude, so
+    #   a refracted altitude far below the horizon has no physical meaning
+    # @return [Astronoby::Events::Series] of Astronoby::AltitudeExtreme
+    def culminations(target, refraction: false)
+      body, reference = body_and_reference(target)
+      calculator = AltitudeCrossingCalculator.new(
+        body: body,
+        observer: @observer,
+        ephem: @sky.ephem,
+        refraction: refraction,
+        reference: reference
+      )
+      series(time_of: :instant.to_proc) do |start_instant, end_instant|
+        calculator.search_between(start_instant, end_instant).extremes
       end
     end
 
@@ -103,11 +126,9 @@ module Astronoby
         ephem: @sky.ephem
       )
       series(time_of: :instant.to_proc) do |start_instant, end_instant|
-        found = calculator.multiple_crossings_between(
-          start_instant,
-          end_instant,
-          altitudes: TWILIGHT_ALTITUDES.values
-        )
+        found = calculator
+          .search_between(start_instant, end_instant)
+          .crossings(TWILIGHT_ALTITUDES.values)
         TWILIGHT_ALTITUDES.keys.zip(found).flat_map do |kind, crossings|
           crossings.map do |crossing|
             TwilightCrossing.new(

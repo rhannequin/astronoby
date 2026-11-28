@@ -29,6 +29,13 @@ _If you are upgrading: please see [UPGRADING.md]._
   at its sampled maximum, which is too flat to locate. Their instants moved by
   up to 17 s with the search range and no longer depend on it, and the search
   is about 30% faster ([#349])
+* Find the Moon's apoapsides and periapsides where its radial velocity is
+  zero instead of at the sampled extremum of its distance. Their instants
+  moved by up to 0.7 s with the search range, no longer depend on it and match
+  IMCCE to the tenth of a second, and the search is about 23% faster ([#350])
+* Find the culminations of a body whose hour angle runs faster than the
+  sidereal rate, such as a retrograde planet, up to the end of the search
+  window. One in its last minutes was missed ([#350])
 
 ### Features
 
@@ -65,6 +72,14 @@ _If you are upgrading: please see [UPGRADING.md]._
   as `Astronoby::SeasonStart` objects with a `kind`, `equinox?` and
   `solstice?`. `sky.seasons.in(year)` returns the four of a year, and
   `on`, `between` and `from` read them like any event series ([#349])
+* `sky.moon.apogees` and `sky.moon.perigees` give when the Moon is farthest
+  from and closest to Earth, as `Astronoby::ExtremumEvent` objects with the
+  geometric distance as value ([#350])
+* `local_sky.culminations(target, refraction: false)` gives the upper and
+  lower culminations of a target with its altitude, as
+  `Astronoby::AltitudeExtreme` objects, and accepts a limb ([#350])
+* `Instant.from(time)` returns an instant as it is and converts a `Time`
+  ([#350])
 * `RiseTransitSetCalculator#events_between` and
   `AltitudeCrossingCalculator#crossings_between` accept instants as well as
   times ([#347]), and so do `ConjunctionOppositionCalculator`,
@@ -78,6 +93,28 @@ _If you are upgrading: please see [UPGRADING.md]._
   28%. `Apparent.build_from_astrometric` accepts `precession_matrix:` and
   `nutation_matrix:`, and `MeanOfDate.build_from_geometric` accepts
   `precession_matrix:` ([#345])
+
+### Deprecations
+
+Each of these prints a warning naming its replacement, once per process, and
+will be removed in 0.14.0 ([#350]):
+
+* `ephem:` in `SolarSystemBody.at` and `.new`, `DeepSkyObject#at` and
+  `orientation:` in `Moon.at` and `.new`, replaced by `Astronoby::Sky`
+* `SolarSystemBody.rise_transit_set_events`, `.conjunction_events`,
+  `.opposition_events` and `.greatest_elongation_events`,
+  `Moon.apoapsis_events`, `.periapsis_events` and `.eclipse_events`,
+  `Sun.twilight_events`, and the equinox and solstice methods of `Sun` and
+  `EquinoxSolstice` and `EquinoxSolstice#time`, replaced by the event series
+  of `Astronoby::Sky` and `Astronoby::LocalSky`
+* The searches of `ConjunctionOppositionCalculator`,
+  `GreatestElongationCalculator`, `LunarEclipseCalculator` and
+  `ExtremumCalculator`, replaced by the event series of `Sky` targets
+* `RiseTransitSetCalculator#event_on`, `#events_on` and `#events_between`,
+  `TwilightCalculator`, and `AltitudeCrossingCalculator#crossings_between`,
+  `#multiple_crossings_between`, `#crossing_on` and `#extremes_between`,
+  replaced by `Astronoby::LocalSky`. `RiseTransitSetEvent`,
+  `RiseTransitSetEvents`, `TwilightEvent` and `TwilightEvents` leave with them
 
 ### Backward-incompatible changes
 
@@ -95,6 +132,7 @@ _If you are upgrading: please see [UPGRADING.md]._
 [#346]: https://github.com/rhannequin/astronoby/pull/346
 [#347]: https://github.com/rhannequin/astronoby/pull/347
 [#349]: https://github.com/rhannequin/astronoby/pull/349
+[#350]: https://github.com/rhannequin/astronoby/pull/350
 
 ## 0.12.0 - 2026-11-24
 

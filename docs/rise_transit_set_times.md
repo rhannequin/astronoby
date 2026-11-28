@@ -1,25 +1,11 @@
 # Rise, Transit and Set Times
 
-Astronoby provides a calculator to compute all the rise, transit and set times
-that will happen for a celestial body as observed from Earth during a period
-of time: `Astronoby::RiseTransitSetCalculator`.
-
-## Initialization
-
-Once instantiated, the calculator doesn't do anything yet, it waits for your
-instruction.
-
-It takes as key arguments:
-
-- `body` (`Astronoby::SolarSystemBody` or `Astronoby::DeepSkyObject`): any
-  supported celestial body, e.g. `Astronoby::Sun`
-- `observer` (`Astronoby::Observer`): location on Earth of the observer
-- `ephem`: ephemeris to provide the initial raw data
-
-You can learn more about [Solar System bodies] and [ephemerides].
+A local sky (`Astronoby::LocalSky`) gives the rise, transit and set times of a
+celestial body as observed from a place on Earth. You can learn more about it
+on the [Local sky page], and about observers on the [Observer page].
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 
 observer = Astronoby::Observer.new(
   latitude: Astronoby::Angle.from_degrees(41.0082),
@@ -27,95 +13,90 @@ observer = Astronoby::Observer.new(
   elevation: Astronoby::Distance.from_meters(40)
 )
 
-calculator = Astronoby::RiseTransitSetCalculator.new(
-  body: Astronoby::Saturn,
-  observer: observer,
-  ephem: ephem
-)
+local_sky = sky.over(observer)
 ```
 
-You can learn more about observers on the
-[Observer page](https://github.com/rhannequin/astronoby/wiki/Observer).
+## Passes
 
-## `#events_between`
-
-This is the main method of the calculator. It provides all the rising, transit
-and setting times that will happen between two dates. It returns a
-`Astronoby::RiseTransitSetEvents` object which exposes the methods
-`#rising_times`, `#transit_times` and `#setting_times`.
+`passes` returns each passage of a body across the observer's meridian as an
+`Astronoby::Pass`, with the rising before the transit and the setting after it.
+A pass is dated by its transit, so it is complete even when the body sets after
+midnight.
 
 ```rb
-events = calculator.events_between(
-  Time.utc(2025, 5, 1),
-  Time.utc(2025, 5, 3)
-)
+passes = local_sky
+  .passes(sky.saturn)
+  .between(Time.utc(2025, 5, 1), Time.utc(2025, 5, 3))
 
-events.rising_times
+passes.map { |pass| pass.rising.to_time.round }
 # => [2025-05-01 01:28:48 UTC, 2025-05-02 01:25:07 UTC]
 
-events.transit_times
+passes.map { |pass| pass.transit.to_time.round }
 # => [2025-05-01 07:21:34 UTC, 2025-05-02 07:18:01 UTC]
 
-events.setting_times
+passes.map { |pass| pass.setting.to_time.round }
 # => [2025-05-01 13:14:24 UTC, 2025-05-02 13:10:58 UTC]
 ```
 
-## `#events_on`
+`rising` and `setting` are `nil` when the body does not cross the horizon, for
+a circumpolar star for example.
 
-You can call `#events_on` to compute the event times that will happen during a
-civil day. You can provide a UTC offset to specify the boundaries of the civil
-day for your location.
+## A civil day
 
-This method also returns a `Astronoby::RiseTransitSetEvents` object because some
-celestial bodies could occasionally have the same event happen multiple times in
-a single day. This is the case for the Moon, for example, which can seem to rise
-twice in the same civil day because of its quick motion around the Earth.
-
-```rb
-events = calculator.events_on(Date.new(2025, 5, 1))
-
-events.rising_times
-# => [2025-05-01 01:28:48 UTC]
-
-events.transit_times
-# => [2025-05-01 07:21:34 UTC]
-
-events.setting_times
-# => [2025-05-01 13:14:24 UTC]
-```
-
-## `#event_on`
-
-For convenience, `Astronoby::RiseTransitSetCalculator` also exposes a
-`#event_on` method that behaves the same way as `#events_on` but returns the
-first time of rising, transit and setting for the civil date, as these events
-only happen once in most cases. It returns a `Astronoby::RiseTransitSetEvent`
-which exposes the instance methods `#rising_time`, `#transit_time` and
-`#setting_time`.
+`on` returns the passes whose transit falls on a civil day. You can provide a
+UTC offset to set the boundaries of the day for your location.
 
 ```rb
 utc_offset = "+03:00"
-event = calculator.event_on(
-  Date.new(2025, 5, 1),
-  utc_offset: utc_offset
-)
+pass = local_sky
+  .passes(sky.saturn)
+  .on(Date.new(2025, 5, 1), utc_offset: utc_offset)
+  .first
 
-event.rising_time.localtime(utc_offset)
+pass.rising.to_time.round.localtime(utc_offset)
 # => 2025-05-01 04:28:48 +0300
 
-event.transit_time.localtime(utc_offset)
+pass.transit.to_time.round.localtime(utc_offset)
 # => 2025-05-01 10:21:34 +0300
 
-event.setting_time.localtime(utc_offset)
+pass.setting.to_time.round.localtime(utc_offset)
 # => 2025-05-01 16:14:24 +0300
 ```
 
-[Solar System bodies]: solar_system_bodies.md
-[ephemerides]: ephem.md
+## Risings, transits and settings
+
+`risings`, `transits` and `settings` return the instants of one kind of event,
+whichever pass they belong to. Some bodies can have the same event twice in a
+civil day: the Moon, for example, can seem to rise twice because of its quick
+motion around the Earth.
+
+```rb
+local_sky
+  .risings(sky.moon)
+  .on(Date.new(2025, 5, 1))
+  .map { |instant| instant.to_time.round }
+# => [2025-05-01 05:29:19 UTC]
+```
+
+Each of them runs its own search. When you need the three, `passes` finds them
+in one search.
+
+## Horizon
+
+Risings and settings are the instants when a body crosses the standard horizon:
+34′ below the true horizon for refraction, and for the Sun and the Moon, their
+upper limb rather than their centre. To use another altitude or another point
+of the disk, use `crossings`, described on the [Altitude crossings page].
+
+Instants are not rounded: `instant.to_time.round` gives the time to the second.
+
+[Local sky page]: local_sky.md
+[Observer page]: observer.md
+[Altitude crossings page]: altitude_crossings.md
 
 ## See also
 
+- [Local sky](local_sky.md) - for everything an observer sees
 - [Twilight Times](twilight_times.md) - for sun-related events
 - [Solar System Bodies](solar_system_bodies.md) - for object information
 - [Observer](observer.md) - for location setup
-- [Ephemerides](ephem.md) - for data sources

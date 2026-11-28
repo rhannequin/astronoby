@@ -36,10 +36,23 @@ module Astronoby
 
     # @param instant [Astronoby::Instant] Instant of the observation
     # @param ephem [Astronoby::Ephemeris, nil] Ephemeris to use for Earth
-    #   position calculation
+    #   position calculation, deprecated: use {Astronoby::Sky#[]} instead
     # @return [Astronoby::DeepSkyObjectPosition] Position of the deep-sky object
     #   at the given instant
     def at(instant, ephem: nil)
+      if ephem
+        Deprecation.warn(DeepSkyObject, :at) do
+          [
+            "Astronoby::DeepSkyObject#at(instant, ephem:)",
+            "sky[deep_sky_object].at(instant)"
+          ]
+        end
+      end
+      position_at(instant, ephem: ephem)
+    end
+
+    # @api private
+    def position_at(instant, ephem:)
       DeepSkyObjectPosition.new(
         instant: instant,
         equatorial_coordinates: @initial_equatorial_coordinates,

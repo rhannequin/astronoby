@@ -2,6 +2,8 @@
 
 module Astronoby
   # Holds the rising, transit, and setting times for a single day.
+  #
+  # @deprecated Use {Astronoby::Pass} from {Astronoby::LocalSky#passes} instead
   class RiseTransitSetEvent
     # @return [Time, nil] the rising time
     attr_reader :rising_time

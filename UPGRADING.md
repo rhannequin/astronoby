@@ -9,6 +9,77 @@ public API, please read the upgrading notes for each release.
 
 ## Unreleased
 
+### `ephem:` and the calculators are deprecated in favour of `Sky`
+
+`Astronoby::Sky` holds the ephemeris, so that it is given once instead of to
+every call, and `sky.over(observer)` gives what an observer sees. The `ephem:`
+arguments and the calculators they replace still work, print a warning naming
+their replacement once per process, and will be removed in 0.14.0.
+
+Load a sky once and share it:
+
+```rb
+# Before
+ephem = Astronoby::Ephem.load("tmp/de440s.bsp")
+orientation = Astronoby::Orientation.load("tmp/moon_pa_de440_200625.bpc")
+
+# After
+sky = Astronoby::Sky.load(
+  "tmp/de440s.bsp",
+  orientation: "tmp/moon_pa_de440_200625.bpc"
+)
+local_sky = sky.over(observer)
+```
+
+| Before | After |
+| --- | --- |
+| `Astronoby::Mars.at(instant, ephem: ephem)` | `sky.mars.at(instant)` |
+| `Astronoby::Mars.new(ephem: ephem, instant: instant)` | `sky.mars.at(instant)` |
+| `Astronoby::Moon.new(ephem: ephem, instant: instant, orientation: orientation)` | `sky.moon.at(instant)` |
+| `vega.at(instant, ephem: ephem)` | `sky[vega].at(instant)` |
+| `Astronoby::Mars.rise_transit_set_events(observer:, ephem:, date:)` | `local_sky.passes(sky.mars).on(date)` |
+| `Astronoby::Mars.rise_transit_set_events(observer:, ephem:, start_time:, end_time:)` | `local_sky.passes(sky.mars).between(start_time, end_time)` |
+| `RiseTransitSetCalculator#event_on`, `#events_on`, `#events_between` | `local_sky.passes(target)`, or `risings`, `transits` and `settings` |
+| `Astronoby::Sun.twilight_events(observer:, ephem:, date:)` | `local_sky.twilights.on(date)` |
+| `TwilightCalculator#event_on`, `#events_between` | `local_sky.twilights` |
+| `TwilightCalculator#time_for_zenith_angle(date:, period_of_the_day:, zenith_angle:)` | `local_sky.crossings(sky.sun, Astronoby::Altitude.true(degrees: 90 - zenith_angle.degrees)).on(date).find { _1.direction == :rising }`, or `:setting` for `:evening` |
+| `AltitudeCrossingCalculator#crossings_between`, `#crossing_on` | `local_sky.crossings(target, altitude)` |
+| `AltitudeCrossingCalculator#multiple_crossings_between` | one `local_sky.crossings` per altitude, each running its own search |
+| `AltitudeCrossingCalculator#extremes_between` | `local_sky.culminations(target)` |
+| `Astronoby::Mars.opposition_events(ephem:, start_time:, end_time:)` | `sky.mars.oppositions.between(start_time, end_time)` |
+| `Astronoby::Venus.conjunction_events(...)` | `sky.venus.conjunctions.between(...)` |
+| `Astronoby::Venus.greatest_elongation_events(...)` | `sky.venus.greatest_elongations.between(...)` |
+| `Astronoby::Moon.eclipse_events(...)` | `sky.moon.eclipses.between(...)` |
+| `Astronoby::Moon.apoapsis_events(...)` | `sky.moon.apogees.between(...)` |
+| `Astronoby::Moon.periapsis_events(...)` | `sky.moon.perigees.between(...)` |
+| `ConjunctionOppositionCalculator#conjunction_events_between`, `#opposition_events_between` | `sky.mars.conjunctions`, `sky.mars.oppositions` |
+| `GreatestElongationCalculator#greatest_elongation_events_between` | `sky.venus.greatest_elongations` |
+| `LunarEclipseCalculator#events_between` | `sky.moon.eclipses` |
+| `ExtremumCalculator#apoapsis_events_between`, `#periapsis_events_between`, `#find_extrema` | `sky.moon.apogees`, `sky.moon.perigees` |
+| `Astronoby::Sun.june_solstice(year, ephem: ephem)` | `sky.seasons.in(year).june_solstice` |
+| `Astronoby::EquinoxSolstice.june_solstice(year, ephem)` | `sky.seasons.in(year).june_solstice` |
+| `Astronoby::EquinoxSolstice.new(year, event, ephem).time` | `sky.seasons.in(year)` |
+
+The new methods differ from the old ones in a few ways:
+
+- Event series are read with `on(date, utc_offset: 0)`, `between(start,
+  finish)` or `from(start)`, the last one returning a lazy enumerator.
+- Events carry an unrounded `Astronoby::Instant` instead of a `Time` rounded to
+  the second. `instant.to_time.round` gives the former value.
+- Risings, transits and settings come grouped by pass, as `Astronoby::Pass`
+  objects dated by their transit, instead of in three separate arrays.
+- Twilights are `Astronoby::TwilightCrossing` objects with a `kind`, `dawn?`
+  and `dusk?`, instead of six named times.
+- Crossings take an `Astronoby::Altitude`, apparent or true, instead of an
+  angle and a `refraction:` option, and a limb is given as
+  `sky.moon.upper_limb` instead of `reference: :upper_limb`.
+- Moon phases, equinoxes and solstices are searched in the ephemeris.
+  Equinoxes and solstices agree with the previous values to about a second,
+  and Moon phases with `Astronoby::Events::MoonPhases.phases_for` to about ten
+  seconds.
+  `Astronoby::Events::MoonPhases.phases_for` is not deprecated and still gives
+  the phases without an ephemeris.
+
 ### Apparent positions include light deflection
 
 Apparent and topocentric positions of planets and of deep-sky objects given an

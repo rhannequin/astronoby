@@ -41,16 +41,16 @@ The geometric frame corresponds to the **Barycentric Celestial Reference System
 read from the ephemeris file, with no corrections applied.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 geometric = moon.geometric
 # => #<Astronoby::Geometric:0x000000011e7ffd40
 
 geometric.distance.au
-# => 1.0095091267969827
+# => 1.0095091268183067
 
 geometric.equatorial.right_ascension.str(:hms, precision: 0)
 # => "20h 13m 52s"
@@ -65,11 +65,11 @@ light-time-corrected barycentric position. All subsequent frames are also
 Earth-centered.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 astrometric = moon.astrometric
 
 astrometric.distance.km.round
@@ -90,11 +90,11 @@ Astronoby uses the **IAU 2006 precession** model in its Fukushima-Williams
 four-angle parameterization, which includes the ICRS-to-J2000 frame bias.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 mean_of_date = moon.mean_of_date
 
 mean_of_date.equatorial.right_ascension.str(:hms, precision: 0)
@@ -119,11 +119,11 @@ The combined N \* PB matrix rotates the aberration-corrected GCRS position into
 the true equator and equinox frame of the date.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 apparent = moon.apparent
 
 apparent.equatorial.right_ascension.str(:hms, precision: 0)
@@ -144,7 +144,7 @@ done by applying the **IERS polar motion matrix** (W) followed by the Earth
 rotation via **Greenwich Apparent Sidereal Time (GAST)**.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 time = Time.utc(1962, 7, 24)
 instant = Astronoby::Instant.from_time(time)
 observer = Astronoby::Observer.new(
@@ -152,7 +152,7 @@ observer = Astronoby::Observer.new(
   longitude: Astronoby::Angle.from_degrees(2.4843)
 )
 
-moon = Astronoby::Moon.new(ephem: ephem, instant: instant)
+moon = sky.moon.at(instant)
 topocentric = moon.observed_by(observer)
 
 topocentric.horizontal.azimuth.str(:dms, precision: 0)
@@ -173,11 +173,11 @@ frame and at the same instant. Otherwise the separation is not physically
 meaningful and an `Astronoby::IncompatibleArgumentsError` is raised.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 instant = Astronoby::Instant.from_time(Time.utc(2020, 12, 21, 18))
 
-jupiter = Astronoby::Jupiter.new(ephem: ephem, instant: instant)
-saturn = Astronoby::Saturn.new(ephem: ephem, instant: instant)
+jupiter = sky.jupiter.at(instant)
+saturn = sky.saturn.at(instant)
 
 # The 2020 "Great Conjunction", the closest since 1623
 separation = jupiter.apparent.separation_from(saturn.apparent)
@@ -296,6 +296,6 @@ reference systems and lists the corrections applied at each step.
 - [Coordinates](coordinates.md) - for understanding coordinate systems
 - [Observer](observer.md) - for location setup
 - [Solar System Bodies](solar_system_bodies.md) - for object positions
-- [Ephemerides](ephem.md) - for data sources
+- [Sky](sky.md) - for loading an ephemeris
 
 [Observer page]: observer.md

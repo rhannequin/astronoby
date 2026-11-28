@@ -18,7 +18,11 @@ module Astronoby
       # @param end_time [Astronoby::Instant, Time] end of the range, included
       # @return [Array] the events in the range, sorted by time
       def between(start_time, end_time)
-        events_in(instant_for(start_time), instant_for(end_time), include_end: true)
+        events_in(
+          Instant.from(start_time),
+          Instant.from(end_time),
+          include_end: true
+        )
       end
 
       # @param date [Date] the civil day
@@ -36,14 +40,15 @@ module Astronoby
       end
 
       # Searches one window at a time, as the events are asked for. Stops at
-      # the end of the ephemeris or after the horizon, about a year.
+      # the end of the ephemeris or after the horizon: a year for a local sky,
+      # a hundred years for the events seen from the centre of the Earth.
       #
       # @param start_time [Astronoby::Instant, Time] start of the search
       # @return [Enumerator::Lazy] the events from that time on
       # @raise [::Ephem::OutOfRangeError] if the ephemeris does not cover the
       #   start of the search
       def from(start_time)
-        start_tt = instant_for(start_time).tt
+        start_tt = Instant.from(start_time).tt
         limit = start_tt + @horizon
         if @last_tt
           if start_tt > @last_tt
@@ -98,10 +103,6 @@ module Astronoby
         Instant.from_time(
           Time.new(date.year, date.month, date.day, 0, 0, 0, utc_offset)
         )
-      end
-
-      def instant_for(time)
-        time.is_a?(Instant) ? time : Instant.from_time(time)
       end
     end
   end

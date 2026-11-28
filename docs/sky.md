@@ -92,7 +92,7 @@ You can learn more about deep-sky objects on the [Deep-sky Bodies page].
 
 ## Events of a body
 
-Targets give the events seen from the centre of the Earth, as `Astronoby::Events::Series` objects read with `on(date)`, `between(start, finish)` or `from(start)`, as on the [Local sky page]. Each event carries an unrounded `instant`.
+Targets give the events seen from the centre of the Earth, as `Astronoby::Events::Series` objects read with `on(date)`, `between(start, finish)` or `from(start)`, as on the [Local sky page]. `from` stops at the end of the ephemeris or after a hundred years. Each event carries an unrounded `instant`.
 
 ```rb
 sky
@@ -123,6 +123,7 @@ sky
 - `greatest_elongations` for Mercury and Venus, as `Astronoby::GreatestElongation`
 - `eclipses` for the Moon, as `Astronoby::LunarEclipse`
 - `phases` for the Moon, as `Astronoby::MoonPhase`
+- `apogees` and `perigees` for the Moon, as `Astronoby::ExtremumEvent` with the Moon's geometric distance as `value`
 
 Other targets raise `Astronoby::UnsupportedEventError`. You can learn more about these events on the [Planetary phenomena page] and the [Lunar eclipses page].
 
@@ -140,6 +141,22 @@ sky
 #   [:last_quarter, 2025-01-21 20:30:47 UTC],
 #   [:new_moon, 2025-01-29 12:35:59 UTC]
 # ]
+```
+
+The Moon's apogees and perigees are found where its geometric distance from Earth stops growing or shrinking:
+
+```rb
+perigee = sky
+  .moon
+  .perigees
+  .from(Astronoby::Instant.from_time(Time.utc(2025, 1, 1)))
+  .first
+
+perigee.instant.to_time.round
+# => 2025-01-08 00:01:05 UTC
+
+perigee.value.km.round
+# => 370171
 ```
 
 ## Seasons

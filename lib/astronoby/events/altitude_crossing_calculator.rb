@@ -32,6 +32,7 @@ module Astronoby
     # a hundred microradians of hour angle is, except for a body passing within
     # a few thousandths of a degree of the zenith.
     SEGMENT_HOUR_ANGLE_TOLERANCE = 1e-4
+    CULMINATION_ESTIMATE_MARGIN_IN_DAYS = 1.0 / 96
     GRAZING_MARGIN = Angle.from_degrees(0.05).radians
     # A Newton step from an altitude this close to the target lands within
     # {ALTITUDE_TOLERANCE} of it, for a slope that is off by up to 2%, so the
@@ -86,6 +87,7 @@ module Astronoby
       @reference = reference
     end
 
+    # @deprecated Use {Astronoby::LocalSky#crossings} instead
     # @param start_time [Time, Astronoby::Instant] start of the window
     # @param end_time [Time, Astronoby::Instant] end of the window
     # @param altitude [Astronoby::Angle] the altitude to reach, positive or
@@ -93,22 +95,28 @@ module Astronoby
     # @return [Array<Astronoby::AltitudeCrossing>] the crossings in the window,
     #   sorted by time
     def crossings_between(start_time, end_time, altitude:)
-      multiple_crossings_between(start_time, end_time, altitudes: [altitude])
-        .first
+      warn_deprecated(:crossings_between, "sky.over(observer).crossings")
+      search_between(start_time, end_time).crossings([altitude]).first
     end
 
     # Same as {#crossings_between} for several altitudes at once, sharing the
     # culminations and the evaluated positions between them.
     #
+    # @deprecated Use {Astronoby::LocalSky#crossings} instead
     # @param start_time [Time, Astronoby::Instant] start of the window
     # @param end_time [Time, Astronoby::Instant] end of the window
     # @param altitudes [Array<Astronoby::Angle>] the altitudes to reach
     # @return [Array<Array<Astronoby::AltitudeCrossing>>] the crossings of each
     #   altitude, in the order of +altitudes+
     def multiple_crossings_between(start_time, end_time, altitudes:)
+      warn_deprecated(
+        :multiple_crossings_between,
+        "sky.over(observer).crossings"
+      )
       search_between(start_time, end_time).crossings(altitudes)
     end
 
+    # @deprecated Use {Astronoby::LocalSky#crossings} instead
     # @param date [Date] the day
     # @param altitude [Astronoby::Angle] the altitude to reach
     # @param direction [Symbol] +:rising+ or +:setting+
@@ -122,6 +130,7 @@ module Astronoby
           "Only #{DIRECTIONS.join(" or ")} are allowed as direction, " \
           "got #{direction}"
       end
+      warn_deprecated(:crossing_on, "sky.over(observer).crossings")
 
       start_time = Time.new(date.year, date.month, date.day, 0, 0, 0, utc_offset)
       following = date.next_day
@@ -129,27 +138,30 @@ module Astronoby
         following.year, following.month, following.day, 0, 0, 0, utc_offset
       )
 
-      crossings_between(start_time, end_time, altitude: altitude)
+      search_between(start_time, end_time)
+        .crossings([altitude])
+        .first
         .find do |crossing|
           crossing.direction == direction &&
             crossing.instant.to_time < end_time
         end
     end
 
+    # @deprecated Use {Astronoby::LocalSky#culminations} instead
     # @param start_time [Time, Astronoby::Instant] start of the window
     # @param end_time [Time, Astronoby::Instant] end of the window
     # @return [Array<Astronoby::AltitudeExtreme>] the upper and lower
     #   culminations in the window, sorted by time, with the altitude of the
     #   reference point at each
     def extremes_between(start_time, end_time)
+      warn_deprecated(:extremes_between, "sky.over(observer).culminations")
       search_between(start_time, end_time).extremes
     end
 
-    private
-
+    # @api private
     def search_between(start_time, end_time)
-      start_instant = instant_for(start_time)
-      end_instant = instant_for(end_time)
+      start_instant = Instant.from(start_time)
+      end_instant = Instant.from(end_time)
       if end_instant < start_instant
         raise IncompatibleArgumentsError,
           "The end of the window must not be before its start"
@@ -167,8 +179,12 @@ module Astronoby
       )
     end
 
-    def instant_for(time)
-      time.is_a?(Instant) ? time : Instant.from_time(time)
+    private
+
+    def warn_deprecated(method_name, replacement)
+      Deprecation.warn(self.class, method_name, uplevel: 2) do
+        ["Astronoby::AltitudeCrossingCalculator##{method_name}", replacement]
+      end
     end
 
     class Search
@@ -224,7 +240,7 @@ module Astronoby
       def sample_at(tt)
         @samples[tt] ||= begin
           instant = Instant.from_terrestrial_time(tt)
-          body = @body.at(instant, ephem: @ephem)
+          body = Sky::Snapshot.new(ephem: @ephem, instant: instant).body(@body)
           equatorial = body.observed_by(@observer).equatorial
           hour_angle = equatorial.compute_hour_angle(
             time: instant.to_time,
@@ -313,7 +329,7 @@ module Astronoby
           previous = nil
           found = []
 
-          while tt <= end_tt
+          while tt <= end_tt + CULMINATION_ESTIMATE_MARGIN_IN_DAYS
             tt = refine_culmination(tt, hour_angle, tolerance)
             found << Culmination.new(kind, tt) if tt.between?(start_tt, end_tt)
             # Step from the refined event: a sidereal day drifts from the

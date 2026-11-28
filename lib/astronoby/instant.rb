@@ -60,6 +60,15 @@ module Astronoby
     private_constant :SECONDS_PER_DAY, :FIRST_UTC_JULIAN_DATE, :TT_MINUS_TAI
 
     class << self
+      # Returns an Instant as it is and converts a Time, for methods that
+      # accept either.
+      #
+      # @param time [Astronoby::Instant, Time] an instant or a Time object
+      # @return [Astronoby::Instant] the instant
+      def from(time)
+        time.is_a?(Instant) ? time : from_time(time)
+      end
+
       # Creates a new Instant from a Terrestrial Time value
       #
       # @param terrestrial_time [Numeric] the Terrestrial Time as a Julian Date

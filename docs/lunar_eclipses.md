@@ -6,19 +6,18 @@ There are three kinds of lunar eclipses. A penumbral eclipse is when the Moon on
 
 ## Finding eclipses
 
-`Astronoby::Moon.eclipse_events` takes an ephemeris and a time range, and returns the lunar eclipses whose greatest instant falls in that range, sorted by time.
+`sky.moon.eclipses` returns the lunar eclipses as an `Astronoby::Events::Series`, read with `on(date)`, `between(start, finish)` or `from(start)` as on the [Local sky page]. An eclipse falls in a range when its greatest instant does, and eclipses come sorted by time.
 
 ```rb
-ephem = Astronoby::Ephem.load("inpop19a.bsp")
+sky = Astronoby::Sky.load("tmp/inpop19a.bsp")
 
-eclipses = Astronoby::Moon.eclipse_events(
-  ephem: ephem,
-  start_time: Time.utc(2025, 1, 1),
-  end_time: Time.utc(2026, 1, 1)
-)
+eclipses = sky
+  .moon
+  .eclipses
+  .between(Time.utc(2025, 1, 1), Time.utc(2026, 1, 1))
 
-eclipses.map { |eclipse| [eclipse.instant.to_time, eclipse.kind] }
-# => [[2025-03-14 06:58:46 UTC, :total], [2025-09-07 18:11:49 UTC, :total]]
+eclipses.map { |eclipse| [eclipse.instant.to_time.round, eclipse.kind] }
+# => [[2025-03-14 06:58:47 UTC, :total], [2025-09-07 18:11:49 UTC, :total]]
 ```
 
 ## An eclipse
@@ -98,11 +97,11 @@ eclipse.total.starting_geometry.position_angle.degrees     # => 350.46 (U2)
 Note that IMCCE labels the end of the penumbral phase `P2`, where this documentation uses `P4`.
 
 ```rb
-penumbral_eclipse = Astronoby::Moon.eclipse_events(
-  ephem: ephem,
-  start_time: Time.utc(2024, 3, 1),
-  end_time: Time.utc(2024, 4, 1)
-).first
+penumbral_eclipse = sky
+  .moon
+  .eclipses
+  .between(Time.utc(2024, 3, 1), Time.utc(2024, 4, 1))
+  .first
 
 penumbral_eclipse.kind    # => :penumbral
 penumbral_eclipse.partial # => nil
@@ -178,8 +177,9 @@ visibility.above_horizon_at?(eclipse.total.starting_instant) # => true
 Visibility answers whether the Moon is up, not how high it is. The Moon's place at each contact is interpolated from what the eclipse carries, which is what lets an eclipse be observed from anywhere without an ephemeris, and that is accurate well past what the horizon convention can resolve. For the altitude itself, ask the Moon, which computes it from the ephemeris with no interpolation at all.
 
 ```rb
-Astronoby::Moon
-  .new(ephem: ephem, instant: eclipse.total.starting_instant)
+sky
+  .moon
+  .at(eclipse.total.starting_instant)
   .observed_by(mexico_city)
   .horizontal
   .altitude
@@ -196,13 +196,15 @@ Validated against IMCCE, the eclipse kind and the magnitudes match, and the cont
 
 The local circumstances are reduced without the ephemeris, from the Moon's place at the contacts and the sidereal rate. The altitudes agree with the topocentric places computed from the ephemeris to under an arcminute, and the horizon crossings put the Moon on the horizon to a few arcseconds, which is well inside the uncertainty of the fixed refraction the convention assumes.
 
+[Local sky page]: local_sky.md
+
 ## See also
 
 - [Moon Phases](moon_phases.md) - for lunar phases
 - [Lunar Observation](lunar_observation.md) - for libration, axis and limb angles
 - [Planetary Phenomena](planetary_phenomena.md) - for conjunctions, oppositions and elongations
 - [Solar System Bodies](solar_system_bodies.md) - for moon object details
-- [Ephemerides](ephem.md) - for data sources
+- [Sky](sky.md) - for loading an ephemeris
 
 [NASA's Five Millennium Canon of Lunar Eclipses]: https://eclipse.gsfc.nasa.gov/SEpubs/5MCLE.html
 [IMCCE]: https://www.imcce.fr/

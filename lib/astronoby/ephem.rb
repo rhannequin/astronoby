@@ -43,12 +43,6 @@ module Astronoby
     end
 
     # @api private
-    #
-    # @param kernels [Array<::Ephem::SPK>] loaded kernels; at a date covered
-    #   by several of them, the first one wins
-    # @raise [ArgumentError] without kernels, or with kernels of different
-    #   types, whose bodies are not split into the same segments
-    # @raise [Astronoby::EphemerisError] if no kernel is of a supported type
     def initialize(*kernels)
       raise ArgumentError, "At least one kernel is required" if kernels.empty?
 
@@ -86,11 +80,12 @@ module Astronoby
 
     # @api private
     def coverage
-      @coverage ||= @pairs.values.map do |source|
-        segments = source.respond_to?(:segments) ? source.segments : [source]
-        [segments.map(&:start_jd).min, segments.map(&:end_jd).max]
-      end.transpose.then do |starts, ends|
-        [starts.max + LIGHT_TIME_MARGIN_IN_DAYS, ends.min]
+      @coverage ||= begin
+        first, last = read_pairs
+          .map { |pair| spans_of(@pairs[pair]) }
+          .reduce { |spans, others| intersect(spans, others) }
+          .max_by { |first, last| last - first }
+        [first + LIGHT_TIME_MARGIN_IN_DAYS, last]
       end
     end
 
@@ -108,8 +103,35 @@ module Astronoby
 
     private
 
-    # Each pair routes a date to the segment covering it. Segments of the first
-    # kernel come last, as the group picks the last segment covering the date.
+    def read_pairs
+      Sky::BODIES.values
+        .flat_map { |body| body.ephemeris_segments(@type) }
+        .uniq
+        .select { |pair| @pairs.key?(pair) }
+    end
+
+    def spans_of(source)
+      segments = source.respond_to?(:segments) ? source.segments : [source]
+      segments
+        .map { |segment| [segment.start_jd, segment.end_jd] }
+        .sort
+        .each_with_object([]) do |(first, last), spans|
+          if spans.any? && first <= spans.last[1]
+            spans.last[1] = [spans.last[1], last].max
+          else
+            spans << [first, last]
+          end
+        end
+    end
+
+    def intersect(spans, others)
+      spans.product(others).filter_map do |(a, b), (c, d)|
+        first = [a, c].max
+        last = [b, d].min
+        [first, last] if first < last
+      end
+    end
+
     def pairs_across(kernels)
       kernels
         .reverse

@@ -20,4 +20,20 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before do |example|
+    if example.metadata[:deprecations]
+      Astronoby::Deprecation.reset
+    else
+      allow(Astronoby::Deprecation).to receive(:warn) do |*, uplevel: 1|
+        next if Thread.current[Astronoby::Deprecation::NESTED_KEY]
+
+        call_site = caller_locations
+          .reject { |location| location.path.include?("/rspec-") }[uplevel]
+        if call_site&.path&.include?("/lib/astronoby/")
+          raise "Deprecated method called from the library at #{call_site}"
+        end
+      end
+    end
+  end
 end

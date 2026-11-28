@@ -28,7 +28,7 @@ local_sky
 # => [2025-10-01 15:17:42 UTC, 2025-10-02 15:43:31 UTC, 2025-10-03 16:04:03 UTC]
 ```
 
-`from` stops at the end of the ephemeris or after a year, whichever comes first, and right away when a fixed star never reaches the altitude. It raises `Ephem::OutOfRangeError` when the ephemeris does not cover its start.
+`from` stops at the end of the ephemeris or after a year, whichever comes first, and returns nothing when a fixed star never reaches the altitude. It raises `Ephem::OutOfRangeError` when the ephemeris does not cover its start.
 
 Events come sorted by time, and their instants are not rounded.
 
@@ -88,6 +88,23 @@ crossings.map { |crossing| [crossing.direction, crossing.instant.to_time.round] 
 
 You can learn more about crossings, and about grazing ones, on the [Altitude crossings page].
 
+## Culminations
+
+`culminations` returns the upper and lower culminations of a target, its highest and lowest points as it crosses the meridian, as `Astronoby::AltitudeExtreme` objects with a `kind`, an `instant` and an `altitude`. The altitude is the true one, unless `refraction: true` is given:
+
+```rb
+local_sky
+  .culminations(sky.sun)
+  .on(Date.new(2025, 10, 1))
+  .map { |culmination| [culmination.kind, culmination.altitude.str(:dms)] }
+# => [
+#   [:upper_culmination, "+37° 46′ 5.691″"],
+#   [:lower_culmination, "-44° 45′ 6.789″"]
+# ]
+```
+
+Like `crossings`, it accepts a limb of a Solar System body. Refraction is held at its value at -1° below that altitude, as on the [Refraction page], so a refracted altitude far below the horizon, like most lower culminations, has no physical meaning.
+
 ## Twilights
 
 `twilights` returns the civil, nautical and astronomical dawns and dusks, as `Astronoby::TwilightCrossing` objects: the Sun's centre crossing 6°, 12° and 18° below the horizon.
@@ -105,9 +122,10 @@ end
 
 ## Targets
 
-Every method accepts a target of the sky (`sky.saturn`, `sky[vega]`) or a deep-sky object directly. `crossings` also accepts a point of a Solar System body: `sky.moon.center`, `sky.moon.upper_limb` or `sky.moon.lower_limb`.
+Every method accepts a target of the sky (`sky.saturn`, `sky[vega]`) or a deep-sky object directly. `crossings` and `culminations` also accept a point of a Solar System body: `sky.moon.center`, `sky.moon.upper_limb` or `sky.moon.lower_limb`.
 
 [Sky page]: sky.md
 [Observer page]: observer.md
 [Rise, transit and setting times page]: rise_transit_set_times.md
 [Altitude crossings page]: altitude_crossings.md
+[Refraction page]: refraction.md

@@ -60,7 +60,6 @@ module Astronoby
     end
 
     # @api private
-    # @return [Astronoby::Ephem] the kernels read as one ephemeris
     attr_reader :ephem
 
     BODIES.each_key do |name|
@@ -98,13 +97,7 @@ module Astronoby
       LocalSky.new(sky: self, observer: observer)
     end
 
-    # The snapshot of this sky at the instant. The last one is kept per
-    # fiber, so that bodies asked for at the same instant share it without
-    # any lock.
-    #
     # @api private
-    # @param instant [Astronoby::Instant]
-    # @return [Astronoby::Sky::Snapshot]
     def snapshot_at(instant)
       sky, snapshot = Thread.current[:astronoby_sky_snapshot]
       return snapshot if sky.equal?(self) && snapshot.instant == instant

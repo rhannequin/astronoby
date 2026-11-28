@@ -28,6 +28,20 @@ RSpec.describe Astronoby::Instant do
     end
   end
 
+  describe ".from" do
+    it "returns an instant as it is" do
+      instant = described_class.from_terrestrial_time(2451545.0)
+
+      expect(described_class.from(instant)).to be(instant)
+    end
+
+    it "converts a Time" do
+      time = Time.utc(2025, 10, 1, 12)
+
+      expect(described_class.from(time)).to eq(described_class.from_time(time))
+    end
+  end
+
   describe ".from_time" do
     it "creates an instance of Astronoby::Instant" do
       instant = described_class.from_time(Time.now)

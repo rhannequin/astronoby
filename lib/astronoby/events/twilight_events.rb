@@ -2,6 +2,9 @@
 
 module Astronoby
   # Holds arrays of twilight times over a time range.
+  #
+  # @deprecated Use {Astronoby::TwilightCrossing} from
+  #   {Astronoby::LocalSky#twilights} instead
   class TwilightEvents
     # @return [Array<Time>] morning civil twilight times
     attr_reader :morning_civil_twilight_times

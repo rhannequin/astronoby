@@ -14,9 +14,6 @@ module Astronoby
       attr_reader :body
 
       # @api private
-      # @param sky [Astronoby::Sky]
-      # @param body [Class, Astronoby::DeepSkyObject] a SolarSystemBody
-      #   subclass or a deep-sky object
       def initialize(sky:, body:)
         @sky = sky
         @body = body
@@ -27,7 +24,7 @@ module Astronoby
       #   the body at the instant
       def at(instant)
         if @body.is_a?(DeepSkyObject)
-          @body.at(instant, ephem: @sky.ephem)
+          @body.position_at(instant, ephem: @sky.ephem)
         else
           @sky.snapshot_at(instant).body(@body)
         end
@@ -61,8 +58,10 @@ module Astronoby
         end
 
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          conjunction_opposition_calculator
-            .opposition_events_between(start_instant, end_instant)
+          Deprecation.nested do
+            conjunction_opposition_calculator
+              .opposition_events_between(start_instant, end_instant)
+          end
         end
       end
 
@@ -74,8 +73,10 @@ module Astronoby
         end
 
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          conjunction_opposition_calculator
-            .conjunction_events_between(start_instant, end_instant)
+          Deprecation.nested do
+            conjunction_opposition_calculator
+              .conjunction_events_between(start_instant, end_instant)
+          end
         end
       end
 
@@ -89,17 +90,45 @@ module Astronoby
         end
 
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          first, last = @sky.ephem.coverage
-          GreatestElongationCalculator
-            .new(body: @body, ephem: @sky.ephem)
-            .greatest_elongation_events_between(
-              Instant.from_terrestrial_time(
-                [start_instant.tt - EXTREMUM_PADDING_IN_DAYS, first].max
-              ),
-              Instant.from_terrestrial_time(
-                [end_instant.tt + EXTREMUM_PADDING_IN_DAYS, last].min
+          Deprecation.nested do
+            GreatestElongationCalculator
+              .new(body: @body, ephem: @sky.ephem)
+              .greatest_elongation_events_between(
+                *padded(start_instant, end_instant)
               )
-            )
+          end
+        end
+      end
+
+      # When the Moon is farthest from Earth, at its geometric distance.
+      #
+      # @return [Astronoby::Events::Series] of Astronoby::ExtremumEvent, with
+      #   the distance as value
+      # @raise [Astronoby::UnsupportedEventError] unless the target is the
+      #   Moon
+      def apogees
+        moon_only!("apogees")
+        series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
+          Deprecation.nested do
+            apsis_calculator
+              .apoapsis_events_between(*padded(start_instant, end_instant))
+          end
+        end
+      end
+
+      # When the Moon is closest to Earth, at its geometric distance.
+      #
+      # @return [Astronoby::Events::Series] of Astronoby::ExtremumEvent, with
+      #   the distance as value
+      # @raise [Astronoby::UnsupportedEventError] unless the target is the
+      #   Moon
+      def perigees
+        moon_only!("perigees")
+        series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
+          Deprecation.nested do
+            apsis_calculator
+              .periapsis_events_between(*padded(start_instant, end_instant))
+          end
         end
       end
 
@@ -109,9 +138,11 @@ module Astronoby
       def eclipses
         moon_only!("eclipses")
         series(window: YEAR_IN_DAYS) do |start_instant, end_instant|
-          LunarEclipseCalculator
-            .new(ephem: @sky.ephem)
-            .events_between(start_instant, end_instant)
+          Deprecation.nested do
+            LunarEclipseCalculator
+              .new(ephem: @sky.ephem)
+              .events_between(start_instant, end_instant)
+          end
         end
       end
 
@@ -153,6 +184,26 @@ module Astronoby
 
       def conjunction_opposition_calculator
         ConjunctionOppositionCalculator.new(body: @body, ephem: @sky.ephem)
+      end
+
+      def apsis_calculator
+        ExtremumCalculator.new(
+          body: Moon,
+          primary_body: Earth,
+          ephem: @sky.ephem
+        )
+      end
+
+      def padded(start_instant, end_instant)
+        first, last = @sky.ephem.coverage
+        [
+          Instant.from_terrestrial_time(
+            [start_instant.tt - EXTREMUM_PADDING_IN_DAYS, first].max
+          ),
+          Instant.from_terrestrial_time(
+            [end_instant.tt + EXTREMUM_PADDING_IN_DAYS, last].min
+          )
+        ]
       end
 
       def series(window:, &search)
