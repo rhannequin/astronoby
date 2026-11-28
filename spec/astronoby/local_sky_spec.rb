@@ -208,6 +208,19 @@ RSpec.describe Astronoby::LocalSky do
       expect(limb.last.altitude.degrees)
         .to be > centre.last.altitude.degrees + 0.25
     end
+
+    it "finds a retrograde planet culminating just before the end" do
+      sky = Astronoby::Sky.new(test_ephem)
+      local_sky = sky.over(paris)
+
+      culminations = local_sky
+        .culminations(sky.mars)
+        .between(Time.utc(2025, 1, 14), Time.utc(2025, 1, 15, 0, 10, 15))
+
+      expect(culminations.last.kind).to eq(:upper_culmination)
+      expect(culminations.last.instant.to_time)
+        .to be_within(0.01).of(Time.utc(2025, 1, 15, 0, 10, 8.75))
+    end
   end
 
   describe "#twilights" do

@@ -32,6 +32,7 @@ module Astronoby
     # a hundred microradians of hour angle is, except for a body passing within
     # a few thousandths of a degree of the zenith.
     SEGMENT_HOUR_ANGLE_TOLERANCE = 1e-4
+    CULMINATION_ESTIMATE_MARGIN_IN_DAYS = 1.0 / 24
     GRAZING_MARGIN = Angle.from_degrees(0.05).radians
     # A Newton step from an altitude this close to the target lands within
     # {ALTITUDE_TOLERANCE} of it, for a slope that is off by up to 2%, so the
@@ -328,7 +329,7 @@ module Astronoby
           previous = nil
           found = []
 
-          while tt <= end_tt
+          while tt <= end_tt + CULMINATION_ESTIMATE_MARGIN_IN_DAYS
             tt = refine_culmination(tt, hour_angle, tolerance)
             found << Culmination.new(kind, tt) if tt.between?(start_tt, end_tt)
             # Step from the refined event: a sidereal day drifts from the
